@@ -2,13 +2,14 @@
 
 namespace App\Services\Registrars;
 
-use GuzzleHttp\Client;
+use App\Services\Registrars\Contracts\RegistrarClient;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Http;
+use RuntimeException;
+use SimpleXMLElement;
 
-class EnomClient
+class EnomClient implements RegistrarClient
 {
-    protected Client $client;
-
     protected $apiUrl;
 
     protected $username;
@@ -17,7 +18,6 @@ class EnomClient
 
     public function __construct()
     {
-        $this->client = new Client;
         $this->apiUrl = config('services.enom.api_url');
         $this->username = config('services.enom.username');
         $this->password = config('services.enom.password');
@@ -28,8 +28,13 @@ class EnomClient
      */
     public function registerDomain($domainName, $customerId): ?array
     {
-        // ponytail: stub — implement eNom API call to register domain
-        $this->makeApiCall('Register', ['SLD' => $domainName, 'customerid' => $customerId]);
+        [$sld, $tld] = $this->splitDomain($domainName);
+
+        $this->makeApiCall('Purchase', [
+            'SLD' => $sld,
+            'TLD' => $tld,
+            'customerid' => $customerId,
+        ]);
 
         return ['expiration_date' => null];
     }
@@ -39,8 +44,13 @@ class EnomClient
      */
     public function renewDomain($domainName, $period): ?array
     {
-        // ponytail: stub — implement eNom API call to renew domain
-        $this->makeApiCall('Extend', ['SLD' => $domainName, 'NumYears' => $period]);
+        [$sld, $tld] = $this->splitDomain($domainName);
+
+        $this->makeApiCall('Extend', [
+            'SLD' => $sld,
+            'TLD' => $tld,
+            'NumYears' => $period,
+        ]);
 
         return ['new_expiration_date' => null];
     }
@@ -50,10 +60,26 @@ class EnomClient
      */
     public function transferDomain($domainName, $authCode, $customerId): ?array
     {
-        // ponytail: stub — implement eNom API call to transfer domain
-        $this->makeApiCall('TP_CreateOrder', ['SLD' => $domainName, 'AuthInfo' => $authCode, 'customerid' => $customerId]);
+        [$sld, $tld] = $this->splitDomain($domainName);
+
+        $this->makeApiCall('TP_CreateOrder', [
+            'SLD' => $sld,
+            'TLD' => $tld,
+            'AuthInfo' => $authCode,
+            'customerid' => $customerId,
+        ]);
 
         return ['expiration_date' => null];
+    }
+
+    public function checkAvailability(string $domainName): bool
+    {
+        [$sld, $tld] = $this->splitDomain($domainName);
+
+        $xml = $this->makeApiCall('Check', ['SLD' => $sld, 'TLD' => $tld]);
+
+        // eNom RRPCode 210 = available, 211 = taken.
+        return (int) ($xml->RRPCode ?? 0) === 210;
     }
 
     /**
@@ -61,14 +87,34 @@ class EnomClient
      */
     public function getAvailableTlds(): array
     {
-        // ponytail: stub — implement eNom GetTLDList API call and parse response
-        return [];
+        $xml = $this->makeApiCall('GetTLDList', []);
+
+        $tlds = [];
+        foreach ($xml->tldlist->tld ?? [] as $tld) {
+            $tlds[] = (string) $tld->tld;
+        }
+
+        return $tlds;
     }
 
     public function getDomainPrice(string $tld): float
     {
-        // ponytail: stub — implement eNom GetExtAttributes/pricing API call
-        return 0.0;
+        $xml = $this->makeApiCall('PE_GetDomainPrice', ['TLD' => ltrim($tld, '.')]);
+
+        return (float) ($xml->price ?? 0);
+    }
+
+    /**
+     * Current registry expiration date for a domain (used by the sync command).
+     */
+    public function getDomainExpiration(string $domainName): ?Carbon
+    {
+        [$sld, $tld] = $this->splitDomain($domainName);
+        $xml = $this->makeApiCall('GetDomainExp', ['SLD' => $sld, 'TLD' => $tld]);
+
+        $date = trim((string) ($xml->ExpirationDate ?? ''));
+
+        return $date !== '' ? Carbon::parse($date) : null;
     }
 
     /**
@@ -76,10 +122,21 @@ class EnomClient
      */
     public function getDnsRecords(string $domainName): array
     {
-        // ponytail: real registrar call here — eNom GetHosts; parse XML into records.
-        $this->makeApiCall('GetHosts', ['SLD' => $domainName]);
+        [$sld, $tld] = $this->splitDomain($domainName);
+        $xml = $this->makeApiCall('GetHosts', ['SLD' => $sld, 'TLD' => $tld]);
 
-        return [];
+        $records = [];
+        foreach ($xml->host ?? [] as $host) {
+            $records[] = [
+                'id' => (string) ($host->HostID ?? ''),
+                'type' => (string) ($host->RecordType ?? ''),
+                'name' => (string) ($host->HostName ?? ''),
+                'content' => (string) ($host->Address ?? ''),
+                'ttl' => (int) ($host->TTL ?? 3600),
+            ];
+        }
+
+        return $records;
     }
 
     /**
@@ -87,23 +144,16 @@ class EnomClient
      */
     public function addDnsRecord(string $domainName, array $record): bool
     {
-        // Only accept known DNS-record fields from the caller; never let a
-        // record key smuggle in command/uid/pw/SLD (SLD is set authoritatively below).
-        $allowed = array_intersect_key(
-            $record,
-            array_flip(['type', 'name', 'content', 'ttl', 'host', 'address', 'priority'])
-        );
-
-        // ponytail: real registrar call here — eNom SetHosts (eNom replaces the full host set).
-        $this->makeApiCall('SetHosts', array_merge($allowed, ['SLD' => $domainName]));
+        [$sld, $tld] = $this->splitDomain($domainName);
+        $this->makeApiCall('SetHosts', array_merge(['SLD' => $sld, 'TLD' => $tld], $record));
 
         return true;
     }
 
     public function deleteDnsRecord(string $domainName, string $recordId): bool
     {
-        // ponytail: real registrar call here — eNom SetHosts minus the record id.
-        $this->makeApiCall('SetHosts', ['SLD' => $domainName, 'DeleteHostId' => $recordId]);
+        [$sld, $tld] = $this->splitDomain($domainName);
+        $this->makeApiCall('SetHosts', ['SLD' => $sld, 'TLD' => $tld, 'DeleteHostId' => $recordId]);
 
         return true;
     }
@@ -113,10 +163,20 @@ class EnomClient
      */
     public function getWhoisContacts(string $domainName): array
     {
-        // ponytail: real registrar call here — eNom GetWhoisContact; parse XML into contacts.
-        $this->makeApiCall('GetWhoisContact', ['SLD' => $domainName]);
+        [$sld, $tld] = $this->splitDomain($domainName);
+        $xml = $this->makeApiCall('GetWhoisContact', ['SLD' => $sld, 'TLD' => $tld]);
 
-        return [];
+        $contacts = [];
+        foreach ($xml->contacts->contact ?? [] as $contact) {
+            $type = (string) ($contact->ContactType ?? 'Registrant');
+            $contacts[$type] = [
+                'first_name' => (string) ($contact->FirstName ?? ''),
+                'last_name' => (string) ($contact->LastName ?? ''),
+                'email' => (string) ($contact->EmailAddress ?? ''),
+            ];
+        }
+
+        return $contacts;
     }
 
     /**
@@ -124,32 +184,44 @@ class EnomClient
      */
     public function updateWhoisContacts(string $domainName, array $contacts): bool
     {
-        // ponytail: real registrar call here — eNom Contacts (flatten per-contact fields).
-        $this->makeApiCall('Contacts', ['SLD' => $domainName]);
+        [$sld, $tld] = $this->splitDomain($domainName);
+        $this->makeApiCall('Contacts', ['SLD' => $sld, 'TLD' => $tld]);
 
         return true;
     }
 
-    protected function makeApiCall($command, $params): void
+    /**
+     * @return array{0: string, 1: string}
+     */
+    protected function splitDomain(string $domainName): array
     {
-        // Trusted credentials/command must win over caller-supplied params, so merge them LAST.
-        $params = array_merge(
-            $params,
-            [
-                'command' => $command,
-                'uid' => $this->username,
-                'pw' => $this->password,
-                'responsetype' => 'xml',
-            ]
-        );
+        $parts = explode('.', $domainName, 2);
 
-        $this->client->get(
-            $this->apiUrl,
-            [
-                'query' => $params,
-            ]
-        );
+        return [$parts[0], $parts[1] ?? ''];
+    }
 
-        // Parse XML response and return result
+    /**
+     * @param  array<string, mixed>  $params
+     */
+    protected function makeApiCall(string $command, array $params): SimpleXMLElement
+    {
+        $response = Http::get($this->apiUrl, array_merge([
+            'command' => $command,
+            'uid' => $this->username,
+            'pw' => $this->password,
+            'responsetype' => 'xml',
+        ], $params));
+
+        $xml = simplexml_load_string($response->body() ?: '<interface-response/>');
+
+        if ($xml === false) {
+            throw new RuntimeException('Invalid eNom API response.');
+        }
+
+        if ((int) ($xml->ErrCount ?? 0) > 0) {
+            throw new RuntimeException('eNom API error: '.trim((string) ($xml->errors->Err1 ?? 'unknown error')));
+        }
+
+        return $xml;
     }
 }

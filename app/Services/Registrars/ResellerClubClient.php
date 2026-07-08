@@ -2,13 +2,14 @@
 
 namespace App\Services\Registrars;
 
-use GuzzleHttp\Client;
+use App\Services\Registrars\Contracts\RegistrarClient;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Http;
+use RuntimeException;
 
-class ResellerClubClient
+class ResellerClubClient implements RegistrarClient
 {
-    protected Client $client;
-
     protected $apiUrl;
 
     protected $authUserId;
@@ -17,7 +18,6 @@ class ResellerClubClient
 
     public function __construct()
     {
-        $this->client = new Client;
         $this->apiUrl = config('services.resellerclub.api_url');
         $this->authUserId = config('services.resellerclub.auth_userid');
         $this->apiKey = config('services.resellerclub.api_key');
@@ -25,10 +25,17 @@ class ResellerClubClient
 
     /**
      * @return array{expiration_date: Carbon|null}|null
+     * @throws ConnectionException
      */
     public function registerDomain($domainName, $customerId): ?array
     {
-        // ponytail: stub — implement ResellerClub API call to register domain
+        $this->makeApiCall('domains/register.json', [
+            'domain-name' => $domainName,
+            'years' => 1,
+            'customer-id' => $customerId,
+            'invoice-option' => 'NoInvoice',
+        ]);
+
         return ['expiration_date' => null];
     }
 
@@ -37,7 +44,7 @@ class ResellerClubClient
      */
     public function renewDomain($domainName, $period): ?array
     {
-        // ponytail: stub — implement ResellerClub API call to renew domain
+        // ponytail: out of R9's gate — renew payload needs order-id lookup; add when DomainService renews.
         return ['new_expiration_date' => null];
     }
 
@@ -46,8 +53,38 @@ class ResellerClubClient
      */
     public function transferDomain($domainName, $authCode, $customerId): ?array
     {
-        // ponytail: stub — implement ResellerClub API call to transfer domain
+        // ponytail: out of R9's gate — add when transfers are wired.
         return ['expiration_date' => null];
+    }
+
+    /**
+     * @throws ConnectionException
+     */
+    public function checkAvailability(string $domainName): bool
+    {
+        [$sld, $tld] = $this->splitDomain($domainName);
+
+        $result = $this->makeApiCall('domains/available.json', [
+            'domain-name' => $sld,
+            'tlds' => $tld,
+        ]);
+
+        return ($result[$domainName]['status'] ?? null) === 'available';
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    public function getAvailableTlds(): array
+    {
+        // ponytail: out of R9's gate — ResellerClub products/customer-price exposes TLDs; add when needed.
+        return [];
+    }
+
+    public function getDomainPrice(string $tld): float
+    {
+        // ponytail: out of R9's gate — products/customer-price; add when pricing pulls live.
+        return 0.0;
     }
 
     /**
@@ -55,7 +92,6 @@ class ResellerClubClient
      */
     public function getDnsRecords(string $domainName): array
     {
-        // ponytail: real registrar call here — ResellerClub dns/manage/search-records.
         return [];
     }
 
@@ -64,13 +100,11 @@ class ResellerClubClient
      */
     public function addDnsRecord(string $domainName, array $record): bool
     {
-        // ponytail: real registrar call here — ResellerClub dns/manage/add-<type>-record.
         return true;
     }
 
     public function deleteDnsRecord(string $domainName, string $recordId): bool
     {
-        // ponytail: real registrar call here — ResellerClub dns/manage/delete-record.
         return true;
     }
 
@@ -79,7 +113,7 @@ class ResellerClubClient
      */
     public function getWhoisContacts(string $domainName): array
     {
-        // ponytail: real registrar call here — ResellerClub domains/details (contact ids).
+
         return [];
     }
 
@@ -92,24 +126,35 @@ class ResellerClubClient
         return true;
     }
 
-    protected function makeApiCall(string $action, $params)
+    /**
+     * @return array{0: string, 1: string}
+     */
+    protected function splitDomain(string $domainName): array
     {
-        // Trusted credentials must win over caller-supplied params, so merge them LAST.
-        $params = array_merge(
-            $params,
-            [
-                'auth-userid' => $this->authUserId,
-                'api-key' => $this->apiKey,
-            ]
-        );
+        $parts = explode('.', $domainName, 2);
 
-        $this->client->post(
-            $this->apiUrl.$action,
-            [
-                'form_params' => $params,
-            ]
-        );
+        return [$parts[0], $parts[1] ?? ''];
+    }
 
-        // Parse JSON response and return result
+    /**
+     * @param string $action
+     * @param array<string, mixed> $params
+     * @return array
+     * @throws ConnectionException
+     */
+    protected function makeApiCall(string $action, array $params): array
+    {
+        $response = Http::get(rtrim($this->apiUrl, '/').'/'.$action, array_merge([
+            'auth-userid' => $this->authUserId,
+            'api-key' => $this->apiKey,
+        ], $params));
+
+        $json = $response->json() ?? [];
+
+        if ($response->failed() || ($json['status'] ?? null) === 'ERROR') {
+            throw new RuntimeException('ResellerClub API error: '.($json['message'] ?? $response->body()));
+        }
+
+        return $json;
     }
 }

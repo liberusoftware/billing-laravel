@@ -44,44 +44,44 @@ before finalizing.
 
 ### P0 — Interface + real Enom client
 
-- [ ] **R1. `RegistrarClient` interface + binding** — dep none
+- [x] **R1. `RegistrarClient` interface + binding** — dep none
   - Extract `App\Services\Registrars\Contracts\RegistrarClient` interface (the 10 methods above). `EnomClient` + `ResellerClubClient` implement it.
   - `DomainService` resolves the client by registrar name (`enom`|`resellerclub`) via a small factory/match — replaces the two injected concretes.
   - Gate test `test_domain_service_resolves_registrar_by_name` (returns the right client class per name).
 
-- [ ] **R2. Real Enom HTTP client — register + availability + price** (spec 32, 33) — dep R1
+- [x] **R2. Real Enom HTTP client — register + availability + price** (spec 32, 33) — dep R1
   - Implement `registerDomain`, `getDomainPrice`, and a `checkAvailability(string $domain): bool` against the Enom reseller API using `Http::withQueryParameters(...)`. Parse the response; throw a typed exception on API error.
   - Gate tests (`Http::fake()`): `test_register_calls_enom_with_credentials`, `test_availability_parses_available_response`, `test_api_error_throws`.
 
 ### P1 — Availability search, transfers, renewals, sync
 
-- [ ] **R3. Public domain search + availability** (spec 39, 40) — dep R2
+- [x] **R3. Public domain search + availability** (spec 39, 40) — dep R2
   - Public route + page: customer enters a domain → `checkAvailability` across enabled TLDs; show available + price (from `Tld` markup). Optional: simple namespinning suggestions (append common TLDs / hyphenations).
   - Gate test `test_domain_search_returns_availability_and_price`.
 
-- [ ] **R4. Transfer flow** (spec 34) — dep R2
+- [x] **R4. Transfer flow** (spec 34) — dep R2
   - `transferDomain` with EPP/auth code: initiate + persist transfer status on the subscription. `DomainService::transferDomain` end-to-end.
   - Gate tests (`Http::fake()`): `test_transfer_initiates_with_auth_code`, `test_transfer_status_persists`.
 
-- [ ] **R5. Auto-renew on payment** (spec 35) — dep R2
+- [x] **R5. Auto-renew on payment** (spec 35) — dep R2
   - On a paid invoice for a domain subscription, trigger `DomainService::renewDomain` (listener on the invoice-paid event/`Payment` created). Idempotent.
   - Gate test `test_paid_domain_invoice_triggers_registry_renewal` (fake the registrar; assert renew called + expiration advanced).
 
-- [ ] **R6. Domain sync command** (spec 36) — dep R2
+- [x] **R6. Domain sync command** (spec 36) — dep R2
   - Extend/replace `SyncEnomDomains` to sync per-domain **due dates, status, transfer-away detection** (not just TLD prices). Scheduled daily.
   - Gate test `test_sync_updates_expiration_and_status`.
 
 ### P2 — DNS/WHOIS real, value-adds, second registrar
 
-- [ ] **R7. Real DNS + WHOIS** (spec 47, 48) — dep R2
+- [x] **R7. Real DNS + WHOIS** (spec 47, 48) — dep R2
   - Implement `getDnsRecords`/`addDnsRecord`/`deleteDnsRecord` and `getWhoisContacts`/`updateWhoisContacts` against the API. The `DomainManagement` client page becomes functional.
   - Gate tests (`Http::fake()`): `test_dns_records_fetched`, `test_dns_record_added`, `test_whois_contacts_updated`.
 
-- [ ] **R8. ID protection + free-domain bundling** (spec 49, 51) — dep R2
+- [x] **R8. ID protection + free-domain bundling** (spec 49, 51) — dep R2
   - WHOIS-privacy add-on toggle (product/flag on the domain subscription); free-domain-with-hosting rule at order time.
   - Gate tests: `test_id_protection_flag_persists`, `test_free_domain_applied_with_hosting`.
 
-- [ ] **R9. Real ResellerClub client** — dep R1, R2
+- [x] **R9. Real ResellerClub client** — dep R1, R2
   - Mirror R2/R4/R7 for `ResellerClubClient` against the ResellerClub API.
   - Gate tests (`Http::fake()`): `test_resellerclub_register_calls_api`.
 
