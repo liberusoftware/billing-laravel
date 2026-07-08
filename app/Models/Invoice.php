@@ -75,6 +75,7 @@ use Override;
  */
 #[Fillable([
     'customer_id',
+    'project_id',
     'subscription_id',
     'invoice_number',
     'issue_date',
@@ -221,6 +222,11 @@ class Invoice extends Model
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
+    }
+
+    public function project(): BelongsTo
+    {
+        return $this->belongsTo(Project::class);
     }
 
     public function paymentPlan(): HasOne

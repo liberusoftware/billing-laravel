@@ -83,6 +83,26 @@
                 </div>
             @endcan
 
+            {{-- Project link (Admin) --}}
+            @can('update', $ticket)
+                <div class="bg-white shadow rounded-xl p-6">
+                    <h3 class="text-sm font-semibold text-gray-900 mb-3">Project</h3>
+                    @if($ticket->project)
+                        <p class="text-sm text-gray-700">
+                            Linked to project <span class="font-medium">{{ $ticket->project->name }}</span>.
+                        </p>
+                    @else
+                        <form method="POST" action="{{ route('tickets.project.create', $ticket) }}" class="flex items-center gap-3">
+                            @csrf
+                            <button type="submit" class="px-4 py-2 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-500 transition-colors">
+                                Create project from ticket
+                            </button>
+                            <span class="text-xs text-gray-400">Uses the ticket's customer; errors if none is linked.</span>
+                        </form>
+                    @endif
+                </div>
+            @endcan
+
             {{-- Responses --}}
             @if($ticket->responses->isNotEmpty())
                 <div class="space-y-4">

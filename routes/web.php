@@ -24,6 +24,8 @@ use Laravel\Jetstream\Http\Controllers\TeamInvitationController;
 
 Route::middleware(['auth'])->group(function (): void {
     Route::resource('tickets', TicketController::class);
+    Route::post('tickets/{ticket}/project', [TicketController::class, 'createProject'])
+        ->name('tickets.project.create');
     Route::post('tickets/{ticket}/assign', [TicketController::class, 'assign'])
         ->name('tickets.assign');
     Route::get('tickets/attachments/{attachment}/download', [TicketController::class, 'downloadAttachment'])

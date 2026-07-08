@@ -20,6 +20,11 @@ class AuditLogResource extends Resource
     #[Override]
     protected static ?string $model = AuditLog::class;
 
+    // Audit logs are global/system records, not team-owned; opt out of the
+    // admin panel's tenancy so creating one under an active tenant (e.g. via a
+    // model observer) doesn't try to resolve a non-existent team relationship.
+    protected static bool $isScopedToTenant = false;
+
     #[Override]
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-clipboard-list';
 

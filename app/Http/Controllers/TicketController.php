@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\CreateProjectFromTicket;
+use App\Models\Customer;
 use App\Models\Ticket;
 use App\Models\TicketAttachment;
 use App\Models\TicketCustomField;
@@ -142,6 +144,33 @@ class TicketController extends Controller
         return redirect()->back()->with(
             'success',
             'Ticket status updated.'
+        );
+    }
+
+    public function createProject(
+        Request $request,
+        Ticket $ticket,
+        CreateProjectFromTicket $action
+    ): RedirectResponse {
+        $this->authorize('update', $ticket);
+
+        $validated = $request->validate([
+            'customer_id' => ['nullable', 'integer', 'exists:customers,id'],
+        ]);
+
+        $customer = isset($validated['customer_id'])
+            ? Customer::find($validated['customer_id'])
+            : null;
+
+        try {
+            $project = $action($ticket, $customer);
+        } catch (\RuntimeException $e) {
+            return redirect()->back()->withErrors(['customer_id' => $e->getMessage()]);
+        }
+
+        return redirect()->back()->with(
+            'success',
+            "Project #{$project->id} created from ticket."
         );
     }
 
