@@ -10,6 +10,7 @@ use App\Models\User;
 use Filament\Facades\Filament;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class TeamResourceTest extends TestCase
@@ -26,9 +27,27 @@ class TeamResourceTest extends TestCase
         Filament::setTenant($user->currentTeam);
     }
 
+    private function superAdmin(): User
+    {
+        Role::findOrCreate('super_admin', 'web');
+        $user = User::factory()->withPersonalTeam()->create();
+        $user->assignRole('super_admin');
+
+        return $user;
+    }
+
+    private function admin(): User
+    {
+        Role::findOrCreate('admin', 'web');
+        $user = User::factory()->withPersonalTeam()->create();
+        $user->assignRole('admin');
+
+        return $user;
+    }
+
     public function test_admin_can_create_team(): void
     {
-        $user = User::factory()->withPersonalTeam()->create();
+        $user = $this->superAdmin();
         $this->bootAdminPanel($user);
 
         Livewire::test(CreateTeam::class)
@@ -49,7 +68,7 @@ class TeamResourceTest extends TestCase
 
     public function test_setting_default_for_registration_clears_previous_default(): void
     {
-        $user = User::factory()->withPersonalTeam()->create();
+        $user = $this->superAdmin();
         $this->bootAdminPanel($user);
 
         $first = Team::factory()->create([
@@ -73,5 +92,29 @@ class TeamResourceTest extends TestCase
         $this->assertTrue($second->fresh()->is_default_for_registration);
         $this->assertFalse($first->fresh()->is_default_for_registration);
         $this->assertSame($second->id, Team::defaultForRegistration()?->id);
+    }
+
+    public function test_non_super_admin_cannot_set_owner_or_default_for_registration(): void
+    {
+        $user = $this->admin();
+        $this->bootAdminPanel($user);
+
+        $other = User::factory()->create();
+
+        // The privileged fields are absent from the schema for a non-super_admin, so even a
+        // tampered payload is dropped: owner defaults to the actor, default flag stays false.
+        Livewire::test(CreateTeam::class)
+            ->fillForm([
+                'name' => 'Delegated Team',
+            ])
+            ->set('data.user_id', $other->id)
+            ->set('data.is_default_for_registration', true)
+            ->call('create')
+            ->assertHasNoFormErrors();
+
+        $team = Team::where('name', 'Delegated Team')->firstOrFail();
+
+        $this->assertSame($user->id, $team->user_id);
+        $this->assertFalse($team->is_default_for_registration);
     }
 }

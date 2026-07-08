@@ -57,20 +57,22 @@ class CpanelSsoTest extends TestCase
 
     public function test_create_sso_session_builds_create_user_session_call_and_returns_url(): void
     {
-        $server = HostingServer::factory()->cpanel()->create();
+        // IP-literal hostname keeps validateHostname() deterministic, and the
+        // returned login URL must point at that same host (open-redirect guard).
+        $server = HostingServer::factory()->cpanel()->create(['hostname' => '203.0.113.10']);
         $client = new CpanelClient;
         $client->setServer($server);
 
         $history = [];
         $this->injectGuzzle(
             $client,
-            [new Response(200, [], '{"metadata":{"result":1},"data":{"url":"https://host:2083/cpsess123/login/?session=abc"}}')],
+            [new Response(200, [], '{"metadata":{"result":1},"data":{"url":"https://203.0.113.10:2083/cpsess123/login/?session=abc"}}')],
             $history
         );
 
         $url = $client->createSsoSession('bob');
 
-        $this->assertSame('https://host:2083/cpsess123/login/?session=abc', $url);
+        $this->assertSame('https://203.0.113.10:2083/cpsess123/login/?session=abc', $url);
         $this->assertCount(1, $history);
 
         $uri = (string) $history[0]['request']->getUri();
@@ -81,7 +83,7 @@ class CpanelSsoTest extends TestCase
 
     public function test_create_sso_session_returns_null_on_failure(): void
     {
-        $server = HostingServer::factory()->cpanel()->create();
+        $server = HostingServer::factory()->cpanel()->create(['hostname' => '203.0.113.10']);
         $client = new CpanelClient;
         $client->setServer($server);
 

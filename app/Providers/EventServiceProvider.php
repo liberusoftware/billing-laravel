@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Events\InvoiceStatusChanged;
+use App\Listeners\RenewDomainOnPayment;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Override;
 
@@ -16,6 +18,9 @@ class EventServiceProvider extends ServiceProvider
      */
     #[Override]
     protected $listen = [
+        InvoiceStatusChanged::class => [
+            RenewDomainOnPayment::class,
+        ],
         // Registered::class => [
         //     SendEmailVerificationNotification::class,
         //     [self::class, 'logRegistration'],

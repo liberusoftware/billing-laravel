@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\PackageGroup;
 use App\Models\SubscriptionPlan;
+use App\Models\User;
 use App\Services\PackageGroupService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -21,7 +22,7 @@ class PackageGroupController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $groups = $this->packageGroupService->getActiveGroups($request->team_id);
+        $groups = $this->packageGroupService->getActiveGroups($this->currentTeamId($request));
 
         return response()->json(['data' => $groups]);
     }
@@ -29,8 +30,10 @@ class PackageGroupController extends Controller
     /**
      * Get a single package group
      */
-    public function show(PackageGroup $packageGroup): JsonResponse
+    public function show(Request $request, PackageGroup $packageGroup): JsonResponse
     {
+        $this->assertSameTeam($request, $packageGroup);
+
         return response()->json(
             [
                 'data' => $packageGroup->load(['packages']),
@@ -49,10 +52,10 @@ class PackageGroupController extends Controller
                 'description' => 'nullable|string',
                 'sort_order' => 'nullable|integer|min:0',
                 'is_active' => 'boolean',
-                'team_id' => 'nullable|exists:teams,id',
             ]
         );
 
+        $validated['team_id'] = $this->currentTeamId($request);
         $group = $this->packageGroupService->createGroup($validated);
 
         return response()->json(
@@ -66,6 +69,8 @@ class PackageGroupController extends Controller
      */
     public function update(Request $request, PackageGroup $packageGroup): JsonResponse
     {
+        $this->assertSameTeam($request, $packageGroup);
+
         $validated = $request->validate(
             [
                 'name' => 'sometimes|string|max:255',
@@ -86,8 +91,9 @@ class PackageGroupController extends Controller
     /**
      * Delete a package group
      */
-    public function destroy(PackageGroup $packageGroup): Response
+    public function destroy(Request $request, PackageGroup $packageGroup): Response
     {
+        $this->assertSameTeam($request, $packageGroup);
         $this->packageGroupService->deleteGroup($packageGroup);
 
         return response()->noContent();
@@ -98,6 +104,8 @@ class PackageGroupController extends Controller
      */
     public function addPackage(Request $request, PackageGroup $packageGroup): JsonResponse
     {
+        $this->assertSameTeam($request, $packageGroup);
+
         $validated = $request->validate(
             [
                 'subscription_plan_id' => 'required|exists:subscription_plans,id',
@@ -123,8 +131,9 @@ class PackageGroupController extends Controller
     /**
      * Remove a package from a group
      */
-    public function removePackage(PackageGroup $packageGroup, SubscriptionPlan $plan): JsonResponse
+    public function removePackage(Request $request, PackageGroup $packageGroup, SubscriptionPlan $plan): JsonResponse
     {
+        $this->assertSameTeam($request, $packageGroup);
         $this->packageGroupService->removePackage(
             $packageGroup,
             $plan
@@ -143,6 +152,8 @@ class PackageGroupController extends Controller
      */
     public function reorder(Request $request, PackageGroup $packageGroup): JsonResponse
     {
+        $this->assertSameTeam($request, $packageGroup);
+
         $validated = $request->validate(
             [
                 'plan_ids' => 'required|array|min:1',
@@ -161,5 +172,19 @@ class PackageGroupController extends Controller
                 'message' => 'Packages reordered.',
             ]
         );
+    }
+
+    /** Block cross-tenant access: another team's package group is treated as not found. */
+    private function assertSameTeam(Request $request, PackageGroup $packageGroup): void
+    {
+        abort_unless($packageGroup->team_id === $this->currentTeamId($request), Response::HTTP_NOT_FOUND);
+    }
+
+    private function currentTeamId(Request $request): ?int
+    {
+        /** @var User|null $user */
+        $user = $request->user();
+
+        return $user?->current_team_id;
     }
 }

@@ -39,6 +39,13 @@ use Override;
 ])]
 class WebhookEndpoint extends Model
 {
+    /**
+     * The signing secret must never be serialized into API responses.
+     *
+     * @var list<string>
+     */
+    protected $hidden = ['secret'];
+
     #[Override]
     protected function casts(): array
     {

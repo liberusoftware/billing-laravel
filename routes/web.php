@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\DomainSearchController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TicketResponseController;
 use Illuminate\Contracts\View\Factory;
@@ -25,6 +26,10 @@ Route::middleware(['auth'])->group(function (): void {
     Route::resource('tickets', TicketController::class);
     Route::post('tickets/{ticket}/project', [TicketController::class, 'createProject'])
         ->name('tickets.project.create');
+    Route::post('tickets/{ticket}/assign', [TicketController::class, 'assign'])
+        ->name('tickets.assign');
+    Route::get('tickets/attachments/{attachment}/download', [TicketController::class, 'downloadAttachment'])
+        ->name('tickets.attachments.download');
     // Route::post('tickets/{ticket}/responses', [TicketResponseController::class, 'store'])
     //     ->name('ticket.responses.store');
 
@@ -45,6 +50,9 @@ Route::middleware(['auth'])->group(function (): void {
 });
 
 Route::get('/', fn (): Factory|\Illuminate\Contracts\View\View => view('welcome'));
+
+// Public (no-auth) domain availability search.
+Route::get('/domains/search', DomainSearchController::class)->name('domains.search');
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function (): void {
     Route::resource('clients', ClientController::class);

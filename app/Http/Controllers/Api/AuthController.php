@@ -15,13 +15,11 @@ class AuthController extends Controller
 {
     public function token(Request $request): JsonResponse
     {
-        $validated = $request->validate(
+        $request->validate(
             [
                 'email' => 'required|email',
                 'password' => 'required',
                 'device_name' => 'required',
-                'abilities' => 'sometimes|array',
-                'abilities.*' => ['string', Rule::in(TokenAbility::values())],
             ]
         );
 
@@ -41,7 +39,17 @@ class AuthController extends Controller
             );
         }
 
-        $abilities = $validated['abilities'] ?? TokenAbility::values();
+        // Cap requestable abilities to the authenticated user's role allowance.
+        $allowed = TokenAbility::allowedFor($user);
+
+        $validated = $request->validate(
+            [
+                'abilities' => 'sometimes|array',
+                'abilities.*' => ['string', Rule::in($allowed)],
+            ]
+        );
+
+        $abilities = $validated['abilities'] ?? $allowed;
 
         $token = $user->createToken($request->device_name, $abilities);
 

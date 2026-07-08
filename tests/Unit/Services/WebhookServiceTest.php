@@ -264,6 +264,14 @@ class WebhookServiceTest extends TestCase
         Http::assertSentCount(1);
     }
 
+    public function test_assert_safe_url_returns_validated_ip_for_pinning(): void
+    {
+        // The returned IP is pinned into the connection (CURLOPT_RESOLVE) to close
+        // the DNS-rebind TOCTOU. For an IP-literal host it echoes that IP back.
+        // (Rebind-between-resolve-and-connect is not deterministically testable.)
+        $this->assertSame('203.0.113.10', WebhookService::assertSafeUrl('https://203.0.113.10/webhook'));
+    }
+
     public function test_process_command_flushes_pending_events(): void
     {
         Http::fake(['*' => Http::response('', 200)]);

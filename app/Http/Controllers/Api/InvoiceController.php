@@ -10,6 +10,7 @@ use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\Response;
 
 class InvoiceController extends Controller
@@ -79,7 +80,7 @@ class InvoiceController extends Controller
     {
         $validated = $request->validate(
             [
-                'customer_id' => 'required|exists:customers,id',
+                'customer_id' => ['required', Rule::exists('customers', 'id')->where('team_id', $this->currentTeamId($request))],
                 'issue_date' => 'required|date',
                 'due_date' => 'required|date|after_or_equal:issue_date',
                 'items' => 'required|array|min:1',

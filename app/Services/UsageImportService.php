@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Models\Subscription;
 use App\Models\UsageRecord;
+use InvalidArgumentException;
 
 class UsageImportService
 {
@@ -19,6 +20,10 @@ class UsageImportService
      */
     public function importUsage(Subscription $subscription, string $metric, float $quantity): UsageRecord
     {
+        if ($quantity < 0) {
+            throw new InvalidArgumentException('Usage quantity cannot be negative.');
+        }
+
         // ponytail: pull real usage from control panel here; caller passes the number for now.
         $record = UsageRecord::firstOrNew([
             'subscription_id' => $subscription->id,

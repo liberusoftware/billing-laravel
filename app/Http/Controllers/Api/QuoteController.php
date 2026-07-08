@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Services\QuoteService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\Response;
 
 class QuoteController extends Controller
@@ -75,7 +76,7 @@ class QuoteController extends Controller
     {
         $validated = $request->validate(
             [
-                'customer_id' => 'required|exists:customers,id',
+                'customer_id' => ['required', Rule::exists('customers', 'id')->where('team_id', $this->currentTeamId($request))],
                 'title' => 'required|string|max:255',
                 'valid_until' => 'nullable|date|after_or_equal:today',
                 'currency' => 'nullable|string|size:3',

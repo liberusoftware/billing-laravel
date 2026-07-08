@@ -22,6 +22,8 @@ Schedule::command('audit:prune')->daily();
 Schedule::command('webhooks:process')->everyFiveMinutes()->withoutOverlapping();
 Schedule::command('services:suspend-overdue --days=7')->daily();
 Schedule::command('usage:import')->daily();
+Schedule::command('tickets:escalate')->everyFifteenMinutes()->withoutOverlapping();
+Schedule::command('domains:sync')->daily();
 
 Schedule::call(function (): void {
     $reports = Report::query()

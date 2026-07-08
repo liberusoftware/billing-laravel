@@ -81,6 +81,27 @@ class OrderServiceTest extends TestCase
         $this->assertSame(0, Subscription::count());
     }
 
+    public function test_place_order_rejects_inactive_plan_even_when_offered(): void
+    {
+        $customer = Customer::factory()->create();
+        $plan = $this->plan();
+        $plan->update(['is_active' => false]);
+        $template = OrderFormTemplate::factory()->offering([$plan->id])->create();
+
+        try {
+            app(OrderService::class)->placeOrder($template, $customer, [
+                'subscription_plan_id' => $plan->id,
+                'billing_cycle' => 'monthly',
+            ]);
+            $this->fail('Expected InvalidArgumentException for an inactive plan.');
+        } catch (InvalidArgumentException $e) {
+            $this->assertStringContainsString('not available', $e->getMessage());
+        }
+
+        $this->assertSame(0, Order::count());
+        $this->assertSame(0, Subscription::count());
+    }
+
     public function test_template_offered_plans_round_trip(): void
     {
         $template = OrderFormTemplate::factory()->offering([3, 7])->create();

@@ -7,6 +7,7 @@ use App\Models\Subscription;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class SubscriptionController extends Controller
 {
@@ -45,8 +46,8 @@ class SubscriptionController extends Controller
     {
         $validated = $request->validate(
             [
-                'customer_id' => 'required|exists:customers,id',
-                'product_service_id' => 'required|exists:products_services,id',
+                'customer_id' => ['required', Rule::exists('customers', 'id')->where('team_id', $this->currentTeamId($request))],
+                'product_service_id' => ['required', Rule::exists('products_services', 'id')->where('team_id', $this->currentTeamId($request))],
                 'start_date' => 'required|date',
                 'end_date' => 'nullable|date',
                 'renewal_period' => 'required|string',

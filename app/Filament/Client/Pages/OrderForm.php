@@ -46,6 +46,7 @@ class OrderForm extends Page
 
         $this->plans = SubscriptionPlan::query()
             ->whereIn('id', $this->template->offeredPlanIds())
+            ->where('is_active', true)
             ->get();
     }
 

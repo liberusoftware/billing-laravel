@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasTeam;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -11,6 +12,7 @@ use Override;
 
 /**
  * @property int $id
+ * @property int|null $team_id
  * @property string $name
  * @property string $email
  * @property string|null $phone
@@ -23,6 +25,7 @@ use Override;
  * @property-read Collection<int, ClientNote> $notes
  */
 #[Fillable([
+    'team_id',
     'name',
     'email',
     'phone',
@@ -33,6 +36,8 @@ use Override;
 ])]
 class Client extends Model
 {
+    use HasTeam;
+
     #[Override]
     protected function casts(): array
     {

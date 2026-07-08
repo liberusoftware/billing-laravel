@@ -6,7 +6,9 @@ use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\PaymentHistory;
 use Exception;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use InvalidArgumentException;
 
 class PaymentReconciliationService
 {
@@ -65,7 +67,8 @@ class PaymentReconciliationService
             return Invoice::find($payment->invoice_id);
         }
 
-        // Try to match by amount and customer
+        // note: same customer + same total can match multiple pending invoices;
+        // we pick the oldest by due_date. Tighten to a unique match if collisions matter.
         return Invoice::where(
             'customer_id',
             $payment->customer_id
@@ -107,21 +110,25 @@ class PaymentReconciliationService
             return false;
         }
 
-        // Process successful reconciliation
-        $payment->update(
-            [
-                'invoice_id' => $invoice->id,
-                'reconciliation_status' => 'reconciled',
-                'reconciliation_notes' => null,
-            ]
-        );
+        // Process successful reconciliation. Pair the payment and invoice writes in
+        // one transaction so we never mark a payment reconciled against an unpaid
+        // invoice (or vice versa) if a write fails midway.
+        DB::transaction(function () use ($payment, $invoice): void {
+            $payment->update(
+                [
+                    'invoice_id' => $invoice->id,
+                    'reconciliation_status' => 'reconciled',
+                    'reconciliation_notes' => null,
+                ]
+            );
 
-        $invoice->update(
-            [
-                'status' => 'paid',
-                'paid_at' => now(),
-            ]
-        );
+            $invoice->update(
+                [
+                    'status' => 'paid',
+                    'paid_at' => now(),
+                ]
+            );
+        });
 
         $this->logReconciliationHistory(
             $payment,
@@ -164,6 +171,11 @@ class PaymentReconciliationService
 
     public function handleManualReconciliation(Payment $payment, Invoice $invoice): bool
     {
+        // A payment may only be reconciled against an invoice for the same customer.
+        if ($payment->customer_id !== $invoice->customer_id) {
+            throw new InvalidArgumentException('Payment and invoice belong to different customers.');
+        }
+
         return $this->processReconciliation(
             $payment,
             $invoice

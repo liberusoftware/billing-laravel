@@ -34,6 +34,11 @@ class OrderService
         }
 
         $plan = SubscriptionPlan::findOrFail($planId);
+
+        if (! $plan->is_active) {
+            throw new InvalidArgumentException('The selected plan is not available for ordering.');
+        }
+
         $billingCycle = (string) ($submittedData['billing_cycle'] ?? 'monthly');
 
         return DB::transaction(function () use ($template, $customer, $plan, $billingCycle, $submittedData): Order {

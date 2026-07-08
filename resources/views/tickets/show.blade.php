@@ -62,6 +62,25 @@
                         </button>
                     </form>
                 </div>
+
+                <div class="bg-white shadow rounded-xl p-6">
+                    <h3 class="text-sm font-semibold text-gray-900 mb-3">Assign</h3>
+                    <form method="POST" action="{{ route('tickets.assign', $ticket) }}" class="flex items-center gap-3">
+                        @csrf
+                        <select name="assigned_to" class="border-gray-300 rounded-lg text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            <option value="">Unassigned</option>
+                            @foreach($staff as $member)
+                                <option value="{{ $member->id }}" {{ $ticket->assigned_to === $member->id ? 'selected' : '' }}>{{ $member->name }}</option>
+                            @endforeach
+                        </select>
+                        <button type="submit" class="px-4 py-2 bg-gray-800 text-white text-sm rounded-lg hover:bg-gray-700 transition-colors">
+                            Save
+                        </button>
+                    </form>
+                    @if($ticket->department)
+                        <p class="mt-3 text-xs text-gray-400">Department: {{ $ticket->department->name }}</p>
+                    @endif
+                </div>
             @endcan
 
             {{-- Project link (Admin) --}}

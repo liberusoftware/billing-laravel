@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Gate;
 use Laravel\Sanctum\Sanctum;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class TokenAbilityTest extends TestCase
@@ -47,9 +48,11 @@ class TokenAbilityTest extends TestCase
         $this->assertNotContains('*', $response->json('abilities'));
     }
 
-    public function test_token_request_without_abilities_grants_full_taxonomy(): void
+    public function test_operator_omitting_abilities_gets_full_taxonomy(): void
     {
+        Role::findOrCreate('admin', 'web');
         $user = $this->userWithPassword();
+        $user->assignRole('admin');
 
         $response = $this->postJson('/api/auth/token', [
             'email' => $user->email,
@@ -62,6 +65,42 @@ class TokenAbilityTest extends TestCase
         $granted = $response->json('abilities');
         $this->assertEqualsCanonicalizing(TokenAbility::values(), $granted);
         $this->assertNotContains('*', $granted);
+    }
+
+    public function test_non_operator_omitting_abilities_gets_only_read_abilities(): void
+    {
+        $user = $this->userWithPassword(); // no role => non-operator
+
+        $response = $this->postJson('/api/auth/token', [
+            'email' => $user->email,
+            'password' => 'password',
+            'device_name' => 'test-device',
+        ]);
+
+        $response->assertStatus(200);
+
+        $granted = $response->json('abilities');
+        $readAbilities = array_values(array_filter(
+            TokenAbility::values(),
+            fn (string $ability): bool => str_ends_with($ability, ':read'),
+        ));
+        $this->assertEqualsCanonicalizing($readAbilities, $granted);
+        $this->assertNotContains('webhooks:manage', $granted);
+    }
+
+    public function test_non_operator_requesting_write_ability_is_rejected(): void
+    {
+        $user = $this->userWithPassword(); // no role => non-operator
+
+        $response = $this->postJson('/api/auth/token', [
+            'email' => $user->email,
+            'password' => 'password',
+            'device_name' => 'test-device',
+            'abilities' => ['invoices:write'],
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['abilities.0']);
     }
 
     public function test_token_request_with_invalid_ability_is_rejected(): void
@@ -102,7 +141,7 @@ class TokenAbilityTest extends TestCase
         $user = User::factory()->withPersonalTeam()->create();
         Sanctum::actingAs($user, ['invoices:write']);
 
-        $customer = Customer::factory()->create();
+        $customer = Customer::factory()->create(['team_id' => $user->currentTeam->id]);
         $response = $this->postJson('/api/invoices', [
             'customer_id' => $customer->id,
             'issue_date' => now()->toDateString(),
@@ -113,5 +152,24 @@ class TokenAbilityTest extends TestCase
         ]);
 
         $response->assertStatus(201);
+    }
+
+    public function test_install_route_is_denied_to_non_super_admin(): void
+    {
+        $user = User::factory()->withPersonalTeam()->create();
+        Sanctum::actingAs($user, ['*']);
+
+        $this->postJson('/api/install', [])->assertStatus(403);
+    }
+
+    public function test_install_route_gate_passes_for_super_admin(): void
+    {
+        Role::findOrCreate('super_admin', 'web');
+        $user = User::factory()->withPersonalTeam()->create();
+        $user->assignRole('super_admin');
+        Sanctum::actingAs($user, ['*']);
+
+        // Gate passes => controller validation runs (422), not the role gate (403).
+        $this->postJson('/api/install', [])->assertStatus(422);
     }
 }

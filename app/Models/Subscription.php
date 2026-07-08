@@ -31,6 +31,8 @@ use Override;
  * @property string|null $domain_name
  * @property string|null $domain_registrar
  * @property Carbon|null $domain_expiration_date
+ * @property string|null $domain_transfer_status
+ * @property bool $id_protection
  * @property array|null $scheduled_change
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -59,6 +61,8 @@ use Override;
     'domain_name',
     'domain_registrar',
     'domain_expiration_date',
+    'domain_transfer_status',
+    'id_protection',
     'scheduled_change',
 ])]
 class Subscription extends Model
@@ -86,6 +90,7 @@ class Subscription extends Model
             'auto_renew' => 'boolean',
             'last_billed_at' => 'datetime',
             'ends_at' => 'datetime',
+            'id_protection' => 'boolean',
         ];
 
     }

@@ -98,11 +98,13 @@ class WebhookService
     }
 
     /**
-     * Reject non-https and SSRF-prone (private/reserved) webhook targets.
+     * Reject non-https and SSRF-prone (private/reserved) webhook targets, and
+     * return the first validated public IP so the caller can pin the connection
+     * to it (closing the DNS-rebind TOCTOU between this check and the request).
      *
      * @throws Exception
      */
-    public static function assertSafeUrl(string $url): void
+    public static function assertSafeUrl(string $url): string
     {
         $host = parse_url($url, PHP_URL_HOST);
 
@@ -124,6 +126,8 @@ class WebhookService
                 throw new Exception('Webhook URL resolves to a private or reserved address');
             }
         }
+
+        return $ips[0];
     }
 
     /**
@@ -134,7 +138,9 @@ class WebhookService
         $endpoint = $event->webhookEndpoint;
 
         try {
-            self::assertSafeUrl($endpoint->url);
+            $pinnedIp = self::assertSafeUrl($endpoint->url);
+            $host = parse_url($endpoint->url, PHP_URL_HOST);
+            $port = parse_url($endpoint->url, PHP_URL_PORT) ?? 443;
 
             $payload = [
                 'event' => $event->event_type,
@@ -158,9 +164,13 @@ class WebhookService
                 $headers['X-Webhook-Signature'] = $signature;
             }
 
+            // ponytail: CURLOPT_RESOLVE pins DNS to the IP we just validated for
+            // this request, closing the rebind window (TLS SNI/cert still verify
+            // against the hostname). Residual: only the first validated IP is used.
             $response = Http::timeout(30)
                 ->withoutRedirecting()
                 ->withHeaders($headers)
+                ->withOptions(['curl' => [CURLOPT_RESOLVE => ["{$host}:{$port}:{$pinnedIp}"]]])
                 ->post(
                     $endpoint->url,
                     $payload

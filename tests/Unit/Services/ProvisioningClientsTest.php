@@ -120,7 +120,9 @@ class ProvisioningClientsTest extends TestCase
     #[DataProvider('lifecycleClients')]
     public function test_create_account_makes_expected_call_and_returns_true(string $class, string $successBody, int $failStatus, string $failBody, string $urlFragment, string $method): void
     {
-        $server = HostingServer::factory()->create();
+        // Public IP-literal hostname so CpanelClient::validateHostname() stays
+        // deterministic (no DNS lookup of a random fake domain).
+        $server = HostingServer::factory()->create(['hostname' => '203.0.113.10']);
         $client = new $class;
         $client->setServer($server);
 
@@ -138,7 +140,7 @@ class ProvisioningClientsTest extends TestCase
     #[DataProvider('lifecycleClients')]
     public function test_failure_response_returns_false_without_throwing(string $class, string $successBody, int $failStatus, string $failBody, string $urlFragment, string $method): void
     {
-        $server = HostingServer::factory()->create();
+        $server = HostingServer::factory()->create(['hostname' => '203.0.113.10']);
         $client = new $class;
         $client->setServer($server);
 

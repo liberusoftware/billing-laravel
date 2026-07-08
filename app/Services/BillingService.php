@@ -13,6 +13,7 @@ use App\Models\UsageRecord;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Log;
+use InvalidArgumentException;
 
 class BillingService
 {
@@ -48,6 +49,10 @@ class BillingService
 
     public function createSubscription(Customer $customer, SubscriptionPlan $plan, string $billingCycle): Subscription
     {
+        // Price the whole term: a quarterly/annual cycle bills the plan price times
+        // the number of months it covers, not a single month's price.
+        $cycleTotal = (string) round((float) $plan->price * $this->cycleMonths($billingCycle), 2);
+
         $subscription = new Subscription(
             [
                 'customer_id' => $customer->id,
@@ -56,7 +61,7 @@ class BillingService
                 'end_date' => $this->calculateEndDate($billingCycle),
                 'renewal_period' => $billingCycle,
                 'status' => 'pending',
-                'price' => $plan->price,
+                'price' => $cycleTotal,
                 'currency' => $plan->currency,
                 'auto_renew' => true,
             ]
@@ -72,7 +77,7 @@ class BillingService
             'subscription_id' => $subscription->id,
             'invoice_number' => $this->generateInvoiceNumber(),
             'issue_date' => now(),
-            'total_amount' => $plan->price,
+            'total_amount' => $cycleTotal,
             'currency' => $plan->currency,
             'status' => 'pending',
             'due_date' => now()->addDays(30),
@@ -139,18 +144,28 @@ class BillingService
         $daysRemaining = (int) round(now()->diffInDays($subscription->end_date, false));
         $daysRemaining = max(0, min($daysRemaining, $totalDays));
 
-        return round((($newPrice - $oldPrice) / $totalDays) * $daysRemaining, 2);
+        // A downgrade (new < old) must not produce a negative invoice; floor at 0.
+        return max(0.0, round((($newPrice - $oldPrice) / $totalDays) * $daysRemaining, 2));
     }
 
-    private function calculateEndDate(string $billingCycle)
+    /**
+     * Months covered by a billing cycle. Single source of truth for both the
+     * end-date and the term price; rejects unknown cycles rather than defaulting.
+     */
+    private function cycleMonths(string $billingCycle): int
     {
         return match ($billingCycle) {
-            'monthly' => now()->addMonth(),
-            'quarterly' => now()->addMonths(3),
-            'semi-annually' => now()->addMonths(6),
-            'annually' => now()->addYear(),
-            default => now()->addMonth(),
+            'monthly' => 1,
+            'quarterly' => 3,
+            'semi-annually' => 6,
+            'annually' => 12,
+            default => throw new InvalidArgumentException("Unknown billing cycle: {$billingCycle}"),
         };
+    }
+
+    private function calculateEndDate(string $billingCycle): Carbon
+    {
+        return now()->addMonths($this->cycleMonths($billingCycle));
     }
 
     private function calculateRefundAmount(Subscription $subscription): float
@@ -237,17 +252,19 @@ class BillingService
             ];
         }
 
-        $discountAmount = $this->calculateDiscountAmount(
-            $invoice,
-            $discount
+        // Never discount more than the invoice is worth.
+        $discountAmount = min(
+            (float) $invoice->subtotal + (float) ($invoice->tax_amount ?? 0),
+            max(0.0, $this->calculateDiscountAmount($invoice, $discount))
         );
 
         $invoice->update(
             [
                 'discount_id' => $discount->id,
-                'discount_amount' => $discountAmount,
+                'discount_amount' => (string) $discountAmount,
                 // Keep tax in the total (matches Invoice::final_total = subtotal + tax - discount).
-                'total_amount' => $invoice->subtotal + ($invoice->tax_amount ?? 0) - $discountAmount,
+                // Floor at 0 so an oversized discount never writes a negative total.
+                'total_amount' => (string) max(0.0, (float) $invoice->subtotal + (float) ($invoice->tax_amount ?? 0) - $discountAmount),
             ]
         );
 
@@ -259,25 +276,28 @@ class BillingService
         ];
     }
 
-    private function calculateDiscountAmount(Invoice $invoice, $discount)
+    private function calculateDiscountAmount(Invoice $invoice, Discount $discount): float
     {
         if ($discount->type === 'percentage') {
-            return $invoice->subtotal * ($discount->value / 100);
+            // A percentage over 100 (or negative) is nonsense; clamp to [0, 100].
+            $percentage = min(100.0, max(0.0, (float) $discount->value));
+
+            return (float) $invoice->subtotal * ($percentage / 100);
         }
 
         if ($discount->type === 'fixed') {
             if ($discount->currency !== $invoice->currency) {
-                return $this->convertCurrency(
+                return (float) $this->convertCurrency(
                     $discount->value,
                     $discount->currency,
                     $invoice->currency
                 );
             }
 
-            return $discount->value;
+            return (float) $discount->value;
         }
 
-        return 0;
+        return 0.0;
     }
 
     // public function generateInvoice(Subscription $subscription)

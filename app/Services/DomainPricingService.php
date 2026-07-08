@@ -10,6 +10,15 @@ class DomainPricingService
 {
     public function __construct(protected EnomClient $enomClient) {}
 
+    /**
+     * A domain registration is free when bundled with a hosting purchase,
+     * otherwise it costs its base price.
+     */
+    public function priceForDomain(float $basePrice, bool $bundledWithHosting): float
+    {
+        return $bundledWithHosting ? 0.0 : $basePrice;
+    }
+
     public function calculateDomainPrice($domainName)
     {
         $tld = $this->getTldFromDomain($domainName);

@@ -6,8 +6,11 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CannedResponseController;
 use App\Http\Controllers\Api\ClientContactController;
 use App\Http\Controllers\Api\CustomerController;
+use App\Http\Controllers\Api\InboundEmailController;
 use App\Http\Controllers\Api\InvoiceController;
 use App\Http\Controllers\Api\KnowledgeBaseController;
+use App\Http\Controllers\Api\LicenseDownloadController;
+use App\Http\Controllers\Api\LicenseValidationController;
 use App\Http\Controllers\Api\PackageGroupController;
 use App\Http\Controllers\Api\QuoteController;
 use App\Http\Controllers\Api\SubscriptionController;
@@ -48,8 +51,9 @@ Route::middleware(['auth:sanctum', 'throttle:api'])->group(function (): void {
     Route::delete('auth/token', [AuthController::class, 'revokeToken']);
     Route::delete('auth/tokens', [AuthController::class, 'revokeAllTokens']);
 
-    // Installation endpoint
-    Route::post('/install', [InstallationController::class, 'install']);
+    // Installation endpoint (operators only)
+    Route::post('/install', [InstallationController::class, 'install'])
+        ->middleware('role:super_admin');
 
     // Invoice endpoints
     Route::middleware('ability:invoices:read')->group(function (): void {
@@ -96,7 +100,9 @@ Route::middleware(['auth:sanctum', 'throttle:api'])->group(function (): void {
     });
 
     // Client Notes endpoints
-    Route::get('client-notes', [ClientNoteController::class, 'index']);
+    Route::middleware('ability:client-notes:read')->group(function (): void {
+        Route::get('client-notes', [ClientNoteController::class, 'index']);
+    });
     Route::middleware('ability:client-notes:write')->group(function (): void {
         Route::post('client-notes', [ClientNoteController::class, 'store']);
         Route::delete('client-notes/{note}', [ClientNoteController::class, 'destroy']);
@@ -119,6 +125,8 @@ Route::middleware(['auth:sanctum', 'throttle:api'])->group(function (): void {
         Route::get('canned-responses/most-used', [CannedResponseController::class, 'mostUsed']);
         Route::get('canned-responses/variables', [CannedResponseController::class, 'variables']);
         Route::get('canned-responses/{shortcode}', [CannedResponseController::class, 'show']);
+    });
+    Route::middleware('ability:canned-responses:write')->group(function (): void {
         Route::post('canned-responses/{shortcode}/use', [CannedResponseController::class, 'use']);
     });
 
@@ -139,10 +147,18 @@ Route::middleware(['auth:sanctum', 'throttle:api'])->group(function (): void {
     });
 
     // Package Group endpoints (Blesta)
-    Route::apiResource('package-groups', PackageGroupController::class);
-    Route::post('package-groups/{packageGroup}/packages', [PackageGroupController::class, 'addPackage']);
-    Route::delete('package-groups/{packageGroup}/packages/{plan}', [PackageGroupController::class, 'removePackage']);
-    Route::post('package-groups/{packageGroup}/reorder', [PackageGroupController::class, 'reorder']);
+    Route::middleware('ability:package-groups:read')->group(function (): void {
+        Route::get('package-groups', [PackageGroupController::class, 'index'])->name('package-groups.index');
+        Route::get('package-groups/{packageGroup}', [PackageGroupController::class, 'show'])->name('package-groups.show');
+    });
+    Route::middleware('ability:package-groups:write')->group(function (): void {
+        Route::post('package-groups', [PackageGroupController::class, 'store'])->name('package-groups.store');
+        Route::match(['put', 'patch'], 'package-groups/{packageGroup}', [PackageGroupController::class, 'update'])->name('package-groups.update');
+        Route::delete('package-groups/{packageGroup}', [PackageGroupController::class, 'destroy'])->name('package-groups.destroy');
+        Route::post('package-groups/{packageGroup}/packages', [PackageGroupController::class, 'addPackage']);
+        Route::delete('package-groups/{packageGroup}/packages/{plan}', [PackageGroupController::class, 'removePackage']);
+        Route::post('package-groups/{packageGroup}/reorder', [PackageGroupController::class, 'reorder']);
+    });
 });
 
 // Public Knowledge Base endpoints (no auth required)
@@ -156,3 +172,10 @@ Route::prefix('knowledge-base')->group(function (): void {
     Route::post('articles/{slug}/not-helpful', [KnowledgeBaseController::class, 'markNotHelpful']);
     Route::get('categories/{categoryId}/articles', [KnowledgeBaseController::class, 'byCategory']);
 });
+
+// Inbound email webhook (provider posts a normalized payload; secured via deploy-config)
+Route::post('inbound-email', [InboundEmailController::class, 'store']);
+
+// Public license endpoints (SDK calls anonymously with a license key)
+Route::post('v1/license/validate', [LicenseValidationController::class, 'validateLicense']);
+Route::post('v1/license/download', [LicenseDownloadController::class, 'download']);

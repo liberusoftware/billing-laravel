@@ -9,6 +9,7 @@ use App\Models\Invoice;
 use App\Models\SubscriptionPlan;
 use App\Services\BillingService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use InvalidArgumentException;
 use Tests\TestCase;
 
 /**
@@ -65,6 +66,33 @@ class CreateSubscriptionTest extends TestCase
         $this->assertEquals(29.99, (float) $invoice->total_amount);
         $this->assertSame('USD', $invoice->currency);
         $this->assertSame('pending', $invoice->status);
+    }
+
+    public function test_annual_cycle_bills_twelve_times_the_plan_price(): void
+    {
+        $customer = Customer::factory()->create();
+        $plan = $this->plan();
+
+        $subscription = app(BillingService::class)->createSubscription($customer, $plan, 'annually');
+
+        $this->assertEquals(29.99 * 12, (float) $subscription->price);
+        $this->assertEquals(
+            now()->addYear()->toDateString(),
+            $subscription->end_date->toDateString()
+        );
+
+        $invoice = Invoice::where('subscription_id', $subscription->id)->first();
+        $this->assertEquals(29.99 * 12, (float) $invoice->total_amount);
+    }
+
+    public function test_unknown_billing_cycle_is_rejected(): void
+    {
+        $customer = Customer::factory()->create();
+        $plan = $this->plan();
+
+        $this->expectException(InvalidArgumentException::class);
+
+        app(BillingService::class)->createSubscription($customer, $plan, 'weekly');
     }
 
     public function test_plan_subscriptions_relationship_resolves(): void

@@ -64,7 +64,7 @@ class InvoiceApiTest extends TestCase
     {
         Sanctum::actingAs($this->user, ['*']);
 
-        $customer = Customer::factory()->create();
+        $customer = Customer::factory()->create(['team_id' => $this->user->currentTeam->id]);
 
         $response = $this->postJson('/api/invoices', [
             'customer_id' => $customer->id,

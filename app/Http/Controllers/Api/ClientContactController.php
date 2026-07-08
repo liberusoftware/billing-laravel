@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\ClientContact;
 use App\Models\Customer;
+use App\Models\User;
 use App\Services\ClientContactService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -20,8 +21,10 @@ class ClientContactController extends Controller
     /**
      * List contacts for a customer
      */
-    public function index(Customer $customer): JsonResponse
+    public function index(Request $request, Customer $customer): JsonResponse
     {
+        $this->assertSameTeam($request, $customer);
+
         $contacts = $this->contactService->getContacts($customer);
 
         return response()->json(['data' => $contacts]);
@@ -30,8 +33,10 @@ class ClientContactController extends Controller
     /**
      * Get a single contact
      */
-    public function show(Customer $customer, ClientContact $contact): JsonResponse
+    public function show(Request $request, Customer $customer, ClientContact $contact): JsonResponse
     {
+        $this->assertSameTeam($request, $customer);
+
         if ($contact->customer_id !== $customer->id) {
             abort(Response::HTTP_NOT_FOUND);
         }
@@ -44,6 +49,8 @@ class ClientContactController extends Controller
      */
     public function store(Request $request, Customer $customer): JsonResponse
     {
+        $this->assertSameTeam($request, $customer);
+
         $validated = $request->validate(
             [
                 'first_name' => 'required|string|max:100',
@@ -74,6 +81,8 @@ class ClientContactController extends Controller
      */
     public function update(Request $request, Customer $customer, ClientContact $contact): JsonResponse
     {
+        $this->assertSameTeam($request, $customer);
+
         if ($contact->customer_id !== $customer->id) {
             abort(Response::HTTP_NOT_FOUND);
         }
@@ -103,8 +112,10 @@ class ClientContactController extends Controller
     /**
      * Delete a contact
      */
-    public function destroy(Customer $customer, ClientContact $contact): Response
+    public function destroy(Request $request, Customer $customer, ClientContact $contact): Response
     {
+        $this->assertSameTeam($request, $customer);
+
         if ($contact->customer_id !== $customer->id) {
             abort(Response::HTTP_NOT_FOUND);
         }
@@ -124,8 +135,10 @@ class ClientContactController extends Controller
     /**
      * Make a contact the primary contact
      */
-    public function makePrimary(Customer $customer, ClientContact $contact): JsonResponse
+    public function makePrimary(Request $request, Customer $customer, ClientContact $contact): JsonResponse
     {
+        $this->assertSameTeam($request, $customer);
+
         if ($contact->customer_id !== $customer->id) {
             abort(Response::HTTP_NOT_FOUND);
         }
@@ -138,5 +151,19 @@ class ClientContactController extends Controller
                 'message' => 'Contact set as primary.',
             ]
         );
+    }
+
+    /** Block cross-tenant access: a customer not owned by the caller's team is treated as not found. */
+    private function assertSameTeam(Request $request, Customer $customer): void
+    {
+        abort_unless($customer->team_id === $this->currentTeamId($request), Response::HTTP_NOT_FOUND);
+    }
+
+    private function currentTeamId(Request $request): ?int
+    {
+        /** @var User|null $user */
+        $user = $request->user();
+
+        return $user?->current_team_id;
     }
 }

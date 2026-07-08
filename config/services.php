@@ -112,4 +112,16 @@ return [
         'redirect' => env('APP_URL').'/oauth/trello/callback',
         'scopes' => 'read,write',
     ],
+
+    'enom' => [
+        'api_url' => env('ENOM_API_URL', 'https://reseller.enom.com/interface.asp'),
+        'username' => env('ENOM_USERNAME'),
+        'password' => env('ENOM_PASSWORD'),
+    ],
+
+    'resellerclub' => [
+        'api_url' => env('RESELLERCLUB_API_URL', 'https://httpapi.com/api'),
+        'auth_userid' => env('RESELLERCLUB_AUTH_USERID'),
+        'api_key' => env('RESELLERCLUB_API_KEY'),
+    ],
 ];
