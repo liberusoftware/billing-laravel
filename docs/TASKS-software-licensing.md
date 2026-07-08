@@ -45,44 +45,44 @@ before finalizing.
 
 ### P0 — Core domain + remote validation
 
-- [ ] **L1. `License` model + key generation** (spec 186)
+- [x] **L1. `License` model + key generation** (spec 186)
   - Migration `licenses`: `id`, `team_id` (FK teams, cascade), `customer_id` (FK customers, cascade), `product_service_id` (FK products_services, nullable, nullOnDelete), `license_key` (string, unique), `status` (string, default `active` — `active|suspended|reissue_pending|expired`), `max_instances` (unsignedInteger, default 1), `valid_until` (date, nullable), `notes` (text, nullable), timestamps, softDeletes.
   - `LicenseService::generate(string $prefix = 'LIC', int $segments = 4, int $segmentLength = 5): string` — prefix + grouped random alphanumeric; guarantee uniqueness against the table.
   - Model: `belongsTo(Customer/Team/ProductsService)`, `hasMany(LicenseInstance)`; scopes `active()`.
   - Gate test `test_generating_license_creates_unique_prefixed_key`: assert key starts with prefix, is unique, persists.
 
-- [ ] **L2. Remote validation endpoint** (spec 183, 185, 192) — dep L1
+- [x] **L2. Remote validation endpoint** (spec 183, 185, 192) — dep L1
   - Public route `POST /api/v1/license/validate` (no Sanctum) → `LicenseValidationController`. Input: `license_key`, instance identifier (`domain`/`ip`/`instance_id`). Returns `{valid: bool, status, data}`.
   - `LicenseService::validate(string $key, array $instance): array` — invalid if key missing/suspended/expired; if active, register/refresh the calling instance (L3) and enforce `max_instances`.
   - Gate tests: `test_valid_key_returns_active`, `test_suspended_key_returns_invalid`, `test_exceeding_max_instances_is_rejected`.
 
 ### P1 — Instances, activation, reissue, abuse
 
-- [ ] **L3. `LicenseInstance` tracking (local + remote keys)** (spec 183, 185) — dep L2
+- [x] **L3. `LicenseInstance` tracking (local + remote keys)** (spec 183, 185) — dep L2
   - Migration `license_instances`: `id`, `license_id` (FK, cascade), `identifier` (string — domain/ip/install id), `ip_address` (string, nullable), `last_validated_at` (timestamp), `local_key` (string, nullable — signed offline token so access survives platform downtime), timestamps. Unique (`license_id`,`identifier`).
   - On validate: upsert instance, stamp `last_validated_at`, issue an HMAC-signed `local_key` (TTL) the SDK caches for offline checks.
   - Gate tests: `test_activation_records_instance`, `test_local_key_verifies_offline`.
 
-- [ ] **L4. Reissue + abuse detection** (spec 189, 190) — dep L3
+- [x] **L4. Reissue + abuse detection** (spec 189, 190) — dep L3
   - `LicenseService::reissue(License $license): void` — clears instances, sets status back to `active`, ready for a new install.
   - Abuse guard: block reissue if > N reissues within a window (config). Throw on excess.
   - Gate tests: `test_reissue_clears_instances`, `test_excessive_reissue_is_blocked`.
 
 ### P2 — UI + downloads + SDK
 
-- [ ] **L5. Admin `LicenseResource`** (spec — admin management) — dep L1
+- [x] **L5. Admin `LicenseResource`** (spec — admin management) — dep L1
   - Admin CRUD; row actions **Reissue** and **Suspend/Unsuspend**. Customer + product selects.
   - Gate test `test_admin_can_issue_license`.
 
-- [ ] **L6. Client portal license list** (spec 184, 191) — dep L1
+- [x] **L6. Client portal license list** (spec 184, 191) — dep L1
   - Client `LicenseResource` (read + reissue + view key + download), email-scoped via `getEloquentQuery`.
   - Gate tests: `test_client_sees_only_own_licenses`, `test_client_can_reissue_own_license`.
 
-- [ ] **L7. Download restrictions** (spec 187) — dep L2
+- [x] **L7. Download restrictions** (spec 187) — dep L2
   - A download route/policy that serves a protected file only when the requesting license validates (active + within support/validity). Reuse `LicenseService::validate`.
   - Gate test `test_download_denied_without_valid_license` (assert 403), `test_download_allowed_with_valid_license`.
 
-- [ ] **L8. Copy-paste PHP SDK sample** (spec 182) — dep L2, L3
+- [x] **L8. Copy-paste PHP SDK sample** (spec 182) — dep L2, L3
   - Ship a documented `resources/sdk/license-client.php` sample that calls the validate endpoint and caches the local key. Doc artifact — no automated test (verify by example).
 
 ---
