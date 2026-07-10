@@ -31,6 +31,20 @@ class AuditLogResource extends Resource
     #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'Administration';
 
+    // Audit rows are cross-tenant and expose ip_address/user_agent, so restrict
+    // the whole resource to super admins (read-only; no create/edit/delete pages).
+    #[Override]
+    public static function canViewAny(): bool
+    {
+        return auth()->user()?->hasRole('super_admin') ?? false;
+    }
+
+    #[Override]
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->hasRole('super_admin') ?? false;
+    }
+
     #[Override]
     public static function table(Table $table): Table
     {

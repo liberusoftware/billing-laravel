@@ -52,7 +52,11 @@ Route::middleware(['auth'])->group(function (): void {
 Route::get('/', fn (): Factory|\Illuminate\Contracts\View\View => view('welcome'));
 
 // Public (no-auth) domain availability search.
-Route::get('/domains/search', DomainSearchController::class)->name('domains.search');
+// Public + unauthenticated: each hit fans out to paid registrar API calls, so
+// throttle it (the controller also caches availability) to cap cost-amplification.
+Route::get('/domains/search', DomainSearchController::class)
+    ->middleware('throttle:20,1')
+    ->name('domains.search');
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function (): void {
     Route::resource('clients', ClientController::class);

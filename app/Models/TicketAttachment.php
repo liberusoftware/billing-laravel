@@ -56,6 +56,14 @@ class TicketAttachment extends Model
     {
         $attachable = $this->attachable;
 
-        return $attachable instanceof Ticket ? $attachable : $attachable->ticket;
+        if ($attachable instanceof Ticket) {
+            return $attachable;
+        }
+
+        if ($attachable instanceof TicketResponse && $attachable->ticket !== null) {
+            return $attachable->ticket;
+        }
+
+        throw new \RuntimeException('Attachment has no owning ticket.');
     }
 }

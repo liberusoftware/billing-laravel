@@ -173,9 +173,16 @@ Route::prefix('knowledge-base')->group(function (): void {
     Route::get('categories/{categoryId}/articles', [KnowledgeBaseController::class, 'byCategory']);
 });
 
-// Inbound email webhook (provider posts a normalized payload; secured via deploy-config)
-Route::post('inbound-email', [InboundEmailController::class, 'store']);
+// Inbound email webhook: HMAC-verified (X-Webhook-Signature over the raw body,
+// see VerifyInboundEmailSignature — fails closed if INBOUND_EMAIL_SECRET unset)
+// so the sender `from` can't be spoofed; throttled against unauthenticated abuse.
+Route::post('inbound-email', [InboundEmailController::class, 'store'])
+    ->middleware(['inbound-email.verify', 'throttle:60,1']);
 
-// Public license endpoints (SDK calls anonymously with a license key)
-Route::post('v1/license/validate', [LicenseValidationController::class, 'validateLicense']);
-Route::post('v1/license/download', [LicenseDownloadController::class, 'download']);
+// Public license endpoints (SDK calls anonymously with a license key).
+// Throttled: these are unauthenticated, so the limit is the guard against
+// key-enumeration and download DoS.
+Route::post('v1/license/validate', [LicenseValidationController::class, 'validateLicense'])
+    ->middleware('throttle:30,1');
+Route::post('v1/license/download', [LicenseDownloadController::class, 'download'])
+    ->middleware('throttle:30,1');
