@@ -6,6 +6,7 @@ use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\RequireTwoFactorEnabled;
 use App\Http\Middleware\SecurityHeaders;
 use App\Http\Middleware\TeamsPermission;
+use App\Http\Middleware\VerifyInboundEmailSignature;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -52,6 +53,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => CheckRole::class,
             'abilities' => CheckAbilities::class,
             'ability' => CheckForAnyAbility::class,
+            'inbound-email.verify' => VerifyInboundEmailSignature::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

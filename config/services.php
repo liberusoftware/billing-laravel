@@ -20,6 +20,10 @@ return [
         'api_key' => env('EXCHANGE_RATE_API_KEY'),
     ],
 
+    'inbound_email' => [
+        'secret' => env('INBOUND_EMAIL_SECRET'),
+    ],
+
     'tax_api' => [
         'enabled' => env('TAX_API_ENABLED', false),
         'url' => env('TAX_API_URL'),

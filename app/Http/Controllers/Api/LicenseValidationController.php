@@ -18,12 +18,12 @@ class LicenseValidationController extends Controller
         $data = $request->validate([
             'license_key' => ['required', 'string'],
             'identifier' => ['required', 'string'],
-            'ip_address' => ['nullable', 'string'],
         ]);
 
         $result = $this->licenses->validate($data['license_key'], [
             'identifier' => $data['identifier'],
-            'ip_address' => $data['ip_address'] ?? $request->ip(),
+            // Never trust a client-supplied IP — record the connecting address.
+            'ip_address' => $request->ip(),
         ]);
 
         return response()->json($result);

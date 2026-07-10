@@ -12,6 +12,7 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
 use ReflectionProperty;
 use Tests\TestCase;
 
@@ -51,13 +52,9 @@ class IntegrationSecurityTest extends TestCase
             'services.enom.username' => 'trusted-uid',
             'services.enom.password' => 'trusted-pw',
         ]);
+        Http::fake(['*' => Http::response('<interface-response></interface-response>')]);
 
-        $client = new EnomClient;
-
-        $history = [];
-        $this->injectGuzzle($client, [new Response(200, [], '<interface-response></interface-response>')], $history);
-
-        $client->addDnsRecord('example.com', [
+        app(EnomClient::class)->addDnsRecord('example.com', [
             'command' => 'DeleteAllDomains',
             'uid' => 'attacker',
             'pw' => 'attacker-pw',
@@ -67,16 +64,18 @@ class IntegrationSecurityTest extends TestCase
             'content' => '203.0.113.5',
         ]);
 
-        $this->assertCount(1, $history);
-        parse_str((string) $history[0]['request']->getUri()->getQuery(), $query);
+        Http::assertSent(function ($request): bool {
+            parse_str((string) parse_url($request->url(), PHP_URL_QUERY), $query);
 
-        $this->assertSame('SetHosts', $query['command']);
-        $this->assertSame('trusted-uid', $query['uid']);
-        $this->assertSame('trusted-pw', $query['pw']);
-        $this->assertSame('example.com', $query['SLD']);
-        // Whitelisted record fields still pass through.
-        $this->assertSame('A', $query['type']);
-        $this->assertSame('www', $query['name']);
+            return $query['command'] === 'SetHosts'
+                && $query['uid'] === 'trusted-uid'
+                && $query['pw'] === 'trusted-pw'
+                // Trusted SLD/TLD win over the attacker's record keys.
+                && $query['SLD'] === 'example'
+                // Whitelisted record fields still pass through.
+                && $query['type'] === 'A'
+                && $query['name'] === 'www';
+        });
     }
 
     /**

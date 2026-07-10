@@ -72,4 +72,32 @@ class LicenseValidationTest extends TestCase
         $this->assertTrue($service->verifyLocalKey($license->license_key, 'host-1', $localKey));
         $this->assertFalse($service->verifyLocalKey($license->license_key, 'host-1', 'tampered'));
     }
+
+    public function test_non_valid_response_leaks_no_status(): void
+    {
+        $license = License::factory()->create(['status' => LicenseStatus::Suspended]);
+
+        $this->postJson('/api/v1/license/validate', [
+            'license_key' => $license->license_key,
+            'identifier' => 'host-1',
+        ])->assertOk()->assertExactJson(['valid' => false]);
+    }
+
+    public function test_instance_ip_is_server_ip_not_client_supplied(): void
+    {
+        $license = License::factory()->create();
+
+        $this->postJson('/api/v1/license/validate', [
+            'license_key' => $license->license_key,
+            'identifier' => 'host-1',
+            'ip_address' => '203.0.113.99', // forged by the caller
+        ])->assertOk();
+
+        $this->assertDatabaseMissing('license_instances', ['ip_address' => '203.0.113.99']);
+        $this->assertDatabaseHas('license_instances', [
+            'license_id' => $license->id,
+            'identifier' => 'host-1',
+            'ip_address' => '127.0.0.1',
+        ]);
+    }
 }

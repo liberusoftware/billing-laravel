@@ -33,6 +33,11 @@ class LicenseInstance extends Model
     use HasFactory;
 
     /**
+     * @var list<string>
+     */
+    protected $hidden = ['local_key'];
+
+    /**
      * @return array<string, string>
      */
     protected function casts(): array

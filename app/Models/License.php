@@ -48,6 +48,11 @@ class License extends Model
     use SoftDeletes;
 
     /**
+     * @var list<string>
+     */
+    protected $hidden = ['license_key'];
+
+    /**
      * @return array<string, string>
      */
     protected function casts(): array

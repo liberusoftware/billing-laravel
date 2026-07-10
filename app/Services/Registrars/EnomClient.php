@@ -3,8 +3,10 @@
 namespace App\Services\Registrars;
 
 use App\Services\Registrars\Contracts\RegistrarClient;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use RuntimeException;
 use SimpleXMLElement;
 
@@ -145,7 +147,7 @@ class EnomClient implements RegistrarClient
     public function addDnsRecord(string $domainName, array $record): bool
     {
         [$sld, $tld] = $this->splitDomain($domainName);
-        $this->makeApiCall('SetHosts', array_merge(['SLD' => $sld, 'TLD' => $tld], $record));
+        $this->makeApiCall('SetHosts', array_merge($record, ['SLD' => $sld, 'TLD' => $tld]));
 
         return true;
     }
@@ -205,12 +207,22 @@ class EnomClient implements RegistrarClient
      */
     protected function makeApiCall(string $command, array $params): SimpleXMLElement
     {
-        $response = Http::get($this->apiUrl, array_merge([
-            'command' => $command,
-            'uid' => $this->username,
-            'pw' => $this->password,
-            'responsetype' => 'xml',
-        ], $params));
+        // Trusted keys are merged LAST so a caller-supplied $params key can never
+        // override the command or credentials (M2).
+        try {
+            $response = Http::get($this->apiUrl, array_merge($params, [
+                'command' => $command,
+                'uid' => $this->username,
+                'pw' => $this->password,
+                'responsetype' => 'xml',
+            ]));
+        } catch (ConnectionException $e) {
+            // Credentials travel in the query string, so the exception message can
+            // embed the full URL incl. pw. Never surface or log the raw URI (M3).
+            Log::error('eNom API connection failed', ['command' => $command]);
+
+            throw new RuntimeException('Unable to reach the eNom registrar API.');
+        }
 
         $xml = simplexml_load_string($response->body() ?: '<interface-response/>');
 

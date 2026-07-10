@@ -57,7 +57,7 @@ class LicenseService
      * offline key the SDK can cache.
      *
      * @param  array{identifier?: string, ip_address?: string}  $instance
-     * @return array{valid: bool, status: string, reason?: string, data?: array{local_key: string}}
+     * @return array{valid: bool, status?: string, data?: array{local_key: string}}
      */
     public function validate(string $licenseKey, array $instance): array
     {
@@ -65,21 +65,16 @@ class LicenseService
 
         $license = License::where('license_key', $licenseKey)->first();
 
+        // Every non-valid outcome collapses to one opaque verdict — leaking the
+        // status (suspended/expired/unknown) or a reason is an enumeration oracle.
         if ($license === null || ! $license->isUsable()) {
-            return [
-                'valid' => false,
-                'status' => $license?->status->value ?? 'unknown',
-            ];
+            return ['valid' => false];
         }
 
         $existing = $license->instances()->where('identifier', $identifier)->first();
 
         if ($existing === null && $license->instances()->count() >= $license->max_instances) {
-            return [
-                'valid' => false,
-                'status' => $license->status->value,
-                'reason' => 'instance_limit_reached',
-            ];
+            return ['valid' => false];
         }
 
         $localKey = $this->localKey($licenseKey, $identifier);
@@ -89,7 +84,6 @@ class LicenseService
             [
                 'ip_address' => $instance['ip_address'] ?? null,
                 'last_validated_at' => now(),
-                'local_key' => $localKey,
             ],
         );
 

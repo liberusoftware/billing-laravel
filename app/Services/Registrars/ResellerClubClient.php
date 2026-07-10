@@ -6,6 +6,7 @@ use App\Services\Registrars\Contracts\RegistrarClient;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use RuntimeException;
 
 class ResellerClubClient implements RegistrarClient
@@ -25,6 +26,7 @@ class ResellerClubClient implements RegistrarClient
 
     /**
      * @return array{expiration_date: Carbon|null}|null
+     *
      * @throws ConnectionException
      */
     public function registerDomain($domainName, $customerId): ?array
@@ -137,22 +139,33 @@ class ResellerClubClient implements RegistrarClient
     }
 
     /**
-     * @param string $action
-     * @param array<string, mixed> $params
-     * @return array
+     * @param  array<string, mixed>  $params
+     *
      * @throws ConnectionException
      */
     protected function makeApiCall(string $action, array $params): array
     {
-        $response = Http::get(rtrim($this->apiUrl, '/').'/'.$action, array_merge([
-            'auth-userid' => $this->authUserId,
-            'api-key' => $this->apiKey,
-        ], $params));
+        // Credentials merged LAST so a caller-supplied $params key can never override
+        // the trusted auth-userid / api-key (M2).
+        try {
+            $response = Http::get(rtrim($this->apiUrl, '/').'/'.$action, array_merge($params, [
+                'auth-userid' => $this->authUserId,
+                'api-key' => $this->apiKey,
+            ]));
+        } catch (ConnectionException $e) {
+            // Credentials travel in the query string; never surface or log the raw URI (M3).
+            Log::error('ResellerClub API connection failed', ['action' => $action]);
+
+            throw new RuntimeException('Unable to reach the ResellerClub registrar API.');
+        }
 
         $json = $response->json() ?? [];
 
         if ($response->failed() || ($json['status'] ?? null) === 'ERROR') {
-            throw new RuntimeException('ResellerClub API error: '.($json['message'] ?? $response->body()));
+            // Log the raw body server-side only; never echo it to the caller (M3).
+            Log::error('ResellerClub API error', ['action' => $action, 'status' => $response->status(), 'body' => $response->body()]);
+
+            throw new RuntimeException('ResellerClub API request failed.');
         }
 
         return $json;

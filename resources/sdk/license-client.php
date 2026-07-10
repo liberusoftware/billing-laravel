@@ -13,6 +13,12 @@
  */
 class LiberuLicenseClient
 {
+    /**
+     * How long a cached offline key stays trusted while the platform is
+     * unreachable. Past this the client fails closed and must re-validate.
+     */
+    private const MAX_OFFLINE_SECONDS = 7 * 24 * 60 * 60;
+
     private string $cacheFile;
 
     public function __construct(
@@ -49,11 +55,16 @@ class LiberuLicenseClient
             return $valid;
         }
 
-        // Platform unreachable — trust the cached offline key if present.
-        return $this->hasCachedKey();
+        // Platform unreachable — trust a *fresh* cached offline key. A key older
+        // than the offline window is rejected so a permanently blocked network
+        // eventually fails closed instead of granting a free forever-license.
+        // ponytail: this only bounds the bypass; it can't stop a forged cache
+        // file, because true offline anti-forgery needs asymmetric signing and
+        // the SDK can't hold the server's app.key. Out of scope for a sample.
+        return $this->hasFreshCachedKey();
     }
 
-    private function hasCachedKey(): bool
+    private function hasFreshCachedKey(): bool
     {
         if (! is_file($this->cacheFile)) {
             return false;
@@ -61,7 +72,13 @@ class LiberuLicenseClient
 
         $data = json_decode((string) file_get_contents($this->cacheFile), true);
 
-        return is_array($data) && ! empty($data['local_key']);
+        if (! is_array($data) || empty($data['local_key'])) {
+            return false;
+        }
+
+        $cachedAt = (int) ($data['cached_at'] ?? 0);
+
+        return (time() - $cachedAt) <= self::MAX_OFFLINE_SECONDS;
     }
 
     /**
