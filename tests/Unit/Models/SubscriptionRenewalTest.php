@@ -24,7 +24,37 @@ class SubscriptionRenewalTest extends TestCase
             'quarterly' => ['cycle' => 'quarterly', 'expected' => '2026-09-26'],
             'semi-annually' => ['cycle' => 'semi-annually', 'expected' => '2026-12-26'],
             'annually' => ['cycle' => 'annually', 'expected' => '2027-06-26'],
+            'daily' => ['cycle' => 'daily', 'expected' => '2026-06-27'],
+            'weekly' => ['cycle' => 'weekly', 'expected' => '2026-07-03'],
+            'biennially' => ['cycle' => 'biennially', 'expected' => '2028-06-26'],
+            'triennially' => ['cycle' => 'triennially', 'expected' => '2029-06-26'],
         ];
+    }
+
+    public function test_custom_cycle_advances_by_configured_number_of_days(): void
+    {
+        $subscription = Subscription::factory()->create([
+            'renewal_period' => 'custom',
+            'custom_period_days' => 45,
+            'end_date' => Carbon::parse('2026-06-26'),
+            'status' => 'active',
+            'auto_renew' => true,
+        ]);
+
+        $this->assertTrue($subscription->renew());
+        $this->assertSame('2026-08-10', $subscription->end_date->format('Y-m-d'));
+    }
+
+    public function test_one_time_subscription_cannot_renew(): void
+    {
+        $subscription = Subscription::factory()->create([
+            'renewal_period' => 'one-time',
+            'end_date' => Carbon::parse('2026-06-26'),
+            'status' => 'active',
+            'auto_renew' => true,
+        ]);
+
+        $this->assertFalse($subscription->renew());
     }
 
     #[DataProvider('billingCycleProvider')]

@@ -92,7 +92,49 @@ class CreateSubscriptionTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
 
-        app(BillingService::class)->createSubscription($customer, $plan, 'weekly');
+        app(BillingService::class)->createSubscription($customer, $plan, 'hourly');
+    }
+
+    public function test_supports_daily_weekly_biennial_and_triennial_cycles(): void
+    {
+        $customer = Customer::factory()->create();
+        $plan = $this->plan();
+
+        $expectations = [
+            'daily' => now()->addDay(),
+            'weekly' => now()->addWeek(),
+            'biennially' => now()->addYears(2),
+            'triennially' => now()->addYears(3),
+        ];
+
+        foreach ($expectations as $cycle => $expectedEndDate) {
+            $subscription = app(BillingService::class)->createSubscription($customer, $plan, $cycle);
+
+            $this->assertSame($expectedEndDate->toDateString(), $subscription->end_date->toDateString());
+        }
+    }
+
+    public function test_custom_cycle_requires_and_persists_period_days(): void
+    {
+        $customer = Customer::factory()->create();
+        $plan = $this->plan();
+
+        $subscription = app(BillingService::class)->createSubscription($customer, $plan, 'custom', 45);
+
+        $this->assertSame(45, $subscription->custom_period_days);
+        $this->assertSame(now()->addDays(45)->toDateString(), $subscription->end_date->toDateString());
+    }
+
+    public function test_one_time_cycle_disables_automatic_renewal(): void
+    {
+        $subscription = app(BillingService::class)->createSubscription(
+            Customer::factory()->create(),
+            $this->plan(),
+            'one-time'
+        );
+
+        $this->assertFalse($subscription->auto_renew);
+        $this->assertSame($subscription->start_date->toDateString(), $subscription->end_date->toDateString());
     }
 
     public function test_plan_subscriptions_relationship_resolves(): void

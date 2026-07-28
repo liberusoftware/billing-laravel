@@ -2,11 +2,13 @@
 
 namespace App\Filament\Pages;
 
+use App\Enums\BillingCycle;
 use App\Models\SubscriptionPlan;
 use App\Services\BillingService;
 use BackedEnum;
 use Exception;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Section;
@@ -24,6 +26,8 @@ class SubscriptionPlansPage extends Page
     public $selectedPlan;
 
     public $billingCycle = 'monthly';
+
+    public ?int $customPeriodDays = null;
 
     public $plans;
 
@@ -55,14 +59,16 @@ class SubscriptionPlansPage extends Page
                                 Select::make('billingCycle')
                                     ->label('Billing Cycle')
                                     ->options(
-                                        [
-                                            'monthly' => 'Monthly',
-                                            'quarterly' => 'Quarterly',
-                                            'semi-annually' => 'Semi-annually',
-                                            'annually' => 'Annually',
-                                        ]
+                                        BillingCycle::options()
                                     )
+                                    ->live()
                                     ->required(),
+                                TextInput::make('customPeriodDays')
+                                    ->label('Custom period (days)')
+                                    ->integer()
+                                    ->minValue(1)
+                                    ->visible(fn (): bool => $this->billingCycle === BillingCycle::Custom->value)
+                                    ->required(fn (): bool => $this->billingCycle === BillingCycle::Custom->value),
                             ]
                         ),
                 ]
@@ -79,7 +85,8 @@ class SubscriptionPlansPage extends Page
             $subscription = $billingService->createSubscription(
                 auth()->user()->customer,
                 $plan,
-                $this->billingCycle
+                $this->billingCycle,
+                $this->customPeriodDays
             );
 
             return redirect()->route(

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\BillingCycle;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -21,6 +22,7 @@ use Override;
  * @property Carbon $start_date
  * @property Carbon|null $end_date
  * @property string $renewal_period
+ * @property int|null $custom_period_days
  * @property string $status
  * @property string $price
  * @property string $currency
@@ -51,6 +53,7 @@ use Override;
     'start_date',
     'end_date',
     'renewal_period',
+    'custom_period_days',
     'status',
     'price',
     'currency',
@@ -91,6 +94,7 @@ class Subscription extends Model
             'last_billed_at' => 'datetime',
             'ends_at' => 'datetime',
             'id_protection' => 'boolean',
+            'custom_period_days' => 'integer',
         ];
 
     }
@@ -144,8 +148,13 @@ class Subscription extends Model
             return false;
         }
 
-        $renewalPeriod = $this->getRenewalPeriod();
-        $this->end_date = Carbon::parse($this->end_date)->add($renewalPeriod);
+        $cycle = BillingCycle::tryFrom($this->renewal_period);
+
+        if ($cycle === null || ! $cycle->isRecurring()) {
+            return false;
+        }
+
+        $this->end_date = $cycle->advance($this->end_date, $this->custom_period_days);
         $this->last_billed_at = now();
         $this->status = 'active';
 
@@ -189,19 +198,14 @@ class Subscription extends Model
             return true;
         }
 
-        $nextBillingDate = Carbon::parse($this->last_billed_at)->add($this->getRenewalPeriod());
+        $cycle = BillingCycle::tryFrom($this->renewal_period);
+
+        if ($cycle === null || ! $cycle->isRecurring()) {
+            return false;
+        }
+
+        $nextBillingDate = $cycle->advance($this->last_billed_at, $this->custom_period_days);
 
         return $nextBillingDate->isPast() && $this->isActive();
-    }
-
-    private function getRenewalPeriod(): string
-    {
-        return match ($this->renewal_period) {
-            'monthly' => '1 month',
-            'quarterly' => '3 months',
-            'semi-annually' => '6 months',
-            'annually' => '1 year',
-            default => '1 month',
-        };
     }
 }

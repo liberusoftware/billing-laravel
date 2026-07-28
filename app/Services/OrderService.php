@@ -40,9 +40,17 @@ class OrderService
         }
 
         $billingCycle = (string) ($submittedData['billing_cycle'] ?? 'monthly');
+        $customPeriodDays = isset($submittedData['custom_period_days'])
+            ? (int) $submittedData['custom_period_days']
+            : null;
 
-        return DB::transaction(function () use ($template, $customer, $plan, $billingCycle, $submittedData): Order {
-            $subscription = $this->billingService->createSubscription($customer, $plan, $billingCycle);
+        return DB::transaction(function () use ($template, $customer, $plan, $billingCycle, $customPeriodDays, $submittedData): Order {
+            $subscription = $this->billingService->createSubscription(
+                $customer,
+                $plan,
+                $billingCycle,
+                $customPeriodDays
+            );
             $invoice = Invoice::where('subscription_id', $subscription->id)->latest('id')->first();
 
             $order = Order::create([

@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Filament\Client\Pages;
 
+use App\Enums\BillingCycle;
 use App\Models\OrderFormTemplate;
 use App\Models\SubscriptionPlan;
 use App\Models\User;
 use App\Services\OrderService;
 use BackedEnum;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Section;
@@ -31,6 +33,8 @@ class OrderForm extends Page
     public ?int $selectedPlan = null;
 
     public string $billingCycle = 'monthly';
+
+    public ?int $customPeriodDays = null;
 
     /**
      * @var Collection<int, SubscriptionPlan>
@@ -60,13 +64,15 @@ class OrderForm extends Page
                     ->required(),
                 Select::make('billingCycle')
                     ->label('Billing Cycle')
-                    ->options([
-                        'monthly' => 'Monthly',
-                        'quarterly' => 'Quarterly',
-                        'semi-annually' => 'Semi-annually',
-                        'annually' => 'Annually',
-                    ])
+                    ->options(BillingCycle::options())
+                    ->live()
                     ->required(),
+                TextInput::make('customPeriodDays')
+                    ->label('Custom period (days)')
+                    ->integer()
+                    ->minValue(1)
+                    ->visible(fn (): bool => $this->billingCycle === BillingCycle::Custom->value)
+                    ->required(fn (): bool => $this->billingCycle === BillingCycle::Custom->value),
             ]),
         ]);
     }
@@ -90,6 +96,7 @@ class OrderForm extends Page
             app(OrderService::class)->placeOrder($this->template, $customer, [
                 'subscription_plan_id' => (int) $this->selectedPlan,
                 'billing_cycle' => $this->billingCycle,
+                'custom_period_days' => $this->customPeriodDays,
             ]);
         } catch (InvalidArgumentException $e) {
             Notification::make()

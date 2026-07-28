@@ -2,11 +2,13 @@
 
 namespace App\Filament\Pages;
 
+use App\Enums\BillingCycle;
 use App\Models\Products_Service;
 use App\Models\Subscription;
 use BackedEnum;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
@@ -30,6 +32,8 @@ class ManageSubscriptionPage extends Page
 
     public $renewalPeriod;
 
+    public ?int $customPeriodDays = null;
+
     public $autoRenew;
 
     public $startDate;
@@ -40,6 +44,7 @@ class ManageSubscriptionPage extends Page
         if ($this->subscription) {
             $this->selectedProduct = $this->subscription->product_service_id;
             $this->renewalPeriod = $this->subscription->renewal_period;
+            $this->customPeriodDays = $this->subscription->custom_period_days;
             $this->autoRenew = $this->subscription->auto_renew;
             $this->startDate = $this->subscription->start_date;
         }
@@ -68,15 +73,16 @@ class ManageSubscriptionPage extends Page
 
                                             Select::make('renewalPeriod')
                                                 ->label('Billing Cycle')
-                                                ->options(
-                                                    [
-                                                        'monthly' => 'Monthly',
-                                                        'quarterly' => 'Quarterly',
-                                                        'semi-annually' => 'Semi-annually',
-                                                        'annually' => 'Annually',
-                                                    ]
-                                                )
+                                                ->options(BillingCycle::options())
+                                                ->live()
                                                 ->required(),
+
+                                            TextInput::make('customPeriodDays')
+                                                ->label('Custom period (days)')
+                                                ->integer()
+                                                ->minValue(1)
+                                                ->visible(fn (): bool => $this->renewalPeriod === BillingCycle::Custom->value)
+                                                ->required(fn (): bool => $this->renewalPeriod === BillingCycle::Custom->value),
 
                                             DatePicker::make('startDate')
                                                 ->label('Start Date')
@@ -107,7 +113,12 @@ class ManageSubscriptionPage extends Page
                 'product_service_id' => $this->selectedProduct,
                 'start_date' => $this->startDate,
                 'renewal_period' => $this->renewalPeriod,
-                'auto_renew' => $this->autoRenew,
+                'custom_period_days' => $this->renewalPeriod === BillingCycle::Custom->value
+                    ? $this->customPeriodDays
+                    : null,
+                'auto_renew' => $this->renewalPeriod === BillingCycle::OneTime->value
+                    ? false
+                    : $this->autoRenew,
                 'price' => $product->price,
                 'currency' => $this->subscription->currency ?: 'USD',
                 'status' => 'active',

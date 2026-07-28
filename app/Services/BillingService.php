@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\BillingCycle;
 use App\Models\Customer;
 use App\Models\Discount;
 use App\Models\Invoice;
@@ -47,23 +48,31 @@ class BillingService
         $this->refundService = $refundService ?? new RefundService($this->paymentGatewayService);
     }
 
-    public function createSubscription(Customer $customer, SubscriptionPlan $plan, string $billingCycle): Subscription
-    {
+    public function createSubscription(
+        Customer $customer,
+        SubscriptionPlan $plan,
+        string $billingCycle,
+        ?int $customPeriodDays = null
+    ): Subscription {
+        $cycle = BillingCycle::tryFrom($billingCycle)
+            ?? throw new InvalidArgumentException("Unknown billing cycle: {$billingCycle}");
+
         // Price the whole term: a quarterly/annual cycle bills the plan price times
         // the number of months it covers, not a single month's price.
-        $cycleTotal = (string) round((float) $plan->price * $this->cycleMonths($billingCycle), 2);
+        $cycleTotal = (string) round((float) $plan->price * $cycle->priceMultiplier(), 2);
 
         $subscription = new Subscription(
             [
                 'customer_id' => $customer->id,
                 'subscription_plan_id' => $plan->id,
                 'start_date' => now(),
-                'end_date' => $this->calculateEndDate($billingCycle),
+                'end_date' => $cycle->advance(now(), $customPeriodDays),
                 'renewal_period' => $billingCycle,
+                'custom_period_days' => $customPeriodDays,
                 'status' => 'pending',
                 'price' => $cycleTotal,
                 'currency' => $plan->currency,
-                'auto_renew' => true,
+                'auto_renew' => $cycle->isRecurring(),
             ]
         );
 
@@ -146,26 +155,6 @@ class BillingService
 
         // A downgrade (new < old) must not produce a negative invoice; floor at 0.
         return max(0.0, round((($newPrice - $oldPrice) / $totalDays) * $daysRemaining, 2));
-    }
-
-    /**
-     * Months covered by a billing cycle. Single source of truth for both the
-     * end-date and the term price; rejects unknown cycles rather than defaulting.
-     */
-    private function cycleMonths(string $billingCycle): int
-    {
-        return match ($billingCycle) {
-            'monthly' => 1,
-            'quarterly' => 3,
-            'semi-annually' => 6,
-            'annually' => 12,
-            default => throw new InvalidArgumentException("Unknown billing cycle: {$billingCycle}"),
-        };
-    }
-
-    private function calculateEndDate(string $billingCycle): Carbon
-    {
-        return now()->addMonths($this->cycleMonths($billingCycle));
     }
 
     private function calculateRefundAmount(Subscription $subscription): float
