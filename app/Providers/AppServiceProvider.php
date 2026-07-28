@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Contracts\BusinessConnector;
 use App\Models\Project;
 use App\Models\Task;
 use App\Models\TimeEntry;
@@ -11,6 +12,7 @@ use App\Modules\ModuleManager;
 use App\Observers\ProjectObserver;
 use App\Observers\TaskObserver;
 use App\Observers\TimeEntryObserver;
+use App\Services\Integrations\HttpBusinessConnector;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Vite;
@@ -24,6 +26,7 @@ class AppServiceProvider extends ServiceProvider
     #[Override]
     public function register(): void
     {
+        $this->app->bind(BusinessConnector::class, HttpBusinessConnector::class);
         $this->app->singleton(
             ModuleManager::class,
             fn (): ModuleManager => new ModuleManager

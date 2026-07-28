@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CallRateController;
 use App\Http\Controllers\Api\CannedResponseController;
 use App\Http\Controllers\Api\ClientContactController;
+use App\Http\Controllers\Api\CrossPlatformIntegrationController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\DidNumberController;
 use App\Http\Controllers\Api\GitIntegrationController;
@@ -253,6 +254,30 @@ Route::middleware(['auth:sanctum', 'throttle:api'])->group(function (): void {
         Route::post('resellers/{agreement}/delegate', [ResellerController::class, 'delegate']);
         Route::post('reseller-delegations/{delegation}/revenue', [ResellerController::class, 'recordRevenue']);
         Route::post('reseller-transactions/{transaction}/settle', [ResellerController::class, 'settle']);
+    });
+
+    Route::middleware('ability:integrations:read')->group(function (): void {
+        Route::get('integrations/connections', [CrossPlatformIntegrationController::class, 'index']);
+        Route::get(
+            'integrations/connections/{connection}/pull/{resource}',
+            [CrossPlatformIntegrationController::class, 'pullResource']
+        );
+        Route::get('integrations/events', [CrossPlatformIntegrationController::class, 'eventLog']);
+    });
+    Route::middleware('ability:integrations:write')->group(function (): void {
+        Route::post('integrations/connections', [CrossPlatformIntegrationController::class, 'store']);
+        Route::patch('integrations/connections/{connection}', [CrossPlatformIntegrationController::class, 'update']);
+        Route::delete('integrations/connections/{connection}', [CrossPlatformIntegrationController::class, 'destroy']);
+        Route::post(
+            'integrations/sync/{resource}/{id}',
+            [CrossPlatformIntegrationController::class, 'pushResource']
+        );
+        Route::post('integrations/leads/{lead}/convert', [CrossPlatformIntegrationController::class, 'convertLead']);
+        Route::post(
+            'integrations/customers/{customer}/bill-opportunity',
+            [CrossPlatformIntegrationController::class, 'billOpportunity']
+        );
+        Route::post('integrations/events/{event}/replay', [CrossPlatformIntegrationController::class, 'replayEvent']);
     });
 });
 

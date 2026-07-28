@@ -35,6 +35,8 @@ enum TokenAbility: string
     case OrganisationsWrite = 'organisations:write';
     case ResellersRead = 'resellers:read';
     case ResellersWrite = 'resellers:write';
+    case IntegrationsRead = 'integrations:read';
+    case IntegrationsWrite = 'integrations:write';
 
     /**
      * @return list<string>
