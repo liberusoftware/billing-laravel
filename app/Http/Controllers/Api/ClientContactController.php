@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\ContactType;
 use App\Http\Controllers\Controller;
 use App\Models\ClientContact;
 use App\Models\Customer;
@@ -9,6 +10,7 @@ use App\Models\User;
 use App\Services\ClientContactService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -58,6 +60,7 @@ class ClientContactController extends Controller
                 'email' => 'required|email|max:255',
                 'phone' => 'nullable|string|max:30',
                 'title' => 'nullable|string|max:100',
+                'contact_type' => ['sometimes', Rule::enum(ContactType::class)],
                 'is_primary' => 'boolean',
                 'can_view_invoices' => 'boolean',
                 'can_make_payments' => 'boolean',
@@ -94,6 +97,7 @@ class ClientContactController extends Controller
                 'email' => 'sometimes|email|max:255',
                 'phone' => 'nullable|string|max:30',
                 'title' => 'nullable|string|max:100',
+                'contact_type' => ['sometimes', Rule::enum(ContactType::class)],
                 'is_primary' => 'boolean',
                 'can_view_invoices' => 'boolean',
                 'can_make_payments' => 'boolean',

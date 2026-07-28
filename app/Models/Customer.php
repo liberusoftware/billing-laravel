@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\CustomerStatus;
+use App\Enums\CustomerType;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -23,6 +25,11 @@ use Illuminate\Support\Carbon;
  * @property string|null $state
  * @property string|null $postal_code
  * @property string|null $country
+ * @property CustomerType $customer_type
+ * @property CustomerStatus $lifecycle_status
+ * @property array<int, string>|null $tags
+ * @property array<string, mixed>|null $custom_fields
+ * @property Carbon|null $status_changed_at
  * @property bool $sms_notifications_enabled
  * @property int|null $team_id
  * @property Carbon|null $created_at
@@ -44,10 +51,38 @@ use Illuminate\Support\Carbon;
     'state',
     'postal_code',
     'country',
+    'customer_type',
+    'lifecycle_status',
+    'tags',
+    'custom_fields',
+    'status_changed_at',
 ])]
 class Customer extends Model
 {
     use HasFactory;
+
+    protected function casts(): array
+    {
+        return [
+            'customer_type' => CustomerType::class,
+            'lifecycle_status' => CustomerStatus::class,
+            'tags' => 'array',
+            'custom_fields' => 'array',
+            'status_changed_at' => 'datetime',
+        ];
+    }
+
+    public function transitionTo(CustomerStatus $status): bool
+    {
+        if ($this->lifecycle_status === $status) {
+            return true;
+        }
+
+        $this->lifecycle_status = $status;
+        $this->status_changed_at = now();
+
+        return $this->save();
+    }
 
     public function credits(): HasMany
     {

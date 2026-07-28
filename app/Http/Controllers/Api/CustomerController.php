@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\CustomerStatus;
+use App\Enums\CustomerType;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class CustomerController extends Controller
 {
@@ -23,17 +26,26 @@ class CustomerController extends Controller
         $customers = Customer::query()
             ->where('team_id', $this->currentTeamId($request))
             ->when(
+                $request->string('customer_type')->isNotEmpty(),
+                fn ($query) => $query->where('customer_type', $request->string('customer_type')->toString())
+            )
+            ->when(
+                $request->string('lifecycle_status')->isNotEmpty(),
+                fn ($query) => $query->where('lifecycle_status', $request->string('lifecycle_status')->toString())
+            )
+            ->when(
                 $request->search,
-                fn ($q) => $q->where(
-                    'name',
-                    'like',
-                    "%{$request->search}%"
-                )
-                    ->orWhere(
+                fn ($query) => $query->where(
+                    fn ($searchQuery) => $searchQuery->where(
+                        'name',
+                        'like',
+                        "%{$request->search}%"
+                    )->orWhere(
                         'email',
                         'like',
                         "%{$request->search}%"
                     )
+                )
             )
             ->paginate(15);
 
@@ -52,6 +64,11 @@ class CustomerController extends Controller
                 'state' => 'nullable|string|max:100',
                 'postal_code' => 'nullable|string|max:20',
                 'country' => 'nullable|string|max:100',
+                'customer_type' => ['sometimes', Rule::enum(CustomerType::class)],
+                'lifecycle_status' => ['sometimes', Rule::enum(CustomerStatus::class)],
+                'tags' => 'nullable|array',
+                'tags.*' => 'string|max:100',
+                'custom_fields' => 'nullable|array',
             ]
         );
 
@@ -86,8 +103,18 @@ class CustomerController extends Controller
                 'state' => 'nullable|string|max:100',
                 'postal_code' => 'nullable|string|max:20',
                 'country' => 'nullable|string|max:100',
+                'customer_type' => ['sometimes', Rule::enum(CustomerType::class)],
+                'lifecycle_status' => ['sometimes', Rule::enum(CustomerStatus::class)],
+                'tags' => 'nullable|array',
+                'tags.*' => 'string|max:100',
+                'custom_fields' => 'nullable|array',
             ]
         );
+
+        if (isset($validated['lifecycle_status'])
+            && $validated['lifecycle_status'] !== $customer->lifecycle_status->value) {
+            $validated['status_changed_at'] = now();
+        }
 
         $customer->update($validated);
 

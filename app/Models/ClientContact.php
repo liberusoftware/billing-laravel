@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ContactType;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
@@ -17,6 +18,7 @@ use Override;
  * @property string $email
  * @property string|null $phone
  * @property string|null $title
+ * @property ContactType $contact_type
  * @property bool $is_primary
  * @property bool $can_view_invoices
  * @property bool $can_make_payments
@@ -33,6 +35,7 @@ use Override;
     'email',
     'phone',
     'title',
+    'contact_type',
     'is_primary',
     'can_view_invoices',
     'can_make_payments',
@@ -49,6 +52,7 @@ class ClientContact extends Model
             'can_view_invoices' => 'boolean',
             'can_make_payments' => 'boolean',
             'can_manage_services' => 'boolean',
+            'contact_type' => ContactType::class,
         ];
 
     }
