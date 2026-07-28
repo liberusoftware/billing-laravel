@@ -2,19 +2,43 @@
 
 namespace App\Models;
 
+use App\Enums\OrganisationType;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Carbon;
 use Laravel\Jetstream\Events\TeamCreated;
 use Laravel\Jetstream\Events\TeamDeleted;
 use Laravel\Jetstream\Events\TeamUpdated;
 use Laravel\Jetstream\Team as JetstreamTeam;
 use Override;
 
+/**
+ * @property int $id
+ * @property int $user_id
+ * @property int|null $parent_team_id
+ * @property string $name
+ * @property OrganisationType $organisation_type
+ * @property string|null $slug
+ * @property string|null $custom_domain
+ * @property string $database_mode
+ * @property array<string, mixed>|null $branding
+ * @property Carbon|null $archived_at
+ */
 #[Fillable([
     'name',
     'personal_team',
     'user_id',
     'is_default_for_registration',
+    'parent_team_id',
+    'organisation_type',
+    'slug',
+    'custom_domain',
+    'database_mode',
+    'branding',
+    'archived_at',
 ])]
 class Team extends JetstreamTeam
 {
@@ -31,6 +55,13 @@ class Team extends JetstreamTeam
         'personal_team',
         'user_id',
         'is_default_for_registration',
+        'parent_team_id',
+        'organisation_type',
+        'slug',
+        'custom_domain',
+        'database_mode',
+        'branding',
+        'archived_at',
     ];
 
     /**
@@ -56,7 +87,35 @@ class Team extends JetstreamTeam
         return [
             'personal_team' => 'boolean',
             'is_default_for_registration' => 'boolean',
+            'organisation_type' => OrganisationType::class,
+            'branding' => 'array',
+            'archived_at' => 'datetime',
         ];
+    }
+
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'parent_team_id');
+    }
+
+    public function children(): HasMany
+    {
+        return $this->hasMany(self::class, 'parent_team_id');
+    }
+
+    public function resellerAgreements(): HasMany
+    {
+        return $this->hasMany(ResellerAgreement::class, 'provider_team_id');
+    }
+
+    public function resellerAgreement(): HasOne
+    {
+        return $this->hasOne(ResellerAgreement::class, 'reseller_team_id');
+    }
+
+    public function brands(): HasMany
+    {
+        return $this->hasMany(OrganisationBrand::class);
     }
 
     /**

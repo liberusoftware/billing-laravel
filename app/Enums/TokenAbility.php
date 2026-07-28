@@ -31,6 +31,10 @@ enum TokenAbility: string
     case GitWrite = 'git:write';
     case InfrastructureRead = 'infrastructure:read';
     case InfrastructureWrite = 'infrastructure:write';
+    case OrganisationsRead = 'organisations:read';
+    case OrganisationsWrite = 'organisations:write';
+    case ResellersRead = 'resellers:read';
+    case ResellersWrite = 'resellers:write';
 
     /**
      * @return list<string>

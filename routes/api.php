@@ -17,8 +17,10 @@ use App\Http\Controllers\Api\IspServiceController;
 use App\Http\Controllers\Api\KnowledgeBaseController;
 use App\Http\Controllers\Api\LicenseDownloadController;
 use App\Http\Controllers\Api\LicenseValidationController;
+use App\Http\Controllers\Api\OrganisationController;
 use App\Http\Controllers\Api\PackageGroupController;
 use App\Http\Controllers\Api\QuoteController;
+use App\Http\Controllers\Api\ResellerController;
 use App\Http\Controllers\Api\SubscriptionController;
 use App\Http\Controllers\Api\VoipAccountController;
 use App\Http\Controllers\Api\WebhookController;
@@ -229,9 +231,34 @@ Route::middleware(['auth:sanctum', 'throttle:api'])->group(function (): void {
         Route::post('infrastructure/ip-pools/{pool}/allocate', [InfrastructureController::class, 'allocate']);
         Route::post('infrastructure/ip-addresses/{address}/release', [InfrastructureController::class, 'release']);
     });
+
+    Route::middleware('ability:organisations:read')->group(function (): void {
+        Route::get('organisations', [OrganisationController::class, 'children']);
+        Route::get('organisations/{organisation}/brands', [OrganisationController::class, 'brands']);
+    });
+    Route::middleware('ability:organisations:write')->group(function (): void {
+        Route::post('organisations', [OrganisationController::class, 'storeChild']);
+        Route::patch('organisations/{organisation}', [OrganisationController::class, 'updateChild']);
+        Route::post('organisations/{organisation}/archive', [OrganisationController::class, 'archive']);
+        Route::post('organisations/{organisation}/brands', [OrganisationController::class, 'storeBrand']);
+        Route::post('organisation-brands/{brand}/domains', [OrganisationController::class, 'storeDomain']);
+        Route::post('brand-domains/{domain}/verify', [OrganisationController::class, 'verifyDomain']);
+    });
+    Route::middleware('ability:resellers:read')->group(function (): void {
+        Route::get('resellers', [ResellerController::class, 'index']);
+        Route::get('resellers/{agreement}', [ResellerController::class, 'show']);
+    });
+    Route::middleware('ability:resellers:write')->group(function (): void {
+        Route::post('resellers', [ResellerController::class, 'store']);
+        Route::post('resellers/{agreement}/delegate', [ResellerController::class, 'delegate']);
+        Route::post('reseller-delegations/{delegation}/revenue', [ResellerController::class, 'recordRevenue']);
+        Route::post('reseller-transactions/{transaction}/settle', [ResellerController::class, 'settle']);
+    });
 });
 
 Route::post('git/webhooks/{connection}', GitWebhookController::class)
+    ->middleware('throttle:120,1');
+Route::get('branding', [OrganisationController::class, 'resolveBrand'])
     ->middleware('throttle:120,1');
 
 // Public Knowledge Base endpoints (no auth required)
