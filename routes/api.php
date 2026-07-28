@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\DidNumberController;
 use App\Http\Controllers\Api\GitIntegrationController;
 use App\Http\Controllers\Api\GitWebhookController;
 use App\Http\Controllers\Api\InboundEmailController;
+use App\Http\Controllers\Api\InfrastructureController;
 use App\Http\Controllers\Api\InvoiceController;
 use App\Http\Controllers\Api\IspServiceController;
 use App\Http\Controllers\Api\KnowledgeBaseController;
@@ -214,6 +215,19 @@ Route::middleware(['auth:sanctum', 'throttle:api'])->group(function (): void {
         Route::post('git/connections/{connection}/sync', [GitIntegrationController::class, 'sync']);
         Route::post('git/repositories/{repository}/releases', [GitIntegrationController::class, 'createRelease']);
         Route::post('git/releases/{release}/deployment', [GitIntegrationController::class, 'trackDeployment']);
+    });
+
+    Route::middleware('ability:infrastructure:read')->group(function (): void {
+        Route::get('infrastructure/assets', [InfrastructureController::class, 'assets']);
+        Route::get('infrastructure/ip-pools', [InfrastructureController::class, 'pools']);
+        Route::get('infrastructure/ip-pools/{pool}/addresses', [InfrastructureController::class, 'addresses']);
+    });
+    Route::middleware('ability:infrastructure:write')->group(function (): void {
+        Route::post('infrastructure/assets', [InfrastructureController::class, 'storeAsset']);
+        Route::patch('infrastructure/assets/{asset}', [InfrastructureController::class, 'updateAsset']);
+        Route::post('infrastructure/ip-pools', [InfrastructureController::class, 'storePool']);
+        Route::post('infrastructure/ip-pools/{pool}/allocate', [InfrastructureController::class, 'allocate']);
+        Route::post('infrastructure/ip-addresses/{address}/release', [InfrastructureController::class, 'release']);
     });
 });
 
