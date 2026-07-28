@@ -45,6 +45,7 @@ use Override;
  * @property-read Collection<int, ServiceSuspension> $suspensions
  * @property-read ServiceSuspension|null $activeSuspension
  * @property-read HostingAccount|null $hostingAccount
+ * @property-read IspService|null $ispService
  */
 #[Fillable([
     'customer_id',
@@ -130,6 +131,11 @@ class Subscription extends Model
     public function hostingAccount(): HasOne
     {
         return $this->hasOne(HostingAccount::class);
+    }
+
+    public function ispService(): HasOne
+    {
+        return $this->hasOne(IspService::class);
     }
 
     public function activeSuspension(): HasOne

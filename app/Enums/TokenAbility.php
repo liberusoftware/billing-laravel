@@ -23,6 +23,8 @@ enum TokenAbility: string
     case ClientNotesWrite = 'client-notes:write';
     case PackageGroupsRead = 'package-groups:read';
     case PackageGroupsWrite = 'package-groups:write';
+    case IspServicesRead = 'isp-services:read';
+    case IspServicesWrite = 'isp-services:write';
 
     /**
      * @return list<string>

@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\ClientContactController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\InboundEmailController;
 use App\Http\Controllers\Api\InvoiceController;
+use App\Http\Controllers\Api\IspServiceController;
 use App\Http\Controllers\Api\KnowledgeBaseController;
 use App\Http\Controllers\Api\LicenseDownloadController;
 use App\Http\Controllers\Api\LicenseValidationController;
@@ -158,6 +159,22 @@ Route::middleware(['auth:sanctum', 'throttle:api'])->group(function (): void {
         Route::post('package-groups/{packageGroup}/packages', [PackageGroupController::class, 'addPackage']);
         Route::delete('package-groups/{packageGroup}/packages/{plan}', [PackageGroupController::class, 'removePackage']);
         Route::post('package-groups/{packageGroup}/reorder', [PackageGroupController::class, 'reorder']);
+    });
+
+    Route::middleware('ability:isp-services:read')->group(function (): void {
+        Route::get('isp-services', [IspServiceController::class, 'index'])->name('isp-services.index');
+        Route::get('isp-services/{ispService}', [IspServiceController::class, 'show'])->name('isp-services.show');
+    });
+    Route::middleware('ability:isp-services:write')->group(function (): void {
+        Route::post('isp-services', [IspServiceController::class, 'store'])->name('isp-services.store');
+        Route::match(['put', 'patch'], 'isp-services/{ispService}', [IspServiceController::class, 'update'])
+            ->name('isp-services.update');
+        Route::delete('isp-services/{ispService}', [IspServiceController::class, 'destroy'])
+            ->name('isp-services.destroy');
+        Route::post('isp-services/{ispService}/activate', [IspServiceController::class, 'activate']);
+        Route::post('isp-services/{ispService}/synchronize', [IspServiceController::class, 'synchronize']);
+        Route::post('isp-services/{ispService}/suspend', [IspServiceController::class, 'suspend']);
+        Route::post('isp-services/{ispService}/accounting', [IspServiceController::class, 'accounting']);
     });
 });
 
