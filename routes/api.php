@@ -3,9 +3,11 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CallRateController;
 use App\Http\Controllers\Api\CannedResponseController;
 use App\Http\Controllers\Api\ClientContactController;
 use App\Http\Controllers\Api\CustomerController;
+use App\Http\Controllers\Api\DidNumberController;
 use App\Http\Controllers\Api\InboundEmailController;
 use App\Http\Controllers\Api\InvoiceController;
 use App\Http\Controllers\Api\IspServiceController;
@@ -15,6 +17,7 @@ use App\Http\Controllers\Api\LicenseValidationController;
 use App\Http\Controllers\Api\PackageGroupController;
 use App\Http\Controllers\Api\QuoteController;
 use App\Http\Controllers\Api\SubscriptionController;
+use App\Http\Controllers\Api\VoipAccountController;
 use App\Http\Controllers\Api\WebhookController;
 use App\Http\Controllers\ClientNoteController;
 use App\Http\Controllers\InstallationController;
@@ -175,6 +178,26 @@ Route::middleware(['auth:sanctum', 'throttle:api'])->group(function (): void {
         Route::post('isp-services/{ispService}/synchronize', [IspServiceController::class, 'synchronize']);
         Route::post('isp-services/{ispService}/suspend', [IspServiceController::class, 'suspend']);
         Route::post('isp-services/{ispService}/accounting', [IspServiceController::class, 'accounting']);
+    });
+
+    Route::middleware('ability:voip:read')->group(function (): void {
+        Route::get('voip/accounts', [VoipAccountController::class, 'index']);
+        Route::get('voip/accounts/{voipAccount}', [VoipAccountController::class, 'show']);
+        Route::get('voip/rates', [CallRateController::class, 'index']);
+        Route::get('voip/dids', [DidNumberController::class, 'index']);
+    });
+    Route::middleware('ability:voip:write')->group(function (): void {
+        Route::post('voip/accounts', [VoipAccountController::class, 'store']);
+        Route::match(['put', 'patch'], 'voip/accounts/{voipAccount}', [VoipAccountController::class, 'update']);
+        Route::delete('voip/accounts/{voipAccount}', [VoipAccountController::class, 'destroy']);
+        Route::post('voip/accounts/{voipAccount}/provision', [VoipAccountController::class, 'provision']);
+        Route::post('voip/accounts/{voipAccount}/cdrs', [VoipAccountController::class, 'ingestCdr']);
+        Route::post('voip/rates', [CallRateController::class, 'store']);
+        Route::match(['put', 'patch'], 'voip/rates/{callRate}', [CallRateController::class, 'update']);
+        Route::delete('voip/rates/{callRate}', [CallRateController::class, 'destroy']);
+        Route::post('voip/dids', [DidNumberController::class, 'store']);
+        Route::post('voip/dids/{didNumber}/assign', [DidNumberController::class, 'assign']);
+        Route::delete('voip/dids/{didNumber}', [DidNumberController::class, 'destroy']);
     });
 });
 

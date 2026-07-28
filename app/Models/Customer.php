@@ -40,6 +40,7 @@ use Illuminate\Support\Carbon;
  * @property-read Collection<int, Invoice> $invoices
  * @property-read Collection<int, Subscription> $subscriptions
  * @property-read Collection<int, IspService> $ispServices
+ * @property-read Collection<int, VoipAccount> $voipAccounts
  * @property-read User|null $user
  * @property-read PaymentMethod|null $defaultPaymentMethod
  */
@@ -113,6 +114,11 @@ class Customer extends Model
     public function ispServices(): HasMany
     {
         return $this->hasMany(IspService::class);
+    }
+
+    public function voipAccounts(): HasMany
+    {
+        return $this->hasMany(VoipAccount::class);
     }
 
     public function user(): BelongsTo

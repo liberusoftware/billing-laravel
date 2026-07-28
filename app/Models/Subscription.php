@@ -46,6 +46,7 @@ use Override;
  * @property-read ServiceSuspension|null $activeSuspension
  * @property-read HostingAccount|null $hostingAccount
  * @property-read IspService|null $ispService
+ * @property-read VoipAccount|null $voipAccount
  */
 #[Fillable([
     'customer_id',
@@ -136,6 +137,11 @@ class Subscription extends Model
     public function ispService(): HasOne
     {
         return $this->hasOne(IspService::class);
+    }
+
+    public function voipAccount(): HasOne
+    {
+        return $this->hasOne(VoipAccount::class);
     }
 
     public function activeSuspension(): HasOne

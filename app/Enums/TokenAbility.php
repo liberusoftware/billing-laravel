@@ -25,6 +25,8 @@ enum TokenAbility: string
     case PackageGroupsWrite = 'package-groups:write';
     case IspServicesRead = 'isp-services:read';
     case IspServicesWrite = 'isp-services:write';
+    case VoipRead = 'voip:read';
+    case VoipWrite = 'voip:write';
 
     /**
      * @return list<string>
