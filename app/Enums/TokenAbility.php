@@ -27,6 +27,8 @@ enum TokenAbility: string
     case IspServicesWrite = 'isp-services:write';
     case VoipRead = 'voip:read';
     case VoipWrite = 'voip:write';
+    case GitRead = 'git:read';
+    case GitWrite = 'git:write';
 
     /**
      * @return list<string>

@@ -8,6 +8,8 @@ use App\Http\Controllers\Api\CannedResponseController;
 use App\Http\Controllers\Api\ClientContactController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\DidNumberController;
+use App\Http\Controllers\Api\GitIntegrationController;
+use App\Http\Controllers\Api\GitWebhookController;
 use App\Http\Controllers\Api\InboundEmailController;
 use App\Http\Controllers\Api\InvoiceController;
 use App\Http\Controllers\Api\IspServiceController;
@@ -199,7 +201,24 @@ Route::middleware(['auth:sanctum', 'throttle:api'])->group(function (): void {
         Route::post('voip/dids/{didNumber}/assign', [DidNumberController::class, 'assign']);
         Route::delete('voip/dids/{didNumber}', [DidNumberController::class, 'destroy']);
     });
+
+    Route::middleware('ability:git:read')->group(function (): void {
+        Route::get('git/connections', [GitIntegrationController::class, 'connections']);
+        Route::get('git/repositories', [GitIntegrationController::class, 'repositories']);
+        Route::get('git/repositories/{repository}', [GitIntegrationController::class, 'repository']);
+    });
+    Route::middleware('ability:git:write')->group(function (): void {
+        Route::post('git/connections', [GitIntegrationController::class, 'storeConnection']);
+        Route::patch('git/connections/{connection}', [GitIntegrationController::class, 'updateConnection']);
+        Route::delete('git/connections/{connection}', [GitIntegrationController::class, 'destroyConnection']);
+        Route::post('git/connections/{connection}/sync', [GitIntegrationController::class, 'sync']);
+        Route::post('git/repositories/{repository}/releases', [GitIntegrationController::class, 'createRelease']);
+        Route::post('git/releases/{release}/deployment', [GitIntegrationController::class, 'trackDeployment']);
+    });
 });
+
+Route::post('git/webhooks/{connection}', GitWebhookController::class)
+    ->middleware('throttle:120,1');
 
 // Public Knowledge Base endpoints (no auth required)
 Route::prefix('knowledge-base')->group(function (): void {
