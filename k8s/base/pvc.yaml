@@ -1,43 +1,14 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: liberu-billing-storage
-  namespace: liberu-billing
+  name: boilerplate-storage
+  namespace: boilerplate-laravel
   labels:
-    app.kubernetes.io/name: liberu-billing
+    app: boilerplate-laravel
 spec:
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
       storage: 10Gi
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: liberu-billing-mysql-data
-  namespace: liberu-billing
-  labels:
-    app.kubernetes.io/name: liberu-billing
-    app.kubernetes.io/component: mysql
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 20Gi
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: liberu-billing-redis-data
-  namespace: liberu-billing
-  labels:
-    app.kubernetes.io/name: liberu-billing
-    app.kubernetes.io/component: redis
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 2Gi
+  storageClassName: standard

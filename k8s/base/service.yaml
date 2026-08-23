@@ -1,51 +1,21 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: liberu-billing-app
-  namespace: liberu-billing
+  name: boilerplate-laravel
+  namespace: boilerplate-laravel
   labels:
-    app.kubernetes.io/name: liberu-billing
-    app.kubernetes.io/component: app
+    app: boilerplate-laravel
 spec:
   type: ClusterIP
-  selector:
-    app: liberu-billing-app
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800
   ports:
-    - port: 80
-      targetPort: 80
-      protocol: TCP
-      name: http
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: liberu-billing-mysql
-  namespace: liberu-billing
-  labels:
-    app.kubernetes.io/name: liberu-billing
-    app.kubernetes.io/component: mysql
-spec:
-  type: ClusterIP
+  - port: 80
+    targetPort: 8000
+    protocol: TCP
+    name: http
   selector:
-    app: liberu-billing-mysql
-  ports:
-    - port: 3306
-      targetPort: 3306
-      protocol: TCP
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: liberu-billing-redis
-  namespace: liberu-billing
-  labels:
-    app.kubernetes.io/name: liberu-billing
-    app.kubernetes.io/component: redis
-spec:
-  type: ClusterIP
-  selector:
-    app: liberu-billing-redis
-  ports:
-    - port: 6379
-      targetPort: 6379
-      protocol: TCP
+    app: boilerplate-laravel
+    component: application

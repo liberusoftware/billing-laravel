@@ -1,8 +1,14 @@
 /vendor/
-
-
-
-
+# Composer installs Liberu packages into these directories; both are intentionally tracked.
+!/modules/
+!/modules/**
+!/themes/
+!/themes/**
+# ...except the dependencies a package installs when its own suite is run standalone.
+/modules/*/vendor/
+/themes/*/vendor/
+/modules/*/composer.lock
+/themes/*/composer.lock
 node_modules/
 npm-debug.log
 yarn-error.log
@@ -14,7 +20,7 @@ app/storage/
 # Laravel 5 & Lumen specific
 public/storage
 public/hot
-public/build
+public/build/
 
 # Laravel 5 & Lumen specific with changed public path
 public_html/storage
@@ -27,9 +33,27 @@ Homestead.json
 /.vagrant
 .phpunit.result.cache
 rr
-.rr.yaml
-/storage/*
-.claude
+# .rr.yaml is tracked in git (needed for RoadRunner configuration)
+
+# Backup files
+*.bak
+*.backup
+composer.phar
 .idea
-boost.json
-CLAUDE.md
+.rr.yaml
+
+# stray sqlite artifact from artisan/tinker runs
+/boilerplate-laravel
+docs/superpowers
+.superpowers
+
+# local tooling: runtime version pins and diagram config
+.lerd.yaml
+.node-version
+.php-version
+
+# Laravel Boost writes the same skills into one directory per editor; keep Claude's
+.agents/
+.cursor/skills/
+.github/skills/
+.junie/skills/

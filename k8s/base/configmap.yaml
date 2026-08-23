@@ -1,32 +1,24 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: liberu-billing-config
-  namespace: liberu-billing
+  name: boilerplate-config
+  namespace: boilerplate-laravel
   labels:
-    app.kubernetes.io/name: liberu-billing
+    app: boilerplate-laravel
 data:
-  APP_NAME: "Liberu Billing"
   APP_ENV: "production"
   APP_DEBUG: "false"
-  APP_URL: "https://billing.liberu.co.uk"
-  LOG_CHANNEL: "stderr"
-  LOG_LEVEL: "error"
+  LOG_CHANNEL: "stack"
+  LOG_LEVEL: "info"
   DB_CONNECTION: "mysql"
-  DB_HOST: "liberu-billing-mysql"
+  DB_HOST: "boilerplate-mysql"
   DB_PORT: "3306"
   DB_DATABASE: "liberu"
   CACHE_DRIVER: "redis"
-  SESSION_DRIVER: "redis"
   QUEUE_CONNECTION: "redis"
-  REDIS_HOST: "liberu-billing-redis"
+  SESSION_DRIVER: "redis"
+  REDIS_HOST: "boilerplate-redis"
   REDIS_PORT: "6379"
-  BROADCAST_DRIVER: "reverb"
-  CONTAINER_MODE: "app"
   OCTANE_SERVER: "roadrunner"
-  WITH_HORIZON: "false"
-  WITH_SCHEDULER: "true"
-  KUBERNETES_ENABLED: "true"
-  KUBERNETES_INGRESS_CLASS: "nginx"
-  KUBERNETES_CERT_ISSUER: "letsencrypt-prod"
-  KUBERNETES_STORAGE_CLASS: "standard"
+  BROADCAST_CONNECTION: "reverb"
+  FILESYSTEM_DISK: "local"

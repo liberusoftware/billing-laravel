@@ -1,21 +1,79 @@
+# Git files
 .git
 .github
-node_modules
-npm-debug.log
-vendor
+.gitignore
+.gitattributes
+
+# Documentation
+*.md
+docs/
+docs/DEVELOPER_NOTES.md
+docs/ARCHITECTURE.md
+
+# CI/CD
+.circleci
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Development files
 .env
+.env.*
+!.env.example
 .env.testing
-storage/logs/*
+
+# Dependencies (will be installed in container)
+vendor/
+node_modules/
+
+# Build artifacts
+public/hot
+public/storage
+public/build/
 storage/framework/cache/*
 storage/framework/sessions/*
 storage/framework/views/*
-public/hot
-public/storage
-bootstrap/cache/*.php
-*.md
-docker-compose*.yml
-tests
-.phpunit.result.cache
+storage/logs/*
+bootstrap/cache/*
+!storage/framework/cache/.gitkeep
+!storage/framework/sessions/.gitkeep
+!storage/framework/views/.gitkeep
+!storage/logs/.gitkeep
+!bootstrap/cache/.gitkeep
+
+# Test files
+tests/
 phpunit.xml
-.circleci
-docs
+.phpunit.result.cache
+coverage/
+.coverage
+
+# Package manager files (excluding lock files needed for builds)
+npm-debug.log
+yarn-error.log
+
+# Laravel specific
+Homestead.yaml
+Homestead.json
+/.vagrant
+rr
+# .rr.yaml should not be excluded - it's needed for RoadRunner
+
+# Backup files
+*.bak
+*.backup
+*.sql
+*.dump
+
+# Temporary files
+tmp/
+temp/
+*.tmp

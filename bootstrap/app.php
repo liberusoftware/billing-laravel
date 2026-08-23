@@ -1,18 +1,11 @@
 <?php
 
-use App\Http\Middleware\Authenticate;
-use App\Http\Middleware\CheckRole;
-use App\Http\Middleware\RedirectIfAuthenticated;
-use App\Http\Middleware\RequireTwoFactorEnabled;
-use App\Http\Middleware\SecurityHeaders;
-use App\Http\Middleware\TeamsPermission;
-use App\Http\Middleware\VerifyInboundEmailSignature;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
-use Laravel\Sanctum\Http\Middleware\CheckAbilities;
-use Laravel\Sanctum\Http\Middleware\CheckForAnyAbility;
+use Liberu\Foundation\ApplicationCore\Http\Middleware\SecurityHeaders;
+use Liberu\Foundation\Localization\Http\Middleware\SetLocale;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -22,40 +15,11 @@ return Application::configure(basePath: dirname(__DIR__))
         channels: __DIR__.'/../routes/channels.php',
         health: '/up',
     )
-    ->withMiddleware(function (Middleware $middleware) {
-        $middleware->trustProxies(
-            headers: Request::HEADER_X_FORWARDED_FOR |
-                     Request::HEADER_X_FORWARDED_HOST |
-                     Request::HEADER_X_FORWARDED_PORT |
-                     Request::HEADER_X_FORWARDED_PROTO |
-                     Request::HEADER_X_FORWARDED_AWS_ELB,
-        );
-
-        $middleware->trimStrings(except: [
-            'current_password',
-            'password',
-            'password_confirmation',
-        ]);
-
-        $middleware->web(append: [
-            SecurityHeaders::class,
-            TeamsPermission::class,
-        ]);
-
-        $middleware->api(append: [
-            SecurityHeaders::class,
-        ]);
-
-        $middleware->alias([
-            'auth' => Authenticate::class,
-            'guest' => RedirectIfAuthenticated::class,
-            '2fa' => RequireTwoFactorEnabled::class,
-            'role' => CheckRole::class,
-            'abilities' => CheckAbilities::class,
-            'ability' => CheckForAnyAbility::class,
-            'inbound-email.verify' => VerifyInboundEmailSignature::class,
-        ]);
+    ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->appendToGroup('web', [SetLocale::class, SecurityHeaders::class]);
     })
-    ->withExceptions(function (Exceptions $exceptions) {
-        //
+    ->withExceptions(function (Exceptions $exceptions): void {
+        $exceptions->shouldRenderJsonWhen(
+            fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
+        );
     })->create();

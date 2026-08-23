@@ -1,129 +1,53 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: liberu-billing-network-policy
-  namespace: liberu-billing
+  name: boilerplate-network-policy
+  namespace: boilerplate-laravel
   labels:
-    app.kubernetes.io/name: liberu-billing
+    app: boilerplate-laravel
 spec:
   podSelector:
     matchLabels:
-      app: liberu-billing-app
+      app: boilerplate-laravel
   policyTypes:
-    - Ingress
-    - Egress
+  - Ingress
+  - Egress
   ingress:
-    - from:
-        - namespaceSelector:
-            matchLabels:
-              kubernetes.io/metadata.name: ingress-nginx
-      ports:
-        - protocol: TCP
-          port: 80
-        - protocol: TCP
-          port: 443
-    - from:
-        - namespaceSelector:
-            matchLabels:
-              kubernetes.io/metadata.name: liberu-billing
-      ports:
-        - protocol: TCP
-          port: 9000
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: ingress-nginx
+    ports:
+    - protocol: TCP
+      port: 80
+    - protocol: TCP
+      port: 8000
+  - from:
+    - podSelector:
+        matchLabels:
+          app: boilerplate-laravel
+    ports:
+    - protocol: TCP
+      port: 8000
+    - protocol: TCP
+      port: 6379
+    - protocol: TCP
+      port: 3306
   egress:
-    - to:
-        - namespaceSelector:
-            matchLabels:
-              kubernetes.io/metadata.name: kube-system
-      ports:
-        - protocol: UDP
-          port: 53
-        - protocol: TCP
-          port: 53
-    - to:
-        - namespaceSelector:
-            matchLabels:
-              kubernetes.io/metadata.name: liberu-billing
-          podSelector:
-            matchLabels:
-              app: liberu-billing-mysql
-      ports:
-        - protocol: TCP
-          port: 3306
-    - to:
-        - namespaceSelector:
-            matchLabels:
-              kubernetes.io/metadata.name: liberu-billing
-          podSelector:
-            matchLabels:
-              app: liberu-billing-redis
-      ports:
-        - protocol: TCP
-          port: 6379
-    - to:
-        - ipBlock:
-            cidr: 0.0.0.0/0
-            except:
-              - 10.0.0.0/8
-              - 172.16.0.0/12
-              - 192.168.0.0/16
-      ports:
-        - protocol: TCP
-          port: 443
-        - protocol: TCP
-          port: 80
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: liberu-billing-horizon-network-policy
-  namespace: liberu-billing
-  labels:
-    app.kubernetes.io/name: liberu-billing
-spec:
-  podSelector:
-    matchLabels:
-      app: liberu-billing-horizon
-  policyTypes:
-    - Egress
-  egress:
-    - to:
-        - namespaceSelector:
-            matchLabels:
-              kubernetes.io/metadata.name: kube-system
-      ports:
-        - protocol: UDP
-          port: 53
-        - protocol: TCP
-          port: 53
-    - to:
-        - namespaceSelector:
-            matchLabels:
-              kubernetes.io/metadata.name: liberu-billing
-          podSelector:
-            matchLabels:
-              app: liberu-billing-mysql
-      ports:
-        - protocol: TCP
-          port: 3306
-    - to:
-        - namespaceSelector:
-            matchLabels:
-              kubernetes.io/metadata.name: liberu-billing
-          podSelector:
-            matchLabels:
-              app: liberu-billing-redis
-      ports:
-        - protocol: TCP
-          port: 6379
-    - to:
-        - ipBlock:
-            cidr: 0.0.0.0/0
-            except:
-              - 10.0.0.0/8
-              - 172.16.0.0/12
-              - 192.168.0.0/16
-      ports:
-        - protocol: TCP
-          port: 443
-        - protocol: TCP
-          port: 80
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: kube-system
+    ports:
+    - protocol: UDP
+      port: 53
+  - to:
+    - podSelector:
+        matchLabels:
+          app: boilerplate-laravel
+  - to: []
+    ports:
+    - protocol: TCP
+      port: 443
+    - protocol: TCP
+      port: 80
