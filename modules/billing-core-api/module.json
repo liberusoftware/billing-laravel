@@ -3,7 +3,7 @@
   "name": "billing-core-api",
   "display_name": "Billing Core API",
   "description": "Sanctum-protected transport adapter for Billing Core.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "category": "adapter",
   "provider": "Liberu\\Billing\\Core\\Api\\BillingCoreApiServiceProvider",
   "requires": {"php": "^8.5", "laravel": "^13.0", "packages": {"liberusoftware/billing-billing-core": "^0.1", "liberusoftware/module-manager": "^1.0"}},
