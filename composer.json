@@ -205,10 +205,12 @@
     ],
     "require": {
         "php": "^8.5",
+        "barryvdh/laravel-dompdf": "^3.1",
         "bezhansalleh/filament-shield": "~4.0",
         "bursteri/socialstream": "^7.0",
         "filament/filament": "~5.1",
         "filament/spatie-laravel-settings-plugin": "^5.0",
+        "guzzlehttp/guzzle": "^7.8",
         "laravel/framework": "^13.0",
         "laravel/horizon": "^5.0",
         "laravel/jetstream": "^5.1",
@@ -266,12 +268,17 @@
         "liberusoftware/two-factor-authentication": "^1.0",
         "liberusoftware/webhooks": "^1.0",
         "livewire/livewire": "^4.0",
+        "orangehill/iseed": "^3.0",
+        "phpoffice/phpspreadsheet": "^5.8",
         "spatie/laravel-activitylog": "^5.0",
         "spatie/laravel-backup": "^10.3",
+        "spatie/laravel-menu": "^4.2",
         "spatie/laravel-passkeys": "^1.6",
         "spatie/laravel-permission": "^7.0",
         "spiral/roadrunner-cli": "^2.6.0",
-        "spiral/roadrunner-http": "^3.3.0"
+        "spiral/roadrunner-http": "^3.3.0",
+        "square/square": "^45.1",
+        "stripe/stripe-php": "^20.3"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

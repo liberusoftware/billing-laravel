@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.5.0 - 2026-08-09
+
+- Release metadata only: `composer.json` and `module.json` move to `1.5.0`. **No source, schema or
+  CI change** — `1.4.1` and this tag point at the same tree.
+- Backfill the `1.4.0` and `1.4.1` entries below, which were tagged without one.
+
+## 1.4.1 - 2026-08-07
+
+- Run static analysis in CI.
+- Set the PHPStan baseline to the measured level rather than an asserted one.
+
+## 1.4.0 - 2026-08-07
+
+- Set the coverage ratchet from a measured baseline.
+
 ## 1.2.2 - 2026-08-06
 
 - Split CI into the three workflows `CONFORMANCE.md` §3.9 asks for, rather than one calling all

@@ -1,0 +1,53 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Filament\Admin\Resources\Teams\Tables;
+
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
+
+class TeamsTable
+{
+    public static function configure(Table $table): Table
+    {
+        return $table
+            ->columns(
+                [
+                    TextColumn::make('name'),
+                    TextColumn::make('owner.name'),
+                    IconColumn::make('personal_team')
+                        ->boolean(),
+                    IconColumn::make('is_default_for_registration')
+                        ->boolean(),
+                    TextColumn::make('created_at')
+                        ->dateTime(),
+                ]
+            )
+            ->filters(
+                [
+                    //
+                ]
+            )
+            ->recordActions(
+                [
+                    EditAction::make(),
+                    DeleteAction::make(),
+                ]
+            )
+            ->toolbarActions(
+                [
+                    BulkActionGroup::make(
+                        [
+                            DeleteBulkAction::make(),
+                        ]
+                    ),
+                ]
+            );
+    }
+}
