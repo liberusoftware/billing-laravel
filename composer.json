@@ -11,6 +11,13 @@
     "license": "MIT",
     "repositories": [
         {
+            "type": "path",
+            "url": "modules/billing-billing-core",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
             "type": "vcs",
             "url": "https://github.com/liberusoftware/composer-installer.git"
         },
@@ -206,6 +213,7 @@
     "require": {
         "php": "^8.5",
         "barryvdh/laravel-dompdf": "^3.1",
+        "liberusoftware/module-billing-billing-core": "0.1.0",
         "bezhansalleh/filament-shield": "~4.0",
         "bursteri/socialstream": "^7.0",
         "filament/filament": "~5.1",

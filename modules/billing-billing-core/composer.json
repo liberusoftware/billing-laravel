@@ -1,0 +1,33 @@
+{
+  "name": "liberusoftware/module-billing-billing-core",
+  "description": "Framework-neutral billing account and period primitives.",
+  "type": "liberu-module",
+  "license": "MIT",
+  "require": {
+    "php": "^8.5",
+    "illuminate/support": "^13.0",
+    "liberusoftware/module-manager": "^1.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Liberu\\Billing\\Core\\": "src/"
+    }
+  },
+  "extra": {
+    "liberu": {
+      "name": "billing-billing-core"
+    }
+  },
+  "version": "0.1.0",
+  "autoload-dev": {
+    "psr-4": {
+      "Liberu\\Billing\\Core\\Tests\\": "tests/"
+    }
+  },
+  "require-dev": {
+    "pestphp/pest": "^5.0"
+  },
+  "scripts": {
+    "test": "pest"
+  }
+}

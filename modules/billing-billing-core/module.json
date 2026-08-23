@@ -1,0 +1,20 @@
+{
+  "$schema": "https://schemas.liberu.dev/module/v1.json",
+  "name": "billing-billing-core",
+  "display_name": "Billing Core",
+  "description": "Billing account identity, billing periods, and deterministic amount primitives.",
+  "version": "0.1.0",
+  "category": "product",
+  "provider": "Liberu\\Billing\\Core\\BillingCoreServiceProvider",
+  "requires": {
+    "php": "^8.5",
+    "laravel": "^13.0",
+    "packages": {
+      "liberusoftware/module-manager": "^1.0"
+    }
+  },
+  "suggests": [],
+  "capabilities": ["billing.core"],
+  "default_enabled": true,
+  "features": ["Billing periods", "Account identity", "Deterministic amounts"]
+}
