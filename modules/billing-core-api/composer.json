@@ -1,5 +1,5 @@
 {
-  "name": "liberusoftware/module-billing-core-api",
+  "name": "liberusoftware/billing-core-api",
   "description": "HTTP API adapter for the Liberu Billing Core module.",
   "type": "liberu-module",
   "license": "MIT",
@@ -8,7 +8,7 @@
     "illuminate/http": "^13.0",
     "illuminate/routing": "^13.0",
     "laravel/sanctum": "^4.0",
-    "liberusoftware/module-billing-billing-core": "^0.1",
+    "liberusoftware/billing-billing-core": "^0.1",
     "liberusoftware/module-manager": "^1.0"
   },
   "autoload": {

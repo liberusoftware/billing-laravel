@@ -1,0 +1,14 @@
+{
+  "$schema": "https://schemas.liberu.dev/module/v1.json",
+  "name": "billing-catalog",
+  "display_name": "Billing Catalog",
+  "description": "Products and product lifecycle owned by Billing Catalog.",
+  "version": "0.1.0",
+  "category": "product",
+  "provider": "Liberu\\Billing\\Catalog\\CatalogServiceProvider",
+  "requires": {"php": "^8.5", "laravel": "^13.0", "packages": {"liberusoftware/module-manager": "^1.0"}},
+  "suggests": [],
+  "capabilities": ["billing.catalog"],
+  "default_enabled": true,
+  "features": ["Products", "Product lifecycle", "Team-scoped catalog"]
+}

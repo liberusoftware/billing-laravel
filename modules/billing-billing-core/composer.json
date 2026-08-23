@@ -1,5 +1,5 @@
 {
-  "name": "liberusoftware/module-billing-billing-core",
+  "name": "liberusoftware/billing-billing-core",
   "description": "Framework-neutral billing account and period primitives.",
   "type": "liberu-module",
   "license": "MIT",

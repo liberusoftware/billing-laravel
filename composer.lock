@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "98a4e22707d4f14900bf418ad0cd13bf",
+    "content-hash": "a8c42a967ddb2f0636d1aa83753379d6",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -6020,6 +6020,190 @@
             "time": "2026-08-07T14:25:10+00:00"
         },
         {
+            "name": "liberusoftware/billing-billing-core",
+            "version": "0.1.1",
+            "dist": {
+                "type": "path",
+                "url": "modules/billing-billing-core",
+                "reference": "81c19d1a58d0f90040c945abc213758660c2fd72"
+            },
+            "require": {
+                "illuminate/support": "^13.0",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "billing-billing-core"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Core\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Liberu\\Billing\\Core\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Framework-neutral billing account and period primitives.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/billing-catalog",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/billing-catalog",
+                "reference": "aeb72d92e346895ddd57092746f15dd84143417f"
+            },
+            "require": {
+                "illuminate/database": "^13.0",
+                "illuminate/support": "^13.0",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "billing-catalog"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Catalog\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Provider-neutral catalog products and lifecycle for Liberu Billing.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/billing-core-api",
+            "version": "0.1.1",
+            "dist": {
+                "type": "path",
+                "url": "modules/billing-core-api",
+                "reference": "72c2e6e74d781a4eb590d2bf988e4e5e2add235d"
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "laravel/sanctum": "^4.0",
+                "liberusoftware/billing-billing-core": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "billing-core-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Core\\Api\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "HTTP API adapter for the Liberu Billing Core module.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/billing-core-filament",
+            "version": "0.1.1",
+            "dist": {
+                "type": "path",
+                "url": "modules/billing-core-filament",
+                "reference": "f4557727f31943bce5a5b647afa6938aa1db368b"
+            },
+            "require": {
+                "filament/filament": "~5.1",
+                "liberusoftware/billing-billing-core": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "billing-core-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Core\\Filament\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament 5 adapter for the Liberu Billing Core module.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/billing-core-livewire",
+            "version": "0.1.1",
+            "dist": {
+                "type": "path",
+                "url": "modules/billing-core-livewire",
+                "reference": "e18ac6bcdd1c66f9f3a272994dd00fd89b0b9019"
+            },
+            "require": {
+                "liberusoftware/billing-billing-core": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "billing-core-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Core\\Livewire\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire 4 adapter for the Liberu Billing Core module.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
             "name": "liberusoftware/composer-installer",
             "version": "1.1.0",
             "source": {
@@ -6821,156 +7005,6 @@
                 "issues": "https://github.com/liberusoftware/module-localization-mymemory/issues"
             },
             "time": "2026-08-07T14:25:31+00:00"
-        },
-        {
-            "name": "liberusoftware/module-billing-billing-core",
-            "version": "0.1.1",
-            "dist": {
-                "type": "path",
-                "url": "modules/billing-billing-core",
-                "reference": "6f2beec46ddda07ddb6fd615f31ae61674338ddc"
-            },
-            "require": {
-                "illuminate/support": "^13.0",
-                "liberusoftware/module-manager": "^1.0",
-                "php": "^8.5"
-            },
-            "require-dev": {
-                "pestphp/pest": "^5.0"
-            },
-            "type": "liberu-module",
-            "extra": {
-                "liberu": {
-                    "name": "billing-billing-core"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Liberu\\Billing\\Core\\": "src/"
-                }
-            },
-            "autoload-dev": {
-                "psr-4": {
-                    "Liberu\\Billing\\Core\\Tests\\": "tests/"
-                }
-            },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "Framework-neutral billing account and period primitives.",
-            "transport-options": {
-                "symlink": false,
-                "relative": true
-            }
-        },
-        {
-            "name": "liberusoftware/module-billing-core-api",
-            "version": "0.1.1",
-            "dist": {
-                "type": "path",
-                "url": "modules/billing-core-api",
-                "reference": "ccba53dbd76931c960cc8f0a6503b445268ab577"
-            },
-            "require": {
-                "illuminate/http": "^13.0",
-                "illuminate/routing": "^13.0",
-                "laravel/sanctum": "^4.0",
-                "liberusoftware/module-billing-billing-core": "^0.1",
-                "liberusoftware/module-manager": "^1.0",
-                "php": "^8.5"
-            },
-            "type": "liberu-module",
-            "extra": {
-                "liberu": {
-                    "name": "billing-core-api"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Liberu\\Billing\\Core\\Api\\": "src/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "HTTP API adapter for the Liberu Billing Core module.",
-            "transport-options": {
-                "symlink": false,
-                "relative": true
-            }
-        },
-        {
-            "name": "liberusoftware/module-billing-core-filament",
-            "version": "0.1.1",
-            "dist": {
-                "type": "path",
-                "url": "modules/billing-core-filament",
-                "reference": "d02e84f43b7b68e255b92f001c49ed08dd2b82b3"
-            },
-            "require": {
-                "filament/filament": "~5.1",
-                "liberusoftware/module-billing-billing-core": "^0.1",
-                "liberusoftware/module-manager": "^1.0",
-                "php": "^8.5"
-            },
-            "type": "liberu-module",
-            "extra": {
-                "liberu": {
-                    "name": "billing-core-filament"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Liberu\\Billing\\Core\\Filament\\": "src/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "Filament 5 adapter for the Liberu Billing Core module.",
-            "transport-options": {
-                "symlink": false,
-                "relative": true
-            }
-        },
-        {
-            "name": "liberusoftware/module-billing-core-livewire",
-            "version": "0.1.1",
-            "dist": {
-                "type": "path",
-                "url": "modules/billing-core-livewire",
-                "reference": "4c0e2953109a50502557f5ecbf1f2c012b3d9fbf"
-            },
-            "require": {
-                "liberusoftware/module-billing-billing-core": "^0.1",
-                "liberusoftware/module-manager": "^1.0",
-                "livewire/livewire": "^4.0",
-                "php": "^8.5"
-            },
-            "type": "liberu-module",
-            "extra": {
-                "liberu": {
-                    "name": "billing-core-livewire"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Liberu\\Billing\\Core\\Livewire\\": "src/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "Livewire 4 adapter for the Liberu Billing Core module.",
-            "transport-options": {
-                "symlink": false,
-                "relative": true
-            }
         },
         {
             "name": "liberusoftware/module-manager",
