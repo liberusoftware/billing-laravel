@@ -16,7 +16,11 @@ class TaxService
 
     public function __construct()
     {
-        $this->taxApiConfig = config('services.tax_api');
+        $this->taxApiConfig = array_replace([
+            'enabled' => false,
+            'api_key' => null,
+            'url' => null,
+        ], (array) config('services.tax_api', []));
     }
 
     public function calculateTax(Invoice $invoice): int|float
