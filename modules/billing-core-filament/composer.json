@@ -1,0 +1,19 @@
+{
+  "name": "liberusoftware/module-billing-core-filament",
+  "description": "Filament 5 adapter for the Liberu Billing Core module.",
+  "type": "liberu-module",
+  "license": "MIT",
+  "require": {
+    "php": "^8.5",
+    "filament/filament": "~5.1",
+    "liberusoftware/module-billing-billing-core": "^0.1",
+    "liberusoftware/module-manager": "^1.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Liberu\\Billing\\Core\\Filament\\": "src/"
+    }
+  },
+  "extra": {"liberu": {"name": "billing-core-filament"}},
+  "version": "0.1.0"
+}

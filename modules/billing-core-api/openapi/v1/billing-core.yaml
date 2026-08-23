@@ -1,0 +1,24 @@
+openapi: 3.1.0
+info:
+  title: Billing Core API
+  version: 1.0.0
+paths:
+  /api/v1/billing/billing-core:
+    get:
+      operationId: billing.core.accounts.list
+      security: [{ sanctum: [] }]
+      responses:
+        '200':
+          description: Authorized billing accounts.
+    post:
+      operationId: billing.core.accounts.create
+      security: [{ sanctum: [] }]
+      responses:
+        '201':
+          description: Billing account created.
+components:
+  securitySchemes:
+    sanctum:
+      type: http
+      scheme: bearer
+      bearerFormat: Sanctum

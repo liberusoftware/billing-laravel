@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Carbon\CarbonImmutable;
 use InvalidArgumentException;
+use Liberu\Billing\Core\Enums\BillingAccountStatus;
 use Liberu\Billing\Core\ValueObjects\BillingAmount;
 use Liberu\Billing\Core\ValueObjects\BillingPeriod;
 
@@ -23,4 +24,9 @@ it('adds amounts without floating point arithmetic', function (): void {
 it('rejects mixed currencies', function (): void {
     expect(fn () => (new BillingAmount(100, 'USD'))->add(new BillingAmount(100, 'EUR')))
         ->toThrow(InvalidArgumentException::class);
+});
+
+it('defines explicit account lifecycle states', function (): void {
+    expect(BillingAccountStatus::cases())->toHaveCount(3)
+        ->and(BillingAccountStatus::Active->value)->toBe('active');
 });

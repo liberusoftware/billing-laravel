@@ -1,0 +1,14 @@
+{
+  "$schema": "https://schemas.liberu.dev/module/v1.json",
+  "name": "billing-core-filament",
+  "display_name": "Billing Core Filament",
+  "description": "Filament 5 resources for authorized Billing Core accounts.",
+  "version": "0.1.0",
+  "category": "presentation",
+  "provider": "Liberu\\Billing\\Core\\Filament\\BillingCoreFilamentServiceProvider",
+  "requires": {"php": "^8.5", "laravel": "^13.0", "packages": {"liberusoftware/module-billing-billing-core": "^0.1", "liberusoftware/module-manager": "^1.0"}},
+  "suggests": [],
+  "capabilities": ["billing.core.filament"],
+  "default_enabled": true,
+  "features": ["Billing account resource", "Scoped account forms", "Lifecycle display"]
+}
