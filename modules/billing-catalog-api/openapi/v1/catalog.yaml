@@ -1,0 +1,17 @@
+openapi: 3.1.0
+info:
+  title: Billing Catalog API
+  version: 1.0.0
+paths:
+  /api/v1/billing/catalog:
+    get:
+      operationId: billing.catalog.products.list
+      security: [{ sanctum: [] }]
+      responses: {'200': {description: Authorized products.}}
+    post:
+      operationId: billing.catalog.products.create
+      security: [{ sanctum: [] }]
+      responses: {'201': {description: Product created.}}
+components:
+  securitySchemes:
+    sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}
