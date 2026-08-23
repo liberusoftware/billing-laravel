@@ -15,5 +15,5 @@
     }
   },
   "extra": {"liberu": {"name": "billing-core-filament"}},
-  "version": "0.1.0"
+  "version": "0.1.1"
 }

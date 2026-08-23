@@ -18,7 +18,7 @@
       "name": "billing-billing-core"
     }
   },
-  "version": "0.1.0",
+  "version": "0.1.1",
   "autoload-dev": {
     "psr-4": {
       "Liberu\\Billing\\Core\\Tests\\": "tests/"
