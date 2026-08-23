@@ -11,5 +11,10 @@
   },
   "autoload": {"psr-4": {"Liberu\\Billing\\Catalog\\": "src/"}},
   "extra": {"liberu": {"name": "billing-catalog"}},
-  "version": "0.1.0"
+  "version": "0.1.0",
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    }
+  }
 }

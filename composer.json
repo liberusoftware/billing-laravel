@@ -1,8 +1,8 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "liberusoftware/boilerplate-laravel",
+    "name": "liberusoftware/billing-laravel",
     "type": "project",
-    "description": "Liberu boilerplate Laravel application.",
+    "description": "Liberu Billing Laravel application.",
     "keywords": [
         "laravel",
         "framework",
@@ -45,6 +45,9 @@
                 "symlink": false
             }
         },
+        {"type": "path", "url": "modules/billing-catalog-api", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/billing-catalog-filament", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/billing-catalog-livewire", "options": {"symlink": false}},
         {
             "type": "vcs",
             "url": "https://github.com/liberusoftware/composer-installer.git"
@@ -52,10 +55,6 @@
         {
             "type": "vcs",
             "url": "https://github.com/liberusoftware/analytics-contracts.git"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/liberusoftware/localization-contracts.git"
         },
         {
             "type": "vcs",
@@ -246,6 +245,9 @@
         "liberusoftware/billing-core-filament": "0.1.2",
         "liberusoftware/billing-core-livewire": "0.1.2",
         "liberusoftware/billing-catalog": "0.1.0",
+        "liberusoftware/billing-catalog-api": "0.1.0",
+        "liberusoftware/billing-catalog-filament": "0.1.0",
+        "liberusoftware/billing-catalog-livewire": "0.1.0",
         "bezhansalleh/filament-shield": "~4.0",
         "bursteri/socialstream": "^7.0",
         "filament/filament": "~5.1",

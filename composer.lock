@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ed9952c03e0b502844d924178b698026",
+    "content-hash": "04173f599083c0e7cdca50631b3d68ed",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -5993,7 +5993,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/billing-billing-core",
-                "reference": "b3a420b261983e0d3347f6f3fb832200cc96e4f1"
+                "reference": "a8cadb37e1b75e027065f7198876b856bb9d8570"
             },
             "require": {
                 "illuminate/support": "^13.0",
@@ -6039,7 +6039,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/billing-catalog",
-                "reference": "aeb72d92e346895ddd57092746f15dd84143417f"
+                "reference": "74be920421994e2e38db801221a281b882c9bcb4"
             },
             "require": {
                 "illuminate/database": "^13.0",
@@ -6068,12 +6068,116 @@
             }
         },
         {
+            "name": "liberusoftware/billing-catalog-api",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/billing-catalog-api",
+                "reference": "67a487804eb42d284d5b6397581c7b22e85a72ae"
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "laravel/sanctum": "^4.0",
+                "liberusoftware/billing-catalog": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "billing-catalog-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Catalog\\Api\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "HTTP API adapter for the Liberu Billing Catalog module.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/billing-catalog-filament",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/billing-catalog-filament",
+                "reference": "410e6c8b8038b1fdc88a5e2926476a5cec2b2940"
+            },
+            "require": {
+                "filament/filament": "~5.1",
+                "liberusoftware/billing-catalog": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "billing-catalog-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Catalog\\Filament\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament 5 adapter for the Liberu Billing Catalog module.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/billing-catalog-livewire",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/billing-catalog-livewire",
+                "reference": "4a34a565a9360c75b4774fa05b928aca0943df8d"
+            },
+            "require": {
+                "liberusoftware/billing-catalog": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "billing-catalog-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Catalog\\Livewire\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire 4 adapter for the Liberu Billing Catalog module.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
             "name": "liberusoftware/billing-core-api",
             "version": "0.1.2",
             "dist": {
                 "type": "path",
                 "url": "modules/billing-core-api",
-                "reference": "373d32aca960996b985ec16f71f9ba65123425e1"
+                "reference": "3d80f3bd1cdc3e7b474c26ad2f73125074cdc195"
             },
             "require": {
                 "illuminate/http": "^13.0",
@@ -6109,7 +6213,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/billing-core-filament",
-                "reference": "a5b1f986768f8cb39f42664bb298e7a405b06a72"
+                "reference": "a0730a8fe655a2d7e9f3d95d01fad07d4fa84a45"
             },
             "require": {
                 "filament/filament": "~5.1",
@@ -6143,7 +6247,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/billing-core-livewire",
-                "reference": "e8e0b185ba69a1243a13740de864523705c75606"
+                "reference": "4e82b6ff1b0bf03bbbc571fd7e9e7f410966ad9f"
             },
             "require": {
                 "liberusoftware/billing-billing-core": "^0.1",
@@ -6733,7 +6837,7 @@
             "version": "1.0.2",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/localization-contracts.git",
+                "url": "https://github.com/liberusoftware/localization-contracts.git",
                 "reference": "7b5121caeeda07379bab2bf8ea1b3947855afed3"
             },
             "dist": {
@@ -7738,7 +7842,7 @@
             "version": "2.0.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/theme-base.git",
+                "url": "https://github.com/liberusoftware/theme-base.git",
                 "reference": "a79f3355a9dd7af74f080d66ea82f700cfac09b8"
             },
             "dist": {
@@ -7787,7 +7891,7 @@
             "version": "1.5.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/theme-clear-signal.git",
+                "url": "https://github.com/liberusoftware/theme-clear-signal.git",
                 "reference": "e4f7e56bdf4edc722c59976acdf3acbf9757df28"
             },
             "dist": {
@@ -7837,7 +7941,7 @@
             "version": "1.5.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/theme-dark.git",
+                "url": "https://github.com/liberusoftware/theme-dark.git",
                 "reference": "d5d2027dd87a806cd4faee81ca798caf0ae75845"
             },
             "dist": {
@@ -7887,7 +7991,7 @@
             "version": "1.5.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/theme-default.git",
+                "url": "https://github.com/liberusoftware/theme-default.git",
                 "reference": "759e19abeba7d39d129d6ce9acaa10d9d4e7da50"
             },
             "dist": {
@@ -8047,7 +8151,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-two-factor-authentication.git",
+                "url": "https://github.com/liberusoftware/module-two-factor-authentication.git",
                 "reference": "60e4cb036f76375e9814cf57ca4a32fc343301e5"
             },
             "dist": {
@@ -8098,7 +8202,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-webhooks.git",
+                "url": "https://github.com/liberusoftware/module-webhooks.git",
                 "reference": "308f905ee503c708dce8ffbb78a08c7c5b9d72bb"
             },
             "dist": {
