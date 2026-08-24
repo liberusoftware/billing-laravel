@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "edbdf9feb360b41de572cf5d8fa5a43c",
+    "content-hash": "10e3e6a5cf79ca9228e4932e832a8ac7",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -6277,11 +6277,11 @@
         },
         {
             "name": "liberusoftware/billing-pricing",
-            "version": "0.1.0",
+            "version": "0.1.1",
             "dist": {
                 "type": "path",
                 "url": "modules/billing-pricing",
-                "reference": "b74990ec77f4f311353e52eddbf0f3c075f31254"
+                "reference": "60f33aad55c0d11f9d4a5ea1a61e5046f4a60542"
             },
             "require": {
                 "illuminate/database": "^13.0",
@@ -6311,11 +6311,11 @@
         },
         {
             "name": "liberusoftware/billing-pricing-api",
-            "version": "0.1.0",
+            "version": "0.1.1",
             "dist": {
                 "type": "path",
                 "url": "modules/billing-pricing-api",
-                "reference": "4a33a3ced9443484b4ca2f489bf488b6337a72e4"
+                "reference": "dbcd218ca64cb2ad0c2ecf721d2bfe26416b46cf"
             },
             "require": {
                 "illuminate/http": "^13.0",
@@ -6347,11 +6347,11 @@
         },
         {
             "name": "liberusoftware/billing-pricing-filament",
-            "version": "0.1.0",
+            "version": "0.1.1",
             "dist": {
                 "type": "path",
                 "url": "modules/billing-pricing-filament",
-                "reference": "54542dac96699406f910ba88dc26ddb628f1eb77"
+                "reference": "c44f7571b310c1f2fe6f9fdc37505f54879bef90"
             },
             "require": {
                 "filament/filament": "~5.1",
@@ -6381,11 +6381,11 @@
         },
         {
             "name": "liberusoftware/billing-pricing-livewire",
-            "version": "0.1.0",
+            "version": "0.1.1",
             "dist": {
                 "type": "path",
                 "url": "modules/billing-pricing-livewire",
-                "reference": "1a5bd6534d5eed9a7bff21e91279ae5a6eb1ba76"
+                "reference": "ea4325550cb5c2c76cae439f6c3730346c72f097"
             },
             "require": {
                 "liberusoftware/billing-pricing": "^0.1",
