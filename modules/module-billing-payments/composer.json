@@ -1,0 +1,17 @@
+{
+  "name": "liberusoftware/module-billing-payments",
+  "description": "Provider-neutral payment methods, capture, allocation, refunds, disputes, and reconciliation.",
+  "type": "liberu-module",
+  "license": "MIT",
+  "require": {
+    "php": "^8.5",
+    "illuminate/database": "^13.0",
+    "illuminate/events": "^13.0",
+    "illuminate/support": "^13.0",
+    "liberusoftware/module-manager": "^1.0"
+  },
+  "autoload": {"psr-4": {"Liberu\\Billing\\Payments\\": "src/"}},
+  "extra": {"liberu": {"name": "module-billing-payments"}},
+  "version": "0.1.0",
+  "config": {"allow-plugins": {"pestphp/pest-plugin": true}}
+}

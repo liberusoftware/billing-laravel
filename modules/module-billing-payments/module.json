@@ -1,0 +1,18 @@
+{
+  "$schema": "https://schemas.liberu.dev/module/v1.json",
+  "name": "module-billing-payments",
+  "display_name": "Billing Payments",
+  "description": "Provider-neutral payment methods, mandates, capture, allocation, refunds, disputes, and reconciliation.",
+  "version": "0.1.0",
+  "category": "capability",
+  "provider": "Liberu\\Billing\\Payments\\PaymentsServiceProvider",
+  "requires": {
+    "php": "^8.5",
+    "laravel": "^13.0",
+    "packages": {"liberusoftware/module-manager": "^1.0"}
+  },
+  "suggests": [],
+  "capabilities": ["billing.payments"],
+  "default_enabled": true,
+  "features": ["Methods", "Mandates", "Gateway drivers", "Capture", "Allocation", "Refunds", "Disputes", "Reconciliation"]
+}

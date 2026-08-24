@@ -88,6 +88,10 @@
         {"type": "path", "url": "modules/module-billing-subscriptions-api", "options": {"symlink": false}},
         {"type": "path", "url": "modules/module-billing-subscriptions-filament", "options": {"symlink": false}},
         {"type": "path", "url": "modules/module-billing-subscriptions-livewire", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-payments", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-payments-api", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-payments-filament", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-payments-livewire", "options": {"symlink": false}},
         {
             "type": "vcs",
             "url": "https://github.com/liberusoftware/composer-installer.git"
@@ -300,6 +304,10 @@
         "liberusoftware/module-billing-subscriptions-api": "0.1.0",
         "liberusoftware/module-billing-subscriptions-filament": "0.1.0",
         "liberusoftware/module-billing-subscriptions-livewire": "0.1.0",
+        "liberusoftware/module-billing-payments": "0.1.0",
+        "liberusoftware/module-billing-payments-api": "0.1.0",
+        "liberusoftware/module-billing-payments-filament": "0.1.0",
+        "liberusoftware/module-billing-payments-livewire": "0.1.0",
         "bezhansalleh/filament-shield": "~4.0",
         "bursteri/socialstream": "^7.0",
         "filament/filament": "~5.1",
