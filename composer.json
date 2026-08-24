@@ -104,6 +104,7 @@
         {"type": "path", "url": "modules/module-billing-usage-api", "options": {"symlink": false}},
         {"type": "path", "url": "modules/module-billing-usage-filament", "options": {"symlink": false}},
         {"type": "path", "url": "modules/module-billing-usage-livewire", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-provisioning", "options": {"symlink": false}},
         {
             "type": "vcs",
             "url": "https://github.com/liberusoftware/composer-installer.git"
@@ -332,6 +333,7 @@
         "liberusoftware/module-billing-usage-api": "0.1.0",
         "liberusoftware/module-billing-usage-filament": "0.1.0",
         "liberusoftware/module-billing-usage-livewire": "0.1.0",
+        "liberusoftware/module-billing-provisioning": "0.1.0",
         "bezhansalleh/filament-shield": "~4.0",
         "bursteri/socialstream": "^7.0",
         "filament/filament": "~5.1",

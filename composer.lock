@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a6975af646560070aa3fc1d46adc484d",
+    "content-hash": "7b435f91af6c43a238fc6e19ff9be35e",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -7706,6 +7706,41 @@
                 "MIT"
             ],
             "description": "Livewire 4 adapter for Liberu Billing Payments.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-provisioning",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-provisioning",
+                "reference": "ee77e05af14d1d47b9e97751b70576a944cafd65"
+            },
+            "require": {
+                "illuminate/database": "^13.0",
+                "illuminate/events": "^13.0",
+                "illuminate/support": "^13.0",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-provisioning"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Provisioning\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Provider-neutral billing service provisioning and reconciliation.",
             "transport-options": {
                 "symlink": false,
                 "relative": true
