@@ -128,7 +128,7 @@ Coverage is measured with Xdebug over the configured release scope and must be
 green before branch promotion:
 
 ```bash
-XDEBUG_MODE=coverage php artisan test --coverage --min=100 --coverage-clover=coverage.xml
+XDEBUG_MODE=coverage vendor/bin/pest --coverage --min=100 --coverage-clover=coverage.xml
 ```
 
 Each independently released package owns its own source scope and coverage gate.

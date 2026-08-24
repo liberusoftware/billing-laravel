@@ -46,7 +46,7 @@ jobs:
         run: php artisan key:generate
 
       - name: Run tests
-        run: php artisan test --no-coverage
+        run: vendor/bin/pest --no-coverage
 
       - name: Publish release
         env:
