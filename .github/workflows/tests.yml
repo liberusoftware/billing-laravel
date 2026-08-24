@@ -62,7 +62,7 @@ jobs:
       # The threshold measures app/ alone — the host's five composition classes. Package
       # coverage is each package's own gate, against its own phpunit.xml (§3.10).
       - name: Run tests
-        run: vendor/bin/pest --coverage-clover=coverage.xml --min=100
+        run: XDEBUG_MODE=coverage php -d memory_limit=1G vendor/bin/pest --coverage-clover=coverage.xml --min=100
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@04b047e8bb82a0c002c8312c1c880fbc6a999d45 # v5

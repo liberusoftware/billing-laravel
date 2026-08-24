@@ -128,14 +128,14 @@ Coverage is measured with Xdebug over the configured release scope and must be
 green before branch promotion:
 
 ```bash
-XDEBUG_MODE=coverage vendor/bin/pest --coverage --min=100 --coverage-clover=coverage.xml
+XDEBUG_MODE=coverage php -d memory_limit=1G vendor/bin/pest --coverage --min=100 --coverage-clover=coverage.xml
 ```
 
 Each independently released package owns its own source scope and coverage gate.
-The current refactor is still in progress: the latest host unit run passed 418
-tests and measured 29.14% line coverage (4,354/14,942 statements), while the
-full host scope is not yet a passing 100% result. A failing coverage run blocks
-release and promotion.
+The current refactor is still in progress: the latest host unit run passed 844
+tests with 3 skipped and measured 46.5% line coverage. The full host scope is
+not yet a passing 100% result. A failing coverage run blocks release and
+promotion.
 
 ### Publishing the component repositories
 
