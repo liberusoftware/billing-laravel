@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a39d5ad620e85c398e3c68374336e8e2",
+    "content-hash": "82fc327c51c7fe19cb66ce662779ae2d",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -7293,6 +7293,41 @@
             ],
             "description": "MyMemory machine-translation adapter for Liberu Localization.",
             "time": "2026-08-07T14:25:31+00:00"
+        },
+        {
+            "name": "liberusoftware/module-billing-invoicing",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-invoicing",
+                "reference": "d30ccb3bcc46f65bb85746258e7407e5cfb77075"
+            },
+            "require": {
+                "illuminate/database": "^13.0",
+                "illuminate/events": "^13.0",
+                "illuminate/support": "^13.0",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-invoicing"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Invoicing\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Provider-neutral invoicing schedules, lines, tax, credits, adjustments, PDFs, delivery, and finalization.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
         },
         {
             "name": "liberusoftware/module-billing-payments",
