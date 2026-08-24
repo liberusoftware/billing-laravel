@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5935f3d197ec79d08bf9eee865450d81",
+    "content-hash": "fa36165ba7874c590960ab3aa0a83aae",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -7886,11 +7886,47 @@
             }
         },
         {
+            "name": "liberusoftware/module-billing-usage-api",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-usage-api",
+                "reference": "0520dc7fbb6dcceb74abb690c91cb670ac7ad96d"
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "laravel/sanctum": "^4.0",
+                "liberusoftware/module-billing-usage": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-usage-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Usage\\Api\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "HTTP API adapter for Liberu Billing Usage.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
             "name": "liberusoftware/module-manager",
             "version": "1.4.2",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-module-manager.git",
+                "url": "https://github.com/liberusoftware/module-module-manager.git",
                 "reference": "688fc9c01008bfd5258afa2a78587c48804ec2e7"
             },
             "dist": {
@@ -7934,6 +7970,10 @@
                 "MIT"
             ],
             "description": "Deterministic manifest discovery and runtime enablement for Liberu modules.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-module-manager/tree/1.4.2",
+                "issues": "https://github.com/liberusoftware/module-module-manager/issues"
+            },
             "time": "2026-08-07T14:25:25+00:00"
         },
         {
