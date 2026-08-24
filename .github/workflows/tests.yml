@@ -54,7 +54,7 @@ jobs:
       # phpstan.neon existed and was configured at level 9 while nothing ever
       # ran it. Scope and level are explained in that file.
       - name: Static analysis
-        run: vendor/bin/phpstan analyse --no-progress
+        run: php -d memory_limit=1G vendor/bin/phpstan analyse --no-progress
 
       - name: Generate application key
         run: php artisan key:generate
