@@ -19,6 +19,7 @@ paths:
       operationId: billing.payments.create
       summary: Create a pending payment
       security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
       requestBody:
         required: true
         content:
@@ -33,7 +34,7 @@ paths:
       operationId: billing.payments.capture
       summary: Capture a pending payment
       security: [{sanctum: []}]
-      parameters: [{name: payment, in: path, required: true, schema: {type: string}}]
+      parameters: [{name: payment, in: path, required: true, schema: {type: string}}, {$ref: '#/components/parameters/IdempotencyKey'}]
       responses:
         '200': {$ref: '#/components/responses/Document'}
         '401': {$ref: '#/components/responses/Unauthorized'}
@@ -42,7 +43,7 @@ paths:
       operationId: billing.payments.refund
       summary: Refund part or all of a captured payment
       security: [{sanctum: []}]
-      parameters: [{name: payment, in: path, required: true, schema: {type: string}}]
+      parameters: [{name: payment, in: path, required: true, schema: {type: string}}, {$ref: '#/components/parameters/IdempotencyKey'}]
       requestBody:
         required: true
         content:
@@ -61,7 +62,7 @@ paths:
       operationId: billing.payments.dispute
       summary: Open a payment dispute
       security: [{sanctum: []}]
-      parameters: [{name: payment, in: path, required: true, schema: {type: string}}]
+      parameters: [{name: payment, in: path, required: true, schema: {type: string}}, {$ref: '#/components/parameters/IdempotencyKey'}]
       requestBody:
         required: true
         content:
@@ -76,6 +77,8 @@ paths:
         '200': {$ref: '#/components/responses/Document'}
         '401': {$ref: '#/components/responses/Unauthorized'}
 components:
+  parameters:
+    IdempotencyKey: {name: Idempotency-Key, in: header, required: false, schema: {type: string, maxLength: 255}}
   responses:
     Collection:
       description: Paginated authorized payments.

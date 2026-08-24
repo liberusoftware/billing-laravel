@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\Route;
 use Liberu\Billing\Collections\Api\Http\Controllers\CollectionCaseController;
 
-Route::middleware(['api', 'auth:sanctum', 'ability:billing.collections.read'])->prefix('api/v1/billing/collections')->name('billing.collections.')->group(function (): void {
+Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.collections.read'])->prefix('api/v1/billing/collections')->name('billing.collections.')->group(function (): void {
     Route::get('/', [CollectionCaseController::class, 'index'])->name('index');
 });
 

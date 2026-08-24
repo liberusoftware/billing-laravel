@@ -15,13 +15,16 @@ final readonly class AllocatePayment
 
     public function execute(Payment $payment, int $amountMinor, ?int $invoiceId = null): PaymentAllocation
     {
-        $allocated = (int) $payment->allocations()->sum('amount_minor');
-        if ($payment->status !== PaymentStatus::Captured || $amountMinor < 1 || $allocated + $amountMinor > (int) $payment->amount_minor) {
-            throw new \InvalidArgumentException('Allocation amount or payment state is invalid.');
-        }
+        return $this->database->transaction(function () use ($payment, $amountMinor, $invoiceId): PaymentAllocation {
+            $locked = Payment::query()->lockForUpdate()->findOrFail($payment->getKey());
+            $allocated = (int) $locked->allocations()->sum('amount_minor');
+            if ($locked->status !== PaymentStatus::Captured || $amountMinor < 1 || $allocated + $amountMinor > (int) $locked->amount_minor) {
+                throw new \InvalidArgumentException('Allocation amount or payment state is invalid.');
+            }
 
-        return $this->database->transaction(fn (): PaymentAllocation => PaymentAllocation::query()->create([
-            'payment_id' => $payment->getKey(), 'invoice_id' => $invoiceId, 'amount_minor' => $amountMinor, 'currency' => $payment->currency,
-        ]));
+            return PaymentAllocation::query()->create([
+                'payment_id' => $locked->getKey(), 'invoice_id' => $invoiceId, 'amount_minor' => $amountMinor, 'currency' => $locked->currency,
+            ]);
+        });
     }
 }

@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Liberu\Billing\Collections\Livewire\Components;
 
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\Collections\Actions\OpenCollectionCase;
+use Liberu\Billing\Collections\Models\CollectionCase;
 use Liberu\Billing\Collections\Queries\ListCollectionCases;
 use Livewire\Component;
 
@@ -19,6 +21,7 @@ final class CollectionCaseList extends Component
 
     public function create(OpenCollectionCase $open): void
     {
+        Gate::authorize('create', CollectionCase::class);
         $this->validate(['amountMinor' => ['required', 'integer', 'min:1'], 'currency' => ['required', 'string', 'size:3', 'alpha']]);
         $teamId = data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id');
         $open->execute(['team_id' => $teamId, 'amount_minor' => $this->amountMinor, 'currency' => $this->currency]);
@@ -28,6 +31,7 @@ final class CollectionCaseList extends Component
 
     public function render(ListCollectionCases $query): View
     {
+        Gate::authorize('viewAny', CollectionCase::class);
         $teamId = data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id');
 
         return view('module-billing-collections-livewire::case-list', ['cases' => $query->execute($teamId === null ? null : (int) $teamId)]);

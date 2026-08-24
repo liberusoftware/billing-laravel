@@ -39,6 +39,46 @@ paths:
         '401': {$ref: '#/components/responses/Unauthorized'}
         '403': {$ref: '#/components/responses/Forbidden'}
         '422': {$ref: '#/components/responses/ValidationError'}
+  /api/v1/billing/orders/quotes:
+    post:
+      operationId: billing.orders.quotes.create
+      summary: Create a quote
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object, required: [currency, items, total_minor], additionalProperties: true}}}}
+      responses: {'201': {$ref: '#/components/responses/OrderDocument'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/orders/carts:
+    post:
+      operationId: billing.orders.carts.create
+      summary: Create an open cart
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object, required: [currency, items], additionalProperties: true}}}}
+      responses: {'201': {$ref: '#/components/responses/OrderDocument'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/orders/carts/{cart}/checkout:
+    post:
+      operationId: billing.orders.carts.checkout
+      summary: Check out an open cart
+      security: [{sanctum: []}]
+      parameters: [{name: cart, in: path, required: true, schema: {type: integer}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object, additionalProperties: true}}}}
+      responses: {'201': {$ref: '#/components/responses/OrderDocument'}, '401': {$ref: '#/components/responses/Unauthorized'}, '409': {description: Cart is already checked out or expired}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/orders/{order}/fraud-review:
+    post:
+      operationId: billing.orders.fraudReview
+      summary: Record a fraud-review decision
+      security: [{sanctum: []}]
+      parameters: [{name: order, in: path, required: true, schema: {type: integer}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object, required: [status], properties: {status: {type: string}}}}}}
+      responses: {'200': {$ref: '#/components/responses/OrderDocument'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/orders/{order}/change-orders:
+    post:
+      operationId: billing.orders.changeOrders.create
+      summary: Add a change order
+      security: [{sanctum: []}]
+      parameters: [{name: order, in: path, required: true, schema: {type: integer}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object, required: [reason], additionalProperties: true}}}}
+      responses: {'200': {$ref: '#/components/responses/OrderDocument'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
 components:
   parameters:
     PageSize:

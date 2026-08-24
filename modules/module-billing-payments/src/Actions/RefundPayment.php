@@ -24,9 +24,13 @@ final readonly class RefundPayment
         $result = $this->gateways->driver((string) $payment->gateway)->refund($payment, $amountMinor);
 
         return $this->database->transaction(function () use ($payment, $amountMinor, $reason, $result): PaymentRefund {
-            $refund = PaymentRefund::query()->create(['payment_id' => $payment->getKey(), 'amount_minor' => $amountMinor, 'status' => RefundStatus::Completed, 'provider_reference' => $result['reference'], 'reason' => $reason]);
-            $total = (int) $payment->refunded_minor + $amountMinor;
-            $payment->update(['refunded_minor' => $total, 'status' => $total === (int) $payment->amount_minor ? PaymentStatus::Refunded : PaymentStatus::Captured]);
+            $locked = Payment::query()->lockForUpdate()->findOrFail($payment->getKey());
+            $total = (int) $locked->refunded_minor + $amountMinor;
+            if ($locked->status !== PaymentStatus::Captured || $total > (int) $locked->amount_minor) {
+                throw new \InvalidArgumentException('Refund amount or payment state is invalid.');
+            }
+            $refund = PaymentRefund::query()->create(['payment_id' => $locked->getKey(), 'amount_minor' => $amountMinor, 'status' => RefundStatus::Completed, 'provider_reference' => $result['reference'], 'reason' => $reason]);
+            $locked->update(['refunded_minor' => $total, 'status' => $total === (int) $locked->amount_minor ? PaymentStatus::Refunded : PaymentStatus::Captured]);
 
             return $refund;
         });

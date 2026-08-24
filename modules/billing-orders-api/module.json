@@ -10,6 +10,7 @@
     "php": "^8.5",
     "laravel": "^13.0",
     "packages": {
+      "liberusoftware/api-access": "^1.0",
       "liberusoftware/billing-orders": "^0.1",
       "liberusoftware/module-manager": "^1.0"
     }

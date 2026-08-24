@@ -32,6 +32,13 @@ final class ReplayIdempotentRequest
             ]);
         }
 
+        if ($existing !== null) {
+            return new Response('The idempotent request is already being processed.', 409, [
+                'Content-Type' => 'application/problem+json',
+                'Retry-After' => '1',
+            ]);
+        }
+
         $response = $next($request);
         $body = $response->getContent();
 

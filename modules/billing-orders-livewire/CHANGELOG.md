@@ -2,4 +2,4 @@
 
 ## 0.1.0
 
-- Add the module-scoped order list and checkout component.
+- Initial Orders Livewire 4 checkout and support components.

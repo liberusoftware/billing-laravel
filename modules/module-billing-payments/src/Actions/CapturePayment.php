@@ -25,9 +25,16 @@ final readonly class CapturePayment
         $result = $this->gateways->driver($payment->gateway)->capture($payment);
 
         return $this->database->transaction(function () use ($payment, $result): Payment {
-            $payment->update(['status' => PaymentStatus::Captured, 'captured_at' => now(), 'provider_reference' => $result['reference']]);
+            $locked = Payment::query()->lockForUpdate()->findOrFail($payment->getKey());
+            if ($locked->status === PaymentStatus::Captured) {
+                return $locked;
+            }
+            if ($locked->status !== PaymentStatus::Pending) {
+                throw new \LogicException('Payment is no longer capturable.');
+            }
+            $locked->update(['status' => PaymentStatus::Captured, 'captured_at' => now(), 'provider_reference' => $result['reference']]);
 
-            return $payment->refresh();
+            return $locked->refresh();
         });
     }
 }

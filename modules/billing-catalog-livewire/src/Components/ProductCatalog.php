@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Liberu\Billing\Catalog\Livewire\Components;
 
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\Catalog\Actions\CreateProduct;
+use Liberu\Billing\Catalog\Models\Product;
 use Liberu\Billing\Catalog\Queries\ListProducts;
 use Livewire\Component;
 
@@ -23,6 +25,7 @@ final class ProductCatalog extends Component
 
     public function save(CreateProduct $create): void
     {
+        Gate::authorize('create', Product::class);
         $this->validate([
             'name' => ['required', 'string', 'max:255'], 'sku' => ['required', 'string', 'max:100'],
             'currency' => ['required', 'string', 'size:3', 'alpha'], 'basePriceMinor' => ['required', 'integer', 'min:0'],
@@ -37,6 +40,7 @@ final class ProductCatalog extends Component
 
     public function render(ListProducts $query): View
     {
+        Gate::authorize('viewAny', Product::class);
         $teamId = data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id');
 
         return view('billing-catalog-livewire::product-catalog', ['products' => $query->execute($teamId !== null ? (int) $teamId : null)]);

@@ -12,6 +12,7 @@ paths:
       operationId: billing.usage.meters.create
       summary: Define a usage meter
       security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
       requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/CreateMeterRequest'}}}}
       responses: {'201': {$ref: '#/components/responses/MeterDocument'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
   /api/v1/billing/usage/meters/{meter}/records:
@@ -19,7 +20,7 @@ paths:
       operationId: billing.usage.records.create
       summary: Ingest a usage event
       security: [{sanctum: []}]
-      parameters: [{name: meter, in: path, required: true, schema: {type: string}}]
+      parameters: [{name: meter, in: path, required: true, schema: {type: string}}, {$ref: '#/components/parameters/IdempotencyKey'}]
       requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/IngestRequest'}}}}
       responses: {'201': {$ref: '#/components/responses/RecordDocument'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
   /api/v1/billing/usage/records/{record}/correct:
@@ -27,10 +28,12 @@ paths:
       operationId: billing.usage.records.correct
       summary: Correct a usage event
       security: [{sanctum: []}]
-      parameters: [{name: record, in: path, required: true, schema: {type: string}}]
+      parameters: [{name: record, in: path, required: true, schema: {type: string}}, {$ref: '#/components/parameters/IdempotencyKey'}]
       requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/CorrectionRequest'}}}}
       responses: {'201': {$ref: '#/components/responses/RecordDocument'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
 components:
+  parameters:
+    IdempotencyKey: {name: Idempotency-Key, in: header, required: false, schema: {type: string, maxLength: 255}}
   responses:
     MeterCollection: {description: Usage meters, content: {application/json: {schema: {type: object, properties: {data: {type: array, items: {$ref: '#/components/schemas/Meter'}}, meta: {type: object}}}}}}
     MeterDocument: {description: Usage meter, content: {application/json: {schema: {type: object, properties: {data: {$ref: '#/components/schemas/Meter'}}}}}}

@@ -2,16 +2,82 @@ openapi: 3.1.0
 info:
   title: Billing Catalog API
   version: 1.0.0
+  description: Team-scoped products and catalog lifecycle resources.
+servers: [{url: /}]
 paths:
   /api/v1/billing/catalog:
     get:
       operationId: billing.catalog.products.list
+      summary: List products
       security: [{ sanctum: [] }]
-      responses: {'200': {description: Authorized products.}}
+      parameters: [{$ref: '#/components/parameters/PageSize'}]
+      responses: {'200': {$ref: '#/components/responses/Collection'}, '401': {$ref: '#/components/responses/Unauthorized'}, '403': {$ref: '#/components/responses/Forbidden'}}
     post:
       operationId: billing.catalog.products.create
+      summary: Create a product
       security: [{ sanctum: [] }]
-      responses: {'201': {description: Product created.}}
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/ProductRequest'}}}}
+      responses: {'201': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '403': {$ref: '#/components/responses/Forbidden'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/catalog/{type}:
+    get:
+      operationId: billing.catalog.records.list
+      summary: List a catalog resource collection
+      security: [{ sanctum: [] }]
+      parameters: [{$ref: '#/components/parameters/ResourceType'}, {$ref: '#/components/parameters/PageSize'}]
+      responses: {'200': {$ref: '#/components/responses/Collection'}, '401': {$ref: '#/components/responses/Unauthorized'}, '403': {$ref: '#/components/responses/Forbidden'}}
+    post:
+      operationId: billing.catalog.records.create
+      summary: Create a catalog resource
+      security: [{ sanctum: [] }]
+      parameters: [{$ref: '#/components/parameters/ResourceType'}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/CatalogRequest'}}}}
+      responses: {'201': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '403': {$ref: '#/components/responses/Forbidden'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/catalog/{type}/{record}/lifecycle:
+    patch:
+      operationId: billing.catalog.records.lifecycle
+      summary: Transition a catalog resource
+      security: [{ sanctum: [] }]
+      parameters: [{$ref: '#/components/parameters/ResourceType'}, {name: record, in: path, required: true, schema: {type: integer}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/LifecycleRequest'}}}}
+      responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '403': {$ref: '#/components/responses/Forbidden'}, '422': {$ref: '#/components/responses/ValidationError'}}
 components:
+  parameters:
+    PageSize: {name: per_page, in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 25}}
+    IdempotencyKey: {name: Idempotency-Key, in: header, required: false, schema: {type: string, maxLength: 255}}
+    ResourceType: {name: type, in: path, required: true, schema: {type: string, enum: [plans, addons, bundles, options, eligibility, channels]}}
+  responses:
+    Collection:
+      description: Team-scoped paginated catalog resources.
+      content: {application/json: {schema: {type: object, required: [data, meta], properties: {data: {type: array, items: {$ref: '#/components/schemas/Resource'}}, meta: {type: object}}}}}
+    Document:
+      description: Catalog resource document.
+      content: {application/json: {schema: {type: object, required: [data], properties: {data: {$ref: '#/components/schemas/Resource'}}}}}
+    Unauthorized: {description: Authentication is required.}
+    Forbidden: {description: The authenticated token lacks the required module ability.}
+    ValidationError:
+      description: RFC 9457-compatible validation failure.
+      content: {application/json: {schema: {$ref: '#/components/schemas/ProblemDetails'}}}
+  schemas:
+    Resource:
+      type: object
+      required: [id, type, attributes]
+      properties: {id: {type: string}, type: {type: string}, attributes: {type: object, additionalProperties: true}}
+    ProductRequest:
+      type: object
+      required: [name, sku, base_price_minor, currency]
+      properties: {name: {type: string, maxLength: 255}, sku: {type: string, maxLength: 100}, description: {type: string}, base_price_minor: {type: integer, minimum: 0}, currency: {type: string, pattern: '^[A-Za-z]{3}$'}, metadata: {type: object, additionalProperties: true}}
+    CatalogRequest:
+      type: object
+      required: [name, code]
+      properties: {name: {type: string, maxLength: 255}, code: {type: string, maxLength: 100}, description: {type: string}, configuration: {type: object, additionalProperties: true}}
+    LifecycleRequest:
+      type: object
+      required: [status]
+      properties: {status: {type: string, enum: [draft, active, archived, retired]}}
+    ProblemDetails:
+      type: object
+      required: [type, title, status]
+      properties: {type: {type: string}, title: {type: string}, status: {type: integer}, detail: {type: string}, errors: {type: object, additionalProperties: {type: array, items: {type: string}}}}
   securitySchemes:
     sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}

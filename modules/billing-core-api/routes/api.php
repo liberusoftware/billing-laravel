@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Liberu\Billing\Core\Api\Http\Controllers\BillingAccountController;
 use Liberu\Billing\Core\Api\Http\Controllers\BillingCoreRecordController;
 
-Route::middleware(['api', 'auth:sanctum', 'ability:billing.billing-core.read'])
+Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.billing-core.read'])
     ->prefix('api/v1/billing/billing-core')
     ->name('billing.core.')
     ->group(function (): void {
@@ -14,7 +14,7 @@ Route::middleware(['api', 'auth:sanctum', 'ability:billing.billing-core.read'])
         Route::get('/{type}', [BillingCoreRecordController::class, 'index'])->whereIn('type', ['contacts', 'currencies', 'tax-profiles', 'sequences', 'terms', 'settings'])->name('records.index');
     });
 
-Route::middleware(['api', 'auth:sanctum', 'ability:billing.billing-core.write'])
+Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.billing-core.write', 'idempotency'])
     ->prefix('api/v1/billing/billing-core')
     ->name('billing.core.')
     ->group(function (): void {

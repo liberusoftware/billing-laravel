@@ -17,6 +17,7 @@ paths:
       operationId: billing.invoicing.create
       summary: Create a draft invoice
       security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
       requestBody:
         required: true
         content:
@@ -31,7 +32,7 @@ paths:
       operationId: billing.invoicing.addLine
       summary: Add a line to a draft invoice
       security: [{sanctum: []}]
-      parameters: [{name: invoice, in: path, required: true, schema: {type: string}}]
+      parameters: [{name: invoice, in: path, required: true, schema: {type: string}}, {$ref: '#/components/parameters/IdempotencyKey'}]
       requestBody:
         required: true
         content:
@@ -43,9 +44,11 @@ paths:
       operationId: billing.invoicing.finalize
       summary: Finalize a draft invoice
       security: [{sanctum: []}]
-      parameters: [{name: invoice, in: path, required: true, schema: {type: string}}]
+      parameters: [{name: invoice, in: path, required: true, schema: {type: string}}, {$ref: '#/components/parameters/IdempotencyKey'}]
       responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}}
 components:
+  parameters:
+    IdempotencyKey: {name: Idempotency-Key, in: header, required: false, schema: {type: string, maxLength: 255}}
   responses:
     Collection:
       description: Paginated invoice collection.

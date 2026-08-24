@@ -21,6 +21,7 @@ paths:
       operationId: billing.subscriptions.create
       summary: Activate a subscription
       security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
       requestBody:
         required: true
         content:
@@ -41,7 +42,7 @@ paths:
       operationId: billing.subscriptions.renew
       summary: Renew a subscription
       security: [{sanctum: []}]
-      parameters: [{$ref: '#/components/parameters/SubscriptionId'}]
+      parameters: [{$ref: '#/components/parameters/SubscriptionId'}, {$ref: '#/components/parameters/IdempotencyKey'}]
       responses:
         '200': {$ref: '#/components/responses/ResourceDocument'}
         '401': {$ref: '#/components/responses/Unauthorized'}
@@ -50,7 +51,7 @@ paths:
       operationId: billing.subscriptions.pause
       summary: Pause a subscription
       security: [{sanctum: []}]
-      parameters: [{$ref: '#/components/parameters/SubscriptionId'}]
+      parameters: [{$ref: '#/components/parameters/SubscriptionId'}, {$ref: '#/components/parameters/IdempotencyKey'}]
       responses:
         '200': {$ref: '#/components/responses/ResourceDocument'}
         '401': {$ref: '#/components/responses/Unauthorized'}
@@ -59,12 +60,13 @@ paths:
       operationId: billing.subscriptions.cancel
       summary: Cancel a subscription
       security: [{sanctum: []}]
-      parameters: [{$ref: '#/components/parameters/SubscriptionId'}]
+      parameters: [{$ref: '#/components/parameters/SubscriptionId'}, {$ref: '#/components/parameters/IdempotencyKey'}]
       responses:
         '200': {$ref: '#/components/responses/ResourceDocument'}
         '401': {$ref: '#/components/responses/Unauthorized'}
 components:
   parameters:
+    IdempotencyKey: {name: Idempotency-Key, in: header, required: false, schema: {type: string, maxLength: 255}}
     PageSize:
       name: per_page
       in: query

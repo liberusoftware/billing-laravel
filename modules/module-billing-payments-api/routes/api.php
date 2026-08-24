@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Liberu\Billing\Payments\Api\Http\Controllers\PaymentController;
 use Liberu\Billing\Payments\Api\Http\Controllers\PaymentMethodController;
 
-Route::middleware(['api', 'auth:sanctum', 'ability:billing.payments.read'])
+Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.payments.read'])
     ->prefix('api/v1/billing/payments')
     ->name('billing.payments.')
     ->group(function (): void {
@@ -15,7 +15,7 @@ Route::middleware(['api', 'auth:sanctum', 'ability:billing.payments.read'])
         Route::get('/mandates', [PaymentMethodController::class, 'mandates'])->name('mandates.index');
     });
 
-Route::middleware(['api', 'auth:sanctum', 'ability:billing.payments.write'])
+Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.payments.write', 'idempotency'])
     ->prefix('api/v1/billing/payments')
     ->name('billing.payments.')
     ->group(function (): void {

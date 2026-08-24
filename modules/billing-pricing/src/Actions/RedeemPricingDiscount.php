@@ -17,10 +17,14 @@ final readonly class RedeemPricingDiscount
             throw new \LogicException('This discount is not redeemable.');
         }
 
-return $this->database->transaction(function () use ($discount): PricingDiscount {
-            $discount->increment('redemptions');
+        return $this->database->transaction(function () use ($discount): PricingDiscount {
+            $locked = PricingDiscount::query()->lockForUpdate()->findOrFail($discount->getKey());
+            if (! $locked->active || ($locked->max_redemptions !== null && $locked->redemptions >= $locked->max_redemptions) || ($locked->starts_at?->isFuture() ?? false) || ($locked->ends_at?->isPast() ?? false)) {
+                throw new \LogicException('This discount is not redeemable.');
+            }
+            $locked->increment('redemptions');
 
-            return $discount->refresh();
+            return $locked->refresh();
         });
     }
 }

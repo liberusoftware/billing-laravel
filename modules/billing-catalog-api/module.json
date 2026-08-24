@@ -6,7 +6,7 @@
   "version": "0.1.0",
   "category": "adapter",
   "provider": "Liberu\\Billing\\Catalog\\Api\\CatalogApiServiceProvider",
-  "requires": {"php": "^8.5", "laravel": "^13.0", "packages": {"liberusoftware/billing-catalog": "^0.1", "liberusoftware/module-manager": "^1.0"}},
+  "requires": {"php": "^8.5", "laravel": "^13.0", "packages": {"liberusoftware/api-access": "^1.0", "liberusoftware/billing-catalog": "^0.1", "liberusoftware/module-manager": "^1.0"}},
   "suggests": [],
   "capabilities": ["billing.catalog.api"],
   "default_enabled": true,

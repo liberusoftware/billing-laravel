@@ -24,7 +24,7 @@ final class ProvisioningOperationController extends Controller
 
     public function queue(Request $request, ProvisionedService $provisionedService, QueueProvisioningOperation $queue): JsonResponse
     {
-        Gate::authorize('view', $provisionedService);
+        Gate::authorize('update', $provisionedService);
         $data = $request->validate(['operation' => ['required', 'in:provision,deprovision,poll,reconcile,rollback'], 'payload' => ['sometimes', 'array']]);
 
         return response()->json(['data' => $queue->execute($provisionedService, $data['operation'], $data['payload'] ?? [])], 202);
@@ -32,7 +32,7 @@ final class ProvisioningOperationController extends Controller
 
     public function reconcile(ProvisionedService $provisionedService, ReconcileProvisionedService $reconcile): JsonResponse
     {
-        Gate::authorize('view', $provisionedService);
+        Gate::authorize('update', $provisionedService);
 
         return response()->json(['data' => $reconcile->execute($provisionedService)]);
     }

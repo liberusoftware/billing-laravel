@@ -20,6 +20,10 @@ final readonly class AddInvoiceLine
         }
 
         return $this->database->transaction(function () use ($invoice, $description, $quantity, $unitAmountMinor, $taxRate): InvoiceLine {
+            $invoice = Invoice::query()->lockForUpdate()->findOrFail($invoice->getKey());
+            if ($invoice->status !== InvoiceStatus::Draft) {
+                throw new \LogicException('Only draft invoices can be changed.');
+            }
             $amount = $quantity * $unitAmountMinor;
             $line = InvoiceLine::query()->create(['invoice_id' => $invoice->getKey(), 'description' => $description, 'quantity' => $quantity, 'unit_amount_minor' => $unitAmountMinor, 'tax_rate' => $taxRate, 'amount_minor' => $amount]);
             $subtotal = (int) $invoice->lines()->sum('amount_minor');

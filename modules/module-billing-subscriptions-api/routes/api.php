@@ -5,14 +5,14 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\Route;
 use Liberu\Billing\Subscriptions\Api\Http\Controllers\SubscriptionController;
 
-Route::middleware(['api', 'auth:sanctum', 'ability:billing.subscriptions.read'])
+Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.subscriptions.read'])
     ->prefix('api/v1/billing/subscriptions')
     ->name('billing.subscriptions.')
     ->group(function (): void {
         Route::get('/', [SubscriptionController::class, 'index'])->name('index');
     });
 
-Route::middleware(['api', 'auth:sanctum', 'ability:billing.subscriptions.write'])
+Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.subscriptions.write', 'idempotency'])
     ->prefix('api/v1/billing/subscriptions')
     ->name('billing.subscriptions.')
     ->group(function (): void {

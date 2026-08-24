@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Liberu\Billing\Catalog\Livewire\Components;
 
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\Catalog\Actions\CreateCatalogRecord;
 use Liberu\Billing\Catalog\Models\Addon;
 use Liberu\Billing\Catalog\Models\Bundle;
@@ -29,6 +30,7 @@ final class CatalogRecords extends Component
 
     public function save(CreateCatalogRecord $create): void
     {
+        Gate::authorize('create', $this->modelClass());
         $this->validate(['type' => ['required', 'in:plans,addons,bundles,options,eligibility,channels'], 'name' => ['required', 'string', 'max:255'], 'code' => ['required', 'string', 'max:100'], 'description' => ['nullable', 'string']]);
         $models = ['plans' => Plan::class, 'addons' => Addon::class, 'bundles' => Bundle::class, 'options' => ConfigurableOption::class, 'eligibility' => Eligibility::class, 'channels' => Channel::class];
         $teamId = data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id');
@@ -40,9 +42,15 @@ final class CatalogRecords extends Component
 
     public function render(ListCatalogRecords $query): View
     {
+        Gate::authorize('viewAny', $this->modelClass());
         $models = ['plans' => Plan::class, 'addons' => Addon::class, 'bundles' => Bundle::class, 'options' => ConfigurableOption::class, 'eligibility' => Eligibility::class, 'channels' => Channel::class];
         $teamId = data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id');
 
         return view('billing-catalog-livewire::catalog-records', ['records' => $query->execute($models[$this->type] ?? $models['plans'], $teamId !== null ? (int) $teamId : null)]);
+    }
+
+    private function modelClass(): string
+    {
+        return ['plans' => Plan::class, 'addons' => Addon::class, 'bundles' => Bundle::class, 'options' => ConfigurableOption::class, 'eligibility' => Eligibility::class, 'channels' => Channel::class][$this->type] ?? Plan::class;
     }
 }

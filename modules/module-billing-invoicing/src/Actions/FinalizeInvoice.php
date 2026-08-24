@@ -19,6 +19,10 @@ final readonly class FinalizeInvoice
         }
 
         return $this->database->transaction(function () use ($invoice): Invoice {
+            $invoice = Invoice::query()->lockForUpdate()->findOrFail($invoice->getKey());
+            if ($invoice->status !== InvoiceStatus::Draft || ! $invoice->lines()->exists()) {
+                throw new \LogicException('Only non-empty draft invoices can be finalized.');
+            }
             $invoice->update(['status' => InvoiceStatus::Finalized, 'finalized_at' => now()]);
 
             return $invoice->refresh();

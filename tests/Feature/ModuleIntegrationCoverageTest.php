@@ -2,11 +2,14 @@
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Laravel\Socialite\Two\InvalidStateException;
 use Liberu\Foundation\ApiAccess\Support\IdempotencyStore;
+use Liberu\Foundation\ApiAccess\Http\Middleware\ReplayIdempotentRequest;
 use Liberu\Foundation\ApplicationCore\Health\ReadinessRegistry;
 use Liberu\Foundation\ApplicationCore\Http\Controllers\ReadinessController;
 use Liberu\Foundation\Audit\Support\AuditContext;
@@ -85,6 +88,35 @@ it('stores and replays idempotent API requests', function () {
     expect(fn () => $store->begin('actor', 'key', 'different'))->toThrow(RuntimeException::class);
     $store->complete('actor', 'key', 201, 'created');
     expect(DB::table('api_idempotency_keys')->value('response_status'))->toBe(201);
+});
+
+it('replays completed middleware responses and rejects in-flight duplicates', function () {
+    $middleware = app(ReplayIdempotentRequest::class);
+    $calls = 0;
+    $next = function () use (&$calls): JsonResponse {
+        $calls++;
+
+        return response()->json(['created' => true], 201);
+    };
+
+    $request = Request::create('/api/v1/billing/test', 'POST', [], [], [], [], '{"name":"one"}');
+    $request->headers->set('Idempotency-Key', 'middleware-key');
+    $first = $middleware->handle($request, $next);
+    $second = $middleware->handle($request, $next);
+
+    expect($first->getStatusCode())->toBe(201)
+        ->and($second->getStatusCode())->toBe(201)
+        ->and($second->headers->get('Idempotent-Replayed'))->toBe('true')
+        ->and($calls)->toBe(1);
+
+    $inFlight = new IdempotencyStore();
+    $inFlight->begin('guest:none', 'in-flight', '{"name":"one"}');
+    $request->headers->set('Idempotency-Key', 'in-flight');
+    $response = $middleware->handle($request, $next);
+
+    expect($response->getStatusCode())->toBe(409)
+        ->and($response->headers->get('Retry-After'))->toBe('1')
+        ->and($calls)->toBe(1);
 });
 
 it('resolves currency preferences from ordered scopes', function () {
