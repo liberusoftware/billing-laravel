@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8727d4a160b7bf479a3f2e3d3f3a7c3c",
+    "content-hash": "c4aa0c142146f2a46146421206ebe135",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -7324,6 +7324,110 @@
                 "MIT"
             ],
             "description": "Provider-neutral collections, dunning, credit control, suspension, write-off, and recovery.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-collections-api",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-collections-api",
+                "reference": "833505e1c24b9f4115e7ec32ee0b7776a868485e"
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "laravel/sanctum": "^4.0",
+                "liberusoftware/module-billing-collections": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-collections-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Collections\\Api\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "HTTP API adapter for Liberu Billing Collections.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-collections-filament",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-collections-filament",
+                "reference": "68f1d3c52b39f2db857ac7f33b4b02642437af9f"
+            },
+            "require": {
+                "filament/filament": "~5.1",
+                "liberusoftware/module-billing-collections": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-collections-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Collections\\Filament\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament 5 adapter for Liberu Billing Collections.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-collections-livewire",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-collections-livewire",
+                "reference": "fe598ccae61240cab2db85456921674ef704bb01"
+            },
+            "require": {
+                "liberusoftware/module-billing-collections": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-collections-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Collections\\Livewire\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire 4 adapter for Liberu Billing Collections.",
             "transport-options": {
                 "symlink": false,
                 "relative": true
