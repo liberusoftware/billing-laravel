@@ -1,0 +1,139 @@
+openapi: 3.1.0
+info:
+  title: Billing Subscriptions API
+  version: 1.0.0
+  description: Team-scoped subscription lifecycle API.
+  license: {name: MIT, identifier: MIT}
+servers:
+  - url: /
+paths:
+  /api/v1/billing/subscriptions:
+    get:
+      operationId: billing.subscriptions.list
+      summary: List authorized subscriptions
+      security: [{sanctum: []}]
+      parameters:
+        - {$ref: '#/components/parameters/PageSize'}
+      responses:
+        '200': {$ref: '#/components/responses/Collection'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+    post:
+      operationId: billing.subscriptions.create
+      summary: Activate a subscription
+      security: [{sanctum: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/CreateSubscriptionRequest'}
+      responses:
+        '201':
+          description: Activated subscription.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties: {data: {$ref: '#/components/schemas/Resource'}}
+        '422': {$ref: '#/components/responses/ValidationError'}
+  /api/v1/billing/subscriptions/{subscription}/renew:
+    post:
+      operationId: billing.subscriptions.renew
+      summary: Renew a subscription
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/SubscriptionId'}]
+      responses:
+        '200': {$ref: '#/components/responses/ResourceDocument'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+  /api/v1/billing/subscriptions/{subscription}/pause:
+    post:
+      operationId: billing.subscriptions.pause
+      summary: Pause a subscription
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/SubscriptionId'}]
+      responses:
+        '200': {$ref: '#/components/responses/ResourceDocument'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+  /api/v1/billing/subscriptions/{subscription}/cancel:
+    post:
+      operationId: billing.subscriptions.cancel
+      summary: Cancel a subscription
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/SubscriptionId'}]
+      responses:
+        '200': {$ref: '#/components/responses/ResourceDocument'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+components:
+  parameters:
+    PageSize:
+      name: per_page
+      in: query
+      schema: {type: integer, minimum: 1, maximum: 100, default: 25}
+    SubscriptionId:
+      name: subscription
+      in: path
+      required: true
+      schema: {type: string, description: Opaque subscription identifier.}
+  responses:
+    Collection:
+      description: Paginated subscriptions.
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [data, meta]
+            properties:
+              data: {type: array, items: {$ref: '#/components/schemas/Resource'}}
+              meta: {$ref: '#/components/schemas/PaginationMeta'}
+    ResourceDocument:
+      description: Subscription resource.
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [data]
+            properties: {data: {$ref: '#/components/schemas/Resource'}}
+    Unauthorized:
+      description: Authentication is required.
+    ValidationError:
+      description: Validation failed.
+      content:
+        application/json:
+          schema: {type: object, properties: {message: {type: string}, errors: {type: object}}}
+  schemas:
+    Resource:
+      type: object
+      required: [id, type, attributes]
+      properties:
+        id: {type: string}
+        type: {type: string, const: billing-subscriptions}
+        attributes: {$ref: '#/components/schemas/SubscriptionAttributes'}
+    SubscriptionAttributes:
+      type: object
+      required: [status, auto_renew, entitlement_state]
+      properties:
+        status: {type: string, enum: [trialing, active, paused, cancelled, expired]}
+        pricing_plan_id: {anyOf: [{type: integer, minimum: 1}, {type: 'null'}]}
+        starts_at: {type: string, format: date-time}
+        trial_ends_at: {anyOf: [{type: string, format: date-time}, {type: 'null'}]}
+        current_period_ends_at: {anyOf: [{type: string, format: date-time}, {type: 'null'}]}
+        cancelled_at: {anyOf: [{type: string, format: date-time}, {type: 'null'}]}
+        paused_at: {anyOf: [{type: string, format: date-time}, {type: 'null'}]}
+        auto_renew: {type: boolean}
+        entitlement_state: {type: object, additionalProperties: true}
+    CreateSubscriptionRequest:
+      type: object
+      properties:
+        customer_id: {anyOf: [{type: integer, minimum: 1}, {type: 'null'}]}
+        pricing_plan_id: {anyOf: [{type: integer, minimum: 1}, {type: 'null'}]}
+        trial_days: {type: integer, minimum: 0, maximum: 365, default: 0}
+        current_period_ends_at: {anyOf: [{type: string, format: date-time}, {type: 'null'}]}
+        auto_renew: {type: boolean, default: true}
+        metadata: {type: object, additionalProperties: true}
+    PaginationMeta:
+      type: object
+      properties:
+        current_page: {type: integer}
+        last_page: {type: integer}
+  securitySchemes:
+    sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}
