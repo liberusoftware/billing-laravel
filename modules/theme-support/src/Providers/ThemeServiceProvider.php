@@ -3,6 +3,7 @@
 namespace Liberu\Foundation\Theme\Providers;
 
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Foundation\Http\Events\RequestHandled;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -52,6 +53,13 @@ class ThemeServiceProvider extends ServiceProvider
             $view->with('activeTheme', $themeManager->getActiveTheme());
             $view->with('themeConfig', $themeManager->getThemeConfig());
         });
+
+        // Some responses do not render through a view composer (for example a
+        // redirect or a streamed response). Reconcile once the request has run
+        // so long-lived managers still reflect the authenticated preference.
+        $this->app['events']->listen(RequestHandled::class, function () use ($themeManager): void {
+            $themeManager->setTheme($this->determineActiveTheme());
+        });
     }
 
     /**
@@ -62,8 +70,11 @@ class ThemeServiceProvider extends ServiceProvider
         $themeManager = $this->app->make(ThemeManager::class);
 
         $user = auth()->user();
-        if ($user instanceof Authenticatable && is_string($user->theme_preference) && $user->theme_preference !== '' && $themeManager->themeExists($user->theme_preference)) {
-            return $user->theme_preference;
+        $userTheme = $user instanceof Authenticatable
+            ? ($user->getAttributes()['theme_preference'] ?? null)
+            : null;
+        if (is_string($userTheme) && $userTheme !== '' && $themeManager->themeExists($userTheme)) {
+            return $userTheme;
         }
 
         $session = session('theme_preference');
