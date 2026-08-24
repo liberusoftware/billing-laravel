@@ -1,0 +1,1 @@
+<div><ul wire:loading.class="opacity-50"><li wire:loading>{{ __('Loading…') }}</li>@forelse ($operations as $operation)<li wire:key="provisioning-operation-{{ $operation->id }}">{{ $operation->operation }} ({{ $operation->status }})</li>@empty<li>{{ __('No provisioning operations found.') }}</li>@endforelse</ul></div>

@@ -14,6 +14,7 @@
       "liberusoftware/module-manager": "^1.0"
     }
   },
+  "presentation": {"livewire": {"components": ["module-billing-domains::domain-list"]}},
   "suggests": [],
   "capabilities": [
     "billing.domains.livewire"
@@ -23,4 +24,3 @@
     "Domains Livewire integration"
   ]
 }
-

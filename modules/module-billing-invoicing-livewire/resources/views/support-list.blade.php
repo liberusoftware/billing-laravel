@@ -1,0 +1,1 @@
+<div><ul wire:loading.class="opacity-50"><li wire:loading>{{ __('Loading…') }}</li>@forelse ($items as $item)<li wire:key="invoice-support-{{ $item->id }}">{{ $item->type }} for invoice {{ $item->invoice_id }} ({{ $item->status }})</li>@empty<li>{{ __('No invoice support records found.') }}</li>@endforelse</ul></div>

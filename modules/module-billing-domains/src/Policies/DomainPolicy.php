@@ -29,6 +29,11 @@ final class DomainPolicy
         return $this->owns($user, $record->team_id);
     }
 
+    public function delete(?Authenticatable $user, Domain $record): bool
+    {
+        return $this->owns($user, $record->team_id);
+    }
+
     private function owns(?Authenticatable $user, mixed $teamId): bool
     {
         $current = data_get($user, 'current_team_id') ?? data_get($user, 'currentTeam.id');

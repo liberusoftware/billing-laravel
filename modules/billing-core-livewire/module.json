@@ -10,5 +10,6 @@
   "suggests": [],
   "capabilities": ["billing.core.livewire"],
   "default_enabled": true,
-  "features": ["Account listing", "Account creation", "Validation feedback"]
+  "presentation": {"livewire": {"components": ["billing-core::billing-accounts", "billing-core::records"]}},
+  "features": ["Account listing", "Account creation", "Contacts", "Currencies", "Tax profiles", "Sequences", "Terms", "Billing settings", "Validation and loading feedback"]
 }

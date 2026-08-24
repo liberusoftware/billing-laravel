@@ -6,6 +6,10 @@ namespace Liberu\Billing\Payments\Filament;
 
 use Filament\Contracts\Plugin;
 use Filament\Panel;
+use Liberu\Billing\Payments\Filament\Resources\PaymentDisputeResource;
+use Liberu\Billing\Payments\Filament\Resources\PaymentMandateResource;
+use Liberu\Billing\Payments\Filament\Resources\PaymentMethodResource;
+use Liberu\Billing\Payments\Filament\Resources\PaymentReconciliationResource;
 use Liberu\Billing\Payments\Filament\Resources\PaymentResource;
 
 final class PaymentsFilamentPlugin implements Plugin
@@ -22,7 +26,7 @@ final class PaymentsFilamentPlugin implements Plugin
 
     public function register(Panel $panel): void
     {
-        $panel->resources([PaymentResource::class]);
+        $panel->resources([PaymentResource::class, PaymentMethodResource::class, PaymentMandateResource::class, PaymentDisputeResource::class, PaymentReconciliationResource::class]);
     }
 
     public function boot(Panel $panel): void {}

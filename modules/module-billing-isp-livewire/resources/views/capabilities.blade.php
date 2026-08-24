@@ -1,0 +1,1 @@
+<div><ul wire:loading.class="opacity-50"><li wire:loading>{{ __('Loading…') }}</li>@forelse ($capabilities as $capability)<li wire:key="isp-capability-{{ $capability->id }}">{{ $capability->type }}: {{ $capability->name }}</li>@empty<li>{{ __('No ISP capabilities found.') }}</li>@endforelse</ul></div>

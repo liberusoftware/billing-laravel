@@ -7,6 +7,8 @@ use Liberu\Billing\Usage\Api\Http\Controllers\UsageController;
 
 Route::middleware(['api', 'auth:sanctum', 'ability:billing.usage.read'])->prefix('api/v1/billing/usage')->name('billing.usage.')->group(function (): void {
     Route::get('/meters', [UsageController::class, 'meters'])->name('meters');
+    Route::get('/meters/{meter}/aggregate', [UsageController::class, 'aggregate'])->name('aggregate');
+    Route::post('/meters/{meter}/rate', [UsageController::class, 'rate'])->name('rate');
 });
 
 Route::middleware(['api', 'auth:sanctum', 'ability:billing.usage.write'])->prefix('api/v1/billing/usage')->name('billing.usage.')->group(function (): void {

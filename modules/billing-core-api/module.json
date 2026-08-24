@@ -10,5 +10,5 @@
   "suggests": [],
   "capabilities": ["billing.core.api"],
   "default_enabled": true,
-  "features": ["Account collection endpoint", "Sanctum authorization", "Explicit resource envelope"]
+  "features": ["Account collection endpoint", "Contacts", "Currencies", "Tax profiles", "Sequences", "Terms", "Billing settings", "Sanctum authorization", "Explicit resource envelope"]
 }

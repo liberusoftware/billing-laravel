@@ -4,12 +4,18 @@ declare(strict_types=1);
 
 namespace Liberu\Billing\Provisioning;
 
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Liberu\Billing\Provisioning\Models\ProvisionedService;
+use Liberu\Billing\Provisioning\Models\ProvisioningOperation;
+use Liberu\Billing\Provisioning\Policies\ProvisioningPolicy;
 
 final class ProvisioningServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        Gate::policy(ProvisionedService::class, ProvisioningPolicy::class);
+        Gate::policy(ProvisioningOperation::class, ProvisioningPolicy::class);
     }
 }

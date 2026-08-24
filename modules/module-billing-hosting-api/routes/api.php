@@ -3,7 +3,17 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
+use Liberu\Billing\Hosting\Api\Http\Controllers\HostingCapabilityController;
 use Liberu\Billing\Hosting\Models\HostingAccount;
+
+Route::middleware(['auth:sanctum', 'ability:billing.hosting.read'])->prefix('api/v1/billing/hosting/capabilities')->group(function (): void {
+    Route::get('/', [HostingCapabilityController::class, 'index'])->name('billing.hosting.capabilities.index');
+});
+
+Route::middleware(['auth:sanctum', 'ability:billing.hosting.write'])->prefix('api/v1/billing/hosting/capabilities')->group(function (): void {
+    Route::post('/', [HostingCapabilityController::class, 'store'])->name('billing.hosting.capabilities.store');
+    Route::patch('/{capability}/lifecycle', [HostingCapabilityController::class, 'transition'])->name('billing.hosting.capabilities.lifecycle');
+});
 
 Route::middleware(['auth:sanctum', 'ability:billing.hosting.read'])->prefix('api/v1/billing/hosting')->group(function (): void {
     Route::get('/', function (Request $request) {

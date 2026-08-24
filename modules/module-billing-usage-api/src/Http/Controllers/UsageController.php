@@ -8,11 +8,14 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
+use Liberu\Billing\Usage\Actions\CheckUsageThreshold;
 use Liberu\Billing\Usage\Actions\CorrectUsage;
 use Liberu\Billing\Usage\Actions\DefineMeter;
 use Liberu\Billing\Usage\Actions\IngestUsage;
+use Liberu\Billing\Usage\Actions\RateUsage;
 use Liberu\Billing\Usage\Models\Meter;
 use Liberu\Billing\Usage\Models\UsageRecord;
+use Liberu\Billing\Usage\Queries\AggregateUsage;
 
 final class UsageController extends Controller
 {
@@ -49,6 +52,22 @@ final class UsageController extends Controller
         $data = $request->validate(['quantity' => ['required', 'numeric', 'not_in:0'], 'event_key' => ['required', 'string', 'max:255']]);
 
         return response()->json(['data' => $this->record($correct->execute($record, (float) $data['quantity'], $data['event_key']))], 201);
+    }
+
+    public function aggregate(Request $request, Meter $meter, AggregateUsage $aggregate): JsonResponse
+    {
+        Gate::authorize('view', $meter);
+
+        return response()->json(['data' => $aggregate->execute($meter->id, $request->integer('customer_id') ?: null)]);
+    }
+
+    public function rate(Request $request, Meter $meter, RateUsage $rate, CheckUsageThreshold $threshold): JsonResponse
+    {
+        Gate::authorize('view', $meter);
+        $data = $request->validate(['quantity' => ['required', 'numeric', 'min:0']]);
+        $quantity = (float) $data['quantity'];
+
+        return response()->json(['data' => ['amount_minor' => $rate->execute($meter, $quantity), 'threshold_reached' => $threshold->execute($meter, $quantity)]]);
     }
 
     private function meter(Meter $meter): array

@@ -1,0 +1,1 @@
+<div><ul wire:loading.class="opacity-50"><li wire:loading>{{ __('Loading…') }}</li>@forelse ($records as $record)<li wire:key="usage-record-{{ $record->id }}">{{ $record->event_key }}: {{ $record->quantity }} ({{ $record->amount_minor }})</li>@empty<li>{{ __('No usage records found.') }}</li>@endforelse</ul></div>

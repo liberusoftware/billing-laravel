@@ -3,7 +3,16 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
+use Liberu\Billing\Isp\Api\Http\Controllers\IspCapabilityController;
 use Liberu\Billing\Isp\Models\AccessService;
+
+Route::middleware(['auth:sanctum', 'ability:billing.isp.read'])->prefix('api/v1/billing/isp/capabilities')->group(function (): void {
+    Route::get('/', [IspCapabilityController::class, 'index'])->name('billing.isp.capabilities.index');
+});
+
+Route::middleware(['auth:sanctum', 'ability:billing.isp.write'])->prefix('api/v1/billing/isp/capabilities')->group(function (): void {
+    Route::post('/', [IspCapabilityController::class, 'store'])->name('billing.isp.capabilities.store');
+});
 
 Route::middleware(['auth:sanctum', 'ability:billing.isp.read'])->prefix('api/v1/billing/isp')->group(function (): void {
     Route::get('/', function (Request $request) {

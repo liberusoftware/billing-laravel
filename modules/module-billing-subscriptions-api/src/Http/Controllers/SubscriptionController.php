@@ -10,8 +10,10 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\Subscriptions\Actions\ActivateSubscription;
 use Liberu\Billing\Subscriptions\Actions\CancelSubscription;
+use Liberu\Billing\Subscriptions\Actions\ChangeSubscriptionPlan;
 use Liberu\Billing\Subscriptions\Actions\PauseSubscription;
 use Liberu\Billing\Subscriptions\Actions\RenewSubscription;
+use Liberu\Billing\Subscriptions\Actions\UpdateEntitlementState;
 use Liberu\Billing\Subscriptions\Models\Subscription;
 use Liberu\Billing\Subscriptions\Queries\ListSubscriptions;
 
@@ -65,6 +67,22 @@ final class SubscriptionController extends Controller
         Gate::authorize('update', $subscription);
 
         return response()->json(['data' => $this->resource($cancel->execute($subscription))]);
+    }
+
+    public function changePlan(Request $request, Subscription $subscription, ChangeSubscriptionPlan $change): JsonResponse
+    {
+        Gate::authorize('update', $subscription);
+        $data = $request->validate(['pricing_plan_id' => ['nullable', 'integer', 'min:1']]);
+
+        return response()->json(['data' => $this->resource($change->execute($subscription, $data['pricing_plan_id'] ?? null))]);
+    }
+
+    public function entitlements(Request $request, Subscription $subscription, UpdateEntitlementState $update): JsonResponse
+    {
+        Gate::authorize('update', $subscription);
+        $data = $request->validate(['entitlement_state' => ['required', 'array']]);
+
+        return response()->json(['data' => $this->resource($update->execute($subscription, $data['entitlement_state']))]);
     }
 
     private function resource(Subscription $subscription): array

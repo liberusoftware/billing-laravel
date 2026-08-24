@@ -7,13 +7,16 @@ namespace Liberu\Billing\Hosting;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Liberu\Billing\Hosting\Models\HostingAccount;
+use Liberu\Billing\Hosting\Models\HostingCapability;
 use Liberu\Billing\Hosting\Policies\HostingAccountPolicy;
+use Liberu\Billing\Hosting\Policies\HostingCapabilityPolicy;
 
 final class HostingServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
         Gate::policy(HostingAccount::class, HostingAccountPolicy::class);
+        Gate::policy(HostingCapability::class, HostingCapabilityPolicy::class);
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
     }
 }

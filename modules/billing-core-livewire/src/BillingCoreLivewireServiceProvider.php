@@ -6,6 +6,7 @@ namespace Liberu\Billing\Core\Livewire;
 
 use Illuminate\Support\ServiceProvider;
 use Liberu\Billing\Core\Livewire\Components\BillingAccounts;
+use Liberu\Billing\Core\Livewire\Components\BillingCoreRecords;
 use Livewire\Livewire;
 
 final class BillingCoreLivewireServiceProvider extends ServiceProvider
@@ -14,5 +15,6 @@ final class BillingCoreLivewireServiceProvider extends ServiceProvider
     {
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'billing-core-livewire');
         Livewire::component('billing-core::billing-accounts', BillingAccounts::class);
+        Livewire::component('billing-core::records', BillingCoreRecords::class);
     }
 }

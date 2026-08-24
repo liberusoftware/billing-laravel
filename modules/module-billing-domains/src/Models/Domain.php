@@ -18,7 +18,7 @@ final class Domain extends Model
 
     protected function casts(): array
     {
-        return ['metadata' => 'array'];
+        return ['metadata' => 'array', 'expires_at' => 'datetime', 'registered_at' => 'datetime'];
     }
 
     public function scopeForTeam(Builder $query, int $teamId): Builder

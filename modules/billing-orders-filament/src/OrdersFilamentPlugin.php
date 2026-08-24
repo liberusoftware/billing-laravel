@@ -6,7 +6,9 @@ namespace Liberu\Billing\Orders\Filament;
 
 use Filament\Contracts\Plugin;
 use Filament\Panel;
+use Liberu\Billing\Orders\Filament\Resources\CartResource;
 use Liberu\Billing\Orders\Filament\Resources\OrderResource;
+use Liberu\Billing\Orders\Filament\Resources\QuoteResource;
 
 final class OrdersFilamentPlugin implements Plugin
 {
@@ -22,7 +24,7 @@ final class OrdersFilamentPlugin implements Plugin
 
     public function register(Panel $panel): void
     {
-        $panel->resources([OrderResource::class]);
+        $panel->resources([OrderResource::class, QuoteResource::class, CartResource::class]);
     }
 
     public function boot(Panel $panel): void {}

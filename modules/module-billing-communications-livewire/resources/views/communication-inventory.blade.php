@@ -1,0 +1,1 @@
+<div><ul wire:loading.class="opacity-50"><li wire:loading>{{ __('Loading…') }}</li>@forelse ($numbers as $number)<li wire:key="communication-number-{{ $number->id }}">{{ $number->number }} ({{ $number->status }})</li>@empty<li>{{ __('No communication numbers found.') }}</li>@endforelse</ul></div>

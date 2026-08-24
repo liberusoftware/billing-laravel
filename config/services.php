@@ -59,6 +59,10 @@ return [
         'api_key' => env('RESELLERCLUB_API_KEY'),
     ],
 
+    'paddle' => [
+        'base_url' => env('PADDLE_API_URL', 'https://api.paddle.com'),
+    ],
+
     'facebook' => [
         'client_id' => env('FACEBOOK_CLIENT_ID'),
         'client_secret' => env('FACEBOOK_CLIENT_SECRET'),

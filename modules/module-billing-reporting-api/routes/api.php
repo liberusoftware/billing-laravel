@@ -3,7 +3,16 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
+use Liberu\Billing\Reporting\Api\Http\Controllers\ReportingMetricController;
 use Liberu\Billing\Reporting\Models\MetricSnapshot;
+
+Route::middleware(['auth:sanctum', 'ability:billing.reporting.read'])->prefix('api/v1/billing/reporting/metrics')->group(function (): void {
+    Route::get('/', [ReportingMetricController::class, 'index'])->name('billing.reporting.metrics.index');
+});
+
+Route::middleware(['auth:sanctum', 'ability:billing.reporting.write'])->prefix('api/v1/billing/reporting/metrics')->group(function (): void {
+    Route::post('/', [ReportingMetricController::class, 'store'])->name('billing.reporting.metrics.store');
+});
 
 Route::middleware(['auth:sanctum', 'ability:billing.reporting.read'])->prefix('api/v1/billing/reporting')->group(function (): void {
     Route::get('/', function (Request $request) {

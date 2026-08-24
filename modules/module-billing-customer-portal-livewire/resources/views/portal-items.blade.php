@@ -1,0 +1,1 @@
+<div><ul wire:loading.class="opacity-50"><li wire:loading>{{ __('Loading…') }}</li>@forelse ($items as $item)<li wire:key="portal-item-{{ $item->id }}">{{ $item->type }}: {{ $item->subject }}</li>@empty<li>{{ __('No portal items found.') }}</li>@endforelse</ul></div>

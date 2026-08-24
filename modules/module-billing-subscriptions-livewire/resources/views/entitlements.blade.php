@@ -1,0 +1,1 @@
+<div><ul wire:loading.class="opacity-50"><li wire:loading>{{ __('Loading…') }}</li>@forelse ($subscriptions as $subscription)<li wire:key="subscription-entitlement-{{ $subscription->id }}">Subscription {{ $subscription->id }}: {{ json_encode($subscription->entitlement_state ?? []) }}</li>@empty<li>{{ __('No subscription entitlements found.') }}</li>@endforelse</ul></div>

@@ -1,10 +1,11 @@
 {
   "name": "liberusoftware/billing-billing-core",
-  "description": "Framework-neutral billing account and period primitives.",
+  "description": "Framework-neutral billing accounts, contacts, currencies, tax profiles, sequences, terms, settings, and period primitives.",
   "type": "liberu-module",
   "license": "MIT",
   "require": {
     "php": "^8.5",
+    "illuminate/database": "^13.0",
     "illuminate/support": "^13.0",
     "liberusoftware/module-manager": "^1.0"
   },

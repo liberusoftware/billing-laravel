@@ -3,7 +3,16 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
+use Liberu\Billing\CustomerPortal\Api\Http\Controllers\PortalItemController;
 use Liberu\Billing\CustomerPortal\Models\PortalRequest;
+
+Route::middleware(['auth:sanctum', 'ability:billing.customer-portal.read'])->prefix('api/v1/billing/customer-portal/items')->group(function (): void {
+    Route::get('/', [PortalItemController::class, 'index'])->name('billing.customer-portal.items.index');
+});
+
+Route::middleware(['auth:sanctum', 'ability:billing.customer-portal.write'])->prefix('api/v1/billing/customer-portal/items')->group(function (): void {
+    Route::post('/', [PortalItemController::class, 'store'])->name('billing.customer-portal.items.store');
+});
 
 Route::middleware(['auth:sanctum', 'ability:billing.customer-portal.read'])->prefix('api/v1/billing/customer-portal')->group(function (): void {
     Route::get('/', function (Request $request) {

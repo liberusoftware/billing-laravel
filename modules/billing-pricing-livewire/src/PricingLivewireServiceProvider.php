@@ -6,6 +6,7 @@ namespace Liberu\Billing\Pricing\Livewire;
 
 use Illuminate\Support\ServiceProvider;
 use Liberu\Billing\Pricing\Livewire\Components\PricingPlanList;
+use Liberu\Billing\Pricing\Livewire\Components\PricingSupport;
 use Livewire\Livewire;
 
 final class PricingLivewireServiceProvider extends ServiceProvider
@@ -14,5 +15,6 @@ final class PricingLivewireServiceProvider extends ServiceProvider
     {
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'billing-pricing-livewire');
         Livewire::component('billing-pricing::plan-list', PricingPlanList::class);
+        Livewire::component('billing-pricing::support', PricingSupport::class);
     }
 }

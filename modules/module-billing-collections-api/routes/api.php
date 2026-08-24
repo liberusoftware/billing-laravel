@@ -14,4 +14,6 @@ Route::middleware(['api', 'auth:sanctum', 'ability:billing.collections.write'])-
     Route::post('/{case}/promise', [CollectionCaseController::class, 'promise'])->name('promise');
     Route::post('/{case}/suspend', [CollectionCaseController::class, 'suspend'])->name('suspend');
     Route::post('/{case}/recover', [CollectionCaseController::class, 'recover'])->name('recover');
+    Route::post('/{case}/retry', [CollectionCaseController::class, 'retry'])->name('retry');
+    Route::post('/{case}/write-off', [CollectionCaseController::class, 'writeOff'])->name('write-off');
 });

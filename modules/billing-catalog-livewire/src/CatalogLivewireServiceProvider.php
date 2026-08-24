@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Liberu\Billing\Catalog\Livewire;
 
 use Illuminate\Support\ServiceProvider;
+use Liberu\Billing\Catalog\Livewire\Components\CatalogRecords;
 use Liberu\Billing\Catalog\Livewire\Components\ProductCatalog;
 use Livewire\Livewire;
 
@@ -14,5 +15,6 @@ final class CatalogLivewireServiceProvider extends ServiceProvider
     {
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'billing-catalog-livewire');
         Livewire::component('billing-catalog::product-catalog', ProductCatalog::class);
+        Livewire::component('billing-catalog::records', CatalogRecords::class);
     }
 }

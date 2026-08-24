@@ -20,4 +20,6 @@ Route::middleware(['api', 'auth:sanctum', 'ability:billing.subscriptions.write']
         Route::post('/{subscription}/renew', [SubscriptionController::class, 'renew'])->name('renew');
         Route::post('/{subscription}/pause', [SubscriptionController::class, 'pause'])->name('pause');
         Route::post('/{subscription}/cancel', [SubscriptionController::class, 'cancel'])->name('cancel');
+        Route::patch('/{subscription}/plan', [SubscriptionController::class, 'changePlan'])->name('plan');
+        Route::patch('/{subscription}/entitlements', [SubscriptionController::class, 'entitlements'])->name('entitlements');
     });

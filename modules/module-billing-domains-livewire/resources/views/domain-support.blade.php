@@ -1,0 +1,1 @@
+<div><ul wire:loading.class="opacity-50"><li wire:loading>{{ __('Loading…') }}</li>@forelse ($contacts as $contact)<li wire:key="domain-contact-{{ $contact->id }}">{{ $contact->handle }} — {{ $contact->name }}</li>@empty<li>{{ __('No domain contacts found.') }}</li>@endforelse</ul></div>

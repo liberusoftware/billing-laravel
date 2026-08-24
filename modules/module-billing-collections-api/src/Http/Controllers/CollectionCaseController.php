@@ -11,7 +11,9 @@ use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\Collections\Actions\OpenCollectionCase;
 use Liberu\Billing\Collections\Actions\PromisePayment;
 use Liberu\Billing\Collections\Actions\RecoverCollectionCase;
+use Liberu\Billing\Collections\Actions\RetryCollectionCase;
 use Liberu\Billing\Collections\Actions\SuspendCollectionCase;
+use Liberu\Billing\Collections\Actions\WriteOffCollectionCase;
 use Liberu\Billing\Collections\Models\CollectionCase;
 use Liberu\Billing\Collections\Queries\ListCollectionCases;
 
@@ -57,6 +59,22 @@ final class CollectionCaseController extends Controller
         Gate::authorize('update', $case);
 
         return response()->json(['data' => $this->resource($recover->execute($case))]);
+    }
+
+    public function retry(Request $request, CollectionCase $case, RetryCollectionCase $retry): JsonResponse
+    {
+        Gate::authorize('update', $case);
+        $data = $request->validate(['next_action_at' => ['required', 'date', 'after:now']]);
+
+        return response()->json(['data' => $this->resource($retry->execute($case, new \DateTimeImmutable($data['next_action_at'])))]);
+    }
+
+    public function writeOff(Request $request, CollectionCase $case, WriteOffCollectionCase $writeOff): JsonResponse
+    {
+        Gate::authorize('update', $case);
+        $data = $request->validate(['reason' => ['required', 'string', 'max:1000']]);
+
+        return response()->json(['data' => $this->resource($writeOff->execute($case, $data['reason']))]);
     }
 
     private function resource(CollectionCase $case): array

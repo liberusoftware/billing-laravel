@@ -8,9 +8,11 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
+use Liberu\Billing\Payments\Actions\AllocatePayment;
 use Liberu\Billing\Payments\Actions\CapturePayment;
 use Liberu\Billing\Payments\Actions\CreatePayment;
 use Liberu\Billing\Payments\Actions\OpenDispute;
+use Liberu\Billing\Payments\Actions\ReconcilePayment;
 use Liberu\Billing\Payments\Actions\RefundPayment;
 use Liberu\Billing\Payments\Models\Payment;
 use Liberu\Billing\Payments\Queries\ListPayments;
@@ -66,6 +68,24 @@ final class PaymentController extends Controller
         $dispute->execute($payment, (int) $data['amount_minor'], $data['reason']);
 
         return response()->json(['data' => $this->resource($payment->refresh())]);
+    }
+
+    public function allocate(Request $request, Payment $payment, AllocatePayment $allocate): JsonResponse
+    {
+        Gate::authorize('update', $payment);
+        $data = $request->validate(['amount_minor' => ['required', 'integer', 'min:1'], 'invoice_id' => ['nullable', 'integer', 'min:1']]);
+        $allocation = $allocate->execute($payment, (int) $data['amount_minor'], isset($data['invoice_id']) ? (int) $data['invoice_id'] : null);
+
+        return response()->json(['data' => $allocation], 201);
+    }
+
+    public function reconcile(Request $request, Payment $payment, ReconcilePayment $reconcile): JsonResponse
+    {
+        Gate::authorize('update', $payment);
+        $data = $request->validate(['provider_reference' => ['required', 'string', 'max:255'], 'matched' => ['sometimes', 'boolean'], 'notes' => ['nullable', 'string', 'max:2000']]);
+        $record = $reconcile->execute($payment, $data['provider_reference'], (bool) ($data['matched'] ?? true), $data['notes'] ?? null);
+
+        return response()->json(['data' => $record], 201);
     }
 
     private function resource(Payment $payment): array

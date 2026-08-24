@@ -17,5 +17,5 @@
   "suggests": [],
   "capabilities": ["billing.payments.api"],
   "default_enabled": true,
-  "features": ["Payment collection", "Payment creation", "Capture", "Refunds", "Disputes"]
+  "features": ["Payment collection", "Payment methods", "Mandates", "Payment creation", "Capture", "Allocation", "Refunds", "Disputes", "Reconciliation"]
 }

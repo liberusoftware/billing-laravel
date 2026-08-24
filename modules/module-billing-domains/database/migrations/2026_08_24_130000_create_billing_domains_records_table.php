@@ -15,6 +15,10 @@ return new class() extends Migration
             $table->unsignedBigInteger('team_id')->index();
             $table->string('name');
             $table->string('status')->default('active')->index();
+            $table->string('registrar')->nullable()->index();
+            $table->string('transfer_status')->nullable()->index();
+            $table->timestamp('expires_at')->nullable()->index();
+            $table->timestamp('registered_at')->nullable();
             $table->json('metadata')->nullable();
             $table->timestamps();
             $table->softDeletes();
