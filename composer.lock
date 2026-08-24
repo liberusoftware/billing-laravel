@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c4aa0c142146f2a46146421206ebe135",
+    "content-hash": "5935f3d197ec79d08bf9eee865450d81",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -7845,6 +7845,41 @@
                 "MIT"
             ],
             "description": "Livewire 4 adapter for Liberu Billing Subscriptions.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-usage",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-usage",
+                "reference": "a17cc21d0f74fb54ce86e2b12223e671864a86d8"
+            },
+            "require": {
+                "illuminate/database": "^13.0",
+                "illuminate/events": "^13.0",
+                "illuminate/support": "^13.0",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-usage"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Usage\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Provider-neutral usage meters, deduplicated ingestion, aggregation, rating, corrections, and thresholds.",
             "transport-options": {
                 "symlink": false,
                 "relative": true
