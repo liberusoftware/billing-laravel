@@ -123,6 +123,15 @@ class User extends Authenticatable implements ConnectedAccountOwner, FilamentUse
     }
 
     /**
+     * Livewire and panel requests may hydrate a deliberately partial user row.
+     * Fortify treats an absent confirmation timestamp as unconfirmed.
+     */
+    protected function twoFactorConfirmedAt(): Attribute
+    {
+        return Attribute::get(fn (?string $value): ?string => $value);
+    }
+
+    /**
      * The teams this user may act within as a Filament tenant — owned + member teams,
      * consistent with canAccessTenant()/belongsToTeam() so invited members aren't locked out.
      *
