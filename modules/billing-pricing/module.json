@@ -1,0 +1,14 @@
+{
+  "$schema": "https://schemas.liberu.dev/module/v1.json",
+  "name": "billing-pricing",
+  "display_name": "Billing Pricing",
+  "description": "Recurring, one-time, usage, tiered pricing, contracts, discounts, proration, and snapshots.",
+  "version": "0.1.0",
+  "category": "capability",
+  "provider": "Liberu\\Billing\\Pricing\\PricingServiceProvider",
+  "requires": {"php": "^8.5", "laravel": "^13.0", "packages": {"liberusoftware/module-manager": "^1.0"}},
+  "suggests": [],
+  "capabilities": ["billing.pricing"],
+  "default_enabled": true,
+  "features": ["Pricing plans", "Contracts", "Discounts", "Proration", "Price snapshots"]
+}

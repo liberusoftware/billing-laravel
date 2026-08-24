@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "953cad1c7e75e1cbcfb42909993fad50",
+    "content-hash": "edbdf9feb360b41de572cf5d8fa5a43c",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -6276,6 +6276,144 @@
             }
         },
         {
+            "name": "liberusoftware/billing-pricing",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/billing-pricing",
+                "reference": "b74990ec77f4f311353e52eddbf0f3c075f31254"
+            },
+            "require": {
+                "illuminate/database": "^13.0",
+                "illuminate/support": "^13.0",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "billing-pricing"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Pricing\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Provider-neutral pricing, contracts, discounts, proration, and snapshots for Liberu Billing.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/billing-pricing-api",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/billing-pricing-api",
+                "reference": "4a33a3ced9443484b4ca2f489bf488b6337a72e4"
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "laravel/sanctum": "^4.0",
+                "liberusoftware/billing-pricing": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "billing-pricing-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Pricing\\Api\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "HTTP API adapter for Liberu Billing Pricing.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/billing-pricing-filament",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/billing-pricing-filament",
+                "reference": "54542dac96699406f910ba88dc26ddb628f1eb77"
+            },
+            "require": {
+                "filament/filament": "~5.1",
+                "liberusoftware/billing-pricing": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "billing-pricing-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Pricing\\Filament\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament adapter for Liberu Billing Pricing.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/billing-pricing-livewire",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/billing-pricing-livewire",
+                "reference": "1a5bd6534d5eed9a7bff21e91279ae5a6eb1ba76"
+            },
+            "require": {
+                "liberusoftware/billing-pricing": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "billing-pricing-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Pricing\\Livewire\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire adapter for Liberu Billing Pricing.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
             "name": "liberusoftware/composer-installer",
             "version": "1.1.0",
             "source": {
@@ -7023,7 +7161,7 @@
             "version": "1.4.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-module-manager.git",
+                "url": "git@github.com:liberusoftware/module-module-manager.git",
                 "reference": "688fc9c01008bfd5258afa2a78587c48804ec2e7"
             },
             "dist": {
@@ -7067,10 +7205,6 @@
                 "MIT"
             ],
             "description": "Deterministic manifest discovery and runtime enablement for Liberu modules.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-module-manager/tree/1.4.2",
-                "issues": "https://github.com/liberusoftware/module-module-manager/issues"
-            },
             "time": "2026-08-07T14:25:25+00:00"
         },
         {

@@ -1,0 +1,16 @@
+openapi: 3.1.0
+info:
+  title: Billing Pricing API
+  version: 1.0.0
+paths:
+  /api/v1/billing/pricing:
+    get:
+      operationId: billing.pricing.list
+      security: [{sanctum: []}]
+      responses: {'200': {description: Authorized pricing plans}}
+    post:
+      operationId: billing.pricing.create
+      security: [{sanctum: []}]
+      responses: {'201': {description: Created pricing plan}}
+components:
+  securitySchemes: {sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}}
