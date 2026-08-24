@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "364c6376cb504b260ed68205ed9230fd",
+    "content-hash": "8727d4a160b7bf479a3f2e3d3f3a7c3c",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -7293,6 +7293,41 @@
             ],
             "description": "MyMemory machine-translation adapter for Liberu Localization.",
             "time": "2026-08-07T14:25:31+00:00"
+        },
+        {
+            "name": "liberusoftware/module-billing-collections",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-collections",
+                "reference": "34332179cc2cf81a1a1e44ebff6abef579b024f7"
+            },
+            "require": {
+                "illuminate/database": "^13.0",
+                "illuminate/events": "^13.0",
+                "illuminate/support": "^13.0",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-collections"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Collections\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Provider-neutral collections, dunning, credit control, suspension, write-off, and recovery.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
         },
         {
             "name": "liberusoftware/module-billing-invoicing",
