@@ -1,0 +1,29 @@
+{
+  "name": "liberusoftware/module-billing-hosting",
+  "description": "Provider-neutral Billing Hosting domain module.",
+  "type": "liberu-module",
+  "license": "MIT",
+  "require": {
+    "php": "^8.5",
+    "illuminate/database": "^13.0",
+    "illuminate/events": "^13.0",
+    "illuminate/support": "^13.0",
+    "liberusoftware/module-manager": "^1.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Liberu\\Billing\\Hosting\\": "src/"
+    }
+  },
+  "extra": {
+    "liberu": {
+      "name": "module-billing-hosting"
+    }
+  },
+  "version": "0.1.0",
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    }
+  }
+}

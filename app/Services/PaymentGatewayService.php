@@ -257,7 +257,7 @@ class PaymentGatewayService
             $amount = (int) ($payment->amount * 100);
             $currency = strtoupper($payment->currency);
 
-            $amountMoney = new Money;
+            $amountMoney = new Money();
             $amountMoney->setAmount($amount);
             $amountMoney->setCurrency($currency);
 

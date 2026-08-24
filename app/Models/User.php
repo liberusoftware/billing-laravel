@@ -11,7 +11,9 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
@@ -24,7 +26,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Liberu\Foundation\Identity\Socialstream\Contracts\ConnectedAccountOwner;
 use Liberu\Foundation\Observability\Contracts\ObservabilityActor;
 use Liberu\Foundation\Organizations\Contracts\OrganizationActor;
-use Liberu\Foundation\Organizations\Models\Team;
+use Liberu\Foundation\Organizations\Models\Team as FoundationTeam;
 use Liberu\Foundation\RolesPermissions\Contracts\PrivilegedActor;
 use Liberu\Foundation\RolesPermissions\Services\AnyTeamRoleLookup;
 use Liberu\Foundation\Search\Concerns\Searchable;
@@ -35,6 +37,15 @@ use Spatie\Permission\Traits\HasRoles;
 /**
  * @property string|null $theme_preference
  * @property string|null $locale
+ * @property string|null $two_factor_secret
+ * @property int|null $referred_by
+ * @property-read Customer|null $customer
+ * @property-read Subscription|null $subscription
+ * @property-read Collection<int, SavedSearch> $savedSearches
+ * @property-read Collection<int, TeamInvitation> $invitations
+ * @property-read Collection<int, Ticket> $tickets
+ * @property-read Collection<int, Integration> $integrations
+ * @property-read Affiliate|null $referrer
  */
 class User extends Authenticatable implements ConnectedAccountOwner, FilamentUser, HasDefaultTenant, HasTenants, ObservabilityActor, OrganizationActor, PrivilegedActor
 {
@@ -99,6 +110,7 @@ class User extends Authenticatable implements ConnectedAccountOwner, FilamentUse
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'dashboard_preferences' => 'array',
     ];
 
     /**
@@ -144,7 +156,7 @@ class User extends Authenticatable implements ConnectedAccountOwner, FilamentUse
 
     public function canAccessTenant(Model $tenant): bool
     {
-        return $tenant instanceof Team && $this->belongsToTeam($tenant);
+        return $tenant instanceof FoundationTeam && $this->belongsToTeam($tenant);
     }
 
     public function canAccessPanel(Panel $panel): bool
@@ -159,6 +171,36 @@ class User extends Authenticatable implements ConnectedAccountOwner, FilamentUse
     public function customer(): HasOne
     {
         return $this->hasOne(Customer::class);
+    }
+
+    public function subscription(): HasOneThrough
+    {
+        return $this->hasOneThrough(Subscription::class, Customer::class);
+    }
+
+    public function savedSearches(): HasMany
+    {
+        return $this->hasMany(SavedSearch::class);
+    }
+
+    public function invitations(): HasMany
+    {
+        return $this->hasMany(TeamInvitation::class);
+    }
+
+    public function tickets(): HasMany
+    {
+        return $this->hasMany(Ticket::class);
+    }
+
+    public function integrations(): HasMany
+    {
+        return $this->hasMany(Integration::class);
+    }
+
+    public function referrer(): BelongsTo
+    {
+        return $this->belongsTo(Affiliate::class, 'referred_by');
     }
 
     /**
@@ -226,7 +268,9 @@ class User extends Authenticatable implements ConnectedAccountOwner, FilamentUse
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['name', 'email', 'locale', 'theme_preference'])
+            // Jetstream may hydrate a partial authenticated user row during
+            // account deletion; only audit columns guaranteed on that row.
+            ->logOnly(['name', 'email'])
             ->logOnlyDirty()
             ->dontLogEmptyChanges();
     }

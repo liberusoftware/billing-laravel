@@ -139,7 +139,7 @@ class ExternalModuleLoader
 
         foreach ($candidates as $class) {
             if (class_exists($class)) {
-                $instance = new $class;
+                $instance = new $class();
                 if ($instance instanceof ModuleInterface) {
                     return $instance;
                 }

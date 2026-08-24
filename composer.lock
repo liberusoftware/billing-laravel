@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7b435f91af6c43a238fc6e19ff9be35e",
+    "content-hash": "4d5a99bb8e873ba33e5aedd73b21d6bb",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -2950,21 +2950,21 @@
         },
         {
             "name": "graham-campbell/result-type",
-            "version": "v1.1.5",
+            "version": "v1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/GrahamCampbell/Result-Type.git",
-                "reference": "ef5e784ad5cf6c86fb262e3231aa11d84552fa12"
+                "reference": "adccca3324eece92ca35463648c12b9e6293c05b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/GrahamCampbell/Result-Type/zipball/ef5e784ad5cf6c86fb262e3231aa11d84552fa12",
-                "reference": "ef5e784ad5cf6c86fb262e3231aa11d84552fa12",
+                "url": "https://api.github.com/repos/GrahamCampbell/Result-Type/zipball/adccca3324eece92ca35463648c12b9e6293c05b",
+                "reference": "adccca3324eece92ca35463648c12b9e6293c05b",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.2.5 || ^8.0",
-                "phpoption/phpoption": "^1.9.6"
+                "phpoption/phpoption": "^1.10"
             },
             "require-dev": {
                 "phpunit/phpunit": "^8.5.52 || ^9.6.34 || ^10.5.63 || ^11.5.55 || ^12.5.14"
@@ -2996,7 +2996,7 @@
             ],
             "support": {
                 "issues": "https://github.com/GrahamCampbell/Result-Type/issues",
-                "source": "https://github.com/GrahamCampbell/Result-Type/tree/v1.1.5"
+                "source": "https://github.com/GrahamCampbell/Result-Type/tree/v1.2.0"
             },
             "funding": [
                 {
@@ -3008,26 +3008,26 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-08-23T22:27:24+00:00"
+            "time": "2026-08-24T09:06:52+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
-            "version": "7.15.3",
+            "version": "7.15.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "ae311b8f045ea93ce7b1c9cdb7cec06c53f944bc"
+                "reference": "ee80339fd9177ba44c49cdb653ff02a4d1106b9a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/ae311b8f045ea93ce7b1c9cdb7cec06c53f944bc",
-                "reference": "ae311b8f045ea93ce7b1c9cdb7cec06c53f944bc",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/ee80339fd9177ba44c49cdb653ff02a4d1106b9a",
+                "reference": "ee80339fd9177ba44c49cdb653ff02a4d1106b9a",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "guzzlehttp/promises": "^2.5.2",
-                "guzzlehttp/psr7": "^2.13",
+                "guzzlehttp/promises": "^2.5.3",
+                "guzzlehttp/psr7": "^2.13.1",
                 "php": "^7.2.5 || ^8.0",
                 "psr/http-client": "^1.0",
                 "symfony/deprecation-contracts": "^2.5 || ^3.0",
@@ -3120,7 +3120,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/guzzle/issues",
-                "source": "https://github.com/guzzle/guzzle/tree/7.15.3"
+                "source": "https://github.com/guzzle/guzzle/tree/7.15.5"
             },
             "funding": [
                 {
@@ -3136,20 +3136,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-08-05T19:48:21+00:00"
+            "time": "2026-08-24T09:21:06+00:00"
         },
         {
             "name": "guzzlehttp/promises",
-            "version": "2.5.2",
+            "version": "2.5.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/promises.git",
-                "reference": "2823687acff28b2dbe67b2508a6b300e2c3fa4ce"
+                "reference": "cde49999552d185d64715fe9c1f77a2aadd2f9f1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/promises/zipball/2823687acff28b2dbe67b2508a6b300e2c3fa4ce",
-                "reference": "2823687acff28b2dbe67b2508a6b300e2c3fa4ce",
+                "url": "https://api.github.com/repos/guzzle/promises/zipball/cde49999552d185d64715fe9c1f77a2aadd2f9f1",
+                "reference": "cde49999552d185d64715fe9c1f77a2aadd2f9f1",
                 "shasum": ""
             },
             "require": {
@@ -3204,7 +3204,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/promises/issues",
-                "source": "https://github.com/guzzle/promises/tree/2.5.2"
+                "source": "https://github.com/guzzle/promises/tree/2.5.3"
             },
             "funding": [
                 {
@@ -3220,20 +3220,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-08-05T19:30:54+00:00"
+            "time": "2026-08-24T09:11:28+00:00"
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "2.13.0",
+            "version": "2.13.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "dad89620b7a6edb60c15858442eb2e408b45d8f4"
+                "reference": "95e7828100de18b4e269fb1703be530082d5166d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/dad89620b7a6edb60c15858442eb2e408b45d8f4",
-                "reference": "dad89620b7a6edb60c15858442eb2e408b45d8f4",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/95e7828100de18b4e269fb1703be530082d5166d",
+                "reference": "95e7828100de18b4e269fb1703be530082d5166d",
                 "shasum": ""
             },
             "require": {
@@ -3323,7 +3323,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/psr7/issues",
-                "source": "https://github.com/guzzle/psr7/tree/2.13.0"
+                "source": "https://github.com/guzzle/psr7/tree/2.13.1"
             },
             "funding": [
                 {
@@ -3339,7 +3339,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-07-16T22:23:49+00:00"
+            "time": "2026-08-24T09:13:11+00:00"
         },
         {
             "name": "guzzlehttp/uri-template",
@@ -5604,7 +5604,7 @@
             "version": "1.4.2",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-activity-comments.git",
+                "url": "https://github.com/liberusoftware/module-activity-comments.git",
                 "reference": "416a1fdfb51bf5dbe331326709b44fdd7b9d3f32"
             },
             "dist": {
@@ -5648,6 +5648,10 @@
                 "MIT"
             ],
             "description": "Generic authorized timelines, comments, mentions, subscriptions, attachments, and visibility.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-activity-comments/tree/1.4.2",
+                "issues": "https://github.com/liberusoftware/module-activity-comments/issues"
+            },
             "time": "2026-08-07T14:25:02+00:00"
         },
         {
@@ -5655,7 +5659,7 @@
             "version": "1.0.2",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/analytics-contracts.git",
+                "url": "https://github.com/liberusoftware/analytics-contracts.git",
                 "reference": "c950ae334da15762f9b8e55777c844a3c902ab74"
             },
             "dist": {
@@ -5677,6 +5681,10 @@
                 "MIT"
             ],
             "description": "Stable provider-neutral contracts and value types for Liberu Analytics.",
+            "support": {
+                "source": "https://github.com/liberusoftware/analytics-contracts/tree/1.0.2",
+                "issues": "https://github.com/liberusoftware/analytics-contracts/issues"
+            },
             "time": "2026-08-01T07:24:38+00:00"
         },
         {
@@ -5684,7 +5692,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-analytics-core.git",
+                "url": "https://github.com/liberusoftware/module-analytics-core.git",
                 "reference": "b302f2e18910c3589fc3497a241bd56db809da93"
             },
             "dist": {
@@ -5729,6 +5737,10 @@
                 "MIT"
             ],
             "description": "Consent-aware provider-neutral analytics event routing and durable delivery evidence.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-analytics-core/tree/1.4.1",
+                "issues": "https://github.com/liberusoftware/module-analytics-core/issues"
+            },
             "time": "2026-08-07T14:25:08+00:00"
         },
         {
@@ -5736,7 +5748,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-analytics-google.git",
+                "url": "https://github.com/liberusoftware/module-analytics-google.git",
                 "reference": "60d4b39b689e13557829dd5b1fbb62ebb1d589c6"
             },
             "dist": {
@@ -5780,6 +5792,10 @@
                 "MIT"
             ],
             "description": "Consent-aware Google Analytics event mapping adapter.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-analytics-google/tree/1.4.1",
+                "issues": "https://github.com/liberusoftware/module-analytics-google/issues"
+            },
             "time": "2026-08-07T14:25:08+00:00"
         },
         {
@@ -5787,7 +5803,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-analytics-meta.git",
+                "url": "https://github.com/liberusoftware/module-analytics-meta.git",
                 "reference": "e087a4499ec299462ebdacd574ee12e52d36cc4c"
             },
             "dist": {
@@ -5831,6 +5847,10 @@
                 "MIT"
             ],
             "description": "Consent-aware Meta server-side event mapping and normalized customer-data adapter.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-analytics-meta/tree/1.4.1",
+                "issues": "https://github.com/liberusoftware/module-analytics-meta/issues"
+            },
             "time": "2026-08-07T14:25:08+00:00"
         },
         {
@@ -5838,7 +5858,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-api-access.git",
+                "url": "https://github.com/liberusoftware/module-api-access.git",
                 "reference": "5c79a794e1e64e84efde7305bde23a1dca459168"
             },
             "dist": {
@@ -5883,6 +5903,10 @@
                 "MIT"
             ],
             "description": "API token, scope, version, rate-limit, idempotency, and revocation policy.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-api-access/tree/1.4.1",
+                "issues": "https://github.com/liberusoftware/module-api-access/issues"
+            },
             "time": "2026-08-07T14:25:08+00:00"
         },
         {
@@ -5890,7 +5914,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-application.git",
+                "url": "https://github.com/liberusoftware/module-application.git",
                 "reference": "f4fe1f694a693308398e50c3894ca266bece75ac"
             },
             "dist": {
@@ -5934,6 +5958,10 @@
                 "MIT"
             ],
             "description": "Required application metadata, health, clocks, identifiers, and secure HTTP defaults.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-application/tree/1.4.1",
+                "issues": "https://github.com/liberusoftware/module-application/issues"
+            },
             "time": "2026-08-07T14:25:08+00:00"
         },
         {
@@ -5941,7 +5969,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-audit.git",
+                "url": "https://github.com/liberusoftware/module-audit.git",
                 "reference": "78c4f3b0f59484fd928cff4cc1c63a0e32f75857"
             },
             "dist": {
@@ -5985,6 +6013,10 @@
                 "MIT"
             ],
             "description": "Contextual material-change audit records with correlation and retention boundaries.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-audit/tree/1.4.1",
+                "issues": "https://github.com/liberusoftware/module-audit/issues"
+            },
             "time": "2026-08-07T14:25:10+00:00"
         },
         {
@@ -6556,7 +6588,7 @@
             "version": "1.1.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/composer-installer.git",
+                "url": "https://github.com/liberusoftware/composer-installer.git",
                 "reference": "470e3b95f6232424c69d67e4f7dad6f3619c37c4"
             },
             "dist": {
@@ -6593,6 +6625,10 @@
                 "MIT"
             ],
             "description": "Deterministic Composer 2 installer for tracked Liberu modules and themes.",
+            "support": {
+                "source": "https://github.com/liberusoftware/composer-installer/tree/1.1.0",
+                "issues": "https://github.com/liberusoftware/composer-installer/issues"
+            },
             "time": "2026-08-05T07:59:00+00:00"
         },
         {
@@ -6600,7 +6636,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-currency-context.git",
+                "url": "https://github.com/liberusoftware/module-currency-context.git",
                 "reference": "10f4df26157d7c5fee683d75f0a542c689afdd57"
             },
             "dist": {
@@ -6644,6 +6680,10 @@
                 "MIT"
             ],
             "description": "Precise money values, ISO currency metadata, context, formatting, and exchange-rate contracts.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-currency-context/tree/1.4.1",
+                "issues": "https://github.com/liberusoftware/module-currency-context/issues"
+            },
             "time": "2026-08-07T14:25:15+00:00"
         },
         {
@@ -6651,7 +6691,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-developer-experience.git",
+                "url": "https://github.com/liberusoftware/module-developer-experience.git",
                 "reference": "2a2f574430611175af6ff430d65156a56be7b657"
             },
             "dist": {
@@ -6695,6 +6735,10 @@
                 "MIT"
             ],
             "description": "Foundation diagnostics and reproducible development/quality conventions.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-developer-experience/tree/1.4.1",
+                "issues": "https://github.com/liberusoftware/module-developer-experience/issues"
+            },
             "time": "2026-08-07T14:25:15+00:00"
         },
         {
@@ -6702,7 +6746,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-feature-flags.git",
+                "url": "https://github.com/liberusoftware/module-feature-flags.git",
                 "reference": "f0701fbb929b8d5f330204b3b53c1901cec0749e"
             },
             "dist": {
@@ -6746,6 +6790,10 @@
                 "MIT"
             ],
             "description": "Typed rollout flags with stable environment, tenant, and actor targeting.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-feature-flags/tree/1.4.1",
+                "issues": "https://github.com/liberusoftware/module-feature-flags/issues"
+            },
             "time": "2026-08-07T14:25:15+00:00"
         },
         {
@@ -6753,7 +6801,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-files-media.git",
+                "url": "https://github.com/liberusoftware/module-files-media.git",
                 "reference": "214f00cd168620fe6fa209c6669a206534129ff5"
             },
             "dist": {
@@ -6797,6 +6845,10 @@
                 "MIT"
             ],
             "description": "Secure upload policy, malware-scanner contract, media metadata, access, and retention foundations.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-files-media/tree/1.4.1",
+                "issues": "https://github.com/liberusoftware/module-files-media/issues"
+            },
             "time": "2026-08-07T14:25:15+00:00"
         },
         {
@@ -6804,7 +6856,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-identity-core.git",
+                "url": "https://github.com/liberusoftware/module-identity-core.git",
                 "reference": "46d9b48899910a511285761f990a1d7f96531189"
             },
             "dist": {
@@ -6847,6 +6899,10 @@
                 "MIT"
             ],
             "description": "Provider-neutral identity policy, normalization, and versioned security events.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-identity-core/tree/1.4.1",
+                "issues": "https://github.com/liberusoftware/module-identity-core/issues"
+            },
             "time": "2026-08-07T14:25:16+00:00"
         },
         {
@@ -6854,7 +6910,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-identity-core-filament.git",
+                "url": "https://github.com/liberusoftware/module-identity-core-filament.git",
                 "reference": "34519fdd11c96b7db55def83ef50321265b81ba8"
             },
             "dist": {
@@ -6897,6 +6953,10 @@
                 "MIT"
             ],
             "description": "Filament administration adapter for the configured Liberu identity model.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-identity-core-filament/tree/1.4.1",
+                "issues": "https://github.com/liberusoftware/module-identity-core-filament/issues"
+            },
             "time": "2026-08-07T14:25:21+00:00"
         },
         {
@@ -6904,7 +6964,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-identity-socialstream.git",
+                "url": "https://github.com/liberusoftware/module-identity-socialstream.git",
                 "reference": "faea00423bd97e3de696e37cb5d7cc6bafc0edf2"
             },
             "dist": {
@@ -6951,6 +7011,10 @@
                 "MIT"
             ],
             "description": "Socialstream/Socialite identity-linking provider adapter.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-identity-socialstream/tree/1.4.1",
+                "issues": "https://github.com/liberusoftware/module-identity-socialstream/issues"
+            },
             "time": "2026-08-07T14:25:24+00:00"
         },
         {
@@ -6958,7 +7022,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-import-export.git",
+                "url": "https://github.com/liberusoftware/module-import-export.git",
                 "reference": "075032d5033056c3b4a10a010673de3d4a57159c"
             },
             "dist": {
@@ -7002,6 +7066,10 @@
                 "MIT"
             ],
             "description": "Versioned transfer schemas, mapping, dry runs, validation, queued progress, reports, and retention.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-import-export/tree/1.4.1",
+                "issues": "https://github.com/liberusoftware/module-import-export/issues"
+            },
             "time": "2026-08-07T14:25:23+00:00"
         },
         {
@@ -7009,7 +7077,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-integrations.git",
+                "url": "https://github.com/liberusoftware/module-integrations.git",
                 "reference": "9569c7b2e48633fc47131a0a3533dfb7a4d516fc"
             },
             "dist": {
@@ -7053,6 +7121,10 @@
                 "MIT"
             ],
             "description": "Provider adapter registry and protected connection lifecycle.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-integrations/tree/1.4.1",
+                "issues": "https://github.com/liberusoftware/module-integrations/issues"
+            },
             "time": "2026-08-07T14:25:23+00:00"
         },
         {
@@ -7060,7 +7132,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-jetstream-bridge.git",
+                "url": "https://github.com/liberusoftware/module-jetstream-bridge.git",
                 "reference": "7ba43cc22d76d231d74b3987bbb7d40dd2a0f445"
             },
             "dist": {
@@ -7106,6 +7178,10 @@
                 "MIT"
             ],
             "description": "Fortify and Jetstream-compatible action adapters for Liberu identity capabilities.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-jetstream-bridge/tree/1.4.1",
+                "issues": "https://github.com/liberusoftware/module-jetstream-bridge/issues"
+            },
             "time": "2026-08-07T14:25:24+00:00"
         },
         {
@@ -7131,10 +7207,15 @@
                     "Liberu\\Localization\\Contracts\\": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Stable provider-neutral machine translation contracts for Liberu Localization.",
+            "support": {
+                "issues": "https://github.com/liberusoftware/localization-contracts/issues",
+                "source": "https://github.com/liberusoftware/localization-contracts/tree/1.0.2"
+            },
             "time": "2026-08-01T07:24:41+00:00"
         },
         {
@@ -7142,7 +7223,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-localization-core.git",
+                "url": "https://github.com/liberusoftware/module-localization-core.git",
                 "reference": "c77a5aed99bd101eeff7a7a94dde0a969a0f38ab"
             },
             "dist": {
@@ -7189,6 +7270,10 @@
                 "MIT"
             ],
             "description": "Locale resolution, preferences, propagation, and UI direction for Liberu applications.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-localization-core/tree/1.4.1",
+                "issues": "https://github.com/liberusoftware/module-localization-core/issues"
+            },
             "time": "2026-08-07T14:25:23+00:00"
         },
         {
@@ -7196,7 +7281,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-localization-core-livewire.git",
+                "url": "https://github.com/liberusoftware/module-localization-core-livewire.git",
                 "reference": "31553cab97641e83fc702974c3159de78afdcec7"
             },
             "dist": {
@@ -7240,6 +7325,10 @@
                 "MIT"
             ],
             "description": "Livewire locale-switching presentation adapter for Liberu Localization.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-localization-core-livewire/tree/1.4.1",
+                "issues": "https://github.com/liberusoftware/module-localization-core-livewire/issues"
+            },
             "time": "2026-08-07T14:25:29+00:00"
         },
         {
@@ -7247,7 +7336,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-localization-mymemory.git",
+                "url": "https://github.com/liberusoftware/module-localization-mymemory.git",
                 "reference": "bf11fef28492b3a311cb252f484205b5875c5d9e"
             },
             "dist": {
@@ -7292,6 +7381,10 @@
                 "MIT"
             ],
             "description": "MyMemory machine-translation adapter for Liberu Localization.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-localization-mymemory/tree/1.4.1",
+                "issues": "https://github.com/liberusoftware/module-localization-mymemory/issues"
+            },
             "time": "2026-08-07T14:25:31+00:00"
         },
         {
@@ -7428,6 +7521,542 @@
                 "MIT"
             ],
             "description": "Livewire 4 adapter for Liberu Billing Collections.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-communications",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-communications",
+                "reference": "efe53a2e8d90702f6f98cdc49637dba979d24e79"
+            },
+            "require": {
+                "php": "^8.5",
+                "illuminate/database": "^13.0",
+                "illuminate/events": "^13.0",
+                "illuminate/support": "^13.0",
+                "liberusoftware/module-manager": "^1.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-communications"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Communications\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Provider-neutral Billing Communications domain module.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-communications-api",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-communications-api",
+                "reference": "91a0fbf400d78c2a3061b6ecd6786ef8403dbebe"
+            },
+            "require": {
+                "php": "^8.5",
+                "liberusoftware/module-billing-communications": "^0.1",
+                "liberusoftware/module-manager": "^1.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-communications-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Communications\\Api\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Api adapter for Billing Communications.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-communications-filament",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-communications-filament",
+                "reference": "09054ea99e51dcf1ed209f7a4d1d126ed58794f0"
+            },
+            "require": {
+                "php": "^8.5",
+                "liberusoftware/module-billing-communications": "^0.1",
+                "liberusoftware/module-manager": "^1.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-communications-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Communications\\Filament\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament adapter for Billing Communications.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-communications-livewire",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-communications-livewire",
+                "reference": "784e61c156df3fe29438b19f4d0b25fc91e42edc"
+            },
+            "require": {
+                "php": "^8.5",
+                "liberusoftware/module-billing-communications": "^0.1",
+                "liberusoftware/module-manager": "^1.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-communications-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Communications\\Livewire\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire adapter for Billing Communications.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-customer-portal",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-customer-portal",
+                "reference": "481b4798124698d68fe680591d04d0255b140fa7"
+            },
+            "require": {
+                "php": "^8.5",
+                "illuminate/database": "^13.0",
+                "illuminate/events": "^13.0",
+                "illuminate/support": "^13.0",
+                "liberusoftware/module-manager": "^1.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-customer-portal"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\CustomerPortal\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Provider-neutral Billing Customer Portal domain module.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-customer-portal-api",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-customer-portal-api",
+                "reference": "d0d10b4845e8b1038321a1ccad798a1f6d35e582"
+            },
+            "require": {
+                "php": "^8.5",
+                "liberusoftware/module-billing-customer-portal": "^0.1",
+                "liberusoftware/module-manager": "^1.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-customer-portal-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\CustomerPortal\\Api\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Api adapter for Billing Customer Portal.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-customer-portal-filament",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-customer-portal-filament",
+                "reference": "28f6a55339c3a71915872efdee784a8c3a581f88"
+            },
+            "require": {
+                "php": "^8.5",
+                "liberusoftware/module-billing-customer-portal": "^0.1",
+                "liberusoftware/module-manager": "^1.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-customer-portal-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\CustomerPortal\\Filament\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament adapter for Billing Customer Portal.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-customer-portal-livewire",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-customer-portal-livewire",
+                "reference": "ede404c70a608c1c88ef48644d190dd241329b01"
+            },
+            "require": {
+                "php": "^8.5",
+                "liberusoftware/module-billing-customer-portal": "^0.1",
+                "liberusoftware/module-manager": "^1.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-customer-portal-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\CustomerPortal\\Livewire\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire adapter for Billing Customer Portal.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-domains",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-domains",
+                "reference": "131ae74c2bcfbd341722c870a037dd660774a09b"
+            },
+            "require": {
+                "php": "^8.5",
+                "illuminate/database": "^13.0",
+                "illuminate/events": "^13.0",
+                "illuminate/support": "^13.0",
+                "liberusoftware/module-manager": "^1.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-domains"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Domains\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Provider-neutral Billing Domains domain module.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-domains-api",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-domains-api",
+                "reference": "779a90d97aa2b0e77a5917d555d8f1c4396c0f01"
+            },
+            "require": {
+                "php": "^8.5",
+                "liberusoftware/module-billing-domains": "^0.1",
+                "liberusoftware/module-manager": "^1.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-domains-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Domains\\Api\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Api adapter for Billing Domains.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-domains-filament",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-domains-filament",
+                "reference": "2f71ffac76b13d19e31d18348f68b6769b1a7e72"
+            },
+            "require": {
+                "php": "^8.5",
+                "liberusoftware/module-billing-domains": "^0.1",
+                "liberusoftware/module-manager": "^1.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-domains-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Domains\\Filament\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament adapter for Billing Domains.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-domains-livewire",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-domains-livewire",
+                "reference": "211c934b5aca0c1784bbe0f82cdf612d633af861"
+            },
+            "require": {
+                "php": "^8.5",
+                "liberusoftware/module-billing-domains": "^0.1",
+                "liberusoftware/module-manager": "^1.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-domains-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Domains\\Livewire\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire adapter for Billing Domains.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-hosting",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-hosting",
+                "reference": "9b9aabda5fd5d46c506360f094c205e8fd4f80d6"
+            },
+            "require": {
+                "php": "^8.5",
+                "illuminate/database": "^13.0",
+                "illuminate/events": "^13.0",
+                "illuminate/support": "^13.0",
+                "liberusoftware/module-manager": "^1.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-hosting"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Hosting\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Provider-neutral Billing Hosting domain module.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-hosting-api",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-hosting-api",
+                "reference": "9d67a5a269eb4143ef13270d206bdbb254240f9b"
+            },
+            "require": {
+                "php": "^8.5",
+                "liberusoftware/module-billing-hosting": "^0.1",
+                "liberusoftware/module-manager": "^1.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-hosting-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Hosting\\Api\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Api adapter for Billing Hosting.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-hosting-filament",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-hosting-filament",
+                "reference": "b5f47ec9f787438cd45d1f65d26c2ec813ddee10"
+            },
+            "require": {
+                "php": "^8.5",
+                "liberusoftware/module-billing-hosting": "^0.1",
+                "liberusoftware/module-manager": "^1.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-hosting-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Hosting\\Filament\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament adapter for Billing Hosting.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-hosting-livewire",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-hosting-livewire",
+                "reference": "f3fd019c833dbf7cce7b297cc84295965aef4a6d"
+            },
+            "require": {
+                "php": "^8.5",
+                "liberusoftware/module-billing-hosting": "^0.1",
+                "liberusoftware/module-manager": "^1.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-hosting-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Hosting\\Livewire\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire adapter for Billing Hosting.",
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -7573,6 +8202,140 @@
             }
         },
         {
+            "name": "liberusoftware/module-billing-isp",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-isp",
+                "reference": "80925740d75cd9dfde751e0c9605fda9cf1b5cd8"
+            },
+            "require": {
+                "php": "^8.5",
+                "illuminate/database": "^13.0",
+                "illuminate/events": "^13.0",
+                "illuminate/support": "^13.0",
+                "liberusoftware/module-manager": "^1.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-isp"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Isp\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Provider-neutral Billing ISP domain module.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-isp-api",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-isp-api",
+                "reference": "26e93d0deb3ea8f5411fa7e8931646ff53a756a2"
+            },
+            "require": {
+                "php": "^8.5",
+                "liberusoftware/module-billing-isp": "^0.1",
+                "liberusoftware/module-manager": "^1.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-isp-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Isp\\Api\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Api adapter for Billing ISP.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-isp-filament",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-isp-filament",
+                "reference": "9567b4dc7bc97e73a0bd0c5e7f33f1aaac58c1a7"
+            },
+            "require": {
+                "php": "^8.5",
+                "liberusoftware/module-billing-isp": "^0.1",
+                "liberusoftware/module-manager": "^1.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-isp-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Isp\\Filament\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament adapter for Billing ISP.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-isp-livewire",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-isp-livewire",
+                "reference": "c965d54e74d7d5670b5b1f3b20eb1ac11bd0a2ed"
+            },
+            "require": {
+                "php": "^8.5",
+                "liberusoftware/module-billing-isp": "^0.1",
+                "liberusoftware/module-manager": "^1.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-isp-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Isp\\Livewire\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire adapter for Billing ISP.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
             "name": "liberusoftware/module-billing-payments",
             "version": "0.1.0",
             "dist": {
@@ -7602,6 +8365,140 @@
                 "MIT"
             ],
             "description": "Provider-neutral payment methods, capture, allocation, refunds, disputes, and reconciliation.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-reporting",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-reporting",
+                "reference": "27656d238697064676de01e5d91535caf2160a28"
+            },
+            "require": {
+                "php": "^8.5",
+                "illuminate/database": "^13.0",
+                "illuminate/events": "^13.0",
+                "illuminate/support": "^13.0",
+                "liberusoftware/module-manager": "^1.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-reporting"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Reporting\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Provider-neutral Billing Reporting domain module.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-reporting-api",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-reporting-api",
+                "reference": "3feca0e43c86f32f3eeedf811158bcb5c4fde00a"
+            },
+            "require": {
+                "php": "^8.5",
+                "liberusoftware/module-billing-reporting": "^0.1",
+                "liberusoftware/module-manager": "^1.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-reporting-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Reporting\\Api\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Api adapter for Billing Reporting.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-reporting-filament",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-reporting-filament",
+                "reference": "26058d15ed5ff2535ea7992b99f2d6f5186bd61c"
+            },
+            "require": {
+                "php": "^8.5",
+                "liberusoftware/module-billing-reporting": "^0.1",
+                "liberusoftware/module-manager": "^1.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-reporting-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Reporting\\Filament\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament adapter for Billing Reporting.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-reporting-livewire",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-reporting-livewire",
+                "reference": "84beb6e766d2d3a14da1b8b888f930328b23dbd6"
+            },
+            "require": {
+                "php": "^8.5",
+                "liberusoftware/module-billing-reporting": "^0.1",
+                "liberusoftware/module-manager": "^1.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-reporting-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Reporting\\Livewire\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire adapter for Billing Reporting.",
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -7717,7 +8614,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/module-billing-provisioning",
-                "reference": "ee77e05af14d1d47b9e97751b70576a944cafd65"
+                "reference": "d4ccb54e8be9f50f72bb071918bc0a3bfb5db80a"
             },
             "require": {
                 "illuminate/database": "^13.0",
@@ -7741,6 +8638,110 @@
                 "MIT"
             ],
             "description": "Provider-neutral billing service provisioning and reconciliation.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-provisioning-api",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-provisioning-api",
+                "reference": "2655bdccd31de420f250f873159007eac0614d28"
+            },
+            "require": {
+                "php": "^8.5",
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "laravel/sanctum": "^4.0",
+                "liberusoftware/module-billing-provisioning": "^0.1",
+                "liberusoftware/module-manager": "^1.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-provisioning-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Provisioning\\Api\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "HTTP API adapter for Liberu Billing Provisioning.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-provisioning-filament",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-provisioning-filament",
+                "reference": "f97638d44e930483127b132fea3f37879601903b"
+            },
+            "require": {
+                "php": "^8.5",
+                "filament/filament": "~5.1",
+                "liberusoftware/module-billing-provisioning": "^0.1",
+                "liberusoftware/module-manager": "^1.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-provisioning-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Provisioning\\Filament\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament adapter for Liberu Billing Provisioning.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-provisioning-livewire",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-provisioning-livewire",
+                "reference": "cea20897d7707d6a44113c1d7f71040a1bc6c59c"
+            },
+            "require": {
+                "php": "^8.5",
+                "livewire/livewire": "^4.0",
+                "liberusoftware/module-billing-provisioning": "^0.1",
+                "liberusoftware/module-manager": "^1.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-provisioning-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Provisioning\\Livewire\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire adapter for Liberu Billing Provisioning.",
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -8025,6 +9026,782 @@
             }
         },
         {
+            "name": "liberusoftware/module-liberu-business-workflow-reconciliation",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-liberu-business-workflow-reconciliation",
+                "reference": "06c125694b549a8a0a1f661a80fd783f70149db2"
+            },
+            "require": {
+                "illuminate/database": "^13.0",
+                "illuminate/support": "^13.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "liberu-business-workflow-reconciliation",
+                    "provider": "Liberu\\Platform\\BusinessWorkflowReconciliation\\BusinessWorkflowReconciliationServiceProvider"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Platform\\BusinessWorkflowReconciliation\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Liberu\\Platform\\BusinessWorkflowReconciliation\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Liberu liberu-business-workflow-reconciliation module.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-liberu-business-workflow-reconciliation-api",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-liberu-business-workflow-reconciliation-api",
+                "reference": "b015d573dbce3813af5d884d4e64996b85b2c43e"
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "laravel/sanctum": "^4.0",
+                "liberusoftware/module-liberu-business-workflow-reconciliation": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "liberu-business-workflow-reconciliation-api",
+                    "provider": "Liberu\\Platform\\BusinessWorkflowReconciliation\\Api\\BusinessWorkflowReconciliationApiServiceProvider"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Platform\\BusinessWorkflowReconciliation\\Api\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Liberu\\Platform\\BusinessWorkflowReconciliation\\Api\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Liberu liberu-business-workflow-reconciliation-api module.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-liberu-business-workflow-reconciliation-filament",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-liberu-business-workflow-reconciliation-filament",
+                "reference": "8ea8a641dcff2cc7e4c3e47fd6ab3bb4ec304322"
+            },
+            "require": {
+                "filament/filament": "^5.0",
+                "liberusoftware/module-liberu-business-workflow-reconciliation": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "liberu-business-workflow-reconciliation-filament",
+                    "provider": "Liberu\\Platform\\BusinessWorkflowReconciliation\\Filament\\BusinessWorkflowReconciliationFilamentServiceProvider"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Platform\\BusinessWorkflowReconciliation\\Filament\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Liberu\\Platform\\BusinessWorkflowReconciliation\\Filament\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Liberu liberu-business-workflow-reconciliation-filament module.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-liberu-business-workflow-reconciliation-livewire",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-liberu-business-workflow-reconciliation-livewire",
+                "reference": "7182d36f40dcb25bbf79cc3f6ca06a6a54e44df9"
+            },
+            "require": {
+                "liberusoftware/module-liberu-business-workflow-reconciliation": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "liberu-business-workflow-reconciliation-livewire",
+                    "provider": "Liberu\\Platform\\BusinessWorkflowReconciliation\\Livewire\\BusinessWorkflowReconciliationLivewireServiceProvider"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Platform\\BusinessWorkflowReconciliation\\Livewire\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Liberu\\Platform\\BusinessWorkflowReconciliation\\Livewire\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Liberu liberu-business-workflow-reconciliation-livewire module.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-liberu-executive-insights",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-liberu-executive-insights",
+                "reference": "6c23020aee8a24c00be8cdaf23a44c34147f12de"
+            },
+            "require": {
+                "illuminate/database": "^13.0",
+                "illuminate/support": "^13.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "liberu-executive-insights",
+                    "provider": "Liberu\\Platform\\ExecutiveInsights\\ExecutiveInsightsServiceProvider"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Platform\\ExecutiveInsights\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Liberu\\Platform\\ExecutiveInsights\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Liberu liberu-executive-insights module.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-liberu-executive-insights-api",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-liberu-executive-insights-api",
+                "reference": "81f0da8d7622112e53fc84b44cb9ebb4f11e013a"
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "laravel/sanctum": "^4.0",
+                "liberusoftware/module-liberu-executive-insights": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "liberu-executive-insights-api",
+                    "provider": "Liberu\\Platform\\ExecutiveInsights\\Api\\ExecutiveInsightsApiServiceProvider"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Platform\\ExecutiveInsights\\Api\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Liberu\\Platform\\ExecutiveInsights\\Api\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Liberu liberu-executive-insights-api module.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-liberu-executive-insights-filament",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-liberu-executive-insights-filament",
+                "reference": "6b57fe7a0d549c9d9ea40ab2565c72df31a378ad"
+            },
+            "require": {
+                "filament/filament": "^5.0",
+                "liberusoftware/module-liberu-executive-insights": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "liberu-executive-insights-filament",
+                    "provider": "Liberu\\Platform\\ExecutiveInsights\\Filament\\ExecutiveInsightsFilamentServiceProvider"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Platform\\ExecutiveInsights\\Filament\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Liberu\\Platform\\ExecutiveInsights\\Filament\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Liberu liberu-executive-insights-filament module.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-liberu-executive-insights-livewire",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-liberu-executive-insights-livewire",
+                "reference": "d9e0105064d7e8b373f14243df147042c8ef9d43"
+            },
+            "require": {
+                "liberusoftware/module-liberu-executive-insights": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "liberu-executive-insights-livewire",
+                    "provider": "Liberu\\Platform\\ExecutiveInsights\\Livewire\\ExecutiveInsightsLivewireServiceProvider"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Platform\\ExecutiveInsights\\Livewire\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Liberu\\Platform\\ExecutiveInsights\\Livewire\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Liberu liberu-executive-insights-livewire module.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-liberu-platform-orchestration",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-liberu-platform-orchestration",
+                "reference": "88ac52141886a2d5051552745233f1f719379a13"
+            },
+            "require": {
+                "illuminate/database": "^13.0",
+                "illuminate/support": "^13.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "liberu-platform-orchestration",
+                    "provider": "Liberu\\Platform\\PlatformOrchestration\\PlatformOrchestrationServiceProvider"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Platform\\PlatformOrchestration\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Liberu\\Platform\\PlatformOrchestration\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Liberu liberu-platform-orchestration module.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-liberu-platform-orchestration-api",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-liberu-platform-orchestration-api",
+                "reference": "923796d8b20f376dc37232e73fddd9fd0e65b3fa"
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "laravel/sanctum": "^4.0",
+                "liberusoftware/module-liberu-platform-orchestration": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "liberu-platform-orchestration-api",
+                    "provider": "Liberu\\Platform\\PlatformOrchestration\\Api\\PlatformOrchestrationApiServiceProvider"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Platform\\PlatformOrchestration\\Api\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Liberu\\Platform\\PlatformOrchestration\\Api\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Liberu liberu-platform-orchestration-api module.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-liberu-platform-orchestration-filament",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-liberu-platform-orchestration-filament",
+                "reference": "639253727e718e9b312d92e81957f935cf02e26a"
+            },
+            "require": {
+                "filament/filament": "^5.0",
+                "liberusoftware/module-liberu-platform-orchestration": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "liberu-platform-orchestration-filament",
+                    "provider": "Liberu\\Platform\\PlatformOrchestration\\Filament\\PlatformOrchestrationFilamentServiceProvider"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Platform\\PlatformOrchestration\\Filament\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Liberu\\Platform\\PlatformOrchestration\\Filament\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Liberu liberu-platform-orchestration-filament module.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-liberu-platform-orchestration-livewire",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-liberu-platform-orchestration-livewire",
+                "reference": "4d6c576a87a2e30e1c4b790edace022ab8bbd450"
+            },
+            "require": {
+                "liberusoftware/module-liberu-platform-orchestration": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "liberu-platform-orchestration-livewire",
+                    "provider": "Liberu\\Platform\\PlatformOrchestration\\Livewire\\PlatformOrchestrationLivewireServiceProvider"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Platform\\PlatformOrchestration\\Livewire\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Liberu\\Platform\\PlatformOrchestration\\Livewire\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Liberu liberu-platform-orchestration-livewire module.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-liberu-revenue-and-care-orchestration",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-liberu-revenue-and-care-orchestration",
+                "reference": "848ea2adc4ca2c4e4846ee360b898fbbe54d8a2f"
+            },
+            "require": {
+                "illuminate/database": "^13.0",
+                "illuminate/support": "^13.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "liberu-revenue-and-care-orchestration",
+                    "provider": "Liberu\\Platform\\RevenueAndCareOrchestration\\RevenueAndCareOrchestrationServiceProvider"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Platform\\RevenueAndCareOrchestration\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Liberu\\Platform\\RevenueAndCareOrchestration\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Liberu liberu-revenue-and-care-orchestration module.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-liberu-revenue-and-care-orchestration-api",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-liberu-revenue-and-care-orchestration-api",
+                "reference": "b98cd039d5189c3b32e15adb3b82178ef8be5fab"
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "laravel/sanctum": "^4.0",
+                "liberusoftware/module-liberu-revenue-and-care-orchestration": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "liberu-revenue-and-care-orchestration-api",
+                    "provider": "Liberu\\Platform\\RevenueAndCareOrchestration\\Api\\RevenueAndCareOrchestrationApiServiceProvider"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Platform\\RevenueAndCareOrchestration\\Api\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Liberu\\Platform\\RevenueAndCareOrchestration\\Api\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Liberu liberu-revenue-and-care-orchestration-api module.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-liberu-revenue-and-care-orchestration-filament",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-liberu-revenue-and-care-orchestration-filament",
+                "reference": "8c7f221d456a68f2c7e30ad8e81a34d512458f7e"
+            },
+            "require": {
+                "filament/filament": "^5.0",
+                "liberusoftware/module-liberu-revenue-and-care-orchestration": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "liberu-revenue-and-care-orchestration-filament",
+                    "provider": "Liberu\\Platform\\RevenueAndCareOrchestration\\Filament\\RevenueAndCareOrchestrationFilamentServiceProvider"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Platform\\RevenueAndCareOrchestration\\Filament\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Liberu\\Platform\\RevenueAndCareOrchestration\\Filament\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Liberu liberu-revenue-and-care-orchestration-filament module.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-liberu-revenue-and-care-orchestration-livewire",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-liberu-revenue-and-care-orchestration-livewire",
+                "reference": "54b94a866ebd2f662c9dd67575babf3ec37da3b0"
+            },
+            "require": {
+                "liberusoftware/module-liberu-revenue-and-care-orchestration": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "liberusoftware/package-testbench": "^1.5",
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "liberu-revenue-and-care-orchestration-livewire",
+                    "provider": "Liberu\\Platform\\RevenueAndCareOrchestration\\Livewire\\RevenueAndCareOrchestrationLivewireServiceProvider"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Platform\\RevenueAndCareOrchestration\\Livewire\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Liberu\\Platform\\RevenueAndCareOrchestration\\Livewire\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Liberu liberu-revenue-and-care-orchestration-livewire module.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
             "name": "liberusoftware/module-manager",
             "version": "1.4.2",
             "source": {
@@ -8084,7 +9861,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-module-manager-filament.git",
+                "url": "https://github.com/liberusoftware/module-module-manager-filament.git",
                 "reference": "44378fb5b6b5ea3239639f09ad51b1a8b8696026"
             },
             "dist": {
@@ -8128,6 +9905,10 @@
                 "MIT"
             ],
             "description": "Filament operations presentation adapter for the Liberu Module Manager.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-module-manager-filament/tree/1.4.1",
+                "issues": "https://github.com/liberusoftware/module-module-manager-filament/issues"
+            },
             "time": "2026-08-07T14:25:35+00:00"
         },
         {
@@ -8135,7 +9916,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-notifications.git",
+                "url": "https://github.com/liberusoftware/module-notifications.git",
                 "reference": "c218aa80a8773b7feadd0a884172a88135446ef9"
             },
             "dist": {
@@ -8179,6 +9960,10 @@
                 "MIT"
             ],
             "description": "Localized notification preferences, channel policy, inbox delivery state, and quiet hours.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-notifications/tree/1.4.1",
+                "issues": "https://github.com/liberusoftware/module-notifications/issues"
+            },
             "time": "2026-08-07T14:25:32+00:00"
         },
         {
@@ -8186,7 +9971,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-observability.git",
+                "url": "https://github.com/liberusoftware/module-observability.git",
                 "reference": "6adfdab5abf83d6f39473345822fda97f3f05ecb"
             },
             "dist": {
@@ -8231,6 +10016,10 @@
                 "MIT"
             ],
             "description": "Structured diagnostics, monitoring dashboards, health signals, and redaction defaults.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-observability/tree/1.4.1",
+                "issues": "https://github.com/liberusoftware/module-observability/issues"
+            },
             "time": "2026-08-07T14:25:32+00:00"
         },
         {
@@ -8238,7 +10027,7 @@
             "version": "1.5.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-organizations-teams.git",
+                "url": "https://github.com/liberusoftware/module-organizations-teams.git",
                 "reference": "12f20e83088659fe9194823d090e44358eed3a56"
             },
             "dist": {
@@ -8283,6 +10072,10 @@
                 "MIT"
             ],
             "description": "Organization, team, membership, invitation, ownership, and context foundation.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-organizations-teams/tree/1.5.0",
+                "issues": "https://github.com/liberusoftware/module-organizations-teams/issues"
+            },
             "time": "2026-08-09T15:38:02+00:00"
         },
         {
@@ -8290,7 +10083,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-organizations-teams-filament.git",
+                "url": "https://github.com/liberusoftware/module-organizations-teams-filament.git",
                 "reference": "ce57c44ef89eb852c9c1737d65de7a9e5ffa4b76"
             },
             "dist": {
@@ -8333,6 +10126,10 @@
                 "MIT"
             ],
             "description": "Filament administration adapter for organizations and teams.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-organizations-teams-filament/tree/1.4.1",
+                "issues": "https://github.com/liberusoftware/module-organizations-teams-filament/issues"
+            },
             "time": "2026-08-07T14:25:42+00:00"
         },
         {
@@ -8340,7 +10137,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-profiles.git",
+                "url": "https://github.com/liberusoftware/module-profiles.git",
                 "reference": "bdf7c4cb01bf602735df5ecf01d02cbb88b659fe"
             },
             "dist": {
@@ -8384,6 +10181,10 @@
                 "MIT"
             ],
             "description": "Controlled profile updates and user presentation preferences.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-profiles/tree/1.4.1",
+                "issues": "https://github.com/liberusoftware/module-profiles/issues"
+            },
             "time": "2026-08-07T14:25:39+00:00"
         },
         {
@@ -8391,7 +10192,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-roles-permissions.git",
+                "url": "https://github.com/liberusoftware/module-roles-permissions.git",
                 "reference": "d061b98bbe185ae966e8fe6ea4761bddf48aed9d"
             },
             "dist": {
@@ -8435,6 +10236,10 @@
                 "MIT"
             ],
             "description": "Contextual roles, permissions, policies, and authorization safeguards.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-roles-permissions/tree/1.4.1",
+                "issues": "https://github.com/liberusoftware/module-roles-permissions/issues"
+            },
             "time": "2026-08-07T14:25:40+00:00"
         },
         {
@@ -8442,7 +10247,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-roles-permissions-filament.git",
+                "url": "https://github.com/liberusoftware/module-roles-permissions-filament.git",
                 "reference": "788117df5f64d16103ce595a42fc3506d97a16d2"
             },
             "dist": {
@@ -8486,6 +10291,10 @@
                 "MIT"
             ],
             "description": "Filament Shield presentation adapter for Liberu authorization.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-roles-permissions-filament/tree/1.4.1",
+                "issues": "https://github.com/liberusoftware/module-roles-permissions-filament/issues"
+            },
             "time": "2026-08-07T14:25:45+00:00"
         },
         {
@@ -8493,7 +10302,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-scheduler-queues.git",
+                "url": "https://github.com/liberusoftware/module-scheduler-queues.git",
                 "reference": "fdfb3b1b3d8b9c3142fa670063da5ae116fa5c76"
             },
             "dist": {
@@ -8537,6 +10346,10 @@
                 "MIT"
             ],
             "description": "Queue idempotency, retry, failure, scheduling, locking, and deployment conventions.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-scheduler-queues/tree/1.4.1",
+                "issues": "https://github.com/liberusoftware/module-scheduler-queues/issues"
+            },
             "time": "2026-08-07T14:25:42+00:00"
         },
         {
@@ -8544,7 +10357,7 @@
             "version": "1.5.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-search.git",
+                "url": "https://github.com/liberusoftware/module-search.git",
                 "reference": "d2617f80de4c267adf4593b357b545c9ec762188"
             },
             "dist": {
@@ -8589,6 +10402,10 @@
                 "MIT"
             ],
             "description": "Provider-neutral authorized search contracts and local Eloquent driver.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-search/tree/1.5.1",
+                "issues": "https://github.com/liberusoftware/module-search/issues"
+            },
             "time": "2026-08-07T14:25:44+00:00"
         },
         {
@@ -8596,7 +10413,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-search-api.git",
+                "url": "https://github.com/liberusoftware/module-search-api.git",
                 "reference": "73a5e71c61c7199896ea9a8d01012fa832140f5d"
             },
             "dist": {
@@ -8640,6 +10457,10 @@
                 "MIT"
             ],
             "description": "HTTP API presentation adapter for Liberu Search.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-search-api/tree/1.4.1",
+                "issues": "https://github.com/liberusoftware/module-search-api/issues"
+            },
             "time": "2026-08-07T14:25:47+00:00"
         },
         {
@@ -8647,7 +10468,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-sessions-devices.git",
+                "url": "https://github.com/liberusoftware/module-sessions-devices.git",
                 "reference": "164817b59449f6930af4ff08d93c21b93368c738"
             },
             "dist": {
@@ -8691,6 +10512,10 @@
                 "MIT"
             ],
             "description": "Privacy-conscious session inventory and revocation.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-sessions-devices/tree/1.4.1",
+                "issues": "https://github.com/liberusoftware/module-sessions-devices/issues"
+            },
             "time": "2026-08-07T14:25:49+00:00"
         },
         {
@@ -8698,7 +10523,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-sessions-devices-filament.git",
+                "url": "https://github.com/liberusoftware/module-sessions-devices-filament.git",
                 "reference": "91eb6d30430ad82b21dc57c68ffbaa804299d41f"
             },
             "dist": {
@@ -8741,6 +10566,10 @@
                 "MIT"
             ],
             "description": "Filament account-security presentation adapter for Liberu Sessions and Devices.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-sessions-devices-filament/tree/1.4.1",
+                "issues": "https://github.com/liberusoftware/module-sessions-devices-filament/issues"
+            },
             "time": "2026-08-07T14:25:53+00:00"
         },
         {
@@ -8802,7 +10631,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-settings-filament.git",
+                "url": "https://github.com/liberusoftware/module-settings-filament.git",
                 "reference": "86ee7e6377624baca845121981e6bb8cec092ca2"
             },
             "dist": {
@@ -8849,6 +10678,10 @@
                 "MIT"
             ],
             "description": "Filament administration adapter for Liberu Settings.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-settings-filament/tree/1.4.1",
+                "issues": "https://github.com/liberusoftware/module-settings-filament/issues"
+            },
             "time": "2026-08-07T14:26:12+00:00"
         },
         {
@@ -9105,7 +10938,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-theme-support-livewire.git",
+                "url": "https://github.com/liberusoftware/module-theme-support-livewire.git",
                 "reference": "8db221e424ebd0a1d9bbb61265b41878da59caeb"
             },
             "dist": {
@@ -9150,6 +10983,10 @@
                 "MIT"
             ],
             "description": "Livewire theme-switching presentation adapter for Liberu Theme Support.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-theme-support-livewire/tree/1.4.1",
+                "issues": "https://github.com/liberusoftware/module-theme-support-livewire/issues"
+            },
             "time": "2026-08-07T14:25:59+00:00"
         },
         {
@@ -9201,6 +11038,10 @@
                 "MIT"
             ],
             "description": "TOTP enforcement policy and one-time recovery-code primitives.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-two-factor-authentication/tree/1.4.1",
+                "issues": "https://github.com/liberusoftware/module-two-factor-authentication/issues"
+            },
             "time": "2026-08-07T14:25:56+00:00"
         },
         {
@@ -9252,20 +11093,24 @@
                 "MIT"
             ],
             "description": "Signed filtered webhook endpoints, durable delivery attempts, retry, replay, and secret rotation.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-webhooks/tree/1.4.1",
+                "issues": "https://github.com/liberusoftware/module-webhooks/issues"
+            },
             "time": "2026-08-07T14:25:58+00:00"
         },
         {
             "name": "livewire/livewire",
-            "version": "v4.4.1",
+            "version": "v4.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/livewire/livewire.git",
-                "reference": "0c925c55b4a5c134f2fb147efa4b9f53a837d866"
+                "reference": "4a030935e6c255c89a114b00ece66326f78157c0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/livewire/livewire/zipball/0c925c55b4a5c134f2fb147efa4b9f53a837d866",
-                "reference": "0c925c55b4a5c134f2fb147efa4b9f53a837d866",
+                "url": "https://api.github.com/repos/livewire/livewire/zipball/4a030935e6c255c89a114b00ece66326f78157c0",
+                "reference": "4a030935e6c255c89a114b00ece66326f78157c0",
                 "shasum": ""
             },
             "require": {
@@ -9320,7 +11165,7 @@
             "description": "A front-end framework for Laravel.",
             "support": {
                 "issues": "https://github.com/livewire/livewire/issues",
-                "source": "https://github.com/livewire/livewire/tree/v4.4.1"
+                "source": "https://github.com/livewire/livewire/tree/v4.4.2"
             },
             "funding": [
                 {
@@ -9328,7 +11173,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-08-18T11:39:06+00:00"
+            "time": "2026-08-24T15:02:06+00:00"
         },
         {
             "name": "maennchen/zipstream-php",
@@ -13055,16 +14900,16 @@
         },
         {
             "name": "spatie/invade",
-            "version": "2.1.0",
+            "version": "2.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/invade.git",
-                "reference": "b920f6411d21df4e8610a138e2e87ae4957d7f63"
+                "reference": "f929c7b6e75fceeefa7b41a491e91274bafb17af"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/invade/zipball/b920f6411d21df4e8610a138e2e87ae4957d7f63",
-                "reference": "b920f6411d21df4e8610a138e2e87ae4957d7f63",
+                "url": "https://api.github.com/repos/spatie/invade/zipball/f929c7b6e75fceeefa7b41a491e91274bafb17af",
+                "reference": "f929c7b6e75fceeefa7b41a491e91274bafb17af",
                 "shasum": ""
             },
             "require": {
@@ -13102,7 +14947,7 @@
                 "spatie"
             ],
             "support": {
-                "source": "https://github.com/spatie/invade/tree/2.1.0"
+                "source": "https://github.com/spatie/invade/tree/2.1.1"
             },
             "funding": [
                 {
@@ -13110,7 +14955,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-05-17T09:06:10+00:00"
+            "time": "2026-08-24T12:39:05+00:00"
         },
         {
             "name": "spatie/laravel-activitylog",
@@ -16599,16 +18444,16 @@
         },
         {
             "name": "symfony/polyfill-intl-idn",
-            "version": "v1.38.1",
+            "version": "v1.42.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-intl-idn.git",
-                "reference": "dc21118016c039a66235cf93d96b435ffb282412"
+                "reference": "51b5ff5ba85452b31ec6f55490b08148612339d9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-intl-idn/zipball/dc21118016c039a66235cf93d96b435ffb282412",
-                "reference": "dc21118016c039a66235cf93d96b435ffb282412",
+                "url": "https://api.github.com/repos/symfony/polyfill-intl-idn/zipball/51b5ff5ba85452b31ec6f55490b08148612339d9",
+                "reference": "51b5ff5ba85452b31ec6f55490b08148612339d9",
                 "shasum": ""
             },
             "require": {
@@ -16662,7 +18507,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-intl-idn/tree/v1.38.1"
+                "source": "https://github.com/symfony/polyfill-intl-idn/tree/v1.42.0"
             },
             "funding": [
                 {
@@ -16682,20 +18527,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-05-25T15:22:23+00:00"
+            "time": "2026-08-24T10:51:20+00:00"
         },
         {
             "name": "symfony/polyfill-intl-normalizer",
-            "version": "v1.38.0",
+            "version": "v1.42.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-intl-normalizer.git",
-                "reference": "2d446c214bdbe5b71bde5011b060a05fece3ae6b"
+                "reference": "aa20edea75bd9c48cfecc8360922e5a6e5c44502"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-intl-normalizer/zipball/2d446c214bdbe5b71bde5011b060a05fece3ae6b",
-                "reference": "2d446c214bdbe5b71bde5011b060a05fece3ae6b",
+                "url": "https://api.github.com/repos/symfony/polyfill-intl-normalizer/zipball/aa20edea75bd9c48cfecc8360922e5a6e5c44502",
+                "reference": "aa20edea75bd9c48cfecc8360922e5a6e5c44502",
                 "shasum": ""
             },
             "require": {
@@ -16747,7 +18592,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-intl-normalizer/tree/v1.38.0"
+                "source": "https://github.com/symfony/polyfill-intl-normalizer/tree/v1.42.0"
             },
             "funding": [
                 {
@@ -16767,7 +18612,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-05-25T13:48:31+00:00"
+            "time": "2026-08-07T06:33:24+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -18714,16 +20559,16 @@
         },
         {
             "name": "ueberdosis/tiptap-php",
-            "version": "2.1.1",
+            "version": "2.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ueberdosis/tiptap-php.git",
-                "reference": "74bfb7be1c8c6102b240f3879b7f984a6ab87b97"
+                "reference": "0561e2146edbcdc622b5d4008d0ee02582f8642b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ueberdosis/tiptap-php/zipball/74bfb7be1c8c6102b240f3879b7f984a6ab87b97",
-                "reference": "74bfb7be1c8c6102b240f3879b7f984a6ab87b97",
+                "url": "https://api.github.com/repos/ueberdosis/tiptap-php/zipball/0561e2146edbcdc622b5d4008d0ee02582f8642b",
+                "reference": "0561e2146edbcdc622b5d4008d0ee02582f8642b",
                 "shasum": ""
             },
             "require": {
@@ -18763,7 +20608,7 @@
             ],
             "support": {
                 "issues": "https://github.com/ueberdosis/tiptap-php/issues",
-                "source": "https://github.com/ueberdosis/tiptap-php/tree/2.1.1"
+                "source": "https://github.com/ueberdosis/tiptap-php/tree/2.1.2"
             },
             "funding": [
                 {
@@ -18779,7 +20624,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2026-06-12T18:19:46+00:00"
+            "time": "2026-08-11T08:47:45+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
@@ -20181,7 +22026,7 @@
             "version": "1.2.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/boilerplate-scripts.git",
+                "url": "https://github.com/liberusoftware/boilerplate-scripts.git",
                 "reference": "a7461a447049879ef30202cc0a12dfe0919fa9e2"
             },
             "dist": {
@@ -20205,7 +22050,8 @@
             ],
             "description": "Release, repository splitting, and Packagist publishing automation for Liberu Composer packages.",
             "support": {
-                "source": "https://github.com/liberusoftware/boilerplate-scripts"
+                "source": "https://github.com/liberusoftware/boilerplate-scripts",
+                "issues": "https://github.com/liberusoftware/boilerplate-scripts/issues"
             },
             "time": "2026-08-07T09:23:54+00:00"
         },

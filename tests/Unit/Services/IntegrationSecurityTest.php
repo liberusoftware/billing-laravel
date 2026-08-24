@@ -85,7 +85,7 @@ class IntegrationSecurityTest extends TestCase
     public function test_cpanel_rejects_hostname_resolving_to_private_ip(): void
     {
         $server = HostingServer::factory()->cpanel()->create(['hostname' => 'localhost']);
-        $client = new CpanelClient;
+        $client = new CpanelClient();
         $client->setServer($server);
 
         $this->expectException(Exception::class);
@@ -103,7 +103,7 @@ class IntegrationSecurityTest extends TestCase
     public function test_cpanel_request_pins_dns_to_validated_ip(): void
     {
         $server = HostingServer::factory()->cpanel()->create(['hostname' => '203.0.113.10']);
-        $client = new CpanelClient;
+        $client = new CpanelClient();
         $client->setServer($server);
 
         $history = [];
@@ -125,7 +125,7 @@ class IntegrationSecurityTest extends TestCase
     public function test_cpanel_sso_returns_null_when_url_host_mismatches_server(): void
     {
         $server = HostingServer::factory()->cpanel()->create(['hostname' => '203.0.113.10']);
-        $client = new CpanelClient;
+        $client = new CpanelClient();
         $client->setServer($server);
 
         $history = [];

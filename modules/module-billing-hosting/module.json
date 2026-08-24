@@ -1,0 +1,30 @@
+{
+  "$schema": "https://schemas.liberu.dev/module/v1.json",
+  "name": "module-billing-hosting",
+  "display_name": "Billing Hosting",
+  "description": "Provider-neutral Billing Hosting domain module.",
+  "version": "0.1.0",
+  "category": "capability",
+  "provider": "Liberu\\Billing\\Hosting\\HostingServiceProvider",
+  "requires": {
+    "php": "^8.5",
+    "laravel": "^13.0",
+    "packages": {
+      "liberusoftware/module-manager": "^1.0"
+    }
+  },
+  "suggests": [],
+  "capabilities": [
+    "billing.hosting"
+  ],
+  "default_enabled": true,
+  "features": [
+    "accounts",
+    "plans",
+    "control-panel-adapters",
+    "ssl",
+    "resources",
+    "lifecycle-operations"
+  ]
+}
+

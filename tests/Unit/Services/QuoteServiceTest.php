@@ -20,7 +20,7 @@ class QuoteServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->quoteService = new QuoteService;
+        $this->quoteService = new QuoteService();
         $this->customer = Customer::factory()->create();
     }
 

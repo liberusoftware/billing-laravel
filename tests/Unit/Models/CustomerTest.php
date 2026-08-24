@@ -42,7 +42,7 @@ class CustomerTest extends TestCase
 
     public function test_customer_has_correct_fillable_attributes(): void
     {
-        $customer = new Customer;
+        $customer = new Customer();
         $fillable = $customer->getFillable();
 
         $this->assertContains('name', $fillable);

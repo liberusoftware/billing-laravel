@@ -78,12 +78,22 @@ class SubscriptionPlansPage extends Page
     public function subscribe(): mixed
     {
         $plan = SubscriptionPlan::findOrFail($this->selectedPlan);
+        $customer = auth()->user()->customer;
+
+        if ($customer === null) {
+            Notification::make()
+                ->title('No customer account is linked to your login.')
+                ->danger()
+                ->send();
+
+            return null;
+        }
 
         try {
             $billingService = app(BillingService::class);
 
             $subscription = $billingService->createSubscription(
-                auth()->user()->customer,
+                $customer,
                 $plan,
                 $this->billingCycle,
                 $this->customPeriodDays

@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Models\Ticket;
 use App\Models\TicketEscalationRule;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
 class TicketEscalationService
@@ -36,9 +37,9 @@ class TicketEscalationService
      * Open tickets whose last activity (latest response, else creation) is
      * older than the rule's threshold, scoped to the rule's department.
      *
-     * @return \Illuminate\Support\Collection<int, Ticket>
+     * @return Collection<int, Ticket>
      */
-    private function breachingTickets(TicketEscalationRule $rule): \Illuminate\Support\Collection
+    private function breachingTickets(TicketEscalationRule $rule): Collection
     {
         $threshold = now()->subMinutes($rule->minutes_without_response);
 

@@ -126,7 +126,7 @@ class RefundDisputeTest extends TestCase
         $customer = Customer::factory()->create();
         $invoice = Invoice::factory()->create(['customer_id' => $customer->id, 'status' => 'pending']);
 
-        $dispute = (new DisputeService)->createDispute($invoice, [
+        $dispute = (new DisputeService())->createDispute($invoice, [
             'reason' => 'incorrect_charge',
             'description' => 'Charged twice',
         ]);
@@ -152,7 +152,7 @@ class RefundDisputeTest extends TestCase
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Invoice already has an active dispute');
 
-        (new DisputeService)->createDispute($invoice, ['reason' => 'r', 'description' => 'd']);
+        (new DisputeService())->createDispute($invoice, ['reason' => 'r', 'description' => 'd']);
     }
 
     public function test_resolving_dispute_sets_resolved_at_and_invoice_pending(): void
@@ -168,7 +168,7 @@ class RefundDisputeTest extends TestCase
             'description' => 'y',
         ]);
 
-        $updated = (new DisputeService)->updateDisputeStatus($dispute, 'resolved', 'Refunded customer');
+        $updated = (new DisputeService())->updateDisputeStatus($dispute, 'resolved', 'Refunded customer');
 
         $this->assertSame('resolved', $updated->status);
         $this->assertNotNull($updated->resolved_at);
@@ -189,7 +189,7 @@ class RefundDisputeTest extends TestCase
             'description' => 'y',
         ]);
 
-        $updated = (new DisputeService)->updateDisputeStatus($dispute, 'rejected');
+        $updated = (new DisputeService())->updateDisputeStatus($dispute, 'rejected');
 
         $this->assertSame('rejected', $updated->status);
         $this->assertNotNull($updated->resolved_at);
@@ -209,7 +209,7 @@ class RefundDisputeTest extends TestCase
             'description' => 'y',
         ]);
 
-        $message = (new DisputeService)->addMessage($dispute, [
+        $message = (new DisputeService())->addMessage($dispute, [
             'message' => 'Please review',
             'attachments' => ['receipt.pdf', 'screenshot.png'],
         ]);

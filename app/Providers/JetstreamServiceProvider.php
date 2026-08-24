@@ -11,6 +11,7 @@ use App\Actions\Jetstream\DeleteUser;
 use App\Actions\Jetstream\InviteTeamMember;
 use App\Actions\Jetstream\RemoveTeamMember;
 use App\Actions\Jetstream\UpdateTeamName;
+use App\Models\Team;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Jetstream\Jetstream;
 use Override;
@@ -31,6 +32,10 @@ class JetstreamServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Keep the application extension model as Jetstream's concrete team
+        // model while retaining the foundation contract for shared tenancy.
+        Jetstream::useTeamModel(Team::class);
+
         $this->configurePermissions();
 
         Jetstream::createTeamsUsing(CreateTeam::class);

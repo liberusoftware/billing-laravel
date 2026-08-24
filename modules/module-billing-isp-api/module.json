@@ -1,0 +1,26 @@
+{
+  "$schema": "https://schemas.liberu.dev/module/v1.json",
+  "name": "module-billing-isp-api",
+  "display_name": "Billing ISP Api",
+  "description": "Api adapter for Billing ISP.",
+  "version": "0.1.0",
+  "category": "presentation",
+  "provider": "Liberu\\Billing\\Isp\\Api\\IspApiServiceProvider",
+  "requires": {
+    "php": "^8.5",
+    "laravel": "^13.0",
+    "packages": {
+      "liberusoftware/module-billing-isp": "^0.1",
+      "liberusoftware/module-manager": "^1.0"
+    }
+  },
+  "suggests": [],
+  "capabilities": [
+    "billing.isp.api"
+  ],
+  "default_enabled": true,
+  "features": [
+    "ISP Api integration"
+  ]
+}
+

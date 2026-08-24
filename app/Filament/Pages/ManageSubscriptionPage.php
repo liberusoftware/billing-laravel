@@ -26,7 +26,7 @@ class ManageSubscriptionPage extends Page
     #[Override]
     protected string $view = 'filament.pages.manage-subscription';
 
-    public $subscription;
+    public ?Subscription $subscription = null;
 
     public $selectedProduct;
 
@@ -104,7 +104,7 @@ class ManageSubscriptionPage extends Page
         $product = Products_Service::findOrFail((int) $this->selectedProduct);
 
         if (! $this->subscription) {
-            $this->subscription = new Subscription;
+            $this->subscription = new Subscription();
         }
 
         $this->subscription->fill(

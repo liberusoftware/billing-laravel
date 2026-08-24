@@ -18,7 +18,7 @@ class CannedResponseServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->cannedResponseService = new CannedResponseService;
+        $this->cannedResponseService = new CannedResponseService();
     }
 
     public function test_can_get_canned_response_by_shortcode(): void

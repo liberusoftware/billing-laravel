@@ -18,7 +18,7 @@ class PackageGroupServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->packageGroupService = new PackageGroupService;
+        $this->packageGroupService = new PackageGroupService();
     }
 
     public function test_can_create_package_group(): void

@@ -29,7 +29,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(BusinessConnector::class, HttpBusinessConnector::class);
         $this->app->singleton(
             ModuleManager::class,
-            fn (): ModuleManager => new ModuleManager
+            fn (): ModuleManager => new ModuleManager()
         );
     }
 

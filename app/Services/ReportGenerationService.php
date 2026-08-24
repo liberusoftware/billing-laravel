@@ -37,7 +37,7 @@ class ReportGenerationService
 
     protected function gatherReportData(Report $report)
     {
-        $clientBillingService = new ClientBillingReportService;
+        $clientBillingService = new ClientBillingReportService();
 
         return match ($report->type) {
             'billing_summary' => $this->billingService->getBillingSummary($report->parameters),
@@ -107,7 +107,7 @@ class ReportGenerationService
 
     protected function generateExcelReport($data, Report $report): string
     {
-        $spreadsheet = new Spreadsheet;
+        $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
         $headers = array_keys(reset($data));

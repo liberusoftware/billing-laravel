@@ -1,0 +1,31 @@
+{
+  "$schema": "https://schemas.liberu.dev/module/v1.json",
+  "name": "module-billing-isp",
+  "display_name": "Billing ISP",
+  "description": "Provider-neutral Billing ISP domain module.",
+  "version": "0.1.0",
+  "category": "capability",
+  "provider": "Liberu\\Billing\\Isp\\IspServiceProvider",
+  "requires": {
+    "php": "^8.5",
+    "laravel": "^13.0",
+    "packages": {
+      "liberusoftware/module-manager": "^1.0"
+    }
+  },
+  "suggests": [],
+  "capabilities": [
+    "billing.isp"
+  ],
+  "default_enabled": true,
+  "features": [
+    "access-services",
+    "coverage",
+    "installation",
+    "radius-aaa",
+    "usage",
+    "equipment",
+    "network-adapters"
+  ]
+}
+

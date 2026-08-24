@@ -1,0 +1,26 @@
+{
+  "$schema": "https://schemas.liberu.dev/module/v1.json",
+  "name": "module-billing-communications-filament",
+  "display_name": "Billing Communications Filament",
+  "description": "Filament adapter for Billing Communications.",
+  "version": "0.1.0",
+  "category": "presentation",
+  "provider": "Liberu\\Billing\\Communications\\Filament\\CommunicationsFilamentServiceProvider",
+  "requires": {
+    "php": "^8.5",
+    "laravel": "^13.0",
+    "packages": {
+      "liberusoftware/module-billing-communications": "^0.1",
+      "liberusoftware/module-manager": "^1.0"
+    }
+  },
+  "suggests": [],
+  "capabilities": [
+    "billing.communications.filament"
+  ],
+  "default_enabled": true,
+  "features": [
+    "Communications Filament integration"
+  ]
+}
+

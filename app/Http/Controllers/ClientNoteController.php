@@ -18,7 +18,6 @@ class ClientNoteController extends Controller
         // Scope to notes whose client belongs to the caller's team.
         $query = ClientNote::with(['user'])
             ->whereHas('client', fn (Builder $q) => $q->where('team_id', $teamId))
-            ->where('user_id', $request->user()?->getAuthIdentifier())
             ->where(
                 'client_id',
                 $request->client_id

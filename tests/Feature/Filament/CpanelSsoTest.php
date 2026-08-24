@@ -60,7 +60,7 @@ class CpanelSsoTest extends TestCase
         // IP-literal hostname keeps validateHostname() deterministic, and the
         // returned login URL must point at that same host (open-redirect guard).
         $server = HostingServer::factory()->cpanel()->create(['hostname' => '203.0.113.10']);
-        $client = new CpanelClient;
+        $client = new CpanelClient();
         $client->setServer($server);
 
         $history = [];
@@ -84,7 +84,7 @@ class CpanelSsoTest extends TestCase
     public function test_create_sso_session_returns_null_on_failure(): void
     {
         $server = HostingServer::factory()->cpanel()->create(['hostname' => '203.0.113.10']);
-        $client = new CpanelClient;
+        $client = new CpanelClient();
         $client->setServer($server);
 
         $history = [];

@@ -1,0 +1,26 @@
+{
+  "$schema": "https://schemas.liberu.dev/module/v1.json",
+  "name": "module-billing-customer-portal-api",
+  "display_name": "Billing Customer Portal Api",
+  "description": "Api adapter for Billing Customer Portal.",
+  "version": "0.1.0",
+  "category": "presentation",
+  "provider": "Liberu\\Billing\\CustomerPortal\\Api\\CustomerPortalApiServiceProvider",
+  "requires": {
+    "php": "^8.5",
+    "laravel": "^13.0",
+    "packages": {
+      "liberusoftware/module-billing-customer-portal": "^0.1",
+      "liberusoftware/module-manager": "^1.0"
+    }
+  },
+  "suggests": [],
+  "capabilities": [
+    "billing.customer-portal.api"
+  ],
+  "default_enabled": true,
+  "features": [
+    "Customer Portal Api integration"
+  ]
+}
+

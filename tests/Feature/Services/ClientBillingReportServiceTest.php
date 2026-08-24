@@ -28,7 +28,7 @@ class ClientBillingReportServiceTest extends TestCase
     {
         parent::setUp();
         Carbon::setTestNow(Carbon::parse('2026-07-10 12:00:00'));
-        $this->service = new ClientBillingReportService;
+        $this->service = new ClientBillingReportService();
     }
 
     protected function tearDown(): void

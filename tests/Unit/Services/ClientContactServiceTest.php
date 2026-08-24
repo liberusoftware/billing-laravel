@@ -19,7 +19,7 @@ class ClientContactServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->contactService = new ClientContactService;
+        $this->contactService = new ClientContactService();
         $this->customer = Customer::factory()->create();
     }
 

@@ -15,7 +15,7 @@ class ProjectStatsWidget extends StatsOverviewWidget
      */
     protected function getStats(): array
     {
-        $report = new ProjectReportService;
+        $report = new ProjectReportService();
 
         $byStatus = $report->projectCountByStatus();
         $split = $report->billableSplit();

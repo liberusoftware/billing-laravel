@@ -66,7 +66,7 @@ it('derives enablement from the manifests, not a list in config', function () {
     $expected = [];
     foreach (moduleDirectories() as $module) {
         if (Manifest::fromFile($module.'/module.json')->defaultEnabled()) {
-            $expected[] = basename($module);
+            $expected[] = Manifest::fromFile($module.'/module.json')->name();
         }
     }
 
@@ -75,6 +75,7 @@ it('derives enablement from the manifests, not a list in config', function () {
         app(ModuleRegistry::class)->resolve([], []),
     );
 
+    $expected = array_values(array_unique($expected));
     sort($expected);
     sort($resolved);
 

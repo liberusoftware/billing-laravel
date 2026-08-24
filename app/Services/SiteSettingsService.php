@@ -12,7 +12,7 @@ class SiteSettingsService
         $settings = Cache::remember(
             config('site-settings.cache_key', 'site_settings'),
             config('site-settings.cache_duration', 3600),
-            fn () => SiteSettings::first() ?? new SiteSettings
+            fn () => SiteSettings::first() ?? new SiteSettings()
         );
 
         return $key ? $settings->$key : $settings;

@@ -18,7 +18,7 @@ class KnowledgeBaseServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->kbService = new KnowledgeBaseService;
+        $this->kbService = new KnowledgeBaseService();
     }
 
     public function test_can_search_articles(): void

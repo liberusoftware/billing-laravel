@@ -1,0 +1,26 @@
+{
+  "$schema": "https://schemas.liberu.dev/module/v1.json",
+  "name": "module-billing-hosting-api",
+  "display_name": "Billing Hosting Api",
+  "description": "Api adapter for Billing Hosting.",
+  "version": "0.1.0",
+  "category": "presentation",
+  "provider": "Liberu\\Billing\\Hosting\\Api\\HostingApiServiceProvider",
+  "requires": {
+    "php": "^8.5",
+    "laravel": "^13.0",
+    "packages": {
+      "liberusoftware/module-billing-hosting": "^0.1",
+      "liberusoftware/module-manager": "^1.0"
+    }
+  },
+  "suggests": [],
+  "capabilities": [
+    "billing.hosting.api"
+  ],
+  "default_enabled": true,
+  "features": [
+    "Hosting Api integration"
+  ]
+}
+

@@ -1,0 +1,33 @@
+{
+  "$schema": "https://schemas.liberu.dev/module/v1.json",
+  "name": "module-billing-customer-portal",
+  "display_name": "Billing Customer Portal",
+  "description": "Provider-neutral Billing Customer Portal domain module.",
+  "version": "0.1.0",
+  "category": "capability",
+  "provider": "Liberu\\Billing\\CustomerPortal\\CustomerPortalServiceProvider",
+  "requires": {
+    "php": "^8.5",
+    "laravel": "^13.0",
+    "packages": {
+      "liberusoftware/module-manager": "^1.0"
+    }
+  },
+  "suggests": [],
+  "capabilities": [
+    "billing.customer-portal"
+  ],
+  "default_enabled": true,
+  "features": [
+    "profile",
+    "orders",
+    "services",
+    "usage",
+    "invoices",
+    "payments",
+    "tickets",
+    "changes",
+    "cancellation"
+  ]
+}
+

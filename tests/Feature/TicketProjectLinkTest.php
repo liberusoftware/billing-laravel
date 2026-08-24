@@ -6,7 +6,6 @@ namespace Tests\Feature;
 
 use App\Actions\CreateProjectFromTicket;
 use App\Models\Customer;
-use App\Models\Project;
 use App\Models\Team;
 use App\Models\Ticket;
 use App\Models\User;
@@ -33,7 +32,7 @@ class TicketProjectLinkTest extends TestCase
             'priority' => 'high',
         ]);
 
-        $project = (new CreateProjectFromTicket)($ticket);
+        $project = (new CreateProjectFromTicket())($ticket);
 
         $this->assertSame($customer->id, $project->customer_id);
         $this->assertSame($project->id, $ticket->fresh()->project_id);
@@ -53,7 +52,7 @@ class TicketProjectLinkTest extends TestCase
         // No customer resolvable and none passed: must fail.
         $this->expectException(RuntimeException::class);
 
-        (new CreateProjectFromTicket)($ticket);
+        (new CreateProjectFromTicket())($ticket);
     }
 
     public function test_manual_customer_selection_links_when_unresolvable(): void
@@ -68,7 +67,7 @@ class TicketProjectLinkTest extends TestCase
         ]);
         $customer = Customer::factory()->create(['team_id' => $team->id]);
 
-        $project = (new CreateProjectFromTicket)($ticket, $customer);
+        $project = (new CreateProjectFromTicket())($ticket, $customer);
 
         $this->assertSame($customer->id, $project->customer_id);
         $this->assertSame($project->id, $ticket->fresh()->project_id);

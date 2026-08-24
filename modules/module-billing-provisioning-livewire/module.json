@@ -1,0 +1,26 @@
+{
+  "$schema": "https://schemas.liberu.dev/module/v1.json",
+  "name": "module-billing-provisioning-livewire",
+  "display_name": "Billing Provisioning Livewire",
+  "description": "Livewire adapter for Liberu Billing Provisioning.",
+  "version": "0.1.0",
+  "category": "presentation",
+  "provider": "Liberu\\Billing\\Provisioning\\Livewire\\ProvisioningLivewireServiceProvider",
+  "requires": {
+    "php": "^8.5",
+    "laravel": "^13.0",
+    "packages": {
+      "liberusoftware/module-billing-provisioning": "^0.1",
+      "liberusoftware/module-manager": "^1.0"
+    }
+  },
+  "suggests": [],
+  "capabilities": [
+    "billing.provisioning.livewire"
+  ],
+  "default_enabled": true,
+  "features": [
+    "Provisioning Livewire components"
+  ]
+}
+

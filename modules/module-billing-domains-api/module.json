@@ -1,0 +1,26 @@
+{
+  "$schema": "https://schemas.liberu.dev/module/v1.json",
+  "name": "module-billing-domains-api",
+  "display_name": "Billing Domains Api",
+  "description": "Api adapter for Billing Domains.",
+  "version": "0.1.0",
+  "category": "presentation",
+  "provider": "Liberu\\Billing\\Domains\\Api\\DomainsApiServiceProvider",
+  "requires": {
+    "php": "^8.5",
+    "laravel": "^13.0",
+    "packages": {
+      "liberusoftware/module-billing-domains": "^0.1",
+      "liberusoftware/module-manager": "^1.0"
+    }
+  },
+  "suggests": [],
+  "capabilities": [
+    "billing.domains.api"
+  ],
+  "default_enabled": true,
+  "features": [
+    "Domains Api integration"
+  ]
+}
+

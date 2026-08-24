@@ -347,7 +347,7 @@ class ModuleManager
                 }
 
                 try {
-                    $module = new $moduleClass;
+                    $module = new $moduleClass();
                 } catch (Throwable $e) {
                     Log::warning("Failed to instantiate module '{$moduleName}': ".$e->getMessage());
 
@@ -389,7 +389,7 @@ class ModuleManager
             return;
         }
 
-        $loader = new ExternalModuleLoader;
+        $loader = new ExternalModuleLoader();
 
         foreach ($loader->load() as $module) {
             if (! $this->has($module->getName())) {

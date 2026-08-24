@@ -19,7 +19,7 @@ class GitSyncServiceTest extends TestCase
     public function test_sync_imports_repository_and_each_supported_record_type_idempotently(): void
     {
         $connection = GitConnection::factory()->create();
-        $client = new FakeGitPlatformClient;
+        $client = new FakeGitPlatformClient();
         $sync = app(GitSyncService::class);
 
         $this->assertSame(5, $sync->syncConnection($connection, $client));
@@ -51,7 +51,7 @@ class GitSyncServiceTest extends TestCase
         ]);
         $service = app(ReleaseManagementService::class);
 
-        $release = $service->create($repository, new FakeGitPlatformClient, 'v1.2.0', 'Billing release');
+        $release = $service->create($repository, new FakeGitPlatformClient(), 'v1.2.0', 'Billing release');
 
         $this->assertSame('v1.2.0', $release->version);
         $this->assertStringContainsString('Add billing engine (Ada)', $release->changelog);

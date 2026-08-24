@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Filament\Client\Resources\ProjectNoteResource;
 use App\Models\Project;
 use App\Models\ProjectNote;
 use App\Models\User;
@@ -27,7 +28,7 @@ class ProjectNoteTest extends TestCase
     public function test_staff_notes_not_visible_on_client_panel(): void
     {
         // Staff-only: no Client panel resource exposes ProjectNote to customers.
-        $this->assertFalse(class_exists(\App\Filament\Client\Resources\ProjectNoteResource::class));
+        $this->assertFalse(class_exists(ProjectNoteResource::class));
 
         // The note is reachable from its project (staff side relation works).
         $note = ProjectNote::factory()->create();

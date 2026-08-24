@@ -269,7 +269,7 @@ class ModuleServiceProvider extends ServiceProvider
             return;
         }
 
-        $loader = new ExternalModuleLoader;
+        $loader = new ExternalModuleLoader();
 
         foreach ($loader->load() as $module) {
             $moduleName = $module->getName();

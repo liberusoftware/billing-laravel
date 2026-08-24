@@ -67,7 +67,7 @@ class DomainEventBusTest extends TestCase
             $customer,
             ['name' => $customer->name]
         );
-        $connector = new EventRecordingConnector;
+        $connector = new EventRecordingConnector();
 
         (new PublishDomainEvent($event->id))->handle($connector);
 

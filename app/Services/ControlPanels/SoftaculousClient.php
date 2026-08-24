@@ -18,7 +18,7 @@ class SoftaculousClient
 
     public function __construct()
     {
-        $this->client = new Client;
+        $this->client = new Client();
         $this->apiUrl = config('services.softaculous.api_url');
         $this->apiToken = config('services.softaculous.api_token');
     }

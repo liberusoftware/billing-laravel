@@ -1,0 +1,27 @@
+{
+  "name": "liberusoftware/module-billing-customer-portal-api",
+  "description": "Api adapter for Billing Customer Portal.",
+  "type": "liberu-module",
+  "license": "MIT",
+  "require": {
+    "php": "^8.5",
+    "liberusoftware/module-billing-customer-portal": "^0.1",
+    "liberusoftware/module-manager": "^1.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Liberu\\Billing\\CustomerPortal\\Api\\": "src/"
+    }
+  },
+  "extra": {
+    "liberu": {
+      "name": "module-billing-customer-portal-api"
+    }
+  },
+  "version": "0.1.0",
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    }
+  }
+}

@@ -35,7 +35,12 @@ foreach ($config['components'] ?? [] as $component) {
             continue;
         }
         $metadata = json_decode((string) file_get_contents($file), true, 512, JSON_THROW_ON_ERROR);
-        $repository = $component['repository'] ?? (($component['repositoryPrefix'] ?? '').basename(dirname($file)));
+        $directoryName = basename(dirname($file));
+        $repositoryPrefix = (string) ($component['repositoryPrefix'] ?? '');
+        $repositoryName = str_starts_with($directoryName, $repositoryPrefix)
+            ? $directoryName
+            : $repositoryPrefix.$directoryName;
+        $repository = $component['repository'] ?? $repositoryName;
         $packages[(string) $metadata['name']] = (string) $repository;
     }
 }
