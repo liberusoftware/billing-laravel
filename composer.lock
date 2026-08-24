@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "82fc327c51c7fe19cb66ce662779ae2d",
+    "content-hash": "364c6376cb504b260ed68205ed9230fd",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -7324,6 +7324,110 @@
                 "MIT"
             ],
             "description": "Provider-neutral invoicing schedules, lines, tax, credits, adjustments, PDFs, delivery, and finalization.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-invoicing-api",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-invoicing-api",
+                "reference": "40b748693e923cd91b55be344f67e676936ae1ee"
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "laravel/sanctum": "^4.0",
+                "liberusoftware/module-billing-invoicing": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-invoicing-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Invoicing\\Api\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "HTTP API adapter for Liberu Billing Invoicing.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-invoicing-filament",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-invoicing-filament",
+                "reference": "38bca1a182ff2df8743694383d2fabb33adad212"
+            },
+            "require": {
+                "filament/filament": "~5.1",
+                "liberusoftware/module-billing-invoicing": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-invoicing-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Invoicing\\Filament\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament 5 adapter for Liberu Billing Invoicing.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-invoicing-livewire",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-invoicing-livewire",
+                "reference": "231877b6498acffc89e670184fea2de598ac4ce1"
+            },
+            "require": {
+                "liberusoftware/module-billing-invoicing": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-invoicing-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Invoicing\\Livewire\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire 4 adapter for Liberu Billing Invoicing.",
             "transport-options": {
                 "symlink": false,
                 "relative": true
