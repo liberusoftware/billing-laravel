@@ -20,4 +20,9 @@ class ProvisionedService extends Model
     {
         return ['state' => ProvisioningState::class, 'metadata' => 'array', 'last_reconciled_at' => 'datetime'];
     }
+
+    public function operations(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ProvisioningOperation::class, 'provisioned_service_id');
+    }
 }

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\Communications\Actions\ImportCommunicationUsage;
+use Liberu\Billing\Communications\Actions\CreateCommunicationProvider;
 use Liberu\Billing\Communications\Actions\ProvisionCommunicationNumber;
 use Liberu\Billing\Communications\Models\CommunicationNumber;
 use Liberu\Billing\Communications\Models\CommunicationProvider;
@@ -45,6 +46,19 @@ final class CommunicationsController extends Controller
         $data = $request->validate(['provider' => ['required', 'string', 'max:100'], 'rows' => ['required', 'integer', 'min:1'], 'total_amount_minor' => ['sometimes', 'integer', 'min:0'], 'currency' => ['sometimes', 'string', 'size:3', 'alpha']]);
 
         return response()->json(['data' => $import->handle($this->team($request), $data)], 201);
+    }
+
+    public function createProvider(Request $request, CreateCommunicationProvider $create): JsonResponse
+    {
+        Gate::authorize('create', CommunicationProvider::class);
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:100'],
+            'driver' => ['required', 'string', 'max:100'],
+            'status' => ['sometimes', 'string', 'max:32'],
+            'configuration' => ['sometimes', 'array'],
+        ]);
+
+        return response()->json(['data' => $create->handle($this->team($request), $data)], 201);
     }
 
     private function list(Request $request, string $model): JsonResponse

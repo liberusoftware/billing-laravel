@@ -8,12 +8,12 @@ final class ProvisioningPolicy
 {
     public function viewAny(?object $user): bool
     {
-        return $user !== null;
+        return $this->access($user, 'read');
     }
 
     public function create(?object $user): bool
     {
-        return $user !== null;
+        return $this->access($user, 'write');
     }
 
     public function view(?object $user, object $record): bool
@@ -21,6 +21,13 @@ final class ProvisioningPolicy
         $team = data_get($user, 'current_team_id') ?? data_get($user, 'currentTeam.id');
         $recordTeam = $record->team_id ?? $record->service?->team_id;
 
-        return $user !== null && ($recordTeam === null || ($team !== null && (int) $team === (int) $recordTeam));
+        return $this->access($user, 'read') && ($recordTeam === null || ($team !== null && (int) $team === (int) $recordTeam));
+    }
+
+    private function access(?object $user, string $action): bool
+    {
+        $ability = "billing.provisioning.$action";
+
+        return $user !== null && ((! method_exists($user, 'tokenCan')) || $user->tokenCan($ability) || $user->tokenCan('*') || (method_exists($user, 'can') && $user->can($ability)));
     }
 }

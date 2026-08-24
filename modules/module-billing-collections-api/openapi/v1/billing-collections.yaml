@@ -37,7 +37,33 @@ paths:
       security: [{sanctum: []}]
       parameters: [{name: case, in: path, required: true, schema: {type: string}}]
       responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}}
+  /api/v1/billing/collections/{case}/dunning:
+    post:
+      operationId: billing.collections.dunning
+      summary: Schedule dunning activity
+      security: [{sanctum: []}]
+      parameters: [{name: case, in: path, required: true, schema: {type: string}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/ScheduleRequest'}}}}
+      responses: {'200': {$ref: '#/components/responses/Document'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/collections/{case}/reminder:
+    post:
+      operationId: billing.collections.reminder
+      summary: Schedule a customer reminder
+      security: [{sanctum: []}]
+      parameters: [{name: case, in: path, required: true, schema: {type: string}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/ScheduleRequest'}}}}
+      responses: {'200': {$ref: '#/components/responses/Document'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/collections/{case}/credit-control:
+    post:
+      operationId: billing.collections.creditControl
+      summary: Apply credit-control action
+      security: [{sanctum: []}]
+      parameters: [{name: case, in: path, required: true, schema: {type: string}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/CreditControlRequest'}}}}
+      responses: {'200': {$ref: '#/components/responses/Document'}, '422': {$ref: '#/components/responses/ValidationError'}}
 components:
+  parameters:
+    IdempotencyKey: {name: Idempotency-Key, in: header, required: false, schema: {type: string, maxLength: 255}}
   responses:
     Collection: {description: Collection cases, content: {application/json: {schema: {type: object, properties: {data: {type: array, items: {$ref: '#/components/schemas/Resource'}}, meta: {type: object}}}}}}
     Document: {description: Collection case resource, content: {application/json: {schema: {type: object, properties: {data: {$ref: '#/components/schemas/Resource'}}}}}}
@@ -73,5 +99,13 @@ components:
         currency: {type: string, pattern: '^[A-Za-z]{3}$'}
         reason: {type: string}
         metadata: {type: object, additionalProperties: true}
+    ScheduleRequest:
+      type: object
+      required: [next_action_at]
+      properties: {next_action_at: {type: string, format: date-time}}
+    CreditControlRequest:
+      type: object
+      required: [level]
+      properties: {level: {type: string, maxLength: 50}, reason: {type: string, maxLength: 1000}}
   securitySchemes:
     sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}

@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Liberu\Billing\Invoicing\Livewire\Components;
 
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\Invoicing\Actions\CreateInvoice;
+use Liberu\Billing\Invoicing\Models\Invoice;
 use Liberu\Billing\Invoicing\Queries\ListInvoices;
 use Livewire\Component;
 
@@ -17,6 +19,7 @@ final class InvoiceList extends Component
 
     public function create(CreateInvoice $create): void
     {
+        Gate::authorize('create', Invoice::class);
         $this->validate(['currency' => ['required', 'string', 'size:3', 'alpha']]);
         $teamId = data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id');
         $create->execute(['team_id' => $teamId, 'currency' => $this->currency]);

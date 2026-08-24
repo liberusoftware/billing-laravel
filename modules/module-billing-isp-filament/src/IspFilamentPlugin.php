@@ -7,6 +7,7 @@ namespace Liberu\Billing\Isp\Filament;
 use Filament\Contracts\Plugin;
 use Filament\Panel;
 use Liberu\Billing\Isp\Filament\Resources\IspCapabilityResource;
+use Liberu\Billing\Isp\Filament\Resources\AccessServiceResource;
 
 final class IspFilamentPlugin implements Plugin
 {
@@ -22,7 +23,7 @@ final class IspFilamentPlugin implements Plugin
 
     public function register(Panel $panel): void
     {
-        $panel->resources([IspCapabilityResource::class]);
+        $panel->resources([AccessServiceResource::class, IspCapabilityResource::class]);
     }
 
     public function boot(Panel $panel): void {}

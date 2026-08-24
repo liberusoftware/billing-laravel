@@ -7,6 +7,7 @@ namespace Liberu\Billing\Reporting\Filament;
 use Filament\Contracts\Plugin;
 use Filament\Panel;
 use Liberu\Billing\Reporting\Filament\Resources\ReportingMetricResource;
+use Liberu\Billing\Reporting\Filament\Resources\MetricSnapshotResource;
 
 final class ReportingFilamentPlugin implements Plugin
 {
@@ -22,7 +23,7 @@ final class ReportingFilamentPlugin implements Plugin
 
     public function register(Panel $panel): void
     {
-        $panel->resources([ReportingMetricResource::class]);
+        $panel->resources([MetricSnapshotResource::class, ReportingMetricResource::class]);
     }
 
     public function boot(Panel $panel): void {}

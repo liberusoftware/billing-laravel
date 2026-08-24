@@ -11,6 +11,8 @@ use Liberu\Billing\Payments\Filament\Resources\PaymentMandateResource;
 use Liberu\Billing\Payments\Filament\Resources\PaymentMethodResource;
 use Liberu\Billing\Payments\Filament\Resources\PaymentReconciliationResource;
 use Liberu\Billing\Payments\Filament\Resources\PaymentResource;
+use Liberu\Billing\Payments\Filament\Resources\PaymentAllocationResource;
+use Liberu\Billing\Payments\Filament\Resources\PaymentRefundResource;
 
 final class PaymentsFilamentPlugin implements Plugin
 {
@@ -26,7 +28,7 @@ final class PaymentsFilamentPlugin implements Plugin
 
     public function register(Panel $panel): void
     {
-        $panel->resources([PaymentResource::class, PaymentMethodResource::class, PaymentMandateResource::class, PaymentDisputeResource::class, PaymentReconciliationResource::class]);
+        $panel->resources([PaymentResource::class, PaymentMethodResource::class, PaymentMandateResource::class, PaymentAllocationResource::class, PaymentRefundResource::class, PaymentDisputeResource::class, PaymentReconciliationResource::class]);
     }
 
     public function boot(Panel $panel): void {}

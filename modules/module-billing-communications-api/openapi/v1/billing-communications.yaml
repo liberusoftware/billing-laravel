@@ -1,0 +1,70 @@
+openapi: 3.1.0
+info:
+  title: Billing Communications API
+  version: 1.0.0
+  description: Team-scoped communications inventory, number lifecycle, usage imports, and provider adapters.
+servers: [{url: /}]
+paths:
+  /api/v1/billing/communications:
+    get:
+      operationId: billing.communications.services.list
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/PageSize'}]
+      responses: {'200': {$ref: '#/components/responses/Collection'}, '401': {$ref: '#/components/responses/Unauthorized'}, '429': {$ref: '#/components/responses/RateLimited'}}
+  /api/v1/billing/communications/numbers:
+    get:
+      operationId: billing.communications.numbers.list
+      security: [{sanctum: []}]
+      responses: {'200': {$ref: '#/components/responses/Collection'}, '401': {$ref: '#/components/responses/Unauthorized'}}
+    post:
+      operationId: billing.communications.numbers.provision
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/ProvisionNumberRequest'}}}}
+      responses: {'201': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}, '429': {$ref: '#/components/responses/RateLimited'}}
+  /api/v1/billing/communications/providers:
+    get:
+      operationId: billing.communications.providers.list
+      security: [{sanctum: []}]
+      responses: {'200': {$ref: '#/components/responses/Collection'}, '401': {$ref: '#/components/responses/Unauthorized'}}
+    post:
+      operationId: billing.communications.providers.create
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/ProviderRequest'}}}}
+      responses: {'201': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/communications/usage-imports:
+    get:
+      operationId: billing.communications.usageImports.list
+      security: [{sanctum: []}]
+      responses: {'200': {$ref: '#/components/responses/Collection'}, '401': {$ref: '#/components/responses/Unauthorized'}}
+    post:
+      operationId: billing.communications.usageImports.import
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/ImportUsageRequest'}}}}
+      responses: {'201': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
+components:
+  parameters:
+    PageSize: {name: per_page, in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 25}}
+    IdempotencyKey: {name: Idempotency-Key, in: header, required: false, schema: {type: string, maxLength: 255}}
+  responses:
+    Collection: {description: Paginated team-scoped collection, content: {application/json: {schema: {type: object, required: [data, meta], properties: {data: {type: array, items: {type: object}}, meta: {type: object}}}}}}
+    Document: {description: Created resource, content: {application/json: {schema: {type: object, required: [data], properties: {data: {type: object}}}}}}
+    Unauthorized: {description: Authentication or scope is required.}
+    ValidationError: {description: RFC 9457-compatible validation problem.}
+    RateLimited: {description: The caller exceeded the published request limit., headers: {Retry-After: {schema: {type: integer}}}}
+  schemas:
+    ProvisionNumberRequest:
+      type: object
+      required: [number]
+      properties: {number: {type: string, maxLength: 64}, type: {type: string, maxLength: 32}, service_id: {type: [integer, 'null'], minimum: 1}, metadata: {type: object, additionalProperties: true}}
+    ImportUsageRequest:
+      type: object
+      required: [provider, rows]
+      properties: {provider: {type: string, maxLength: 100}, rows: {type: integer, minimum: 1}, total_amount_minor: {type: integer, minimum: 0}, currency: {type: string, pattern: '^[A-Z]{3}$'}, metadata: {type: object, additionalProperties: true}}
+    ProviderRequest:
+      type: object
+      required: [name, driver]
+      properties: {name: {type: string, maxLength: 100}, driver: {type: string, maxLength: 100}, status: {type: string, maxLength: 32}, configuration: {type: object, additionalProperties: true}}
+  securitySchemes: {sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}}

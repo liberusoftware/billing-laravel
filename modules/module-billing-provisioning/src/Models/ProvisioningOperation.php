@@ -16,4 +16,9 @@ final class ProvisioningOperation extends Model
     {
         return ['attempts' => 'integer', 'next_poll_at' => 'datetime', 'payload' => 'array'];
     }
+
+    public function service(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(ProvisionedService::class, 'provisioned_service_id');
+    }
 }

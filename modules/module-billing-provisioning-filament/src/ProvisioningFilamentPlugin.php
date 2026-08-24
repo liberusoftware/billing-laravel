@@ -7,6 +7,7 @@ namespace Liberu\Billing\Provisioning\Filament;
 use Filament\Contracts\Plugin;
 use Filament\Panel;
 use Liberu\Billing\Provisioning\Filament\Resources\ProvisioningOperationResource;
+use Liberu\Billing\Provisioning\Filament\Resources\ProvisionedServiceResource;
 
 final class ProvisioningFilamentPlugin implements Plugin
 {
@@ -22,7 +23,7 @@ final class ProvisioningFilamentPlugin implements Plugin
 
     public function register(Panel $panel): void
     {
-        $panel->resources([ProvisioningOperationResource::class]);
+        $panel->resources([ProvisionedServiceResource::class, ProvisioningOperationResource::class]);
     }
 
     public function boot(Panel $panel): void {}

@@ -9,7 +9,8 @@
     "illuminate/routing": "^13.0",
     "laravel/sanctum": "^4.0",
     "liberusoftware/module-billing-domains": "^0.1",
-    "liberusoftware/module-manager": "^1.0"
+    "liberusoftware/module-manager": "^1.0",
+    "liberusoftware/api-access": "^1.0"
   },
   "autoload": {
     "psr-4": {

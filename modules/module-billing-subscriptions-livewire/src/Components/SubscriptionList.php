@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Liberu\Billing\Subscriptions\Livewire\Components;
 
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\Subscriptions\Actions\ActivateSubscription;
+use Liberu\Billing\Subscriptions\Models\Subscription;
 use Liberu\Billing\Subscriptions\Queries\ListSubscriptions;
 use Livewire\Component;
 
@@ -19,6 +21,7 @@ final class SubscriptionList extends Component
 
     public function activate(ActivateSubscription $activate): void
     {
+        Gate::authorize('create', Subscription::class);
         $this->validate([
             'pricingPlanId' => ['nullable', 'integer', 'min:0'],
             'trialDays' => ['required', 'integer', 'min:0', 'max:365'],

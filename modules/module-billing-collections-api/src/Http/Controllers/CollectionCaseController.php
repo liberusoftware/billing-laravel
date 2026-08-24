@@ -9,11 +9,14 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\Collections\Actions\OpenCollectionCase;
+use Liberu\Billing\Collections\Actions\ApplyCreditControl;
 use Liberu\Billing\Collections\Actions\PromisePayment;
 use Liberu\Billing\Collections\Actions\RecoverCollectionCase;
 use Liberu\Billing\Collections\Actions\RetryCollectionCase;
 use Liberu\Billing\Collections\Actions\SuspendCollectionCase;
 use Liberu\Billing\Collections\Actions\WriteOffCollectionCase;
+use Liberu\Billing\Collections\Actions\ScheduleDunning;
+use Liberu\Billing\Collections\Actions\ScheduleReminder;
 use Liberu\Billing\Collections\Models\CollectionCase;
 use Liberu\Billing\Collections\Queries\ListCollectionCases;
 
@@ -75,6 +78,30 @@ final class CollectionCaseController extends Controller
         $data = $request->validate(['reason' => ['required', 'string', 'max:1000']]);
 
         return response()->json(['data' => $this->resource($writeOff->execute($case, $data['reason']))]);
+    }
+
+    public function dunning(Request $request, CollectionCase $case, ScheduleDunning $schedule): JsonResponse
+    {
+        Gate::authorize('update', $case);
+        $data = $request->validate(['next_action_at' => ['required', 'date', 'after:now']]);
+
+        return response()->json(['data' => $this->resource($schedule->execute($case, new \DateTimeImmutable($data['next_action_at']))) ]);
+    }
+
+    public function reminder(Request $request, CollectionCase $case, ScheduleReminder $schedule): JsonResponse
+    {
+        Gate::authorize('update', $case);
+        $data = $request->validate(['next_action_at' => ['required', 'date', 'after:now']]);
+
+        return response()->json(['data' => $this->resource($schedule->execute($case, new \DateTimeImmutable($data['next_action_at']))) ]);
+    }
+
+    public function creditControl(Request $request, CollectionCase $case, ApplyCreditControl $apply): JsonResponse
+    {
+        Gate::authorize('update', $case);
+        $data = $request->validate(['level' => ['required', 'string', 'max:50'], 'reason' => ['nullable', 'string', 'max:1000']]);
+
+        return response()->json(['data' => $this->resource($apply->execute($case, $data['level'], $data['reason'] ?? null))]);
     }
 
     private function resource(CollectionCase $case): array

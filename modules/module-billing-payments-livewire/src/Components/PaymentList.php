@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Liberu\Billing\Payments\Livewire\Components;
 
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\Payments\Actions\CreatePayment;
+use Liberu\Billing\Payments\Models\Payment;
 use Liberu\Billing\Payments\Queries\ListPayments;
 use Livewire\Component;
 
@@ -19,6 +21,7 @@ final class PaymentList extends Component
 
     public function createPayment(CreatePayment $create): void
     {
+        Gate::authorize('create', Payment::class);
         $this->validate([
             'amountMinor' => ['required', 'integer', 'min:1'],
             'currency' => ['required', 'string', 'size:3', 'alpha'],

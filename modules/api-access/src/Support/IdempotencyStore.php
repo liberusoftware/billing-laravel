@@ -2,6 +2,7 @@
 
 namespace Liberu\Foundation\ApiAccess\Support;
 
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
 
@@ -13,9 +14,31 @@ final class IdempotencyStore
         $existing = DB::table('api_idempotency_keys')->where('identity_ref', $identity)->where('key', $key)->where('expires_at', '>', now())->first();
         if ($existing && ! hash_equals($existing->request_hash, $hash)) {
             throw new RuntimeException('Idempotency key was reused with a different request.');
-        }if ($existing) {
+        }
+        if ($existing) {
             return $existing;
-        }DB::table('api_idempotency_keys')->insert(['identity_ref' => $identity, 'key' => $key, 'request_hash' => $hash, 'expires_at' => now()->addHours((int) config('api-access.idempotency_hours', 24)), 'created_at' => now(), 'updated_at' => now()]);
+        }
+        try {
+            DB::table('api_idempotency_keys')->insert([
+                'identity_ref' => $identity,
+                'key' => $key,
+                'request_hash' => $hash,
+                'expires_at' => now()->addHours((int) config('api-access.idempotency_hours', 24)),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        } catch (QueryException $exception) {
+            $existing = DB::table('api_idempotency_keys')->where('identity_ref', $identity)->where('key', $key)->where('expires_at', '>', now())->first();
+
+            if ($existing === null) {
+                throw $exception;
+            }
+            if (! hash_equals($existing->request_hash, $hash)) {
+                throw new RuntimeException('Idempotency key was reused with a different request.');
+            }
+
+            return $existing;
+        }
 
         return null;
     }

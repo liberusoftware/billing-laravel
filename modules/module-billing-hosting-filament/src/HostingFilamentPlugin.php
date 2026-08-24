@@ -7,6 +7,7 @@ namespace Liberu\Billing\Hosting\Filament;
 use Filament\Contracts\Plugin;
 use Filament\Panel;
 use Liberu\Billing\Hosting\Filament\Resources\HostingCapabilityResource;
+use Liberu\Billing\Hosting\Filament\Resources\HostingAccountResource;
 
 final class HostingFilamentPlugin implements Plugin
 {
@@ -22,7 +23,7 @@ final class HostingFilamentPlugin implements Plugin
 
     public function register(Panel $panel): void
     {
-        $panel->resources([HostingCapabilityResource::class]);
+        $panel->resources([HostingAccountResource::class, HostingCapabilityResource::class]);
     }
 
     public function boot(Panel $panel): void {}

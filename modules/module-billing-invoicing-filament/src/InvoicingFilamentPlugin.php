@@ -8,6 +8,8 @@ use Filament\Contracts\Plugin;
 use Filament\Panel;
 use Liberu\Billing\Invoicing\Filament\Resources\InvoiceResource;
 use Liberu\Billing\Invoicing\Filament\Resources\InvoiceSupportResource;
+use Liberu\Billing\Invoicing\Filament\Resources\InvoiceLineResource;
+use Liberu\Billing\Invoicing\Filament\Resources\InvoiceScheduleResource;
 
 final class InvoicingFilamentPlugin implements Plugin
 {
@@ -23,7 +25,7 @@ final class InvoicingFilamentPlugin implements Plugin
 
     public function register(Panel $panel): void
     {
-        $panel->resources([InvoiceResource::class, InvoiceSupportResource::class]);
+        $panel->resources([InvoiceResource::class, InvoiceLineResource::class, InvoiceScheduleResource::class, InvoiceSupportResource::class]);
     }
 
     public function boot(Panel $panel): void {}

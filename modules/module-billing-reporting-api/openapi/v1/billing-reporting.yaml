@@ -1,0 +1,33 @@
+openapi: 3.1.0
+info: {title: Billing Reporting API, version: 1.0.0, description: Team-scoped MRR, ARR, churn, aging, revenue, tax, usage, provisioning, collection, and provider metrics.}
+servers: [{url: /}]
+paths:
+  /api/v1/billing/reporting:
+    get:
+      operationId: billing.reporting.snapshots.list
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/PageSize'}, {name: metric, in: query, schema: {type: string}}]
+      responses: {'200': {$ref: '#/components/responses/Collection'}, '401': {$ref: '#/components/responses/Unauthorized'}}
+  /api/v1/billing/reporting/metrics:
+    get:
+      operationId: billing.reporting.metrics.list
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/PageSize'}]
+      responses: {'200': {$ref: '#/components/responses/Collection'}, '401': {$ref: '#/components/responses/Unauthorized'}}
+    post:
+      operationId: billing.reporting.metrics.create
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/MetricRequest'}}}}
+      responses: {'201': {$ref: '#/components/responses/Document'}, '422': {$ref: '#/components/responses/ValidationError'}}
+components:
+  parameters:
+    PageSize: {name: per_page, in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 25}}
+    IdempotencyKey: {name: Idempotency-Key, in: header, schema: {type: string, maxLength: 255}}
+  responses:
+    Collection: {description: Paginated team-scoped reporting collection, content: {application/json: {schema: {type: object, required: [data, meta], properties: {data: {type: array, items: {type: object}}, meta: {type: object}}}}}}
+    Document: {description: Reporting metric, content: {application/json: {schema: {type: object, required: [data], properties: {data: {type: object}}}}}}
+    Unauthorized: {description: Authentication or scope is required.}
+    ValidationError: {description: RFC 9457-compatible validation problem.}
+  schemas: {MetricRequest: {type: object, required: [metric, value], properties: {metric: {type: string}, value: {type: number}, period: {type: string, format: date}, currency: {type: string, pattern: '^[A-Z]{3}$'}, dimensions: {type: object, additionalProperties: true}}}}
+  securitySchemes: {sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}}

@@ -7,6 +7,7 @@ namespace Liberu\Billing\CustomerPortal\Filament;
 use Filament\Contracts\Plugin;
 use Filament\Panel;
 use Liberu\Billing\CustomerPortal\Filament\Resources\PortalItemResource;
+use Liberu\Billing\CustomerPortal\Filament\Resources\PortalRequestResource;
 
 final class CustomerPortalFilamentPlugin implements Plugin
 {
@@ -22,7 +23,7 @@ final class CustomerPortalFilamentPlugin implements Plugin
 
     public function register(Panel $panel): void
     {
-        $panel->resources([PortalItemResource::class]);
+        $panel->resources([PortalRequestResource::class, PortalItemResource::class]);
     }
 
     public function boot(Panel $panel): void {}
