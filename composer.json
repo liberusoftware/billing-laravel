@@ -80,6 +80,10 @@
         {"type": "path", "url": "modules/billing-pricing-api", "options": {"symlink": false}},
         {"type": "path", "url": "modules/billing-pricing-filament", "options": {"symlink": false}},
         {"type": "path", "url": "modules/billing-pricing-livewire", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/billing-orders", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/billing-orders-api", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/billing-orders-filament", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/billing-orders-livewire", "options": {"symlink": false}},
         {
             "type": "vcs",
             "url": "https://github.com/liberusoftware/composer-installer.git"
@@ -284,6 +288,10 @@
         "liberusoftware/billing-pricing-api": "0.1.2",
         "liberusoftware/billing-pricing-filament": "0.1.2",
         "liberusoftware/billing-pricing-livewire": "0.1.2",
+        "liberusoftware/billing-orders": "0.1.0",
+        "liberusoftware/billing-orders-api": "0.1.0",
+        "liberusoftware/billing-orders-filament": "0.1.0",
+        "liberusoftware/billing-orders-livewire": "0.1.0",
         "bezhansalleh/filament-shield": "~4.0",
         "bursteri/socialstream": "^7.0",
         "filament/filament": "~5.1",

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "18ae4b5fd9d79b4586c8acfd91fed737",
+    "content-hash": "21009b1d036ef7b939d1255f61d0170b",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -6270,6 +6270,144 @@
                 "MIT"
             ],
             "description": "Livewire 4 adapter for the Liberu Billing Core module.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/billing-orders",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/billing-orders",
+                "reference": "c6f5dedf94653a7b001f2678c7e1645ae8031d4c"
+            },
+            "require": {
+                "illuminate/database": "^13.0",
+                "illuminate/support": "^13.0",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "billing-orders"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Orders\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Provider-neutral quotes, carts, checkout, fraud review, agreements, and orders for Liberu Billing.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/billing-orders-api",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/billing-orders-api",
+                "reference": "06be20aeef2586827217b8b1468c9876a0b466fd"
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "laravel/sanctum": "^4.0",
+                "liberusoftware/billing-orders": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "billing-orders-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Orders\\Api\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "HTTP API adapter for Liberu Billing Orders.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/billing-orders-filament",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/billing-orders-filament",
+                "reference": "3c658c9b47614d8f5cb239df20434fb041b31302"
+            },
+            "require": {
+                "filament/filament": "~5.1",
+                "liberusoftware/billing-orders": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "billing-orders-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Orders\\Filament\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament adapter for Liberu Billing Orders.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/billing-orders-livewire",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/billing-orders-livewire",
+                "reference": "9196faf0c433e36f5849a1fcb49896929d9ed952"
+            },
+            "require": {
+                "liberusoftware/billing-orders": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "billing-orders-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Orders\\Livewire\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire adapter for Liberu Billing Orders.",
             "transport-options": {
                 "symlink": false,
                 "relative": true
