@@ -12,6 +12,34 @@
     "repositories": [
         {
             "type": "path",
+            "url": "themes/base",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "themes/default",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "themes/dark",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "themes/clear-signal",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
             "url": "modules/billing-billing-core",
             "options": {
                 "symlink": false
@@ -240,11 +268,11 @@
     "require": {
         "php": "^8.5",
         "barryvdh/laravel-dompdf": "^3.1",
-        "liberusoftware/billing-billing-core": "0.1.2",
-        "liberusoftware/billing-core-api": "0.1.2",
-        "liberusoftware/billing-core-filament": "0.1.2",
-        "liberusoftware/billing-core-livewire": "0.1.2",
-        "liberusoftware/billing-catalog": "0.1.0",
+        "liberusoftware/billing-billing-core": "0.1.3",
+        "liberusoftware/billing-core-api": "0.1.3",
+        "liberusoftware/billing-core-filament": "0.1.3",
+        "liberusoftware/billing-core-livewire": "0.1.3",
+        "liberusoftware/billing-catalog": "0.1.1",
         "liberusoftware/billing-catalog-api": "0.1.0",
         "liberusoftware/billing-catalog-filament": "0.1.0",
         "liberusoftware/billing-catalog-livewire": "0.1.0",

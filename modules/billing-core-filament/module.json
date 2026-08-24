@@ -3,7 +3,7 @@
   "name": "billing-core-filament",
   "display_name": "Billing Core Filament",
   "description": "Filament 5 resources for authorized Billing Core accounts.",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "category": "presentation",
   "provider": "Liberu\\Billing\\Core\\Filament\\BillingCoreFilamentServiceProvider",
   "requires": {"php": "^8.5", "laravel": "^13.0", "packages": {"liberusoftware/billing-billing-core": "^0.1", "liberusoftware/module-manager": "^1.0"}},

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "04173f599083c0e7cdca50631b3d68ed",
+    "content-hash": "953cad1c7e75e1cbcfb42909993fad50",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -5989,11 +5989,11 @@
         },
         {
             "name": "liberusoftware/billing-billing-core",
-            "version": "0.1.2",
+            "version": "0.1.3",
             "dist": {
                 "type": "path",
                 "url": "modules/billing-billing-core",
-                "reference": "a8cadb37e1b75e027065f7198876b856bb9d8570"
+                "reference": "252d1a6f98cafcb78649de32994e53372871e69e"
             },
             "require": {
                 "illuminate/support": "^13.0",
@@ -6035,11 +6035,11 @@
         },
         {
             "name": "liberusoftware/billing-catalog",
-            "version": "0.1.0",
+            "version": "0.1.1",
             "dist": {
                 "type": "path",
                 "url": "modules/billing-catalog",
-                "reference": "74be920421994e2e38db801221a281b882c9bcb4"
+                "reference": "2801ce6c2938092fb335d857107e8d6f7cf04cf7"
             },
             "require": {
                 "illuminate/database": "^13.0",
@@ -6173,11 +6173,11 @@
         },
         {
             "name": "liberusoftware/billing-core-api",
-            "version": "0.1.2",
+            "version": "0.1.3",
             "dist": {
                 "type": "path",
                 "url": "modules/billing-core-api",
-                "reference": "3d80f3bd1cdc3e7b474c26ad2f73125074cdc195"
+                "reference": "55a6cabeea4258e75c5afd5229171b5a1934d507"
             },
             "require": {
                 "illuminate/http": "^13.0",
@@ -6209,11 +6209,11 @@
         },
         {
             "name": "liberusoftware/billing-core-filament",
-            "version": "0.1.2",
+            "version": "0.1.3",
             "dist": {
                 "type": "path",
                 "url": "modules/billing-core-filament",
-                "reference": "a0730a8fe655a2d7e9f3d95d01fad07d4fa84a45"
+                "reference": "2d9be1e95ddb85816128e7361e0c312035c99fdd"
             },
             "require": {
                 "filament/filament": "~5.1",
@@ -6243,11 +6243,11 @@
         },
         {
             "name": "liberusoftware/billing-core-livewire",
-            "version": "0.1.2",
+            "version": "0.1.3",
             "dist": {
                 "type": "path",
                 "url": "modules/billing-core-livewire",
-                "reference": "4e82b6ff1b0bf03bbbc571fd7e9e7f410966ad9f"
+                "reference": "cb6512b41ec5f7c9e30c3cb3cf008aed02e67ee9"
             },
             "require": {
                 "liberusoftware/billing-billing-core": "^0.1",
@@ -7023,7 +7023,7 @@
             "version": "1.4.2",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-module-manager.git",
+                "url": "https://github.com/liberusoftware/module-module-manager.git",
                 "reference": "688fc9c01008bfd5258afa2a78587c48804ec2e7"
             },
             "dist": {
@@ -7067,6 +7067,10 @@
                 "MIT"
             ],
             "description": "Deterministic manifest discovery and runtime enablement for Liberu modules.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-module-manager/tree/1.4.2",
+                "issues": "https://github.com/liberusoftware/module-module-manager/issues"
+            },
             "time": "2026-08-07T14:25:25+00:00"
         },
         {
@@ -7738,7 +7742,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-settings.git",
+                "url": "https://github.com/liberusoftware/module-settings.git",
                 "reference": "37c18cd0aaa4d026b7adcfba859516dd7abc39aa"
             },
             "dist": {
@@ -7781,6 +7785,10 @@
                 "MIT"
             ],
             "description": "Typed scoped settings foundation for Liberu applications.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-settings/tree/1.4.1",
+                "issues": "https://github.com/liberusoftware/module-settings/issues"
+            },
             "time": "2026-08-07T14:25:50+00:00"
         },
         {
@@ -7840,16 +7848,10 @@
         {
             "name": "liberusoftware/theme-base",
             "version": "2.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/liberusoftware/theme-base.git",
-                "reference": "a79f3355a9dd7af74f080d66ea82f700cfac09b8"
-            },
             "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/theme-base/zipball/a79f3355a9dd7af74f080d66ea82f700cfac09b8",
-                "reference": "a79f3355a9dd7af74f080d66ea82f700cfac09b8",
-                "shasum": ""
+                "type": "path",
+                "url": "themes/base",
+                "reference": "e2776216396d7235240a190db746310fba6b4d41"
             },
             "require": {
                 "liberusoftware/theme-support": "^1.0",
@@ -7884,21 +7886,18 @@
                 "MIT"
             ],
             "description": "Shared semantic tokens and accessible presentation primitives for Liberu themes.",
-            "time": "2026-08-07T14:25:52+00:00"
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "liberusoftware/theme-clear-signal",
             "version": "1.5.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/liberusoftware/theme-clear-signal.git",
-                "reference": "e4f7e56bdf4edc722c59976acdf3acbf9757df28"
-            },
             "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/theme-clear-signal/zipball/e4f7e56bdf4edc722c59976acdf3acbf9757df28",
-                "reference": "e4f7e56bdf4edc722c59976acdf3acbf9757df28",
-                "shasum": ""
+                "type": "path",
+                "url": "themes/clear-signal",
+                "reference": "ba6778dfa26ba272d64836c4b8eb6bf364e34a1b"
             },
             "require": {
                 "liberusoftware/theme-base": "^2.0",
@@ -7934,21 +7933,18 @@
                 "MIT"
             ],
             "description": "Clear Signal public theme for Liberu applications.",
-            "time": "2026-08-07T14:25:54+00:00"
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "liberusoftware/theme-dark",
             "version": "1.5.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/liberusoftware/theme-dark.git",
-                "reference": "d5d2027dd87a806cd4faee81ca798caf0ae75845"
-            },
             "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/theme-dark/zipball/d5d2027dd87a806cd4faee81ca798caf0ae75845",
-                "reference": "d5d2027dd87a806cd4faee81ca798caf0ae75845",
-                "shasum": ""
+                "type": "path",
+                "url": "themes/dark",
+                "reference": "eebe9b65a12603623205edf1ab3da90a050d9461"
             },
             "require": {
                 "liberusoftware/theme-base": "^2.0",
@@ -7984,21 +7980,18 @@
                 "MIT"
             ],
             "description": "Liberu dark public theme.",
-            "time": "2026-08-07T14:26:22+00:00"
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "liberusoftware/theme-default",
             "version": "1.5.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/liberusoftware/theme-default.git",
-                "reference": "759e19abeba7d39d129d6ce9acaa10d9d4e7da50"
-            },
             "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/theme-default/zipball/759e19abeba7d39d129d6ce9acaa10d9d4e7da50",
-                "reference": "759e19abeba7d39d129d6ce9acaa10d9d4e7da50",
-                "shasum": ""
+                "type": "path",
+                "url": "themes/default",
+                "reference": "c99d2ed605ef29f5dc41fb3dc6effadcf26436ce"
             },
             "require": {
                 "liberusoftware/theme-base": "^2.0",
@@ -8034,14 +8027,17 @@
                 "MIT"
             ],
             "description": "Liberu default public theme.",
-            "time": "2026-08-07T14:26:23+00:00"
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "liberusoftware/theme-support",
             "version": "1.4.2",
             "source": {
                 "type": "git",
-                "url": "git@github.com:liberusoftware/module-theme-support.git",
+                "url": "https://github.com/liberusoftware/module-theme-support.git",
                 "reference": "22c3d18d23d802265d68f03e58f8dda8b88b48fa"
             },
             "dist": {
@@ -8092,6 +8088,10 @@
                 "MIT"
             ],
             "description": "Theme discovery and host presentation support for Liberu applications.",
+            "support": {
+                "source": "https://github.com/liberusoftware/module-theme-support/tree/1.4.2",
+                "issues": "https://github.com/liberusoftware/module-theme-support/issues"
+            },
             "time": "2026-08-07T14:25:46+00:00"
         },
         {
