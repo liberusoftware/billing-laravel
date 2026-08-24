@@ -10,6 +10,8 @@
 /modules/*/composer.lock
 /themes/*/composer.lock
 node_modules/
+__pycache__/
+*.pyc
 npm-debug.log
 yarn-error.log
 
