@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fa36165ba7874c590960ab3aa0a83aae",
+    "content-hash": "a6975af646560070aa3fc1d46adc484d",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -7916,6 +7916,74 @@
                 "MIT"
             ],
             "description": "HTTP API adapter for Liberu Billing Usage.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-usage-filament",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-usage-filament",
+                "reference": "830d091cd07e305680ab81365b6f5d775b75f6fb"
+            },
+            "require": {
+                "filament/filament": "~5.1",
+                "liberusoftware/module-billing-usage": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-usage-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Usage\\Filament\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament 5 adapter for Liberu Billing Usage.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-usage-livewire",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-usage-livewire",
+                "reference": "ae9f663095dfac2758b2fb86f7a38a045f6cc4b4"
+            },
+            "require": {
+                "liberusoftware/module-billing-usage": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-usage-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Usage\\Livewire\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire 4 adapter for Liberu Billing Usage.",
             "transport-options": {
                 "symlink": false,
                 "relative": true
