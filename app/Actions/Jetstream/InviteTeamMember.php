@@ -2,7 +2,6 @@
 
 namespace App\Actions\Jetstream;
 
-use App\Models\Team;
 use App\Models\User;
 use Closure;
 use Illuminate\Database\Query\Builder;
@@ -15,6 +14,7 @@ use Laravel\Jetstream\Events\InvitingTeamMember;
 use Laravel\Jetstream\Jetstream;
 use Laravel\Jetstream\Mail\TeamInvitation;
 use Laravel\Jetstream\Rules\Role;
+use Liberu\Foundation\Organizations\Models\Team;
 
 class InviteTeamMember implements InvitesTeamMembers
 {
@@ -98,7 +98,7 @@ class InviteTeamMember implements InvitesTeamMembers
                     ? [
                         'required',
                         'string',
-                        new Role,
+                        new Role(),
                     ]
                     : null,
             ]

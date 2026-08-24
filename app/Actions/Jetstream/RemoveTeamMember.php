@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Actions\Jetstream;
 
-use App\Models\Team;
 use App\Models\User;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
 use Laravel\Jetstream\Contracts\RemovesTeamMembers;
 use Laravel\Jetstream\Events\TeamMemberRemoved;
+use Liberu\Foundation\Organizations\Models\Team;
 
 class RemoveTeamMember implements RemovesTeamMembers
 {
@@ -48,7 +48,7 @@ class RemoveTeamMember implements RemovesTeamMembers
             $team
         ) &&
             $user->id !== $teamMember->id) {
-            throw new AuthorizationException;
+            throw new AuthorizationException();
         }
     }
 

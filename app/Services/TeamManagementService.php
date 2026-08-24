@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use App\Models\Team;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Liberu\Foundation\Organizations\Models\Team;
 
 class TeamManagementService
 {
@@ -23,22 +23,18 @@ class TeamManagementService
     {
         DB::transaction(
             function () use ($user): void {
-                $team = Team::firstOrCreate(
-                    [
-                        'name' => $user->name."'s Team",
-                        'user_id' => $user->id,
-                    ],
-                    ['personal_team' => true]
-                );
+                $team = Team::query()->where('is_default_for_registration', true)->first();
 
-                if (! $user->belongsToTeam($team)) {
+                if ($team !== null && ! $user->belongsToTeam($team)) {
                     $user->teams()->attach(
                         $team,
                         ['role' => 'admin']
                     );
                 }
 
-                $user->forceFill(['current_team_id' => $team->id])->save();
+                if ($team !== null) {
+                    $user->forceFill(['current_team_id' => $team->id])->save();
+                }
             }
         );
     }

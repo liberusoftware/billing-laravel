@@ -312,6 +312,6 @@ class QuoteController extends Controller
         /** @var User|null $user */
         $user = $request->user();
 
-        return $user?->current_team_id;
+        return $user?->currentTeam?->getKey() ?? $user?->getAttributes()['current_team_id'] ?? null;
     }
 }

@@ -12,6 +12,11 @@ return [
         Providers::google(),
         Providers::facebook(),
         Providers::twitterOAuth2(),
+        Providers::bitbucket(),
+        Providers::gitlab(),
+        Providers::linkedin(),
+        Providers::linkedinOpenId(),
+        Providers::slack(),
     ],
     'features' => [
         // Features::generateMissingEmails(),

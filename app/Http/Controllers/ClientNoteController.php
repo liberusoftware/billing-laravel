@@ -18,6 +18,7 @@ class ClientNoteController extends Controller
         // Scope to notes whose client belongs to the caller's team.
         $query = ClientNote::with(['user'])
             ->whereHas('client', fn (Builder $q) => $q->where('team_id', $teamId))
+            ->where('user_id', $request->user()?->getAuthIdentifier())
             ->where(
                 'client_id',
                 $request->client_id
@@ -118,7 +119,11 @@ class ClientNoteController extends Controller
     public function destroy(Request $request, ClientNote $note): JsonResponse
     {
         // 404 unless the note's client belongs to the caller's team.
-        abort_unless($note->client?->team_id === $this->currentTeamId($request), 404);
+        abort_unless(
+            $note->client?->team_id === $this->currentTeamId($request)
+            && $note->user_id === $request->user()?->getAuthIdentifier(),
+            404,
+        );
 
         $note->delete();
 
@@ -127,6 +132,8 @@ class ClientNoteController extends Controller
 
     private function currentTeamId(Request $request): ?int
     {
-        return $request->user()?->current_team_id;
+        $user = $request->user();
+
+        return $user?->currentTeam?->getKey() ?? $user?->getAttributes()['current_team_id'] ?? null;
     }
 }

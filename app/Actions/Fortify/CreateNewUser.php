@@ -2,7 +2,6 @@
 
 namespace App\Actions\Fortify;
 
-use App\Models\Team;
 use App\Models\User;
 use Exception;
 use Illuminate\Database\QueryException;
@@ -13,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
+use Liberu\Foundation\Organizations\Models\Team;
 use Spatie\Permission\Exceptions\RoleDoesNotExist;
 
 class CreateNewUser implements CreatesNewUsers
@@ -177,7 +177,8 @@ class CreateNewUser implements CreatesNewUsers
     {
         // Attach new registrants to the admin-designated default team; fall back to
         // the first team, then create one on a fresh install.
-        $team = Team::defaultForRegistration() ?? Team::first();
+        $team = Team::query()->where('is_default_for_registration', true)->first()
+            ?? Team::query()->first();
         if (! $team) {
             $team = Team::forceCreate(
                 [

@@ -2,7 +2,6 @@
 
 namespace App\Actions\Jetstream;
 
-use App\Models\Team;
 use App\Models\User;
 use Closure;
 use Illuminate\Contracts\Validation\Rule;
@@ -13,6 +12,7 @@ use Laravel\Jetstream\Events\AddingTeamMember;
 use Laravel\Jetstream\Events\TeamMemberAdded;
 use Laravel\Jetstream\Jetstream;
 use Laravel\Jetstream\Rules\Role;
+use Liberu\Foundation\Organizations\Models\Team;
 
 class AddTeamMember implements AddsTeamMembers
 {
@@ -90,7 +90,7 @@ class AddTeamMember implements AddsTeamMembers
                     ? [
                         'required',
                         'string',
-                        new Role,
+                        new Role(),
                     ]
                     : null,
             ]
