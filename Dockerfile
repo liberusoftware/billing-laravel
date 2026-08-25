@@ -27,7 +27,8 @@ RUN composer install \
     --no-ansi \
     --no-scripts \
     --prefer-dist \
-    --ignore-platform-req=ext-pcntl
+    --ignore-platform-req=ext-pcntl \
+    --ignore-platform-req=ext-gd
 
 ###########################################
 # Main application stage
@@ -168,4 +169,3 @@ EXPOSE 8080
 ENTRYPOINT ["start-container"]
 
 HEALTHCHECK --start-period=5s --interval=2s --timeout=5s --retries=8 CMD php artisan octane:status || exit 1
-
