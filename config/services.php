@@ -61,6 +61,7 @@ return [
 
     'paddle' => [
         'base_url' => env('PADDLE_API_URL', 'https://api.paddle.com'),
+        'token' => env('PADDLE_API_KEY'),
     ],
 
     'facebook' => [

@@ -1,85 +1,34 @@
 openapi: 3.1.0
-info: {title: Billing Usage API, version: 1.0.0, license: {name: MIT, identifier: MIT}}
+info:
+  title: Billing Usage API
+  version: 1.0.0
+  description: Team-scoped meter definitions, idempotent usage ingestion, aggregation, and corrections.
 servers: [{url: /}]
 paths:
   /api/v1/billing/usage/meters:
-    get:
-      operationId: billing.usage.meters.list
-      summary: List usage meters
-      security: [{sanctum: []}]
-      responses: {'200': {$ref: '#/components/responses/MeterCollection'}, '401': {$ref: '#/components/responses/Unauthorized'}}
-    post:
-      operationId: billing.usage.meters.create
-      summary: Define a usage meter
-      security: [{sanctum: []}]
-      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
-      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/CreateMeterRequest'}}}}
-      responses: {'201': {$ref: '#/components/responses/MeterDocument'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
+    get: {operationId: billing.usage.meters.list, summary: List usage meters, security: [{sanctum: []}], responses: {'200': {description: Meter collection}, '401': {description: Authentication is required.}}}
+    post: {operationId: billing.usage.meters.create, security: [{sanctum: []}], parameters: [{'$ref': '#/components/parameters/IdempotencyKey'}], requestBody: {required: true, content: {application/json: {schema: {'$ref': '#/components/schemas/MeterRequest'}}}}, responses: {'201': {description: Meter created}, '422': {description: Validation error}}}
   /api/v1/billing/usage/meters/{meter}/records:
-    post:
-      operationId: billing.usage.records.create
-      summary: Ingest a usage event
-      security: [{sanctum: []}]
-      parameters: [{name: meter, in: path, required: true, schema: {type: string}}, {$ref: '#/components/parameters/IdempotencyKey'}]
-      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/IngestRequest'}}}}
-      responses: {'201': {$ref: '#/components/responses/RecordDocument'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
+    post: {operationId: billing.usage.records.create, security: [{sanctum: []}], parameters: [{name: meter, in: path, required: true, schema: {type: string}}, {'$ref': '#/components/parameters/IdempotencyKey'}], requestBody: {required: true, content: {application/json: {schema: {'$ref': '#/components/schemas/UsageRequest'}}}}, responses: {'201': {description: Usage recorded}}}
+  /api/v1/billing/usage/meters/{meter}/aggregate:
+    get: {operationId: billing.usage.records.aggregateByMeter, security: [{sanctum: []}], parameters: [{name: meter, in: path, required: true, schema: {type: string}}], responses: {'200': {description: Aggregated usage}}}
+  /api/v1/billing/usage/meters/{meter}/rate:
+    post: {operationId: billing.usage.records.rate, security: [{sanctum: []}], parameters: [{name: meter, in: path, required: true, schema: {type: string}}], responses: {'200': {description: Rated usage}}}
+  /api/v1/billing/usage/records:
+    get: {operationId: billing.usage.records.list, security: [{sanctum: []}], responses: {'200': {description: Usage record collection}}}
+  /api/v1/billing/usage/aggregate:
+    get: {operationId: billing.usage.records.aggregate, security: [{sanctum: []}], parameters: [{name: meter_id, in: query, required: true, schema: {type: integer}}, {name: customer_id, in: query, schema: {type: integer}}], responses: {'200': {description: Aggregated usage}}}
+  /api/v1/billing/usage/meters/{meter}/ingest:
+    post: {operationId: billing.usage.records.ingest, security: [{sanctum: []}], parameters: [{'$ref': '#/components/parameters/IdempotencyKey'}], requestBody: {required: true, content: {application/json: {schema: {'$ref': '#/components/schemas/UsageRequest'}}}}, responses: {'201': {description: Usage recorded}, '422': {description: Validation error}}}
+  /api/v1/billing/usage/records/{record}/corrections:
+    post: {operationId: billing.usage.records.correct, security: [{sanctum: []}], parameters: [{'$ref': '#/components/parameters/IdempotencyKey'}], responses: {'201': {description: Correction recorded}}}
   /api/v1/billing/usage/records/{record}/correct:
-    post:
-      operationId: billing.usage.records.correct
-      summary: Correct a usage event
-      security: [{sanctum: []}]
-      parameters: [{name: record, in: path, required: true, schema: {type: string}}, {$ref: '#/components/parameters/IdempotencyKey'}]
-      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/CorrectionRequest'}}}}
-      responses: {'201': {$ref: '#/components/responses/RecordDocument'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
+    post: {operationId: billing.usage.records.correctAlias, security: [{sanctum: []}], parameters: [{name: record, in: path, required: true, schema: {type: string}}, {'$ref': '#/components/parameters/IdempotencyKey'}], requestBody: {required: true, content: {application/json: {schema: {'$ref': '#/components/schemas/CorrectionRequest'}}}}, responses: {'201': {description: Correction recorded}}}
 components:
   parameters:
-    IdempotencyKey: {name: Idempotency-Key, in: header, required: false, schema: {type: string, maxLength: 255}}
-  responses:
-    MeterCollection: {description: Usage meters, content: {application/json: {schema: {type: object, properties: {data: {type: array, items: {$ref: '#/components/schemas/Meter'}}, meta: {type: object}}}}}}
-    MeterDocument: {description: Usage meter, content: {application/json: {schema: {type: object, properties: {data: {$ref: '#/components/schemas/Meter'}}}}}}
-    RecordDocument: {description: Usage record, content: {application/json: {schema: {type: object, properties: {data: {$ref: '#/components/schemas/Record'}}}}}}
-    Unauthorized: {description: Authentication is required.}
-    ValidationError: {description: Validation failed.}
+    IdempotencyKey: {name: Idempotency-Key, in: header, schema: {type: string, maxLength: 255}}
   schemas:
-    Meter:
-      type: object
-      required: [id, type, attributes]
-      properties:
-        id: {type: string}
-        type: {type: string, const: billing-usage-meters}
-        attributes: {type: object}
-    Record:
-      type: object
-      required: [id, type, attributes]
-      properties:
-        id: {type: string}
-        type: {type: string, const: billing-usage-records}
-        attributes: {type: object}
-    CreateMeterRequest:
-      type: object
-      required: [code, unit, unit_price_minor, currency]
-      properties:
-        name: {type: string}
-        code: {type: string}
-        unit: {type: string}
-        unit_price_minor: {type: integer, minimum: 0}
-        currency: {type: string, pattern: '^[A-Za-z]{3}$'}
-        threshold: {type: number, minimum: 0}
-        metadata: {type: object, additionalProperties: true}
-    IngestRequest:
-      type: object
-      required: [event_key, quantity]
-      properties:
-        event_key: {type: string}
-        customer_id: {type: integer, minimum: 1}
-        quantity: {type: number, exclusiveMinimum: 0}
-        occurred_at: {type: string, format: date-time}
-        metadata: {type: object, additionalProperties: true}
-    CorrectionRequest:
-      type: object
-      required: [event_key, quantity]
-      properties:
-        event_key: {type: string}
-        quantity: {type: number, not: {const: 0}}
-  securitySchemes:
-    sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}
+    MeterRequest: {type: object, required: [code, unit, unit_price_minor, currency], properties: {name: {type: string}, code: {type: string}, unit: {type: string}, unit_price_minor: {type: integer, minimum: 0}, currency: {type: string, pattern: '^[A-Z]{3}$'}, threshold: {type: number}, metadata: {type: object}}}
+    UsageRequest: {type: object, required: [event_key, quantity], properties: {event_key: {type: string}, customer_id: {type: integer}, quantity: {type: number, exclusiveMinimum: 0}, occurred_at: {type: string, format: date-time}, metadata: {type: object}}}
+    CorrectionRequest: {type: object, required: [event_key, quantity], properties: {event_key: {type: string}, quantity: {type: number, not: {const: 0}}}}
+  securitySchemes: {sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}}
