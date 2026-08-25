@@ -15,6 +15,11 @@
     }
   },
   "suggests": [],
+  "presentation": {
+    "livewire": {
+      "components": ["module-billing-reporting::dashboard", "module-billing-reporting::metrics"]
+    }
+  },
   "capabilities": [
     "billing.reporting.livewire"
   ],
@@ -23,4 +28,3 @@
     "Reporting Livewire integration"
   ]
 }
-
