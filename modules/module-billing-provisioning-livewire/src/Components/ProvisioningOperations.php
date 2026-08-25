@@ -9,6 +9,7 @@ use Illuminate\View\View;
 use Liberu\Billing\Provisioning\Actions\CreateProvisionedService;
 use Liberu\Billing\Provisioning\Actions\QueueProvisioningOperation;
 use Liberu\Billing\Provisioning\Actions\ReconcileProvisionedService;
+use Liberu\Billing\Provisioning\Actions\RunProvisioningOperation;
 use Liberu\Billing\Provisioning\Actions\TransitionProvisionedService;
 use Liberu\Billing\Provisioning\Enums\ProvisioningState;
 use Liberu\Billing\Provisioning\Models\ProvisionedService;
@@ -20,6 +21,8 @@ final class ProvisioningOperations extends Component
     public string $operation = 'provision';
 
     public ?int $selectedServiceId = null;
+
+    public ?int $selectedOperationId = null;
 
     public string $provider = '';
 
@@ -39,7 +42,7 @@ final class ProvisioningOperations extends Component
         session()->flash('module-billing-provisioning-message', __('Provisioned service created.'));
     }
 
-    public function transition(TransitionProvisionedService $transition): void
+    public function transitionService(TransitionProvisionedService $transition): void
     {
         $this->validate(['selectedServiceId' => ['required', 'integer'], 'state' => ['required', 'in:pending,provisioning,active,suspended,failed,deprovisioning,deprovisioned'], 'lastError' => ['nullable', 'string', 'max:2000']]);
         $service = $this->serviceForCurrentTeam();
@@ -72,10 +75,20 @@ final class ProvisioningOperations extends Component
         session()->flash('module-billing-provisioning-message', __('Provisioned service reconciled.'));
     }
 
+    public function run(RunProvisioningOperation $run): void
+    {
+        $this->validate(['selectedOperationId' => ['required', 'integer', 'min:1']]);
+        $operation = ProvisioningOperation::query()->whereKey($this->selectedOperationId)->where('team_id', $this->teamId())->firstOrFail();
+        Gate::authorize('update', $operation);
+        $run->execute($operation);
+        $this->reset('selectedOperationId');
+        session()->flash('module-billing-provisioning-message', __('Provisioning operation run.'));
+    }
+
     public function render(): View
     {
         Gate::authorize('viewAny', ProvisioningOperation::class);
-        $team = (int) (data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id'));
+        $team = $this->teamId();
 
         return view('module-billing-provisioning-livewire::operations', [
             'services' => ProvisionedService::query()->where('team_id', $team)->latest()->get(),
@@ -91,5 +104,10 @@ final class ProvisioningOperations extends Component
             ->whereKey($this->selectedServiceId)
             ->where('team_id', $team)
             ->firstOrFail();
+    }
+
+    private function teamId(): int
+    {
+        return (int) (data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id'));
     }
 }

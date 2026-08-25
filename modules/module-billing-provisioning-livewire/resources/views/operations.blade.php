@@ -28,13 +28,14 @@
         <button type="button" wire:click="reconcile">{{ __('Reconcile service') }}</button>
         <label>{{ __('State') }} <select wire:model="state">@foreach (['pending', 'provisioning', 'active', 'suspended', 'failed', 'deprovisioning', 'deprovisioned'] as $availableState)<option value="{{ $availableState }}">{{ ucfirst($availableState) }}</option>@endforeach</select></label>
         <label>{{ __('Error') }} <input wire:model="lastError" maxlength="2000"></label>
-        <button type="button" wire:click="transition">{{ __('Transition service') }}</button>
+        <button type="button" wire:click="transitionService">{{ __('Transition service') }}</button>
     </form>
     <ul>
         @forelse ($operations as $operation)
-            <li wire:key="provisioning-operation-{{ $operation->id }}">{{ $operation->operation }} ({{ $operation->status }})</li>
+            <li wire:key="provisioning-operation-{{ $operation->id }}">{{ $operation->operation }} ({{ $operation->status }}) <button type="button" wire:click="$set('selectedOperationId', {{ $operation->id }})">{{ __('Select') }}</button></li>
         @empty
             <li>{{ __('No provisioning operations found.') }}</li>
         @endforelse
     </ul>
+    @if ($selectedOperationId)<button type="button" wire:click="run">{{ __('Run selected operation') }}</button>@endif
 </section>
