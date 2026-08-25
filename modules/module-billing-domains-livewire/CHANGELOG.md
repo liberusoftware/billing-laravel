@@ -1,5 +1,6 @@
 # Changelog
 
+- Add authorized domain contacts, DNS records, and EPP operation support actions.
 - Added the registered domain-search component and exposed the renewal period in the lifecycle controls.
 
 ## 0.1.0
