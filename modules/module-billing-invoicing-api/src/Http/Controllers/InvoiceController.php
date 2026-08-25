@@ -59,7 +59,7 @@ final class InvoiceController extends Controller
 
     public function schedule(Request $request, CreateInvoiceSchedule $create): JsonResponse
     {
-        Gate::authorize('create', Invoice::class);
+        Gate::authorize('create', InvoiceSchedule::class);
         $data = $request->validate([
             'customer_id' => ['nullable', 'integer', 'min:1'],
             'frequency' => ['required', 'string', 'in:daily,weekly,monthly,yearly'],
@@ -75,9 +75,7 @@ final class InvoiceController extends Controller
 
     public function runSchedule(InvoiceSchedule $schedule, RunInvoiceSchedule $run): JsonResponse
     {
-        Gate::authorize('create', Invoice::class);
-        $teamId = data_get(request()->user(), 'current_team_id') ?? data_get(request()->user(), 'currentTeam.id');
-        abort_unless($schedule->team_id === null || (int) $schedule->team_id === (int) $teamId, 403);
+        Gate::authorize('update', $schedule);
 
         return response()->json(['data' => $this->resource($run->execute($schedule))]);
     }
