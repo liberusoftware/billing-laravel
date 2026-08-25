@@ -1,5 +1,7 @@
 # Changelog
 
+- Added team-scoped access-service creation and lifecycle management component.
+
 - Added ISP capability lifecycle controls.
 
 ## 0.1.0
