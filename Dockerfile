@@ -19,6 +19,11 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Copy composer files
 COPY composer.json composer.lock ./
 
+# The lockfile contains local path repositories under these tracked directories.
+# They must be present before Composer resolves the dependency graph.
+COPY modules ./modules
+COPY themes ./themes
+
 # Install composer dependencies (no autoloader yet, will optimize in final stage)
 RUN composer install \
     --no-dev \
