@@ -19,10 +19,10 @@ final class HostingCapabilities extends Component
 
     public string $status = 'active';
 
-    public function transition(int $capabilityId, TransitionHostingCapability $transition): void
+    public function transitionCapability(int $capabilityId, TransitionHostingCapability $transition): void
     {
         $this->validate(['status' => ['required', 'in:pending,active,suspended,cancelled,failed']]);
-        $team = (int) (data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id'));
+        $team = $this->teamId();
         $capability = HostingCapability::query()->where('team_id', $team)->findOrFail($capabilityId);
         Gate::authorize('update', $capability);
         $transition->handle($capability, $this->status);
@@ -33,7 +33,7 @@ final class HostingCapabilities extends Component
     {
         Gate::authorize('create', HostingCapability::class);
         $this->validate(['type' => ['required', 'in:plan,control_panel,ssl,resource,lifecycle'], 'name' => ['required', 'string', 'max:255']]);
-        $team = (int) (data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id'));
+        $team = $this->teamId();
         $create->handle($team, ['type' => $this->type, 'name' => $this->name]);
         $this->reset('name');
         session()->flash('hosting-capabilities-message', __('Hosting capability created.'));
@@ -42,8 +42,16 @@ final class HostingCapabilities extends Component
     public function render(): View
     {
         Gate::authorize('viewAny', HostingCapability::class);
-        $team = (int) (data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id'));
+        $team = $this->teamId();
 
         return view('module-billing-hosting-livewire::capabilities', ['capabilities' => HostingCapability::query()->where('team_id', $team)->latest()->get()]);
+    }
+
+    private function teamId(): int
+    {
+        $team = data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id');
+        abort_if($team === null, 403, 'A current team is required.');
+
+        return (int) $team;
     }
 }

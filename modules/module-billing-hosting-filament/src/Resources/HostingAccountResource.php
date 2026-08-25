@@ -4,21 +4,24 @@ declare(strict_types=1);
 
 namespace Liberu\Billing\Hosting\Filament\Resources;
 
+use Filament\Actions\Action;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Actions\Action;
-use Filament\Forms\Components\Select;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\Hosting\Actions\TransitionHostingAccount;
+use Liberu\Billing\Hosting\Filament\Concerns\ScopesCurrentTeam;
 use Liberu\Billing\Hosting\Filament\Resources\HostingAccountResource\Pages\CreateHostingAccount;
 use Liberu\Billing\Hosting\Filament\Resources\HostingAccountResource\Pages\ListHostingAccounts;
 use Liberu\Billing\Hosting\Models\HostingAccount;
 
 final class HostingAccountResource extends Resource
 {
+    use ScopesCurrentTeam;
+
     protected static ?string $model = HostingAccount::class;
 
     public static function form(Schema $schema): Schema

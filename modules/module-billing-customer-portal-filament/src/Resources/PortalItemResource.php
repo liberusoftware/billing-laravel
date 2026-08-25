@@ -5,22 +5,26 @@ declare(strict_types=1);
 namespace Liberu\Billing\CustomerPortal\Filament\Resources;
 
 use BackedEnum;
+use Filament\Actions\Action;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Forms\Components\Select;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\CustomerPortal\Actions\TransitionPortalItem;
+use Liberu\Billing\CustomerPortal\Filament\Concerns\ScopesCurrentTeam;
 use Liberu\Billing\CustomerPortal\Filament\Resources\PortalItemResource\Pages\CreatePortalItem;
 use Liberu\Billing\CustomerPortal\Filament\Resources\PortalItemResource\Pages\ListPortalItems;
 use Liberu\Billing\CustomerPortal\Models\PortalItem;
 
 final class PortalItemResource extends Resource
 {
+    use ScopesCurrentTeam;
+
     protected static ?string $model = PortalItem::class;
+
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Schema $schema): Schema

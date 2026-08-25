@@ -5,21 +5,24 @@ declare(strict_types=1);
 namespace Liberu\Billing\Catalog\Filament\Resources;
 
 use BackedEnum;
+use Filament\Actions\Action;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\Catalog\Actions\TransitionCatalogLifecycle;
 use Liberu\Billing\Catalog\Enums\CatalogStatus;
+use Liberu\Billing\Catalog\Filament\Concerns\ScopesCurrentTeam;
 use Liberu\Billing\Catalog\Models\CatalogRecord;
 
 abstract class CatalogRecordResource extends Resource
 {
+    use ScopesCurrentTeam;
+
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Schema $schema): Schema

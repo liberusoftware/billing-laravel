@@ -17,6 +17,12 @@ final class CreatePlan extends CreateRecord
     {
         $data['team_id'] = data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id');
 
-        return app(CreateCatalogRecord::class)->execute(Plan::class, $data);
+        $record = app(CreateCatalogRecord::class)->execute(Plan::class, $data);
+
+        if (! $record instanceof Plan) {
+            throw new \LogicException('Catalog action returned an invalid record type.');
+        }
+
+        return $record;
     }
 }

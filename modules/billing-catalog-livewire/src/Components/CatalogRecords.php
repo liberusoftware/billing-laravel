@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Liberu\Billing\Catalog\Livewire\Components;
 
-use Illuminate\View\View;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\View\View;
 use Liberu\Billing\Catalog\Actions\CreateCatalogRecord;
 use Liberu\Billing\Catalog\Actions\TransitionCatalogLifecycle;
 use Liberu\Billing\Catalog\Enums\CatalogStatus;
@@ -32,7 +32,7 @@ final class CatalogRecords extends Component
 
     public string $transitionStatus = 'active';
 
-    public function transition(int $recordId, TransitionCatalogLifecycle $transition): void
+    public function transitionRecord(int $recordId, TransitionCatalogLifecycle $transition): void
     {
         $this->validate(['transitionStatus' => ['required', 'in:draft,active,archived']]);
         $model = $this->modelClass();

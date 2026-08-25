@@ -19,6 +19,6 @@ final class CreateIspCapability
             throw new InvalidArgumentException('ISP capability details are invalid.');
         }
 
-return DB::transaction(fn (): IspCapability => IspCapability::query()->create(['team_id' => $teamId, 'type' => $type, 'name' => $name, 'status' => 'pending', 'identifier' => $attributes['identifier'] ?? null, 'configuration' => $attributes['configuration'] ?? []]));
+        return DB::transaction(fn (): IspCapability => IspCapability::query()->create(['team_id' => $teamId, 'type' => $type, 'name' => $name, 'status' => 'pending', 'identifier' => $attributes['identifier'] ?? null, 'configuration' => $attributes['configuration'] ?? []]));
     }
 }

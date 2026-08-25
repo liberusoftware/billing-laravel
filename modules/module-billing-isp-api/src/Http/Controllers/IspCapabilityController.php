@@ -10,8 +10,8 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\Isp\Actions\CreateAccessService;
 use Liberu\Billing\Isp\Actions\CreateIspCapability;
-use Liberu\Billing\Isp\Actions\TransitionIspCapability;
 use Liberu\Billing\Isp\Actions\TransitionAccessService;
+use Liberu\Billing\Isp\Actions\TransitionIspCapability;
 use Liberu\Billing\Isp\Models\AccessService;
 use Liberu\Billing\Isp\Models\IspCapability;
 

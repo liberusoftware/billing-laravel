@@ -16,7 +16,7 @@ final class TransitionHostingCapability
             throw new InvalidArgumentException('Hosting lifecycle status is invalid.');
         }
 
-return DB::transaction(function () use ($capability, $status): HostingCapability {
+        return DB::transaction(function () use ($capability, $status): HostingCapability {
             $capability->update(['status' => $status]);
 
             return $capability->refresh();

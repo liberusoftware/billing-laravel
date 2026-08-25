@@ -4,21 +4,24 @@ declare(strict_types=1);
 
 namespace Liberu\Billing\Isp\Filament\Resources;
 
+use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\Isp\Actions\TransitionIspCapability;
+use Liberu\Billing\Isp\Filament\Concerns\ScopesCurrentTeam;
 use Liberu\Billing\Isp\Filament\Resources\IspCapabilityResource\Pages\CreateIspCapability;
 use Liberu\Billing\Isp\Filament\Resources\IspCapabilityResource\Pages\ListIspCapabilities;
 use Liberu\Billing\Isp\Models\IspCapability;
 
 final class IspCapabilityResource extends Resource
 {
+    use ScopesCurrentTeam;
+
     protected static ?string $model = IspCapability::class;
 
     public static function form(Schema $schema): Schema

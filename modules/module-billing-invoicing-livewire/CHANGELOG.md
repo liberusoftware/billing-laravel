@@ -1,5 +1,8 @@
 # Changelog
 
+- Add invoice line and support-record workflows to Livewire.
+- Added Livewire invoice schedule creation and execution with tenant authorization.
+
 ## 0.1.0
 
 - Add invoice list and draft creation component.

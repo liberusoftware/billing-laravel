@@ -23,7 +23,7 @@ final class PaymentsFilamentPlugin implements Plugin
 
     public function getId(): string
     {
-        return 'liberu-billing-payments';
+        return 'module-billing-payments-filament';
     }
 
     public function register(Panel $panel): void

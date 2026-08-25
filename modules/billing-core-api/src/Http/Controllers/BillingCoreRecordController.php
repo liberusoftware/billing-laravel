@@ -54,7 +54,7 @@ final class BillingCoreRecordController extends Controller
     {
         $model = $this->model($type);
         $instance = $this->forCurrentTeam($model, $record, $request);
-        Gate::authorize('update', $instance);
+        Gate::authorize('delete', $instance);
         $instance->delete();
 
         return response()->json(status: 204);

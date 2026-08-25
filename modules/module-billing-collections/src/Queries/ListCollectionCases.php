@@ -11,6 +11,11 @@ final class ListCollectionCases
 {
     public function execute(?int $teamId, int $perPage = 25): LengthAwarePaginator
     {
-        return CollectionCase::query()->when($teamId !== null, fn ($query) => $query->where('team_id', $teamId))->latest()->paginate(min(max($perPage, 1), 100));
+        return CollectionCase::query()
+            ->where(fn ($query) => $teamId === null
+                ? $query->whereNull('team_id')
+                : $query->where('team_id', $teamId)->orWhereNull('team_id'))
+            ->latest()
+            ->paginate(min(max($perPage, 1), 100));
     }
 }

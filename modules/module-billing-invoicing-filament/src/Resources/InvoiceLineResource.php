@@ -7,10 +7,13 @@ namespace Liberu\Billing\Invoicing\Filament\Resources;
 use Filament\Resources\Resource;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Liberu\Billing\Invoicing\Filament\Concerns\ScopesCurrentTeam;
 use Liberu\Billing\Invoicing\Models\InvoiceLine;
 
 final class InvoiceLineResource extends Resource
 {
+    use ScopesCurrentTeam;
+
     protected static ?string $model = InvoiceLine::class;
 
     public static function table(Table $table): Table

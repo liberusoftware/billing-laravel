@@ -7,10 +7,13 @@ namespace Liberu\Billing\Domains\Filament\Resources;
 use Filament\Resources\Resource;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Liberu\Billing\Domains\Filament\Concerns\ScopesCurrentTeam;
 use Liberu\Billing\Domains\Models\DnsRecord;
 
 final class DnsRecordResource extends Resource
 {
+    use ScopesCurrentTeam;
+
     protected static ?string $model = DnsRecord::class;
 
     public static function table(Table $table): Table

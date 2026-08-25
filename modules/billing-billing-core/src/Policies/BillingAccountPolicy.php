@@ -35,11 +35,14 @@ final class BillingAccountPolicy
 
     private function hasBillingAccess(object $user): bool
     {
-        return method_exists($user, 'tokenCan')
-            ? $user->tokenCan('billing.billing-core.read')
+        $hasTokenPermission = method_exists($user, 'tokenCan')
+            && ($user->tokenCan('billing.billing-core.read')
                 || $user->tokenCan('billing.billing-core.write')
-                || $user->tokenCan('*')
-            : true;
+                || $user->tokenCan('*'));
+        $hasUserPermission = method_exists($user, 'can')
+            && ($user->can('billing.billing-core.read') || $user->can('billing.billing-core.write'));
+
+        return $hasTokenPermission || $hasUserPermission;
     }
 
     private function ownsTeamRecord(object $user, BillingAccount $account): bool

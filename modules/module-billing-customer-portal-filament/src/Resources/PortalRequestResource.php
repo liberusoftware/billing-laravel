@@ -4,21 +4,24 @@ declare(strict_types=1);
 
 namespace Liberu\Billing\CustomerPortal\Filament\Resources;
 
-use Filament\Forms\Components\TextInput;
+use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
-use Filament\Tables\Actions\Action;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\CustomerPortal\Actions\TransitionPortalRequest;
+use Liberu\Billing\CustomerPortal\Filament\Concerns\ScopesCurrentTeam;
 use Liberu\Billing\CustomerPortal\Filament\Resources\PortalRequestResource\Pages\CreatePortalRequest;
 use Liberu\Billing\CustomerPortal\Filament\Resources\PortalRequestResource\Pages\ListPortalRequests;
 use Liberu\Billing\CustomerPortal\Models\PortalRequest;
 
 final class PortalRequestResource extends Resource
 {
+    use ScopesCurrentTeam;
+
     protected static ?string $model = PortalRequest::class;
 
     public static function form(Schema $schema): Schema

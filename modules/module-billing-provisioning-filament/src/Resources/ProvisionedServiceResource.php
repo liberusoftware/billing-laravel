@@ -4,20 +4,23 @@ declare(strict_types=1);
 
 namespace Liberu\Billing\Provisioning\Filament\Resources;
 
+use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\Provisioning\Actions\ReconcileProvisionedService;
+use Liberu\Billing\Provisioning\Filament\Concerns\ScopesCurrentTeam;
 use Liberu\Billing\Provisioning\Filament\Resources\ProvisionedServiceResource\Pages\CreateProvisionedService;
 use Liberu\Billing\Provisioning\Filament\Resources\ProvisionedServiceResource\Pages\ListProvisionedServices;
 use Liberu\Billing\Provisioning\Models\ProvisionedService;
 
 final class ProvisionedServiceResource extends Resource
 {
+    use ScopesCurrentTeam;
+
     protected static ?string $model = ProvisionedService::class;
 
     public static function form(Schema $schema): Schema

@@ -1,5 +1,7 @@
 # Changelog
 
+- Added Livewire customer portal request creation and lifecycle transitions.
+
 - Added portal item lifecycle controls.
 
 ## 0.1.0

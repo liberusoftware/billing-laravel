@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Liberu\Billing\Invoicing\Actions;
 
-use Illuminate\Database\DatabaseManager;
 use Dompdf\Dompdf;
+use Illuminate\Database\DatabaseManager;
 use Liberu\Billing\Invoicing\Models\Invoice;
 use Liberu\Billing\Invoicing\Models\InvoiceSupport;
 

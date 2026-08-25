@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Liberu\Billing\Hosting;
 
-use Liberu\Billing\Hosting\Services\HostingDriverRegistry;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Liberu\Billing\Hosting\Models\HostingAccount;
 use Liberu\Billing\Hosting\Models\HostingCapability;
 use Liberu\Billing\Hosting\Policies\HostingAccountPolicy;
 use Liberu\Billing\Hosting\Policies\HostingCapabilityPolicy;
+use Liberu\Billing\Hosting\Services\HostingDriverRegistry;
 
 final class HostingServiceProvider extends ServiceProvider
 {

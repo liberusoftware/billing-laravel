@@ -10,8 +10,8 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\Hosting\Actions\CreateHostingAccount;
 use Liberu\Billing\Hosting\Actions\CreateHostingCapability;
-use Liberu\Billing\Hosting\Actions\TransitionHostingCapability;
 use Liberu\Billing\Hosting\Actions\TransitionHostingAccount;
+use Liberu\Billing\Hosting\Actions\TransitionHostingCapability;
 use Liberu\Billing\Hosting\Models\HostingAccount;
 use Liberu\Billing\Hosting\Models\HostingCapability;
 

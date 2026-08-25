@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Liberu\Billing\Provisioning\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 final class ProvisioningOperation extends Model
 {
@@ -17,7 +18,7 @@ final class ProvisioningOperation extends Model
         return ['attempts' => 'integer', 'next_poll_at' => 'datetime', 'payload' => 'array'];
     }
 
-    public function service(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function service(): BelongsTo
     {
         return $this->belongsTo(ProvisionedService::class, 'provisioned_service_id');
     }

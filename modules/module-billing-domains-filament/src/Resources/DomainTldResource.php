@@ -31,7 +31,7 @@ final class DomainTldResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table->columns([TextColumn::make('name')->searchable(), TextColumn::make('base_price'), TextColumn::make('markup_type')->badge(), TextColumn::make('markup_value'), TextColumn::make('enabled')->boolean()])->defaultSort('name');
+        return $table->columns([TextColumn::make('name')->searchable(), TextColumn::make('base_price'), TextColumn::make('markup_type')->badge(), TextColumn::make('markup_value'), TextColumn::make('enabled')->badge()])->defaultSort('name');
     }
 
     public static function getPages(): array

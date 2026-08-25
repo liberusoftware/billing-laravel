@@ -18,8 +18,8 @@ final class ReportingSnapshots extends Component
     {
         Gate::authorize('create', MetricSnapshot::class);
         $this->validate(['name' => ['required', 'string', 'max:255']]);
-        $team = data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id');
-        $create->handle((int) $team, ['name' => $this->name]);
+        $team = $this->teamId();
+        $create->handle($team, ['name' => $this->name]);
         $this->reset('name');
         session()->flash('module-billing-reporting-snapshot-message', __('Metric snapshot created.'));
     }
@@ -27,8 +27,16 @@ final class ReportingSnapshots extends Component
     public function render(): View
     {
         Gate::authorize('viewAny', MetricSnapshot::class);
-        $team = data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id');
+        $team = $this->teamId();
 
         return view('module-billing-reporting-livewire::snapshots', ['snapshots' => MetricSnapshot::query()->where('team_id', $team)->latest()->get()]);
+    }
+
+    private function teamId(): int
+    {
+        $team = data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id');
+        abort_if($team === null, 403, 'A current team is required.');
+
+        return (int) $team;
     }
 }

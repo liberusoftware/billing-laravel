@@ -25,7 +25,13 @@ final class UsageController extends Controller
     {
         Gate::authorize('viewAny', Meter::class);
 
-        $result = Meter::query()->when($this->team($request) !== 0, fn ($query) => $query->where(fn ($scoped) => $scoped->whereNull('team_id')->orWhere('team_id', $this->team($request))))->latest('id')->paginate($request->integer('per_page', 25));
+        $team = $this->team($request);
+        $result = Meter::query()
+            ->where(fn ($query) => $team === 0
+                ? $query->whereNull('team_id')
+                : $query->whereNull('team_id')->orWhere('team_id', $team))
+            ->latest('id')
+            ->paginate($request->integer('per_page', 25));
 
         return response()->json(['data' => $result->getCollection()->map(fn (Meter $meter): array => $this->meter($meter))->values(), 'meta' => ['current_page' => $result->currentPage(), 'last_page' => $result->lastPage()]]);
     }
@@ -50,7 +56,7 @@ final class UsageController extends Controller
 
     public function ingest(Request $request, Meter $meter, IngestUsage $ingest): JsonResponse
     {
-        Gate::authorize('create', Meter::class);
+        Gate::authorize('create', UsageRecord::class);
         abort_unless($meter->team_id === null || $meter->team_id === $this->team($request), 404);
         $data = $request->validate(['event_key' => ['required', 'string', 'max:255'], 'customer_id' => ['nullable', 'integer'], 'quantity' => ['required', 'numeric', 'gt:0'], 'occurred_at' => ['nullable', 'date'], 'metadata' => ['sometimes', 'array']]);
 
@@ -92,7 +98,7 @@ final class UsageController extends Controller
 
     public function correct(Request $request, UsageRecord $record, CorrectUsage $correct): JsonResponse
     {
-        Gate::authorize('create', Meter::class);
+        Gate::authorize('create', UsageRecord::class);
         abort_unless($record->team_id === $this->team($request), 404);
         $data = $request->validate(['quantity' => ['required', 'numeric', 'not_in:0'], 'event_key' => ['required', 'string', 'max:255']]);
 

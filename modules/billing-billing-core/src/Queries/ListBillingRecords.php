@@ -13,7 +13,9 @@ final class ListBillingRecords
     public function execute(string $modelClass, ?int $teamId, int $perPage = 25): LengthAwarePaginator
     {
         return $modelClass::query()
-            ->when($teamId !== null, fn ($query) => $query->where(fn ($scoped) => $scoped->whereNull('team_id')->orWhere('team_id', $teamId)))
+            ->where(fn ($query) => $teamId === null
+                ? $query->whereNull('team_id')
+                : $query->whereNull('team_id')->orWhere('team_id', $teamId))
             ->latest('id')
             ->paginate(min(max($perPage, 1), 100));
     }

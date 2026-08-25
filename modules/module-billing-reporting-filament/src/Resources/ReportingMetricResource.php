@@ -6,20 +6,23 @@ namespace Liberu\Billing\Reporting\Filament\Resources;
 
 use BackedEnum;
 use Carbon\CarbonImmutable;
+use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Liberu\Billing\Reporting\Actions\CalculateReportingMetric;
 use Liberu\Billing\Reporting\Actions\RecordReportingMetric;
+use Liberu\Billing\Reporting\Filament\Concerns\ScopesCurrentTeam;
 use Liberu\Billing\Reporting\Filament\Resources\ReportingMetricResource\Pages\CreateReportingMetric;
 use Liberu\Billing\Reporting\Filament\Resources\ReportingMetricResource\Pages\ListReportingMetrics;
 use Liberu\Billing\Reporting\Models\ReportingMetric;
 
 final class ReportingMetricResource extends Resource
 {
+    use ScopesCurrentTeam;
+
     protected static ?string $model = ReportingMetric::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-chart-bar';
@@ -40,7 +43,7 @@ final class ReportingMetricResource extends Resource
                 TextInput::make('currency')->default('USD')->length(3),
             ])->action(function (ReportingMetric $record, array $data): void {
                 $team = (int) (data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id'));
-                $calculated = app(CalculateReportingMetric::class)->execute($team, $record->metric->value, CarbonImmutable::parse($record->period_start), CarbonImmutable::parse($record->period_end), $data['currency'] ?? $record->currency);
+                $calculated = app(CalculateReportingMetric::class)->execute($team, (string) $record->getRawOriginal('metric'), CarbonImmutable::parse((string) $record->getRawOriginal('period_start')), CarbonImmutable::parse((string) $record->getRawOriginal('period_end')), $data['currency'] ?? (string) $record->getRawOriginal('currency'));
                 app(RecordReportingMetric::class)->execute($team, $calculated);
             }),
         ])->defaultSort('period_end', 'desc');

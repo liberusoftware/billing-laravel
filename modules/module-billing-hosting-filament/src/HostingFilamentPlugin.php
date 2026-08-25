@@ -18,7 +18,7 @@ final class HostingFilamentPlugin implements Plugin
 
     public function getId(): string
     {
-        return 'liberu-billing-hosting';
+        return 'module-billing-hosting-filament';
     }
 
     public function register(Panel $panel): void

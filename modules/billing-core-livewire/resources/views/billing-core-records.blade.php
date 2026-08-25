@@ -18,8 +18,8 @@
     </label>
     <button type="button" wire:click="$set('showCreate', true)">{{ __('Create') }}</button>
 
-    @if ($showCreate)
-        <form wire:submit="save">
+    @if ($showCreate || $selectedRecordId)
+        <form wire:submit="{{ $selectedRecordId ? 'update' : 'save' }}">
             @if ($type === 'contacts' || $type === 'tax-profiles' || $type === 'sequences' || $type === 'terms')
                 <label>{{ __('Name') }} <input wire:model="name" required></label>
                 @error('name') <p role="alert">{{ $message }}</p> @enderror
@@ -38,14 +38,14 @@
             @elseif ($type === 'settings')
                 <label>{{ __('Values (JSON)') }} <textarea wire:model="valuesJson"></textarea></label>
             @endif
-            <button type="submit">{{ __('Save') }}</button>
+            <button type="submit">{{ $selectedRecordId ? __('Update') : __('Save') }}</button>
             <button type="button" wire:click="$set('showCreate', false)">{{ __('Cancel') }}</button>
         </form>
     @endif
 
     <ul wire:loading.remove>
         @forelse ($records as $record)
-            <li wire:key="billing-core-record-{{ $record->getKey() }}">{{ $record->name ?? $record->code ?? $record->id }}</li>
+            <li wire:key="billing-core-record-{{ $record->getKey() }}">{{ $record->name ?? $record->code ?? $record->id }} <button type="button" wire:click="$set('selectedRecordId', {{ $record->getKey() }})">{{ __('Select') }}</button></li>
         @empty
             <li>{{ __('No records found.') }}</li>
         @endforelse

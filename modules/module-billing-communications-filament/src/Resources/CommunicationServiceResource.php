@@ -4,21 +4,24 @@ declare(strict_types=1);
 
 namespace Liberu\Billing\Communications\Filament\Resources;
 
+use Filament\Actions\Action;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Actions\Action;
-use Filament\Forms\Components\Select;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\Communications\Actions\TransitionCommunicationService;
+use Liberu\Billing\Communications\Filament\Concerns\ScopesCurrentTeam;
 use Liberu\Billing\Communications\Filament\Resources\CommunicationServiceResource\Pages\CreateCommunicationService;
 use Liberu\Billing\Communications\Filament\Resources\CommunicationServiceResource\Pages\ListCommunicationServices;
 use Liberu\Billing\Communications\Models\CommunicationService;
 
 final class CommunicationServiceResource extends Resource
 {
+    use ScopesCurrentTeam;
+
     protected static ?string $model = CommunicationService::class;
 
     public static function form(Schema $schema): Schema

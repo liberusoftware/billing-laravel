@@ -13,7 +13,9 @@ use Livewire\Component;
 final class DomainSearch extends Component
 {
     public string $domain = '';
+
     public string $registrar = '';
+
     /** @var array<string, mixed>|null */
     public ?array $result = null;
 

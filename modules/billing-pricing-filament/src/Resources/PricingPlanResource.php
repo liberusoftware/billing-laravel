@@ -5,21 +5,24 @@ declare(strict_types=1);
 namespace Liberu\Billing\Pricing\Filament\Resources;
 
 use BackedEnum;
+use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\Pricing\Actions\CapturePricingSnapshot;
+use Liberu\Billing\Pricing\Filament\Concerns\ScopesCurrentTeam;
 use Liberu\Billing\Pricing\Filament\Resources\PricingPlanResource\Pages\CreatePricingPlan;
 use Liberu\Billing\Pricing\Filament\Resources\PricingPlanResource\Pages\ListPricingPlans;
 use Liberu\Billing\Pricing\Models\PricingPlan;
 
 final class PricingPlanResource extends Resource
 {
+    use ScopesCurrentTeam;
+
     protected static ?string $model = PricingPlan::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-banknotes';

@@ -18,7 +18,7 @@ final readonly class AddChangeOrder
             throw new \InvalidArgumentException('A change order reason is required.');
         }
 
-return $this->database->transaction(function () use ($order, $change): Order {
+        return $this->database->transaction(function () use ($order, $change): Order {
             $changes = $order->change_orders ?? [];
             $changes[] = [...$change, 'created_at' => now()->toIso8601String()];
             $order->update(['change_orders' => $changes]);

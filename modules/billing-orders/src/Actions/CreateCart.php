@@ -16,6 +16,6 @@ final class CreateCart
             throw new \InvalidArgumentException('A cart must contain items.');
         }
 
-return DB::transaction(fn (): Cart => Cart::query()->create(['team_id' => $attributes['team_id'] ?? null, 'customer_id' => $attributes['customer_id'] ?? null, 'currency' => strtoupper($attributes['currency']), 'items' => $attributes['items'], 'expires_at' => $attributes['expires_at'] ?? null, 'status' => 'open']));
+        return DB::transaction(fn (): Cart => Cart::query()->create(['team_id' => $attributes['team_id'] ?? null, 'customer_id' => $attributes['customer_id'] ?? null, 'currency' => strtoupper($attributes['currency']), 'items' => $attributes['items'], 'expires_at' => $attributes['expires_at'] ?? null, 'status' => 'open']));
     }
 }

@@ -45,6 +45,14 @@ jobs:
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
+      # Liberu's installer places published package artifacts in the tracked module
+      # directories. The application intentionally retains newer local package logic,
+      # so the checked-out repository sources are authoritative for this test run.
+      - name: Restore repository-owned package sources
+        run: |
+          git restore --source=HEAD -- modules themes
+          composer dump-autoload --no-interaction --optimize
+
       - name: Audit dependencies
         run: composer audit --locked
 

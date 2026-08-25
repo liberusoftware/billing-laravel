@@ -49,6 +49,9 @@ final class ProvisioningOperationController extends Controller
 
     private function team(Request $request): int
     {
-        return (int) (data_get($request->user(), 'current_team_id') ?? data_get($request->user(), 'currentTeam.id'));
+        $team = data_get($request->user(), 'current_team_id') ?? data_get($request->user(), 'currentTeam.id');
+        abort_if($team === null, 403, 'A current team is required.');
+
+        return (int) $team;
     }
 }

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 use Liberu\Billing\Core\Actions\CreateBillingRecord;
+use Liberu\Billing\Core\Actions\UpdateBillingRecord;
 use Liberu\Billing\Core\Models\BillingContact;
 use Liberu\Billing\Core\Models\BillingCurrency;
 use Liberu\Billing\Core\Models\BillingSequence;
@@ -39,6 +40,8 @@ final class BillingCoreRecords extends Component
 
     public bool $showCreate = false;
 
+    public ?int $selectedRecordId = null;
+
     public function updatedType(): void
     {
         $this->resetValidation();
@@ -60,6 +63,17 @@ final class BillingCoreRecords extends Component
         $this->showCreate = false;
         $this->reset(['name', 'email', 'prefix', 'valuesJson']);
         session()->flash('billing-core-record-message', __('Record created.'));
+    }
+
+    public function update(UpdateBillingRecord $update): void
+    {
+        $model = $this->modelClass();
+        $record = $model::query()->whereKey($this->selectedRecordId)->where(fn ($query) => $query->whereNull('team_id')->orWhere('team_id', $this->teamId()))->firstOrFail();
+        Gate::authorize('update', $record);
+        $this->validate($this->rules());
+        $update->execute($record, $this->attributes());
+        $this->reset(['selectedRecordId', 'name', 'email', 'prefix', 'valuesJson']);
+        session()->flash('billing-core-record-message', __('Record updated.'));
     }
 
     public function render(ListBillingRecords $list): View
