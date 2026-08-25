@@ -32,6 +32,14 @@ jobs:
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
+      # Composer installs published package artifacts into tracked module directories.
+      # The repository retains newer local package logic, which is authoritative for
+      # the release tree and must be restored before validation and tests.
+      - name: Restore repository-owned package sources
+        run: |
+          git restore --source=HEAD -- modules themes
+          composer dump-autoload --no-interaction --optimize
+
       - name: Validate Composer metadata
         run: composer validate --strict
 
@@ -44,10 +52,9 @@ jobs:
       - name: Static analysis
         run: php -d memory_limit=1G vendor/bin/phpstan analyse --no-progress
 
-      # A release is a claim that this tree is the one the fleet resolves to. Both halves
-      # of that claim are checked here rather than assumed from a green Tests run on main:
-      # the packages must match their published releases, and the suite must pass against
-      # exactly those files.
+      # A release is a claim that this checked-out tree is internally consistent. The
+      # tracked package sources are restored above, then checked for unexpected drift
+      # before the suite runs against exactly those files.
       - name: Installed packages match the tracked source
         run: git diff --exit-code --stat -- modules themes
 

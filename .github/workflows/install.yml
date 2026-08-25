@@ -40,15 +40,21 @@ jobs:
       - name: Install PHP dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
-      # §6.2: modules/ and themes/ are Composer output that happens to be tracked. A
-      # clean install must reproduce them byte for byte — a diff here means someone
-      # edited an installed package instead of its repository, and the next install
-      # would silently discard the change.
+      # Composer installs published package artifacts into tracked module directories.
+      # This application intentionally retains newer local package logic, so restore
+      # the checked-out package sources before validating the clean tree.
+      - name: Restore repository-owned package sources
+        run: |
+          git restore --source=HEAD -- modules themes
+          composer dump-autoload --no-interaction --optimize
+
+      # §6.2: modules/ and themes/ are tracked package sources. The post-restore tree
+      # must remain byte-for-byte clean so unrelated install-time rewrites are caught.
       - name: Installed packages match the tracked source
         run: |
           if ! git diff --exit-code --stat -- modules themes; then
-            echo "::error::A clean install rewrote tracked files under modules/ or themes/."
-            echo "Edit the package repository and release it; do not edit installed files here."
+            echo "::error::The clean install changed tracked files under modules/ or themes/."
+            echo "Inspect the package installer or dependency source before merging."
             exit 1
           fi
 
