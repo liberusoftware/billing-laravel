@@ -11,6 +11,7 @@ use Liberu\Billing\Domains\Actions\RedeemDomain;
 use Liberu\Billing\Domains\Actions\RegisterDomain;
 use Liberu\Billing\Domains\Actions\RenewDomain;
 use Liberu\Billing\Domains\Actions\TransferDomain;
+use Liberu\Billing\Domains\Actions\UpdateDomain;
 use Liberu\Billing\Domains\Models\Domain;
 use Liberu\Billing\Domains\Queries\ListDomainsRecords;
 use Livewire\Component;
@@ -28,6 +29,21 @@ final class DomainList extends Component
     public int $renewalPeriod = 1;
 
     public string $authCode = '';
+
+    public ?int $selectedDomainId = null;
+
+    public string $domainStatus = '';
+
+    public string $domainRegistrar = '';
+
+    public function updateDomain(UpdateDomain $update): void
+    {
+        $this->validate(['selectedDomainId' => ['required', 'integer', 'min:1'], 'domainStatus' => ['required', 'string', 'max:50'], 'domainRegistrar' => ['nullable', 'string', 'max:100']]);
+        $domain = $this->authorizedDomain((int) $this->selectedDomainId);
+        $update->handle($domain, ['status' => $this->domainStatus, 'registrar' => $this->domainRegistrar ?: null]);
+        $this->reset(['selectedDomainId', 'domainStatus', 'domainRegistrar']);
+        session()->flash('module-billing-domains-message', __('Domain updated.'));
+    }
 
     public function register(int $domainId, RegisterDomain $register): void
     {
