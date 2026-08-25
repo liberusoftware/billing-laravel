@@ -35,7 +35,10 @@ final class BillingCoreRecordPolicy
 
     private function access(object $user, string $ability): bool
     {
-        return ! method_exists($user, 'tokenCan') || $user->tokenCan("billing.billing-core.$ability") || $user->tokenCan('*');
+        $permission = "billing.billing-core.$ability";
+
+        return (method_exists($user, 'tokenCan') && ($user->tokenCan($permission) || $user->tokenCan('*')))
+            || (method_exists($user, 'can') && $user->can($permission));
     }
 
     private function sameTeam(object $user, mixed $teamId): bool
