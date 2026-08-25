@@ -9,12 +9,15 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Liberu\Billing\Payments\Filament\Concerns\ScopesCurrentTeam;
 use Liberu\Billing\Payments\Filament\Resources\PaymentMandateResource\Pages\CreatePaymentMandate;
 use Liberu\Billing\Payments\Filament\Resources\PaymentMandateResource\Pages\ListPaymentMandates;
 use Liberu\Billing\Payments\Models\PaymentMandate;
 
 final class PaymentMandateResource extends Resource
 {
+    use ScopesCurrentTeam;
+
     protected static ?string $model = PaymentMandate::class;
 
     public static function form(Schema $schema): Schema
