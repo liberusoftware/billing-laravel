@@ -45,7 +45,8 @@ final class CatalogRecordController extends Controller
     public function transition(string $type, int $record, Request $request, TransitionCatalogLifecycle $transition): JsonResponse
     {
         $model = $this->model($type);
-        $instance = $model::query()->findOrFail($record);
+        $teamId = data_get($request->user(), 'current_team_id') ?? data_get($request->user(), 'currentTeam.id');
+        $instance = $model::query()->whereKey($record)->where(fn ($query) => $query->whereNull('team_id')->orWhere('team_id', $teamId))->firstOrFail();
         Gate::authorize('update', $instance);
         $data = $request->validate(['status' => ['required', 'string']]);
         $updated = $transition->execute($instance, CatalogStatus::from($data['status']));

@@ -3,3 +3,4 @@
 ## 0.1.0
 
 - Add the payment list and creation component.
+- Added team-scoped refund, dispute, and reconciliation actions.

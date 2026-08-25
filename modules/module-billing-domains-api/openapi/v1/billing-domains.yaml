@@ -6,7 +6,7 @@ paths:
     get:
       operationId: billing.domains.search
       security: [{sanctum: []}]
-      parameters: [{name: query, in: query, required: true, schema: {type: string, minLength: 1}}, {name: tlds, in: query, schema: {type: array, items: {type: string}}}]
+      parameters: [{name: domain, in: query, required: true, schema: {type: string, minLength: 1, format: hostname}}, {name: registrar, in: query, required: true, schema: {type: string, maxLength: 50}}]
       responses: {'200': {description: Availability results}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
   /api/v1/billing/domains:
     get:
@@ -20,6 +20,12 @@ paths:
       parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
       requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/DomainRequest'}}}}
       responses: {'201': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/domains/epp-operations:
+    get:
+      operationId: billing.domains.eppOperations.list
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/PageSize'}]
+      responses: {'200': {$ref: '#/components/responses/Collection'}, '401': {$ref: '#/components/responses/Unauthorized'}}
   /api/v1/billing/domains/{domain}/register:
     post:
       operationId: billing.domains.register

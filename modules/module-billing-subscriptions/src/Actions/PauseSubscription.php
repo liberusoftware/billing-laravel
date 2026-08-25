@@ -6,6 +6,7 @@ namespace Liberu\Billing\Subscriptions\Actions;
 
 use Illuminate\Database\DatabaseManager;
 use Liberu\Billing\Subscriptions\Enums\SubscriptionStatus;
+use Liberu\Billing\Subscriptions\Events\SubscriptionPaused;
 use Liberu\Billing\Subscriptions\Models\Subscription;
 
 final readonly class PauseSubscription
@@ -18,10 +19,14 @@ final readonly class PauseSubscription
             throw new \LogicException('A terminal subscription cannot be paused.');
         }
 
-        return $this->database->transaction(function () use ($subscription): Subscription {
+        $paused = $this->database->transaction(function () use ($subscription): Subscription {
             $subscription->update(['status' => SubscriptionStatus::Paused, 'paused_at' => now(), 'entitlement_state' => array_merge($subscription->entitlement_state ?? [], ['active' => false])]);
 
             return $subscription->refresh();
         });
+
+        SubscriptionPaused::dispatch($paused);
+
+        return $paused;
     }
 }

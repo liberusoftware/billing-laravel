@@ -68,7 +68,7 @@ final class UsageController extends Controller
     {
         Gate::authorize('viewAny', UsageRecord::class);
         $data = $request->validate(['meter_id' => ['required', 'integer', 'exists:billing_usage_meters,id'], 'customer_id' => ['nullable', 'integer']]);
-        $meter = Meter::query()->findOrFail($data['meter_id']);
+        $meter = Meter::query()->whereKey($data['meter_id'])->where(fn ($query) => $query->whereNull('team_id')->orWhere('team_id', $this->team($request)))->firstOrFail();
         abort_unless($meter->team_id === null || $meter->team_id === $this->team($request), 404);
 
         return response()->json(['data' => $aggregate->execute((int) $data['meter_id'], $data['customer_id'] ?? null)]);

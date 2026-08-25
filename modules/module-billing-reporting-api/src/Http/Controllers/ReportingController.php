@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Liberu\Billing\Reporting\Api\Http\Controllers;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
+use Liberu\Billing\Reporting\Actions\CalculateReportingMetric;
 use Liberu\Billing\Reporting\Actions\CreateMetricSnapshot;
 use Liberu\Billing\Reporting\Actions\RecordReportingMetric;
 use Liberu\Billing\Reporting\Models\MetricSnapshot;
@@ -32,6 +34,15 @@ final class ReportingController extends Controller
         $metric = $record->execute($this->team($request), $data);
 
         return response()->json(['data' => $this->metric($metric)], 201);
+    }
+
+    public function calculateMetric(Request $request, CalculateReportingMetric $calculate, RecordReportingMetric $record): JsonResponse
+    {
+        Gate::authorize('create', ReportingMetric::class);
+        $data = $request->validate(['metric' => ['required', 'in:mrr,arr,churn,aging,revenue,tax,usage,provisioning,collection,provider'], 'period_start' => ['required', 'date'], 'period_end' => ['required', 'date', 'after_or_equal:period_start'], 'currency' => ['nullable', 'string', 'size:3', 'alpha']]);
+        $calculated = $calculate->execute($this->team($request), $data['metric'], CarbonImmutable::parse($data['period_start']), CarbonImmutable::parse($data['period_end']), $data['currency'] ?? null);
+
+        return response()->json(['data' => $this->metric($record->execute($this->team($request), $calculated))], 201);
     }
 
     public function snapshots(Request $request, ListMetricSnapshots $snapshots): JsonResponse

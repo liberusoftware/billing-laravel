@@ -16,7 +16,7 @@ final class InvoicePolicy
 
     public function view(?Authenticatable $user, Invoice $invoice): bool
     {
-        return $this->owns($user, $invoice);
+        return $this->owns($user, $invoice, 'read');
     }
 
     public function create(?Authenticatable $user): bool
@@ -26,12 +26,12 @@ final class InvoicePolicy
 
     public function update(?Authenticatable $user, Invoice $invoice): bool
     {
-        return $this->owns($user, $invoice) && $this->create($user);
+        return $this->owns($user, $invoice, 'write');
     }
 
-    private function owns(?Authenticatable $user, Invoice $invoice): bool
+    private function owns(?Authenticatable $user, Invoice $invoice, string $ability): bool
     {
-        if (! $user || ! $this->create($user)) {
+        if (! $user || (! $user->tokenCan("billing.invoicing.$ability") && ! $user->can("billing.invoicing.$ability"))) {
             return false;
         }
         $teamId = data_get($user, 'current_team_id') ?? data_get($user, 'currentTeam.id');

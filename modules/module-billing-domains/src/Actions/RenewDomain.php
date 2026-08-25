@@ -24,6 +24,7 @@ final readonly class RenewDomain
 
         return $this->database->transaction(function () use ($domain, $result): Domain {
             $domain->update(['status' => 'registered', 'expires_at' => $result['new_expiration_date'] ?? null]);
+            app(RecordEppOperation::class)->execute($domain, 'renew', 'completed', $result, $result['epp_code'] ?? null);
 
             return $domain->refresh();
         });

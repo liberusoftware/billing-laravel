@@ -15,9 +15,13 @@ final readonly class ReconcilePayment
 
     public function execute(Payment $payment, string $providerReference, bool $matched = true, ?string $notes = null): PaymentReconciliation
     {
+        if (trim($providerReference) === '') {
+            throw new \InvalidArgumentException('A provider reference is required.');
+        }
+
         return $this->database->transaction(fn (): PaymentReconciliation => PaymentReconciliation::query()->create([
             'payment_id' => $payment->getKey(), 'status' => $matched ? ReconciliationStatus::Matched : ReconciliationStatus::Mismatch,
-            'provider_reference' => $providerReference, 'notes' => $notes,
+            'provider_reference' => trim($providerReference), 'notes' => $notes,
         ]));
     }
 }

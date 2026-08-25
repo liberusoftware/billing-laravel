@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Liberu\Billing\Subscriptions\Enums\SubscriptionStatus;
 
-#[Fillable(['team_id', 'customer_id', 'pricing_plan_id', 'status', 'starts_at', 'trial_ends_at', 'current_period_ends_at', 'cancelled_at', 'paused_at', 'auto_renew', 'entitlement_state', 'metadata'])]
+#[Fillable(['team_id', 'customer_id', 'pricing_plan_id', 'status', 'starts_at', 'trial_ends_at', 'current_period_ends_at', 'cancelled_at', 'paused_at', 'auto_renew', 'id_protection', 'entitlement_state', 'metadata'])]
 class Subscription extends Model
 {
     protected $table = 'billing_subscriptions';
@@ -23,6 +23,7 @@ class Subscription extends Model
             'cancelled_at' => 'datetime',
             'paused_at' => 'datetime',
             'auto_renew' => 'boolean',
+            'id_protection' => 'boolean',
             'entitlement_state' => 'array',
             'metadata' => 'array',
         ];

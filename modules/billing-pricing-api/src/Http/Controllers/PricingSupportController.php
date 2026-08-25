@@ -42,7 +42,7 @@ final class PricingSupportController extends Controller
 
     public function snapshot(PricingPlan $plan, CapturePricingSnapshot $capture): JsonResponse
     {
-        Gate::authorize('view', $plan);
+        Gate::authorize('update', $plan);
 
         return response()->json(['data' => $capture->execute($plan)], 201);
     }

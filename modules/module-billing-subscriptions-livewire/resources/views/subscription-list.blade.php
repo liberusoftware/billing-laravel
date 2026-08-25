@@ -13,7 +13,19 @@
     @endif
     <ul>
         @forelse ($subscriptions as $subscription)
-            <li>{{ $subscription->id }} — {{ $subscription->status->value }}</li>
+            <li>
+                {{ $subscription->id }} — {{ $subscription->status->value }}
+                @if ($subscription->status->value === 'paused')
+                    <button type="button" wire:click="resume({{ $subscription->id }})">{{ __('Resume') }}</button>
+                @elseif ($subscription->status->value !== 'cancelled' && $subscription->status->value !== 'expired')
+                    <button type="button" wire:click="renew({{ $subscription->id }})">{{ __('Renew') }}</button>
+                    <button type="button" wire:click="pause({{ $subscription->id }})">{{ __('Pause') }}</button>
+                    <button type="button" wire:click="cancel({{ $subscription->id }})">{{ __('Cancel') }}</button>
+                @endif
+                @if ($subscription->status->value !== 'cancelled' && $subscription->status->value !== 'expired')
+                    <button type="button" wire:click="changePlan({{ $subscription->id }})">{{ __('Change plan') }}</button>
+                @endif
+            </li>
         @empty
             <li>{{ __('No subscriptions found.') }}</li>
         @endforelse

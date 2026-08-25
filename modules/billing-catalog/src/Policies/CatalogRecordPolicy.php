@@ -20,16 +20,21 @@ final class CatalogRecordPolicy
 
     public function create(object $user): bool
     {
-        return $this->access($user);
+        return $this->writeAccess($user);
     }
 
     public function update(object $user, CatalogRecord $record): bool
     {
-        return $this->view($user, $record);
+        return $this->writeAccess($user) && ($record->team_id === null || (int) $record->team_id === (int) (data_get($user, 'current_team_id') ?? data_get($user, 'currentTeam.id')));
     }
 
     private function access(object $user): bool
     {
         return ! method_exists($user, 'tokenCan') || $user->tokenCan('billing.catalog.write') || $user->tokenCan('billing.catalog.read') || $user->tokenCan('*');
+    }
+
+    private function writeAccess(object $user): bool
+    {
+        return ! method_exists($user, 'tokenCan') || $user->tokenCan('billing.catalog.write') || $user->tokenCan('*');
     }
 }

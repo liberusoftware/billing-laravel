@@ -9,7 +9,11 @@ use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\Select;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Gate;
+use Liberu\Billing\CustomerPortal\Actions\TransitionPortalItem;
 use Liberu\Billing\CustomerPortal\Filament\Resources\PortalItemResource\Pages\CreatePortalItem;
 use Liberu\Billing\CustomerPortal\Filament\Resources\PortalItemResource\Pages\ListPortalItems;
 use Liberu\Billing\CustomerPortal\Models\PortalItem;
@@ -26,7 +30,12 @@ final class PortalItemResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table->columns([TextColumn::make('type')->badge(), TextColumn::make('subject')->searchable(), TextColumn::make('customer_id'), TextColumn::make('status')->badge()])->defaultSort('id', 'desc');
+        return $table->columns([TextColumn::make('type')->badge(), TextColumn::make('subject')->searchable(), TextColumn::make('customer_id'), TextColumn::make('status')->badge()])->actions([
+            Action::make('status')->label('Update status')->form([Select::make('status')->options(['open' => 'Open', 'in_progress' => 'In progress', 'completed' => 'Completed', 'cancelled' => 'Cancelled', 'failed' => 'Failed'])->required()])->action(function (PortalItem $record, array $data): void {
+                Gate::authorize('update', $record);
+                app(TransitionPortalItem::class)->handle($record, $data['status']);
+            }),
+        ])->defaultSort('id', 'desc');
     }
 
     public static function getPages(): array

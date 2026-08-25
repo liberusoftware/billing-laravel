@@ -12,10 +12,20 @@ final class RateUsage
     {
         if ($quantity < 0 || ! $meter->active) {
             throw new \InvalidArgumentException('Usage rating inputs are invalid.');
-        } $tiers = $meter->metadata['tiers'] ?? [];
+        }
+
+        $tiers = $meter->metadata['tiers'] ?? [];
         if ($tiers === []) {
             return (int) round($quantity * $meter->unit_price_minor);
-        } usort($tiers, fn (array $a, array $b): int => ($a['up_to'] ?? PHP_INT_MAX) <=> ($b['up_to'] ?? PHP_INT_MAX));
+        }
+
+        foreach ($tiers as $tier) {
+            if (! is_array($tier) || ! isset($tier['up_to']) || (float) $tier['up_to'] <= 0 || ! isset($tier['unit_price_minor']) || (int) $tier['unit_price_minor'] < 0) {
+                throw new \InvalidArgumentException('Usage rating tiers are invalid.');
+            }
+        }
+
+        usort($tiers, fn (array $a, array $b): int => ($a['up_to'] ?? PHP_INT_MAX) <=> ($b['up_to'] ?? PHP_INT_MAX));
         $remaining = $quantity;
         $previous = 0.0;
         $total = 0;
@@ -30,6 +40,6 @@ final class RateUsage
             }
         }
 
-return $total + ($remaining > 0 ? (int) round($remaining * $meter->unit_price_minor) : 0);
+        return $total + ($remaining > 0 ? (int) round($remaining * $meter->unit_price_minor) : 0);
     }
 }

@@ -11,8 +11,20 @@ use Liberu\Billing\Usage\Filament\Resources\UsageRecordResource;
 
 final class UsageFilamentPlugin implements Plugin
 {
-    public static function make(): self { return new self(); }
-    public function getId(): string { return 'liberu-billing-usage'; }
-    public function register(Panel $panel): void { $panel->resources([MeterResource::class, UsageRecordResource::class]); }
+    public static function make(): self
+    {
+        return new self();
+    }
+
+    public function getId(): string
+    {
+        return 'liberu-billing-usage';
+    }
+
+    public function register(Panel $panel): void
+    {
+        $panel->resources([MeterResource::class, UsageRecordResource::class]);
+    }
+
     public function boot(Panel $panel): void {}
 }

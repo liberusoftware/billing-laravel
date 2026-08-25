@@ -11,6 +11,6 @@
         </form>
     @endif
     <ul>
-        @foreach ($domains as $domain)<li>{{ $domain->name }} — {{ $domain->status }}</li>@endforeach
+        @foreach ($domains as $domain)<li>{{ $domain->name }} — {{ $domain->status }} <input wire:model="customerId" placeholder="{{ __('Customer ID') }}"><button type="button" wire:click="register({{ $domain->id }})">{{ __('Register') }}</button><input wire:model="renewalPeriod" type="number" min="1" max="10" aria-label="{{ __('Renewal period') }}"><button type="button" wire:click="renew({{ $domain->id }})">{{ __('Renew') }}</button><input wire:model="authCode" placeholder="{{ __('EPP auth code') }}"><button type="button" wire:click="transfer({{ $domain->id }})">{{ __('Transfer') }}</button><button type="button" wire:click="redeem({{ $domain->id }})">{{ __('Redeem') }}</button></li>@endforeach
     </ul>
 </section>

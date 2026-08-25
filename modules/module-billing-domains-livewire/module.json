@@ -14,13 +14,13 @@
       "liberusoftware/module-manager": "^1.0"
     }
   },
-  "presentation": {"livewire": {"components": ["module-billing-domains::domain-list"]}},
+  "presentation": {"livewire": {"components": ["module-billing-domains::domain-list", "module-billing-domains::search", "module-billing-domains::tld-list"]}},
   "suggests": [],
   "capabilities": [
     "billing.domains.livewire"
   ],
   "default_enabled": true,
   "features": [
-    "Domains Livewire integration"
+    "Domain search, lifecycle, TLD, and support workflows"
   ]
 }

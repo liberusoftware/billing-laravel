@@ -50,3 +50,20 @@ it('rejects over-allocation and refunds on a pending payment', function () {
     expect(fn () => app(AllocatePayment::class)->execute($payment, 1))
         ->toThrow(InvalidArgumentException::class);
 });
+
+it('rejects invalid dispute and reconciliation details', function () {
+    $payment = app(CreatePayment::class)->execute(['amount_minor' => 100, 'currency' => 'EUR', 'gateway' => 'test']);
+
+    expect(fn () => app(OpenDispute::class)->execute($payment, 1, ''))
+        ->toThrow(InvalidArgumentException::class)
+        ->and(fn () => app(ReconcilePayment::class)->execute($payment, ''))
+        ->toThrow(InvalidArgumentException::class);
+});
+
+it('requires a gateway before refunding a captured payment', function () {
+    $payment = app(CreatePayment::class)->execute(['amount_minor' => 100, 'currency' => 'EUR']);
+    $payment->update(['status' => PaymentStatus::Captured]);
+
+    expect(fn () => app(RefundPayment::class)->execute($payment->refresh(), 1))
+        ->toThrow(InvalidArgumentException::class);
+});

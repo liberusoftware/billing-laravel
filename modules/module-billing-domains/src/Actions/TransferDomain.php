@@ -25,6 +25,7 @@ final readonly class TransferDomain
 
         return $this->database->transaction(function () use ($domain, $result, $targetRegistrar): Domain {
             $domain->update(['registrar' => $targetRegistrar, 'status' => 'transfer_pending', 'transfer_status' => 'pending', 'expires_at' => $result['expiration_date'] ?? $domain->expires_at]);
+            app(RecordEppOperation::class)->execute($domain, 'transfer', 'pending', $result, $result['epp_code'] ?? null);
 
             return $domain->refresh();
         });

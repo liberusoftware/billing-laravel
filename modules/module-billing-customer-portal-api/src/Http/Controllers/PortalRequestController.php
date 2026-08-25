@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\CustomerPortal\Actions\CreatePortalRequest;
+use Liberu\Billing\CustomerPortal\Actions\TransitionPortalRequest;
 use Liberu\Billing\CustomerPortal\Models\PortalRequest;
 use Liberu\Billing\CustomerPortal\Queries\ListCustomerPortalRecords;
 
@@ -28,6 +29,15 @@ final class PortalRequestController extends Controller
         $data = $request->validate(['name' => ['required', 'string', 'max:255'], 'status' => ['sometimes', 'string', 'in:active,closed,failed'], 'metadata' => ['sometimes', 'array']]);
 
         return response()->json(['data' => $create->handle($this->team($request), $data)], 201);
+    }
+
+    public function transition(Request $request, int $record, TransitionPortalRequest $transition): JsonResponse
+    {
+        $instance = PortalRequest::query()->forTeam($this->team($request))->findOrFail($record);
+        Gate::authorize('update', $instance);
+        $data = $request->validate(['status' => ['required', 'in:active,closed,failed']]);
+
+        return response()->json(['data' => $transition->handle($instance, $data['status'])]);
     }
 
     public function show(Request $request, int $record): JsonResponse

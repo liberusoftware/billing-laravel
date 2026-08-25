@@ -7,6 +7,8 @@ namespace Liberu\Billing\Catalog\Livewire\Components;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\Catalog\Actions\CreateProduct;
+use Liberu\Billing\Catalog\Actions\TransitionProductLifecycle;
+use Liberu\Billing\Catalog\Enums\ProductStatus;
 use Liberu\Billing\Catalog\Models\Product;
 use Liberu\Billing\Catalog\Queries\ListProducts;
 use Livewire\Component;
@@ -22,6 +24,8 @@ final class ProductCatalog extends Component
     public int $basePriceMinor = 0;
 
     public bool $showCreate = false;
+    public ?int $selectedProductId = null;
+    public string $status = 'draft';
 
     public function save(CreateProduct $create): void
     {
@@ -44,5 +48,15 @@ final class ProductCatalog extends Component
         $teamId = data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id');
 
         return view('billing-catalog-livewire::product-catalog', ['products' => $query->execute($teamId !== null ? (int) $teamId : null)]);
+    }
+
+    public function transition(TransitionProductLifecycle $transition): void
+    {
+        $this->validate(['selectedProductId' => ['required', 'integer'], 'status' => ['required', 'in:draft,active,archived']]);
+        $teamId = data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id');
+        $product = Product::query()->whereKey($this->selectedProductId)->where('team_id', $teamId)->firstOrFail();
+        Gate::authorize('update', $product);
+        $transition->execute($product, ProductStatus::from($this->status));
+        session()->flash('billing-catalog-message', __('Product lifecycle updated.'));
     }
 }

@@ -11,6 +11,7 @@ Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.provi
 });
 
 Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.provisioning.write', 'idempotency'])->prefix('api/v1/billing/provisioning')->group(function (): void {
+    Route::post('/', [ProvisioningOperationController::class, 'storeService'])->name('billing.provisioning.store');
     Route::post('/{provisionedService}/operations', [ProvisioningOperationController::class, 'queue'])->name('billing.provisioning.operations.store');
     Route::post('/{provisionedService}/reconcile', [ProvisioningOperationController::class, 'reconcile'])->name('billing.provisioning.reconcile');
 });

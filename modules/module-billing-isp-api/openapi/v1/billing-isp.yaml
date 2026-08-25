@@ -2,12 +2,32 @@ openapi: 3.1.0
 info: {title: Billing ISP API, version: 1.0.0, description: Team-scoped access services, coverage, installation, RADIUS, usage, equipment, and network adapters.}
 servers: [{url: /}]
 paths:
+  /api/v1/billing/isp/capabilities/{capability}/lifecycle:
+    patch:
+      operationId: billing.isp.capabilities.lifecycle
+      security: [{sanctum: []}]
+      parameters: [{name: capability, in: path, required: true, schema: {type: integer}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object, required: [status], properties: {status: {type: string, enum: [pending, active, suspended, cancelled, failed]}}}}}}
+      responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
   /api/v1/billing/isp:
     get:
       operationId: billing.isp.accessServices.list
       security: [{sanctum: []}]
       parameters: [{$ref: '#/components/parameters/PageSize'}]
       responses: {'200': {$ref: '#/components/responses/Collection'}, '401': {$ref: '#/components/responses/Unauthorized'}}
+    post:
+      operationId: billing.isp.accessServices.create
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object, required: [name], properties: {name: {type: string, maxLength: 255}, status: {type: string}, metadata: {type: object, additionalProperties: true}}}}}}
+      responses: {'201': {$ref: '#/components/responses/Document'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/isp/{service}/lifecycle:
+    patch:
+      operationId: billing.isp.accessServices.lifecycle
+      security: [{sanctum: []}]
+      parameters: [{name: service, in: path, required: true, schema: {type: integer, minimum: 1}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/LifecycleRequest'}}}}
+      responses: {'200': {$ref: '#/components/responses/Document'}, '422': {$ref: '#/components/responses/ValidationError'}}
   /api/v1/billing/isp/capabilities:
     get: {operationId: billing.isp.capabilities.list, security: [{sanctum: []}], responses: {'200': {$ref: '#/components/responses/Collection'}}}
     post:
@@ -25,5 +45,7 @@ components:
     Document: {description: ISP resource, content: {application/json: {schema: {type: object, required: [data], properties: {data: {type: object}}}}}}
     Unauthorized: {description: Authentication or scope is required.}
     ValidationError: {description: RFC 9457-compatible validation problem.}
-  schemas: {CapabilityRequest: {type: object, required: [capability], properties: {capability: {type: string}, provider: {type: string}, configuration: {type: object, additionalProperties: true}}}}
+  schemas:
+    CapabilityRequest: {type: object, required: [capability], properties: {capability: {type: string}, provider: {type: string}, configuration: {type: object, additionalProperties: true}}}
+    LifecycleRequest: {type: object, required: [status], properties: {status: {type: string, enum: [pending, active, suspended, cancelled, failed]}}}
   securitySchemes: {sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}}

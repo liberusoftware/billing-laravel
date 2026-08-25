@@ -20,9 +20,24 @@
 
     <ul>
         @forelse ($accounts as $account)
-            <li>{{ $account->name }} — {{ $account->currency }} — {{ $account->status->value }}</li>
+            <li wire:key="billing-account-{{ $account->id }}">
+                {{ $account->name }} — {{ $account->currency }} — {{ $account->status->value }}
+                <button type="button" wire:click="$set('selectedAccountId', {{ $account->id }})">{{ __('Select') }}</button>
+            </li>
         @empty
             <li>{{ __('No billing accounts found.') }}</li>
         @endforelse
     </ul>
+
+    @if ($selectedAccountId)
+        <form wire:submit="updateAccount">
+            <label>{{ __('Name') }} <input wire:model="name" required /></label>
+            <label>{{ __('Currency') }} <input wire:model="currency" maxlength="3" required /></label>
+            <button type="submit">{{ __('Update account') }}</button>
+        </form>
+        <form wire:submit="transitionAccount">
+            <label>{{ __('Status') }} <select wire:model="status"><option value="active">{{ __('Active') }}</option><option value="suspended">{{ __('Suspended') }}</option><option value="closed">{{ __('Closed') }}</option></select></label>
+            <button type="submit">{{ __('Update status') }}</button>
+        </form>
+    @endif
 </section>

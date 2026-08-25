@@ -19,6 +19,7 @@ Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.subsc
         Route::post('/', [SubscriptionController::class, 'store'])->name('store');
         Route::post('/{subscription}/renew', [SubscriptionController::class, 'renew'])->name('renew');
         Route::post('/{subscription}/pause', [SubscriptionController::class, 'pause'])->name('pause');
+        Route::post('/{subscription}/resume', [SubscriptionController::class, 'resume'])->name('resume');
         Route::post('/{subscription}/cancel', [SubscriptionController::class, 'cancel'])->name('cancel');
         Route::patch('/{subscription}/plan', [SubscriptionController::class, 'changePlan'])->name('plan');
         Route::patch('/{subscription}/entitlements', [SubscriptionController::class, 'entitlements'])->name('entitlements');

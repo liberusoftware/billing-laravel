@@ -18,7 +18,7 @@ final readonly class RefundPayment
     public function execute(Payment $payment, int $amountMinor, string $reason = 'requested'): PaymentRefund
     {
         $refunded = (int) $payment->refunded_minor;
-        if ($payment->status !== PaymentStatus::Captured || $amountMinor < 1 || $refunded + $amountMinor > (int) $payment->amount_minor) {
+        if ($payment->status !== PaymentStatus::Captured || trim((string) $payment->gateway) === '' || $amountMinor < 1 || $refunded + $amountMinor > (int) $payment->amount_minor) {
             throw new \InvalidArgumentException('Refund amount or payment state is invalid.');
         }
         $result = $this->gateways->driver((string) $payment->gateway)->refund($payment, $amountMinor);

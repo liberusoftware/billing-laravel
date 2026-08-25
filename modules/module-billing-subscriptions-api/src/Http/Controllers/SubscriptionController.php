@@ -13,6 +13,7 @@ use Liberu\Billing\Subscriptions\Actions\CancelSubscription;
 use Liberu\Billing\Subscriptions\Actions\ChangeSubscriptionPlan;
 use Liberu\Billing\Subscriptions\Actions\PauseSubscription;
 use Liberu\Billing\Subscriptions\Actions\RenewSubscription;
+use Liberu\Billing\Subscriptions\Actions\ResumeSubscription;
 use Liberu\Billing\Subscriptions\Actions\UpdateEntitlementState;
 use Liberu\Billing\Subscriptions\Models\Subscription;
 use Liberu\Billing\Subscriptions\Queries\ListSubscriptions;
@@ -40,6 +41,7 @@ final class SubscriptionController extends Controller
             'trial_days' => ['sometimes', 'integer', 'min:0', 'max:365'],
             'current_period_ends_at' => ['nullable', 'date'],
             'auto_renew' => ['sometimes', 'boolean'],
+            'id_protection' => ['sometimes', 'boolean'],
             'metadata' => ['sometimes', 'array'],
         ]);
         $teamId = data_get($request->user(), 'current_team_id') ?? data_get($request->user(), 'currentTeam.id');
@@ -67,6 +69,13 @@ final class SubscriptionController extends Controller
         Gate::authorize('update', $subscription);
 
         return response()->json(['data' => $this->resource($cancel->execute($subscription))]);
+    }
+
+    public function resume(Subscription $subscription, ResumeSubscription $resume): JsonResponse
+    {
+        Gate::authorize('update', $subscription);
+
+        return response()->json(['data' => $this->resource($resume->execute($subscription))]);
     }
 
     public function changePlan(Request $request, Subscription $subscription, ChangeSubscriptionPlan $change): JsonResponse
@@ -98,7 +107,8 @@ final class SubscriptionController extends Controller
                 'current_period_ends_at' => $subscription->current_period_ends_at?->toIso8601String(),
                 'cancelled_at' => $subscription->cancelled_at?->toIso8601String(),
                 'paused_at' => $subscription->paused_at?->toIso8601String(),
-                'auto_renew' => $subscription->auto_renew,
+            'auto_renew' => $subscription->auto_renew,
+                'id_protection' => $subscription->id_protection,
                 'entitlement_state' => $subscription->entitlement_state ?? [],
             ],
         ];

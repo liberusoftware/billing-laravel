@@ -9,6 +9,7 @@ Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.repor
 
 Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.reporting.write', 'idempotency'])->prefix('api/v1/billing/reporting/metrics')->group(function (): void {
     Route::post('/', [ReportingController::class, 'recordMetric'])->name('billing.reporting.metrics.store');
+    Route::post('/calculate', [ReportingController::class, 'calculateMetric'])->name('billing.reporting.metrics.calculate');
 });
 
 Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.reporting.read'])->prefix('api/v1/billing/reporting')->group(function (): void {

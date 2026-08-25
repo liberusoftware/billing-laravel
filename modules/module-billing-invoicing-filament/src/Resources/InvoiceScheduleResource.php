@@ -9,6 +9,8 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Liberu\Billing\Invoicing\Filament\Resources\InvoiceScheduleResource\Pages\CreateInvoiceSchedule;
+use Liberu\Billing\Invoicing\Filament\Resources\InvoiceScheduleResource\Pages\ListInvoiceSchedules;
 use Liberu\Billing\Invoicing\Models\InvoiceSchedule;
 
 final class InvoiceScheduleResource extends Resource
@@ -23,5 +25,10 @@ final class InvoiceScheduleResource extends Resource
     public static function table(Table $table): Table
     {
         return $table->columns([TextColumn::make('frequency')->badge(), TextColumn::make('next_run_at')->dateTime(), TextColumn::make('active')->boolean()]);
+    }
+
+    public static function getPages(): array
+    {
+        return ['index' => ListInvoiceSchedules::route('/'), 'create' => CreateInvoiceSchedule::route('/create')];
     }
 }

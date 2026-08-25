@@ -8,5 +8,6 @@
             <button type="submit">{{ __('Open') }}</button>
         </form>
     @endif
-    <ul>@foreach ($cases as $case)<li>{{ $case->id }} — {{ $case->status->value }} — {{ $case->amount_minor }} {{ $case->currency }}</li>@endforeach</ul>
+    <label>{{ __('Next action') }} <input type="datetime-local" wire:model="operationDate"></label><label>{{ __('Reason') }} <input wire:model="operationReason"></label><label>{{ __('Credit-control level') }} <input wire:model="creditControlLevel"></label>
+    <ul>@foreach ($cases as $case)<li>{{ $case->id }} — {{ $case->status->value }} — {{ $case->amount_minor }} {{ $case->currency }} <button type="button" wire:click="promise({{ $case->id }})">{{ __('Promise') }}</button><button type="button" wire:click="retry({{ $case->id }})">{{ __('Retry') }}</button><button type="button" wire:click="dunning({{ $case->id }})">{{ __('Dunning') }}</button><button type="button" wire:click="reminder({{ $case->id }})">{{ __('Reminder') }}</button><button type="button" wire:click="suspend({{ $case->id }})">{{ __('Suspend') }}</button><button type="button" wire:click="writeOff({{ $case->id }})">{{ __('Write off') }}</button><button type="button" wire:click="recover({{ $case->id }})">{{ __('Recover') }}</button><button type="button" wire:click="creditControl({{ $case->id }})">{{ __('Credit control') }}</button></li>@endforeach</ul>
 </div>

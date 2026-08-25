@@ -1,12 +1,18 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
 use Liberu\Billing\Subscriptions\Actions\ActivateSubscription;
 use Liberu\Billing\Subscriptions\Actions\CancelSubscription;
 use Liberu\Billing\Subscriptions\Actions\ChangeSubscriptionPlan;
 use Liberu\Billing\Subscriptions\Actions\PauseSubscription;
 use Liberu\Billing\Subscriptions\Actions\RenewSubscription;
+use Liberu\Billing\Subscriptions\Actions\ResumeSubscription;
+use Liberu\Billing\Subscriptions\Actions\UpdateEntitlementState;
 use Liberu\Billing\Subscriptions\Enums\SubscriptionStatus;
+use Liberu\Billing\Subscriptions\Events\SubscriptionEntitlementsUpdated;
+use Liberu\Billing\Subscriptions\Events\SubscriptionPaused;
+use Liberu\Billing\Subscriptions\Events\SubscriptionPlanChanged;
 
 uses(RefreshDatabase::class);
 
@@ -22,11 +28,23 @@ it('activates a trial subscription with an entitlement', function () {
         ->and($subscription->entitlement_state['active'])->toBeTrue();
 });
 
+it('carries legacy domain protection into the subscription boundary', function () {
+    $subscription = app(ActivateSubscription::class)->execute([
+        'team_id' => 10,
+        'id_protection' => true,
+    ]);
+
+    expect($subscription->id_protection)->toBeTrue();
+});
+
 it('supports plan changes, pause, renewal, and cancellation', function () {
+    Event::fake([SubscriptionPaused::class, SubscriptionPlanChanged::class]);
     $subscription = app(ActivateSubscription::class)->execute(['team_id' => 10]);
     $subscription = app(ChangeSubscriptionPlan::class)->execute($subscription, 4);
     $subscription = app(PauseSubscription::class)->execute($subscription);
     expect($subscription->status)->toBe(SubscriptionStatus::Paused);
+    Event::assertDispatched(SubscriptionPlanChanged::class);
+    Event::assertDispatched(SubscriptionPaused::class);
 
     $subscription = app(RenewSubscription::class)->execute($subscription, 30);
     expect($subscription->status)->toBe(SubscriptionStatus::Active)
@@ -35,6 +53,28 @@ it('supports plan changes, pause, renewal, and cancellation', function () {
     $subscription = app(CancelSubscription::class)->execute($subscription);
     expect($subscription->status)->toBe(SubscriptionStatus::Cancelled)
         ->and($subscription->auto_renew)->toBeFalse();
+});
+
+it('resumes only paused subscriptions and restores entitlements', function () {
+    $subscription = app(ActivateSubscription::class)->execute(['team_id' => 10]);
+    $subscription = app(PauseSubscription::class)->execute($subscription);
+    $subscription = app(ResumeSubscription::class)->execute($subscription);
+
+    expect($subscription->status)->toBe(SubscriptionStatus::Active)
+        ->and($subscription->paused_at)->toBeNull()
+        ->and($subscription->entitlement_state['active'])->toBeTrue();
+
+    expect(fn () => app(ResumeSubscription::class)->execute($subscription))
+        ->toThrow(LogicException::class);
+});
+
+it('emits an event when entitlements change', function () {
+    Event::fake([SubscriptionEntitlementsUpdated::class]);
+    $subscription = app(ActivateSubscription::class)->execute(['team_id' => 10]);
+
+    app(UpdateEntitlementState::class)->execute($subscription, ['active' => true, 'seats' => 5]);
+
+    Event::assertDispatched(SubscriptionEntitlementsUpdated::class);
 });
 
 it('requires an owner and rejects terminal lifecycle mutations', function () {

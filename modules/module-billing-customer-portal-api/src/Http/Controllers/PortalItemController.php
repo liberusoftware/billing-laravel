@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\CustomerPortal\Actions\CreatePortalItem;
+use Liberu\Billing\CustomerPortal\Actions\TransitionPortalItem;
 use Liberu\Billing\CustomerPortal\Models\PortalItem;
 use Liberu\Billing\CustomerPortal\Queries\ListPortalItems;
 
@@ -27,6 +28,15 @@ final class PortalItemController extends Controller
         $data = $request->validate(['type' => ['required', 'in:profile,orders,services,usage,invoices,payments,tickets,changes,cancellation'], 'subject' => ['required', 'string', 'max:255'], 'customer_id' => ['nullable', 'integer'], 'payload' => ['sometimes', 'array']]);
 
         return response()->json(['data' => $create->handle($this->team($request), $data)], 201);
+    }
+
+    public function transition(Request $request, int $item, TransitionPortalItem $transition): JsonResponse
+    {
+        $instance = PortalItem::query()->whereKey($item)->where('team_id', $this->team($request))->firstOrFail();
+        Gate::authorize('update', $instance);
+        $data = $request->validate(['status' => ['required', 'in:open,in_progress,completed,cancelled,failed']]);
+
+        return response()->json(['data' => $transition->handle($instance, $data['status'])]);
     }
 
     private function team(Request $request): int

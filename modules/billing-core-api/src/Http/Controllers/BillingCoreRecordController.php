@@ -42,7 +42,7 @@ final class BillingCoreRecordController extends Controller
     public function update(Request $request, string $type, int $record, UpdateBillingRecord $update): JsonResponse
     {
         $model = $this->model($type);
-        $instance = $model::query()->findOrFail($record);
+        $instance = $this->forCurrentTeam($model, $record, $request);
         Gate::authorize('update', $instance);
         $data = $request->validate($this->rules($type, false));
         unset($data['team_id']);
@@ -53,7 +53,7 @@ final class BillingCoreRecordController extends Controller
     public function destroy(Request $request, string $type, int $record): JsonResponse
     {
         $model = $this->model($type);
-        $instance = $model::query()->findOrFail($record);
+        $instance = $this->forCurrentTeam($model, $record, $request);
         Gate::authorize('update', $instance);
         $instance->delete();
 
@@ -93,5 +93,12 @@ final class BillingCoreRecordController extends Controller
     private function teamId(Request $request): int
     {
         return (int) (data_get($request->user(), 'current_team_id') ?? data_get($request->user(), 'currentTeam.id'));
+    }
+
+    private function forCurrentTeam(string $model, int $record, Request $request): object
+    {
+        $teamId = $this->teamId($request);
+
+        return $model::query()->whereKey($record)->where(fn ($query) => $query->whereNull('team_id')->orWhere('team_id', $teamId))->firstOrFail();
     }
 }
