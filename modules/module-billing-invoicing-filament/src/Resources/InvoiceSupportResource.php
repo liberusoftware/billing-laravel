@@ -9,12 +9,15 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Liberu\Billing\Invoicing\Filament\Concerns\ScopesCurrentTeam;
 use Liberu\Billing\Invoicing\Filament\Resources\InvoiceSupportResource\Pages\CreateInvoiceSupport;
 use Liberu\Billing\Invoicing\Filament\Resources\InvoiceSupportResource\Pages\ListInvoiceSupports;
 use Liberu\Billing\Invoicing\Models\InvoiceSupport;
 
 final class InvoiceSupportResource extends Resource
 {
+    use ScopesCurrentTeam;
+
     protected static ?string $model = InvoiceSupport::class;
 
     public static function form(Schema $schema): Schema

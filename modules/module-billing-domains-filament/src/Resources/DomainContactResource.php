@@ -9,10 +9,13 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Liberu\Billing\Domains\Filament\Concerns\ScopesCurrentTeam;
 use Liberu\Billing\Domains\Models\DomainContact;
 
 final class DomainContactResource extends Resource
 {
+    use ScopesCurrentTeam;
+
     protected static ?string $model = DomainContact::class;
 
     public static function form(Schema $schema): Schema
