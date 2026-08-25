@@ -13,7 +13,9 @@ final class ListMeters
     public function execute(?int $teamId = null): Collection
     {
         return Meter::query()
-            ->when($teamId !== null, fn ($query) => $query->where(fn ($query) => $query->whereNull('team_id')->orWhere('team_id', $teamId)))
+            ->where(fn ($query) => $teamId === null
+                ? $query->whereNull('team_id')
+                : $query->whereNull('team_id')->orWhere('team_id', $teamId))
             ->latest('id')
             ->get();
     }

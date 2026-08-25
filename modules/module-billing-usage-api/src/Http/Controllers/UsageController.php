@@ -25,7 +25,13 @@ final class UsageController extends Controller
     {
         Gate::authorize('viewAny', Meter::class);
 
-        $result = Meter::query()->when($this->team($request) !== 0, fn ($query) => $query->where(fn ($scoped) => $scoped->whereNull('team_id')->orWhere('team_id', $this->team($request))))->latest('id')->paginate($request->integer('per_page', 25));
+        $team = $this->team($request);
+        $result = Meter::query()
+            ->where(fn ($query) => $team === 0
+                ? $query->whereNull('team_id')
+                : $query->whereNull('team_id')->orWhere('team_id', $team))
+            ->latest('id')
+            ->paginate($request->integer('per_page', 25));
 
         return response()->json(['data' => $result->getCollection()->map(fn (Meter $meter): array => $this->meter($meter))->values(), 'meta' => ['current_page' => $result->currentPage(), 'last_page' => $result->lastPage()]]);
     }
