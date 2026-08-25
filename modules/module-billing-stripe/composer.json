@@ -1,0 +1,11 @@
+{
+  "name": "liberusoftware/billing-stripe",
+  "description": "Stripe gateway adapter for Liberu Billing Payments.",
+  "type": "liberu-module",
+  "license": "MIT",
+  "require": {"php": "^8.5", "stripe/stripe-php": "^20.3", "liberusoftware/module-billing-payments": "^0.1", "liberusoftware/module-manager": "^1.0"},
+  "autoload": {"psr-4": {"Liberu\\Billing\\Stripe\\": "src/"}},
+  "extra": {"liberu": {"name": "module-billing-stripe"}},
+  "version": "0.1.0",
+  "config": {"allow-plugins": {"pestphp/pest-plugin": true}}
+}

@@ -6,8 +6,8 @@ namespace Liberu\Billing\Hosting\Filament;
 
 use Filament\Contracts\Plugin;
 use Filament\Panel;
-use Liberu\Billing\Hosting\Filament\Resources\HostingCapabilityResource;
 use Liberu\Billing\Hosting\Filament\Resources\HostingAccountResource;
+use Liberu\Billing\Hosting\Filament\Resources\HostingCapabilityResource;
 
 final class HostingFilamentPlugin implements Plugin
 {
@@ -18,7 +18,7 @@ final class HostingFilamentPlugin implements Plugin
 
     public function getId(): string
     {
-        return 'liberu-billing-hosting';
+        return 'module-billing-hosting-filament';
     }
 
     public function register(Panel $panel): void

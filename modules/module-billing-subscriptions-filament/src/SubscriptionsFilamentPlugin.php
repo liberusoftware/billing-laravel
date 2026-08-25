@@ -17,7 +17,7 @@ final class SubscriptionsFilamentPlugin implements Plugin
 
     public function getId(): string
     {
-        return 'liberu-billing-subscriptions';
+        return 'module-billing-subscriptions-filament';
     }
 
     public function register(Panel $panel): void

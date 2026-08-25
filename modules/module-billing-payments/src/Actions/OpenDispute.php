@@ -16,14 +16,14 @@ final readonly class OpenDispute
 
     public function execute(Payment $payment, int $amountMinor, string $reason): PaymentDispute
     {
-        if ($payment->status !== PaymentStatus::Captured || $amountMinor < 1 || $amountMinor > (int) $payment->amount_minor) {
+        if ($payment->status !== PaymentStatus::Captured || trim($reason) === '' || $amountMinor < 1 || $amountMinor > (int) $payment->amount_minor) {
             throw new \InvalidArgumentException('Dispute amount or payment state is invalid.');
         }
 
         return $this->database->transaction(function () use ($payment, $amountMinor, $reason): PaymentDispute {
             $payment->update(['status' => PaymentStatus::Disputed]);
 
-            return PaymentDispute::query()->create(['payment_id' => $payment->getKey(), 'amount_minor' => $amountMinor, 'status' => DisputeStatus::Open, 'reason' => $reason]);
+            return PaymentDispute::query()->create(['payment_id' => $payment->getKey(), 'amount_minor' => $amountMinor, 'status' => DisputeStatus::Open, 'reason' => trim($reason)]);
         });
     }
 }

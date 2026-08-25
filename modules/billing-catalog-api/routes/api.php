@@ -14,7 +14,10 @@ Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.catal
 
 Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.catalog.write', 'idempotency'])
     ->prefix('api/v1/billing/catalog')->name('billing.catalog.')
-    ->group(fn () => Route::post('/', [ProductController::class, 'store'])->name('products.store'));
+    ->group(function (): void {
+        Route::post('/', [ProductController::class, 'store'])->name('products.store');
+        Route::patch('/products/{product}/lifecycle', [ProductController::class, 'transition'])->whereNumber('product')->name('products.lifecycle');
+    });
 
 Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.catalog.read'])
     ->prefix('api/v1/billing/catalog')->name('billing.catalog.')

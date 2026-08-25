@@ -18,6 +18,6 @@ final class CreateDomainContact
             throw new InvalidArgumentException('Domain contact details are invalid.');
         }
 
-return DB::transaction(fn (): DomainContact => DomainContact::query()->create(['team_id' => $teamId, 'handle' => strtoupper($handle), 'name' => trim($attributes['name']), 'email' => strtolower($attributes['email']), 'details' => $attributes['details'] ?? []]));
+        return DB::transaction(fn (): DomainContact => DomainContact::query()->create(['team_id' => $teamId, 'handle' => strtoupper($handle), 'name' => trim($attributes['name']), 'email' => strtolower($attributes['email']), 'details' => $attributes['details'] ?? []]));
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Liberu\Billing\Provisioning\Actions\CreateProvisionedService;
 use Liberu\Billing\Provisioning\Actions\QueueProvisioningOperation;
 use Liberu\Billing\Provisioning\Actions\RunProvisioningOperation;
 use Liberu\Billing\Provisioning\Contracts\ProvisioningDriver;
@@ -9,6 +10,14 @@ use Liberu\Billing\Provisioning\Models\ProvisionedService;
 use Liberu\Billing\Provisioning\Services\ProvisioningDriverRegistry;
 
 uses(RefreshDatabase::class);
+
+it('creates a pending provisioned service through the domain action', function () {
+    $service = app(CreateProvisionedService::class)->execute(['team_id' => 10, 'provider' => 'test']);
+
+    expect($service->state)->toBe(ProvisioningState::Pending)
+        ->and($service->team_id)->toBe(10)
+        ->and($service->provider)->toBe('test');
+});
 
 it('runs a queued provider operation and records the external identity', function () {
     $registry = app(ProvisioningDriverRegistry::class);

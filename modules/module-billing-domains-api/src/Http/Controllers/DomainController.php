@@ -16,13 +16,40 @@ use Liberu\Billing\Domains\Actions\RenewDomain;
 use Liberu\Billing\Domains\Actions\TransferDomain;
 use Liberu\Billing\Domains\Actions\UpdateDomain;
 use Liberu\Billing\Domains\Actions\UpsertDnsRecord;
+use Liberu\Billing\Domains\Actions\UpsertDomainTld;
 use Liberu\Billing\Domains\Models\DnsRecord;
 use Liberu\Billing\Domains\Models\Domain;
 use Liberu\Billing\Domains\Models\DomainContact;
+use Liberu\Billing\Domains\Models\DomainTld;
+use Liberu\Billing\Domains\Models\EppOperation;
 use Liberu\Billing\Domains\Queries\SearchDomains;
+use Liberu\Billing\Domains\Services\DomainPricingService;
 
 final class DomainController extends Controller
 {
+    public function tlds(Request $request): JsonResponse
+    {
+        Gate::authorize('viewAny', Domain::class);
+
+        return response()->json(['data' => DomainTld::query()->where('enabled', true)->orderBy('name')->get()]);
+    }
+
+    public function syncTlds(Request $request, DomainPricingService $pricing): JsonResponse
+    {
+        Gate::authorize('create', Domain::class);
+        $data = $request->validate(['registrar' => ['required', 'string', 'max:50'], 'markup_value' => ['sometimes', 'numeric', 'min:0']]);
+
+        return response()->json(['synchronized' => $pricing->syncTlds($data['registrar'], (float) ($data['markup_value'] ?? 10))]);
+    }
+
+    public function storeTld(Request $request, UpsertDomainTld $upsert): JsonResponse
+    {
+        Gate::authorize('create', Domain::class);
+        $data = $request->validate(['name' => ['required', 'string', 'regex:/^\.?[A-Za-z0-9-]{2,63}$/'], 'registrar_cost' => ['nullable', 'numeric', 'min:0'], 'base_price' => ['required', 'numeric', 'min:0'], 'markup_type' => ['sometimes', 'in:none,percentage,fixed'], 'markup_value' => ['sometimes', 'numeric', 'min:0'], 'enabled' => ['sometimes', 'boolean']]);
+
+        return response()->json(['data' => $upsert->execute($data)], 201);
+    }
+
     public function index(Request $request): JsonResponse
     {
         Gate::authorize('viewAny', Domain::class);
@@ -97,6 +124,14 @@ final class DomainController extends Controller
         Gate::authorize('viewAny', DomainContact::class);
 
         return response()->json(DomainContact::query()->where('team_id', $this->teamId($request))->latest()->paginate($request->integer('per_page', 25)));
+    }
+
+    public function eppOperations(Request $request): JsonResponse
+    {
+        Gate::authorize('viewAny', EppOperation::class);
+        $operations = EppOperation::query()->where('team_id', $this->teamId($request))->latest()->paginate($request->integer('per_page', 25));
+
+        return response()->json(['data' => $operations->items(), 'meta' => ['current_page' => $operations->currentPage(), 'last_page' => $operations->lastPage()]]);
     }
 
     public function storeContact(Request $request, CreateDomainContact $create): JsonResponse

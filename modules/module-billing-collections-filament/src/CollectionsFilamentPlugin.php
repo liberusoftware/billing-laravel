@@ -17,7 +17,7 @@ final class CollectionsFilamentPlugin implements Plugin
 
     public function getId(): string
     {
-        return 'liberu-billing-collections';
+        return 'module-billing-collections-filament';
     }
 
     public function register(Panel $panel): void

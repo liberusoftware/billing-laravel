@@ -15,7 +15,7 @@ final readonly class AddInvoiceLine
 
     public function execute(Invoice $invoice, string $description, int $quantity, int $unitAmountMinor, float $taxRate = 0): InvoiceLine
     {
-        if ($invoice->status !== InvoiceStatus::Draft || $quantity < 1 || $unitAmountMinor < 0 || $taxRate < 0) {
+        if ($invoice->status !== InvoiceStatus::Draft || trim($description) === '' || $quantity < 1 || $unitAmountMinor < 0 || $taxRate < 0 || $taxRate > 100) {
             throw new \InvalidArgumentException('Invoice line is invalid or invoice is not editable.');
         }
 
@@ -25,9 +25,9 @@ final readonly class AddInvoiceLine
                 throw new \LogicException('Only draft invoices can be changed.');
             }
             $amount = $quantity * $unitAmountMinor;
-            $line = InvoiceLine::query()->create(['invoice_id' => $invoice->getKey(), 'description' => $description, 'quantity' => $quantity, 'unit_amount_minor' => $unitAmountMinor, 'tax_rate' => $taxRate, 'amount_minor' => $amount]);
+            $line = InvoiceLine::query()->create(['invoice_id' => $invoice->getKey(), 'description' => trim($description), 'quantity' => $quantity, 'unit_amount_minor' => $unitAmountMinor, 'tax_rate' => $taxRate, 'amount_minor' => $amount]);
             $subtotal = (int) $invoice->lines()->sum('amount_minor');
-            $tax = (int) round($subtotal * $taxRate / 100);
+            $tax = (int) $invoice->lines()->get()->sum(fn (InvoiceLine $invoiceLine): int => (int) round($invoiceLine->amount_minor * (float) $invoiceLine->tax_rate / 100));
             $invoice->update(['subtotal_minor' => $subtotal, 'tax_minor' => $tax, 'total_minor' => $subtotal + $tax]);
 
             return $line;

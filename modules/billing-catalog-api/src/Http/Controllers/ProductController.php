@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\Catalog\Actions\CreateProduct;
+use Liberu\Billing\Catalog\Actions\TransitionProductLifecycle;
+use Liberu\Billing\Catalog\Enums\ProductStatus;
 use Liberu\Billing\Catalog\Models\Product;
 use Liberu\Billing\Catalog\Queries\ListProducts;
 
@@ -41,6 +43,16 @@ final class ProductController extends Controller
         $data['team_id'] = $teamId !== null ? (int) $teamId : null;
 
         return response()->json(['data' => $this->resource($create->execute($data))], 201);
+    }
+
+    public function transition(Request $request, int $product, TransitionProductLifecycle $transition): JsonResponse
+    {
+        $teamId = data_get($request->user(), 'current_team_id') ?? data_get($request->user(), 'currentTeam.id');
+        $instance = Product::query()->whereKey($product)->where(fn ($query) => $query->whereNull('team_id')->orWhere('team_id', $teamId))->firstOrFail();
+        Gate::authorize('update', $instance);
+        $data = $request->validate(['status' => ['required', 'in:draft,active,archived']]);
+
+        return response()->json(['data' => $this->resource($transition->execute($instance, ProductStatus::from($data['status'])))]);
     }
 
     private function resource(Product $product): array

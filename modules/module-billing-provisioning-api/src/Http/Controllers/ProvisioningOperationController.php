@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
+use Liberu\Billing\Provisioning\Actions\CreateProvisionedService;
 use Liberu\Billing\Provisioning\Actions\QueueProvisioningOperation;
 use Liberu\Billing\Provisioning\Actions\ReconcileProvisionedService;
 use Liberu\Billing\Provisioning\Models\ProvisionedService;
@@ -15,6 +16,15 @@ use Liberu\Billing\Provisioning\Models\ProvisioningOperation;
 
 final class ProvisioningOperationController extends Controller
 {
+    public function storeService(Request $request, CreateProvisionedService $create): JsonResponse
+    {
+        Gate::authorize('create', ProvisionedService::class);
+        $data = $request->validate(['customer_id' => ['nullable', 'integer', 'min:1'], 'subscription_id' => ['nullable', 'integer', 'min:1'], 'provider' => ['required', 'string', 'max:100'], 'external_id' => ['nullable', 'string', 'max:255'], 'metadata' => ['sometimes', 'array']]);
+        $data['team_id'] = $this->team($request);
+
+        return response()->json(['data' => $create->execute($data)], 201);
+    }
+
     public function index(Request $request): JsonResponse
     {
         Gate::authorize('viewAny', ProvisioningOperation::class);
@@ -39,6 +49,9 @@ final class ProvisioningOperationController extends Controller
 
     private function team(Request $request): int
     {
-        return (int) (data_get($request->user(), 'current_team_id') ?? data_get($request->user(), 'currentTeam.id'));
+        $team = data_get($request->user(), 'current_team_id') ?? data_get($request->user(), 'currentTeam.id');
+        abort_if($team === null, 403, 'A current team is required.');
+
+        return (int) $team;
     }
 }

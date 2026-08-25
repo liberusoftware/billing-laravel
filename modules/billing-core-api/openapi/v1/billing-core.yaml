@@ -28,6 +28,28 @@ paths:
         '401': {$ref: '#/components/responses/Unauthorized'}
         '403': {$ref: '#/components/responses/Forbidden'}
         '422': {$ref: '#/components/responses/ValidationError'}
+  /api/v1/billing/billing-core/{account}:
+    patch:
+      operationId: billing.core.accounts.update
+      summary: Update a billing account
+      security: [{ sanctum: [] }]
+      parameters: [{name: account, in: path, required: true, schema: {type: integer}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/AccountUpdateRequest'}}}}
+      responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '403': {$ref: '#/components/responses/Forbidden'}, '422': {$ref: '#/components/responses/ValidationError'}}
+    delete:
+      operationId: billing.core.accounts.delete
+      summary: Delete a billing account
+      security: [{ sanctum: [] }]
+      parameters: [{name: account, in: path, required: true, schema: {type: integer}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      responses: {'204': {description: Account deleted}, '401': {$ref: '#/components/responses/Unauthorized'}, '403': {$ref: '#/components/responses/Forbidden'}}
+  /api/v1/billing/billing-core/{account}/status:
+    patch:
+      operationId: billing.core.accounts.status
+      summary: Transition a billing account
+      security: [{ sanctum: [] }]
+      parameters: [{name: account, in: path, required: true, schema: {type: integer}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object, required: [status], properties: {status: {type: string, enum: [active, suspended, closed]}}}}}}
+      responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '403': {$ref: '#/components/responses/Forbidden'}, '422': {$ref: '#/components/responses/ValidationError'}}
   /api/v1/billing/billing-core/{type}:
     get:
       operationId: billing.core.records.list
@@ -83,6 +105,10 @@ components:
     AccountRequest:
       type: object
       required: [name, currency]
+      properties: {name: {type: string, maxLength: 255}, currency: {type: string, pattern: '^[A-Za-z]{3}$'}, settings: {type: object, additionalProperties: true}}
+    AccountUpdateRequest:
+      type: object
+      minProperties: 1
       properties: {name: {type: string, maxLength: 255}, currency: {type: string, pattern: '^[A-Za-z]{3}$'}, settings: {type: object, additionalProperties: true}}
     ProblemDetails:
       type: object

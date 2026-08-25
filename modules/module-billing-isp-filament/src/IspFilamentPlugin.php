@@ -6,8 +6,8 @@ namespace Liberu\Billing\Isp\Filament;
 
 use Filament\Contracts\Plugin;
 use Filament\Panel;
-use Liberu\Billing\Isp\Filament\Resources\IspCapabilityResource;
 use Liberu\Billing\Isp\Filament\Resources\AccessServiceResource;
+use Liberu\Billing\Isp\Filament\Resources\IspCapabilityResource;
 
 final class IspFilamentPlugin implements Plugin
 {
@@ -18,7 +18,7 @@ final class IspFilamentPlugin implements Plugin
 
     public function getId(): string
     {
-        return 'liberu-billing-isp';
+        return 'module-billing-isp-filament';
     }
 
     public function register(Panel $panel): void

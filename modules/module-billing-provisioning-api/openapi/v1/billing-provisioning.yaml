@@ -8,6 +8,12 @@ paths:
       security: [{sanctum: []}]
       parameters: [{$ref: '#/components/parameters/PageSize'}]
       responses: {'200': {$ref: '#/components/responses/Collection'}, '401': {$ref: '#/components/responses/Unauthorized'}}
+    post:
+      operationId: billing.provisioning.services.create
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/ServiceRequest'}}}}
+      responses: {'201': {$ref: '#/components/responses/Document'}, '422': {$ref: '#/components/responses/ValidationError'}}
   /api/v1/billing/provisioning/operations:
     get:
       operationId: billing.provisioning.operations.list
@@ -36,5 +42,5 @@ components:
     Document: {description: Queued provisioning operation, content: {application/json: {schema: {type: object, required: [data], properties: {data: {type: object}}}}}}
     Unauthorized: {description: Authentication or scope is required.}
     ValidationError: {description: RFC 9457-compatible validation problem.}
-  schemas: {OperationRequest: {type: object, required: [operation], properties: {operation: {type: string}, payload: {type: object, additionalProperties: true}}}}
+  schemas: {OperationRequest: {type: object, required: [operation], properties: {operation: {type: string}, payload: {type: object, additionalProperties: true}}}, ServiceRequest: {type: object, required: [provider], properties: {customer_id: {type: integer, minimum: 1}, subscription_id: {type: integer, minimum: 1}, provider: {type: string, maxLength: 100}, external_id: {type: string, maxLength: 255}, metadata: {type: object, additionalProperties: true}}}}
   securitySchemes: {sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}}

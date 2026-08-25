@@ -5,12 +5,32 @@ info:
   description: Team-scoped communications inventory, number lifecycle, usage imports, and provider adapters.
 servers: [{url: /}]
 paths:
+  /api/v1/billing/communications/numbers/{number}/status:
+    patch:
+      operationId: billing.communications.numbers.status
+      security: [{sanctum: []}]
+      parameters: [{name: number, in: path, required: true, schema: {type: integer}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object, required: [status], properties: {status: {type: string, enum: [available, active, suspended, released, failed]}}}}}}
+      responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
   /api/v1/billing/communications:
     get:
       operationId: billing.communications.services.list
       security: [{sanctum: []}]
       parameters: [{$ref: '#/components/parameters/PageSize'}]
       responses: {'200': {$ref: '#/components/responses/Collection'}, '401': {$ref: '#/components/responses/Unauthorized'}, '429': {$ref: '#/components/responses/RateLimited'}}
+    post:
+      operationId: billing.communications.services.create
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object, required: [name], properties: {name: {type: string, maxLength: 255}, status: {type: string}, metadata: {type: object, additionalProperties: true}}}}}}
+      responses: {'201': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/communications/{service}/lifecycle:
+    patch:
+      operationId: billing.communications.services.lifecycle
+      security: [{sanctum: []}]
+      parameters: [{name: service, in: path, required: true, schema: {type: integer, minimum: 1}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/LifecycleRequest'}}}}
+      responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
   /api/v1/billing/communications/numbers:
     get:
       operationId: billing.communications.numbers.list
@@ -67,4 +87,8 @@ components:
       type: object
       required: [name, driver]
       properties: {name: {type: string, maxLength: 100}, driver: {type: string, maxLength: 100}, status: {type: string, maxLength: 32}, configuration: {type: object, additionalProperties: true}}
+    LifecycleRequest:
+      type: object
+      required: [status]
+      properties: {status: {type: string, enum: [pending, active, suspended, cancelled, failed]}}
   securitySchemes: {sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}}

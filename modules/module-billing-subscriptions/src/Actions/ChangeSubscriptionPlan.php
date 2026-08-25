@@ -6,6 +6,7 @@ namespace Liberu\Billing\Subscriptions\Actions;
 
 use Illuminate\Database\DatabaseManager;
 use Liberu\Billing\Subscriptions\Enums\SubscriptionStatus;
+use Liberu\Billing\Subscriptions\Events\SubscriptionPlanChanged;
 use Liberu\Billing\Subscriptions\Models\Subscription;
 
 final readonly class ChangeSubscriptionPlan
@@ -21,10 +22,14 @@ final readonly class ChangeSubscriptionPlan
             throw new \InvalidArgumentException('Pricing plan is invalid.');
         }
 
-        return $this->database->transaction(function () use ($subscription, $pricingPlanId): Subscription {
+        $changed = $this->database->transaction(function () use ($subscription, $pricingPlanId): Subscription {
             $subscription->update(['pricing_plan_id' => $pricingPlanId, 'metadata' => array_merge($subscription->metadata ?? [], ['plan_changed_at' => now()->toIso8601String()])]);
 
             return $subscription->refresh();
         });
+
+        SubscriptionPlanChanged::dispatch($changed);
+
+        return $changed;
     }
 }

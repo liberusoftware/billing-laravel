@@ -15,12 +15,17 @@
     }
   },
   "suggests": [],
+  "presentation": {
+    "livewire": {
+      "components": ["module-billing-reporting::dashboard", "module-billing-reporting::metrics", "module-billing-reporting::snapshots"]
+    }
+  },
   "capabilities": [
     "billing.reporting.livewire"
   ],
   "default_enabled": true,
   "features": [
-    "Reporting Livewire integration"
+    "Reporting Livewire integration",
+    "Metric calculation"
   ]
 }
-

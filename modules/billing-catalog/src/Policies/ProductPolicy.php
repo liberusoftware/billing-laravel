@@ -20,7 +20,12 @@ final class ProductPolicy
 
     public function create(object $user): bool
     {
-        return $this->access($user);
+        return $this->writeAccess($user);
+    }
+
+    public function update(object $user, Product $product): bool
+    {
+        return $this->writeAccess($user) && $this->teamOwns($user, $product);
     }
 
     private function access(object $user): bool
@@ -33,5 +38,10 @@ final class ProductPolicy
         $teamId = data_get($user, 'current_team_id') ?? data_get($user, 'currentTeam.id');
 
         return $product->team_id === null || ($teamId !== null && (int) $teamId === (int) $product->team_id);
+    }
+
+    private function writeAccess(object $user): bool
+    {
+        return ! method_exists($user, 'tokenCan') || $user->tokenCan('billing.catalog.write') || $user->tokenCan('*');
     }
 }

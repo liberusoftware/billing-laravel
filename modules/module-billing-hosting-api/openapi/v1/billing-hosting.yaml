@@ -8,6 +8,19 @@ paths:
       security: [{sanctum: []}]
       parameters: [{$ref: '#/components/parameters/PageSize'}]
       responses: {'200': {$ref: '#/components/responses/Collection'}, '401': {$ref: '#/components/responses/Unauthorized'}}
+    post:
+      operationId: billing.hosting.accounts.create
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object, required: [name], properties: {name: {type: string, maxLength: 255}, status: {type: string}, metadata: {type: object, additionalProperties: true}}}}}}
+      responses: {'201': {$ref: '#/components/responses/Document'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/hosting/{account}/lifecycle:
+    patch:
+      operationId: billing.hosting.accounts.transition
+      security: [{sanctum: []}]
+      parameters: [{name: account, in: path, required: true, schema: {type: integer, minimum: 1}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object, required: [status], properties: {status: {type: string, enum: [pending, active, suspended, cancelled, failed]}}}}}}
+      responses: {'200': {$ref: '#/components/responses/Document'}, '422': {$ref: '#/components/responses/ValidationError'}}
   /api/v1/billing/hosting/capabilities:
     get: {operationId: billing.hosting.capabilities.list, security: [{sanctum: []}], responses: {'200': {$ref: '#/components/responses/Collection'}}}
     post:
@@ -21,7 +34,7 @@ paths:
       operationId: billing.hosting.capabilities.transition
       security: [{sanctum: []}]
       parameters: [{name: capability, in: path, required: true, schema: {type: integer, minimum: 1}}, {$ref: '#/components/parameters/IdempotencyKey'}]
-      requestBody: {required: true, content: {application/json: {schema: {type: object, required: [transition], properties: {transition: {type: string}}}}}}
+      requestBody: {required: true, content: {application/json: {schema: {type: object, required: [status], properties: {status: {type: string, enum: [pending, active, suspended, cancelled, failed]}}}}}}
       responses: {'200': {$ref: '#/components/responses/Document'}, '409': {description: Invalid lifecycle transition}, '422': {$ref: '#/components/responses/ValidationError'}}
 components:
   parameters:

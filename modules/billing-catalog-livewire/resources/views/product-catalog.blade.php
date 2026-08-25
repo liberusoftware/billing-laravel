@@ -13,7 +13,13 @@
     @endif
     <ul>
         @forelse ($products as $product)
-            <li>{{ $product->name }} ({{ $product->sku }}) — {{ $product->base_price_minor }} {{ $product->currency }}</li>
+            <li wire:key="product-{{ $product->id }}">{{ $product->name }} ({{ $product->sku }}) — {{ $product->base_price_minor }} {{ $product->currency }} ({{ $product->status->value }}) <button type="button" wire:click="$set('selectedProductId', {{ $product->id }})">{{ __('Select') }}</button></li>
         @empty <li>{{ __('No products found.') }}</li> @endforelse
     </ul>
+    @if ($selectedProductId)
+        <form wire:submit="transitionProduct">
+            <select wire:model="status"><option value="draft">{{ __('Draft') }}</option><option value="active">{{ __('Active') }}</option><option value="archived">{{ __('Archived') }}</option></select>
+            <button type="submit">{{ __('Update lifecycle') }}</button>
+        </form>
+    @endif
 </section>

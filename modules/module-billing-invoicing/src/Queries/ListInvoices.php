@@ -11,6 +11,6 @@ final class ListInvoices
 {
     public function execute(?int $teamId, int $perPage = 25): LengthAwarePaginator
     {
-        return Invoice::query()->when($teamId !== null, fn ($query) => $query->where('team_id', $teamId))->latest()->paginate(min(max($perPage, 1), 100));
+        return Invoice::query()->where('team_id', $teamId ?? -1)->latest()->paginate(min(max($perPage, 1), 100));
     }
 }

@@ -19,6 +19,9 @@ Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.billi
     ->name('billing.core.')
     ->group(function (): void {
         Route::post('/', [BillingAccountController::class, 'store'])->name('accounts.store');
+        Route::patch('/{account}', [BillingAccountController::class, 'update'])->whereNumber('account')->name('accounts.update');
+        Route::delete('/{account}', [BillingAccountController::class, 'destroy'])->whereNumber('account')->name('accounts.destroy');
+        Route::patch('/{account}/status', [BillingAccountController::class, 'transition'])->whereNumber('account')->name('accounts.status');
         Route::post('/{type}', [BillingCoreRecordController::class, 'store'])->whereIn('type', ['contacts', 'currencies', 'tax-profiles', 'sequences', 'terms', 'settings'])->name('records.store');
         Route::patch('/{type}/{record}', [BillingCoreRecordController::class, 'update'])->whereIn('type', ['contacts', 'currencies', 'tax-profiles', 'sequences', 'terms', 'settings'])->name('records.update');
         Route::delete('/{type}/{record}', [BillingCoreRecordController::class, 'destroy'])->whereIn('type', ['contacts', 'currencies', 'tax-profiles', 'sequences', 'terms', 'settings'])->name('records.destroy');

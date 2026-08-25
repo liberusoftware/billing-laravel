@@ -64,6 +64,15 @@ paths:
       responses:
         '200': {$ref: '#/components/responses/ResourceDocument'}
         '401': {$ref: '#/components/responses/Unauthorized'}
+  /api/v1/billing/subscriptions/{subscription}/resume:
+    post:
+      operationId: billing.subscriptions.resume
+      summary: Resume a paused subscription
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/SubscriptionId'}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      responses:
+        '200': {$ref: '#/components/responses/ResourceDocument'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
 components:
   parameters:
     IdempotencyKey: {name: Idempotency-Key, in: header, required: false, schema: {type: string, maxLength: 255}}

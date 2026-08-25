@@ -3,8 +3,8 @@
 namespace Liberu\Foundation\ApiAccess;
 
 use Illuminate\Routing\Router;
-use Liberu\Foundation\ApiAccess\Http\Middleware\ReplayIdempotentRequest;
 use Illuminate\Support\ServiceProvider;
+use Liberu\Foundation\ApiAccess\Http\Middleware\ReplayIdempotentRequest;
 
 final class ApiAccessServiceProvider extends ServiceProvider
 {

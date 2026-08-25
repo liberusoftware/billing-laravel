@@ -15,6 +15,11 @@
     }
   },
   "suggests": [],
+  "presentation": {
+    "livewire": {
+      "components": ["module-billing-customer-portal::dashboard", "module-billing-customer-portal::items"]
+    }
+  },
   "capabilities": [
     "billing.customer-portal.livewire"
   ],
@@ -23,4 +28,3 @@
     "Customer Portal Livewire integration"
   ]
 }
-

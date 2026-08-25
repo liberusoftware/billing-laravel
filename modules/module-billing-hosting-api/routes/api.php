@@ -15,6 +15,11 @@ Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.hosti
     Route::patch('/{capability}/lifecycle', [HostingCapabilityController::class, 'transition'])->name('billing.hosting.capabilities.lifecycle');
 });
 
+Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.hosting.write', 'idempotency'])->prefix('api/v1/billing/hosting')->group(function (): void {
+    Route::post('/', [HostingCapabilityController::class, 'storeAccount'])->name('billing.hosting.store');
+    Route::patch('/{account}/lifecycle', [HostingCapabilityController::class, 'transitionAccount'])->whereNumber('account')->name('billing.hosting.accounts.lifecycle');
+});
+
 Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.hosting.read'])->prefix('api/v1/billing/hosting')->group(function (): void {
     Route::get('/', function (Request $request) {
         Gate::authorize('viewAny', HostingAccount::class);

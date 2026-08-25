@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Liberu\Billing\Catalog\Livewire\Components;
 
-use Illuminate\View\View;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\View\View;
 use Liberu\Billing\Catalog\Actions\CreateCatalogRecord;
+use Liberu\Billing\Catalog\Actions\TransitionCatalogLifecycle;
+use Liberu\Billing\Catalog\Enums\CatalogStatus;
 use Liberu\Billing\Catalog\Models\Addon;
 use Liberu\Billing\Catalog\Models\Bundle;
 use Liberu\Billing\Catalog\Models\Channel;
@@ -27,6 +29,21 @@ final class CatalogRecords extends Component
     public string $description = '';
 
     public bool $showCreate = false;
+
+    public string $transitionStatus = 'active';
+
+    public function transitionRecord(int $recordId, TransitionCatalogLifecycle $transition): void
+    {
+        $this->validate(['transitionStatus' => ['required', 'in:draft,active,archived']]);
+        $model = $this->modelClass();
+        $record = $model::query()->whereKey($recordId)->where(function ($query): void {
+            $team = data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id');
+            $query->whereNull('team_id')->orWhere('team_id', $team);
+        })->firstOrFail();
+        Gate::authorize('update', $record);
+        $transition->execute($record, CatalogStatus::from($this->transitionStatus));
+        session()->flash('billing-catalog-message', __('Catalog lifecycle updated.'));
+    }
 
     public function save(CreateCatalogRecord $create): void
     {

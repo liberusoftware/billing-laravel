@@ -20,6 +20,13 @@ paths:
       parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
       requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/MetricRequest'}}}}
       responses: {'201': {$ref: '#/components/responses/Document'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/reporting/metrics/calculate:
+    post:
+      operationId: billing.reporting.metrics.calculate
+      summary: Calculate and persist a billing metric
+      security: [{sanctum: []}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/CalculateMetricRequest'}}}}
+      responses: {'201': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
 components:
   parameters:
     PageSize: {name: per_page, in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 25}}
@@ -29,5 +36,7 @@ components:
     Document: {description: Reporting metric, content: {application/json: {schema: {type: object, required: [data], properties: {data: {type: object}}}}}}
     Unauthorized: {description: Authentication or scope is required.}
     ValidationError: {description: RFC 9457-compatible validation problem.}
-  schemas: {MetricRequest: {type: object, required: [metric, value], properties: {metric: {type: string}, value: {type: number}, period: {type: string, format: date}, currency: {type: string, pattern: '^[A-Z]{3}$'}, dimensions: {type: object, additionalProperties: true}}}}
+  schemas:
+    MetricRequest: {type: object, required: [metric, value], properties: {metric: {type: string}, value: {type: number}, period: {type: string, format: date}, currency: {type: string, pattern: '^[A-Z]{3}$'}, dimensions: {type: object, additionalProperties: true}}}
+    CalculateMetricRequest: {type: object, required: [metric, period_start, period_end], properties: {metric: {type: string}, period_start: {type: string, format: date}, period_end: {type: string, format: date}, currency: {type: string, pattern: '^[A-Z]{3}$'}}}
   securitySchemes: {sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}}

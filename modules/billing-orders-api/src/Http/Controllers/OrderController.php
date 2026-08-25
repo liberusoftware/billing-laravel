@@ -69,7 +69,7 @@ final class OrderController extends Controller
     public function fraud(Request $request, Order $order, ReviewFraud $review): JsonResponse
     {
         Gate::authorize('update', $order);
-        $data = $request->validate(['fraud_status' => ['required', 'in:pending,approved,blocked,not_required']]);
+        $data = $request->validate(['fraud_status' => ['required', 'in:pending,cleared,blocked,not_required']]);
 
         return response()->json(['data' => $this->resource($review->execute($order, FraudReviewStatus::from($data['fraud_status'])))]);
     }

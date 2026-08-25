@@ -11,18 +11,22 @@ Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.provi
 });
 
 Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.provisioning.write', 'idempotency'])->prefix('api/v1/billing/provisioning')->group(function (): void {
+    Route::post('/', [ProvisioningOperationController::class, 'storeService'])->name('billing.provisioning.store');
     Route::post('/{provisionedService}/operations', [ProvisioningOperationController::class, 'queue'])->name('billing.provisioning.operations.store');
     Route::post('/{provisionedService}/reconcile', [ProvisioningOperationController::class, 'reconcile'])->name('billing.provisioning.reconcile');
 });
 
 Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.provisioning.read'])->prefix('api/v1/billing/provisioning')->group(function (): void {
     Route::get('/', function (Request $request) {
+        Gate::authorize('viewAny', ProvisionedService::class);
         $teamId = data_get($request->user(), 'current_team_id') ?? data_get($request->user(), 'currentTeam.id');
+        abort_if($teamId === null, 403, 'A current team is required.');
 
         return ProvisionedService::query()->where('team_id', $teamId)->latest()->paginate($request->integer('per_page', 25));
     });
     Route::get('/{provisionedService}', function (Request $request, int $provisionedService): ProvisionedService {
         $teamId = data_get($request->user(), 'current_team_id') ?? data_get($request->user(), 'currentTeam.id');
+        abort_if($teamId === null, 403, 'A current team is required.');
         $service = ProvisionedService::query()->where('team_id', $teamId)->findOrFail($provisionedService);
         Gate::authorize('view', $service);
 

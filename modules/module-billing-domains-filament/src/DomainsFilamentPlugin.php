@@ -9,6 +9,7 @@ use Filament\Panel;
 use Liberu\Billing\Domains\Filament\Resources\DnsRecordResource;
 use Liberu\Billing\Domains\Filament\Resources\DomainContactResource;
 use Liberu\Billing\Domains\Filament\Resources\DomainResource;
+use Liberu\Billing\Domains\Filament\Resources\DomainTldResource;
 use Liberu\Billing\Domains\Filament\Resources\EppOperationResource;
 
 final class DomainsFilamentPlugin implements Plugin
@@ -20,12 +21,12 @@ final class DomainsFilamentPlugin implements Plugin
 
     public function getId(): string
     {
-        return 'liberu-billing-domains';
+        return 'module-billing-domains-filament';
     }
 
     public function register(Panel $panel): void
     {
-        $panel->resources([DomainResource::class, DomainContactResource::class, DnsRecordResource::class, EppOperationResource::class]);
+        $panel->resources([DomainResource::class, DomainContactResource::class, DomainTldResource::class, DnsRecordResource::class, EppOperationResource::class]);
     }
 
     public function boot(Panel $panel): void {}

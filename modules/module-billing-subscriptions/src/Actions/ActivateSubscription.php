@@ -34,6 +34,7 @@ final readonly class ActivateSubscription
                 'trial_ends_at' => $trialEndsAt,
                 'current_period_ends_at' => $attributes['current_period_ends_at'] ?? null,
                 'auto_renew' => $attributes['auto_renew'] ?? true,
+                'id_protection' => $attributes['id_protection'] ?? false,
                 'entitlement_state' => $attributes['entitlement_state'] ?? ['active' => true],
                 'metadata' => $attributes['metadata'] ?? [],
             ]);

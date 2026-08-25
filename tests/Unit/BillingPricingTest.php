@@ -5,6 +5,7 @@ use Liberu\Billing\Pricing\Actions\CapturePricingSnapshot;
 use Liberu\Billing\Pricing\Actions\CreatePricingPlan;
 use Liberu\Billing\Pricing\Enums\PricingModel;
 use Liberu\Billing\Pricing\Enums\PricingPlanStatus;
+use Liberu\Billing\Pricing\Policies\PricingPlanPolicy;
 
 uses(RefreshDatabase::class);
 
@@ -42,4 +43,51 @@ it('rejects negative amounts and empty tier definitions', function () {
         ->toThrow(InvalidArgumentException::class);
     expect(fn () => $action->execute(['name' => 'Invalid', 'pricing_model' => 'tiered', 'currency' => 'USD', 'unit_amount_minor' => 0, 'tiers' => []]))
         ->toThrow(InvalidArgumentException::class);
+});
+
+it('enforces model-specific pricing requirements', function () {
+    $action = app(CreatePricingPlan::class);
+
+    expect(fn () => $action->execute([
+        'name' => 'Recurring', 'pricing_model' => 'recurring', 'currency' => 'USD', 'unit_amount_minor' => 1000,
+    ]))->toThrow(InvalidArgumentException::class);
+
+    expect(fn () => $action->execute([
+        'name' => 'Usage', 'pricing_model' => 'usage', 'currency' => 'USD', 'unit_amount_minor' => 100,
+    ]))->toThrow(InvalidArgumentException::class);
+
+    expect(fn () => $action->execute([
+        'name' => 'Missing', 'pricing_model' => 'unknown', 'currency' => 'USD', 'unit_amount_minor' => 100,
+    ]))->toThrow(InvalidArgumentException::class);
+});
+
+it('requires pricing write access for mutations', function () {
+    $readUser = new class()
+    {
+        public int $current_team_id = 10;
+
+        public function tokenCan(string $ability): bool
+        {
+            return $ability === 'billing.pricing.read';
+        }
+    };
+    $writeUser = new class()
+    {
+        public int $current_team_id = 10;
+
+        public function tokenCan(string $ability): bool
+        {
+            return $ability === 'billing.pricing.write';
+        }
+    };
+    $plan = app(CreatePricingPlan::class)->execute([
+        'name' => 'Team plan', 'pricing_model' => 'one_time', 'currency' => 'USD', 'unit_amount_minor' => 100, 'team_id' => 10,
+    ]);
+
+    $policy = app(PricingPlanPolicy::class);
+
+    expect($policy->create($readUser))->toBeFalse()
+        ->and($policy->update($readUser, $plan))->toBeFalse()
+        ->and($policy->create($writeUser))->toBeTrue()
+        ->and($policy->update($writeUser, $plan))->toBeTrue();
 });

@@ -33,6 +33,14 @@ paths:
       parameters: [{$ref: '#/components/parameters/ResourceType'}, {$ref: '#/components/parameters/IdempotencyKey'}]
       requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/CatalogRequest'}}}}
       responses: {'201': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '403': {$ref: '#/components/responses/Forbidden'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/catalog/products/{product}/lifecycle:
+    patch:
+      operationId: billing.catalog.products.lifecycle
+      summary: Transition a product
+      security: [{ sanctum: [] }]
+      parameters: [{name: product, in: path, required: true, schema: {type: integer}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object, required: [status], properties: {status: {type: string, enum: [draft, active, archived]}}}}}}
+      responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '403': {$ref: '#/components/responses/Forbidden'}, '422': {$ref: '#/components/responses/ValidationError'}}
   /api/v1/billing/catalog/{type}/{record}/lifecycle:
     patch:
       operationId: billing.catalog.records.lifecycle

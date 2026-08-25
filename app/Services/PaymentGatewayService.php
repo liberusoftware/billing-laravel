@@ -334,7 +334,7 @@ class PaymentGatewayService
 
     private function processPaddleRefund(Payment $payment, PaymentGateway $gateway, float $amount): array
     {
-        if (! is_string($payment->transaction_id) || $payment->transaction_id === '') {
+        if ($payment->transaction_id === '') {
             throw new Exception('A Paddle transaction ID is required for refunds');
         }
         $details = is_array($payment->payment_method_details) ? $payment->payment_method_details : [];

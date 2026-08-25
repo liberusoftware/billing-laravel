@@ -11,8 +11,11 @@ final class ListPricingPlans
 {
     public function execute(?int $teamId, int $perPage = 25): LengthAwarePaginator
     {
-        return PricingPlan::query()->when($teamId !== null, fn ($query) => $query->where(function ($query) use ($teamId): void {
-            $query->whereNull('team_id')->orWhere('team_id', $teamId);
-        }))->latest()->paginate(min(max($perPage, 1), 100));
+        return PricingPlan::query()
+            ->where(fn ($query) => $teamId === null
+                ? $query->whereNull('team_id')
+                : $query->whereNull('team_id')->orWhere('team_id', $teamId))
+            ->latest()
+            ->paginate(min(max($perPage, 1), 100));
     }
 }

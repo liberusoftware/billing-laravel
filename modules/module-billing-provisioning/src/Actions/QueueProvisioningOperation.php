@@ -17,6 +17,6 @@ final class QueueProvisioningOperation
             throw new \InvalidArgumentException('Provisioning operation is invalid.');
         }
 
-return DB::transaction(fn (): ProvisioningOperation => ProvisioningOperation::query()->create(['team_id' => $service->team_id, 'provisioned_service_id' => $service->id, 'operation' => $operation, 'status' => 'queued', 'payload' => $payload]));
+        return DB::transaction(fn (): ProvisioningOperation => ProvisioningOperation::query()->create(['team_id' => $service->team_id, 'provisioned_service_id' => $service->id, 'operation' => $operation, 'status' => 'queued', 'payload' => $payload]));
     }
 }

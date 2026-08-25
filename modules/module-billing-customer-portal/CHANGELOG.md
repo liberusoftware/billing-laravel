@@ -1,5 +1,7 @@
 # Changelog
 
+- Added guarded portal item and request lifecycle transitions.
+
 ## 0.1.0
 
 - Initial independently installable Customer Portal domain module.
