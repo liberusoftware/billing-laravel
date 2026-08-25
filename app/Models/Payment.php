@@ -32,6 +32,7 @@ use Override;
  * @property string|null $stripe_token
  * @property string|null $square_token
  * @property string|null $google_pay_token
+ * @property array<string, mixed>|null $payment_method_details
  * @property int|null $team_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
