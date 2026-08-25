@@ -16,6 +16,9 @@
         <label>{{ __('Reason') }} <input wire:model="reason" maxlength="255"></label>
         <button type="button" wire:click="refund">{{ __('Refund') }}</button>
         <button type="button" wire:click="dispute">{{ __('Open dispute') }}</button>
+        <button type="button" wire:click="capture">{{ __('Capture') }}</button>
+        <label>{{ __('Invoice ID') }} <input type="number" min="1" wire:model="invoiceId"></label>
+        <button type="button" wire:click="allocate">{{ __('Allocate') }}</button>
         <label>{{ __('Provider reference') }} <input wire:model="providerReference" maxlength="255"></label>
         <button type="button" wire:click="reconcile">{{ __('Reconcile') }}</button>
     </form>
