@@ -14,12 +14,15 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\Pricing\Actions\CapturePricingSnapshot;
+use Liberu\Billing\Pricing\Filament\Concerns\ScopesCurrentTeam;
 use Liberu\Billing\Pricing\Filament\Resources\PricingPlanResource\Pages\CreatePricingPlan;
 use Liberu\Billing\Pricing\Filament\Resources\PricingPlanResource\Pages\ListPricingPlans;
 use Liberu\Billing\Pricing\Models\PricingPlan;
 
 final class PricingPlanResource extends Resource
 {
+    use ScopesCurrentTeam;
+
     protected static ?string $model = PricingPlan::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-banknotes';

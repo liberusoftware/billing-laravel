@@ -13,12 +13,15 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\Orders\Actions\CheckoutCart;
+use Liberu\Billing\Orders\Filament\Concerns\ScopesCurrentTeam;
 use Liberu\Billing\Orders\Filament\Resources\CartResource\Pages\CreateCart;
 use Liberu\Billing\Orders\Filament\Resources\CartResource\Pages\ListCarts;
 use Liberu\Billing\Orders\Models\Cart;
 
 final class CartResource extends Resource
 {
+    use ScopesCurrentTeam;
+
     protected static ?string $model = Cart::class;
 
     public static function form(Schema $schema): Schema

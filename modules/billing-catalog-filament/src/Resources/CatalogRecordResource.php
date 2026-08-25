@@ -16,10 +16,13 @@ use Filament\Tables\Table;
 use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\Catalog\Actions\TransitionCatalogLifecycle;
 use Liberu\Billing\Catalog\Enums\CatalogStatus;
+use Liberu\Billing\Catalog\Filament\Concerns\ScopesCurrentTeam;
 use Liberu\Billing\Catalog\Models\CatalogRecord;
 
 abstract class CatalogRecordResource extends Resource
 {
+    use ScopesCurrentTeam;
+
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Schema $schema): Schema

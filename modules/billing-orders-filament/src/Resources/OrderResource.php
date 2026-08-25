@@ -18,12 +18,15 @@ use Liberu\Billing\Orders\Actions\ReviewFraud;
 use Liberu\Billing\Orders\Actions\TransitionOrder;
 use Liberu\Billing\Orders\Enums\FraudReviewStatus;
 use Liberu\Billing\Orders\Enums\OrderStatus;
+use Liberu\Billing\Orders\Filament\Concerns\ScopesCurrentTeam;
 use Liberu\Billing\Orders\Filament\Resources\OrderResource\Pages\CreateOrder;
 use Liberu\Billing\Orders\Filament\Resources\OrderResource\Pages\ListOrders;
 use Liberu\Billing\Orders\Models\Order;
 
 final class OrderResource extends Resource
 {
+    use ScopesCurrentTeam;
+
     protected static ?string $model = Order::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-shopping-cart';

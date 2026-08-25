@@ -10,12 +10,15 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Liberu\Billing\Orders\Filament\Concerns\ScopesCurrentTeam;
 use Liberu\Billing\Orders\Filament\Resources\QuoteResource\Pages\CreateQuote;
 use Liberu\Billing\Orders\Filament\Resources\QuoteResource\Pages\ListQuotes;
 use Liberu\Billing\Orders\Models\Quote;
 
 final class QuoteResource extends Resource
 {
+    use ScopesCurrentTeam;
+
     protected static ?string $model = Quote::class;
 
     public static function form(Schema $schema): Schema
