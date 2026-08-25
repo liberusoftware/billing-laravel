@@ -13,12 +13,15 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\Communications\Actions\TransitionCommunicationService;
+use Liberu\Billing\Communications\Filament\Concerns\ScopesCurrentTeam;
 use Liberu\Billing\Communications\Filament\Resources\CommunicationServiceResource\Pages\CreateCommunicationService;
 use Liberu\Billing\Communications\Filament\Resources\CommunicationServiceResource\Pages\ListCommunicationServices;
 use Liberu\Billing\Communications\Models\CommunicationService;
 
 final class CommunicationServiceResource extends Resource
 {
+    use ScopesCurrentTeam;
+
     protected static ?string $model = CommunicationService::class;
 
     public static function form(Schema $schema): Schema

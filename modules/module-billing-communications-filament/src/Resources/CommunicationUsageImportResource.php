@@ -9,12 +9,15 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Liberu\Billing\Communications\Filament\Concerns\ScopesCurrentTeam;
 use Liberu\Billing\Communications\Filament\Resources\CommunicationUsageImportResource\Pages\CreateCommunicationUsageImport;
 use Liberu\Billing\Communications\Filament\Resources\CommunicationUsageImportResource\Pages\ListCommunicationUsageImports;
 use Liberu\Billing\Communications\Models\CommunicationUsageImport;
 
 final class CommunicationUsageImportResource extends Resource
 {
+    use ScopesCurrentTeam;
+
     protected static ?string $model = CommunicationUsageImport::class;
 
     public static function form(Schema $schema): Schema

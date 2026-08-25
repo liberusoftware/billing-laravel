@@ -21,12 +21,15 @@ use Liberu\Billing\Collections\Actions\ScheduleDunning;
 use Liberu\Billing\Collections\Actions\ScheduleReminder;
 use Liberu\Billing\Collections\Actions\SuspendCollectionCase;
 use Liberu\Billing\Collections\Actions\WriteOffCollectionCase;
+use Liberu\Billing\Collections\Filament\Concerns\ScopesCurrentTeam;
 use Liberu\Billing\Collections\Filament\Resources\CollectionCaseResource\Pages\CreateCollectionCase;
 use Liberu\Billing\Collections\Filament\Resources\CollectionCaseResource\Pages\ListCollectionCases;
 use Liberu\Billing\Collections\Models\CollectionCase;
 
 final class CollectionCaseResource extends Resource
 {
+    use ScopesCurrentTeam;
+
     protected static ?string $model = CollectionCase::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-banknotes';

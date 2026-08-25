@@ -13,12 +13,15 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\Hosting\Actions\TransitionHostingAccount;
+use Liberu\Billing\Hosting\Filament\Concerns\ScopesCurrentTeam;
 use Liberu\Billing\Hosting\Filament\Resources\HostingAccountResource\Pages\CreateHostingAccount;
 use Liberu\Billing\Hosting\Filament\Resources\HostingAccountResource\Pages\ListHostingAccounts;
 use Liberu\Billing\Hosting\Models\HostingAccount;
 
 final class HostingAccountResource extends Resource
 {
+    use ScopesCurrentTeam;
+
     protected static ?string $model = HostingAccount::class;
 
     public static function form(Schema $schema): Schema

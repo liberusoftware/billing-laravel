@@ -13,12 +13,15 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\Isp\Actions\TransitionIspCapability;
+use Liberu\Billing\Isp\Filament\Concerns\ScopesCurrentTeam;
 use Liberu\Billing\Isp\Filament\Resources\IspCapabilityResource\Pages\CreateIspCapability;
 use Liberu\Billing\Isp\Filament\Resources\IspCapabilityResource\Pages\ListIspCapabilities;
 use Liberu\Billing\Isp\Models\IspCapability;
 
 final class IspCapabilityResource extends Resource
 {
+    use ScopesCurrentTeam;
+
     protected static ?string $model = IspCapability::class;
 
     public static function form(Schema $schema): Schema

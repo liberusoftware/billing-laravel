@@ -10,10 +10,13 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\Provisioning\Actions\RunProvisioningOperation;
+use Liberu\Billing\Provisioning\Filament\Concerns\ScopesCurrentTeam;
 use Liberu\Billing\Provisioning\Models\ProvisioningOperation;
 
 final class ProvisioningOperationResource extends Resource
 {
+    use ScopesCurrentTeam;
+
     protected static ?string $model = ProvisioningOperation::class;
 
     public static function table(Table $table): Table
@@ -28,7 +31,7 @@ final class ProvisioningOperationResource extends Resource
             Action::make('run')
                 ->label('Run operation')
                 ->requiresConfirmation()
-                ->visible(fn (ProvisioningOperation $record): bool => in_array($record->status, ['queued', 'failed'], true))
+                ->visible(fn (ProvisioningOperation $record): bool => in_array($record->getRawOriginal('status'), ['queued', 'failed'], true))
                 ->action(function (ProvisioningOperation $record, RunProvisioningOperation $run): void {
                     Gate::authorize('update', $record);
                     $run->execute($record);

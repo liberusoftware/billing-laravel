@@ -13,12 +13,15 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\Isp\Actions\TransitionAccessService;
+use Liberu\Billing\Isp\Filament\Concerns\ScopesCurrentTeam;
 use Liberu\Billing\Isp\Filament\Resources\AccessServiceResource\Pages\CreateAccessService;
 use Liberu\Billing\Isp\Filament\Resources\AccessServiceResource\Pages\ListAccessServices;
 use Liberu\Billing\Isp\Models\AccessService;
 
 final class AccessServiceResource extends Resource
 {
+    use ScopesCurrentTeam;
+
     protected static ?string $model = AccessService::class;
 
     public static function form(Schema $schema): Schema
