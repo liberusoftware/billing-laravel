@@ -12,6 +12,11 @@ final class ListProvisionedServices
     /** @return Collection<int, ProvisionedService> */
     public function execute(?int $teamId = null): Collection
     {
-        return ProvisionedService::query()->when($teamId !== null, fn ($query) => $query->where('team_id', $teamId))->latest()->get();
+        return ProvisionedService::query()
+            ->where(fn ($query) => $teamId === null
+                ? $query->whereNull('team_id')
+                : $query->whereNull('team_id')->orWhere('team_id', $teamId))
+            ->latest()
+            ->get();
     }
 }
