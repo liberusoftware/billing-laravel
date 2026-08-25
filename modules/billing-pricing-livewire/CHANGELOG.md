@@ -1,5 +1,6 @@
 # Changelog
 
+- Add authorized proration calculation to the Livewire support surface.
 - Added guarded snapshot-capture and discount-redemption controls.
 
 ## 0.1.0

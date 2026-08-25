@@ -6,6 +6,7 @@ namespace Liberu\Billing\Pricing\Livewire\Components;
 
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
+use Liberu\Billing\Pricing\Actions\CalculateProration;
 use Liberu\Billing\Pricing\Actions\CapturePricingSnapshot;
 use Liberu\Billing\Pricing\Actions\RedeemPricingDiscount;
 use Liberu\Billing\Pricing\Models\PricingDiscount;
@@ -18,6 +19,22 @@ final class PricingSupport extends Component
     public ?int $selectedPlanId = null;
 
     public ?int $selectedDiscountId = null;
+
+    public int $prorationAmountMinor = 0;
+
+    public int $prorationRemainingDays = 0;
+
+    public int $prorationPeriodDays = 1;
+
+    public ?int $prorationResult = null;
+
+    public function calculateProration(CalculateProration $calculate): void
+    {
+        Gate::authorize('viewAny', PricingPlan::class);
+        $this->validate(['prorationAmountMinor' => ['required', 'integer', 'min:0'], 'prorationRemainingDays' => ['required', 'integer', 'min:0'], 'prorationPeriodDays' => ['required', 'integer', 'min:1']]);
+        $this->prorationResult = $calculate->execute($this->prorationAmountMinor, $this->prorationRemainingDays, $this->prorationPeriodDays);
+        session()->flash('billing-pricing-support-message', __('Proration calculated.'));
+    }
 
     public function captureSnapshot(CapturePricingSnapshot $capture): void
     {
