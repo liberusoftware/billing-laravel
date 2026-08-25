@@ -109,7 +109,12 @@ final class CollectionCaseList extends Component
     private function authorizedCase(int $caseId): CollectionCase
     {
         $teamId = data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id');
-        $case = CollectionCase::query()->whereKey($caseId)->where('team_id', $teamId)->firstOrFail();
+        $case = CollectionCase::query()
+            ->whereKey($caseId)
+            ->where(fn ($query) => $teamId === null
+                ? $query->whereNull('team_id')
+                : $query->where('team_id', $teamId)->orWhereNull('team_id'))
+            ->firstOrFail();
         Gate::authorize('update', $case);
 
         return $case;
