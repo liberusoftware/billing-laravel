@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Liberu\Billing\Communications\Filament\Resources;
 
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Actions\Action;
-use Filament\Forms\Components\Select;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\Communications\Actions\TransitionCommunicationService;

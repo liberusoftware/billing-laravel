@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Liberu\Billing\CustomerPortal\Livewire\Components;
 
+use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 use Liberu\Billing\CustomerPortal\Actions\CreatePortalItem;
 use Liberu\Billing\CustomerPortal\Actions\TransitionPortalItem;
 use Liberu\Billing\CustomerPortal\Models\PortalItem;
-use Illuminate\Support\Facades\Gate;
 use Livewire\Component;
 
 final class PortalItems extends Component
@@ -18,7 +18,9 @@ final class PortalItems extends Component
     public string $subject = '';
 
     public ?int $customerId = null;
+
     public ?int $selectedItemId = null;
+
     public string $status = 'open';
 
     public function createItem(CreatePortalItem $create): void

@@ -16,7 +16,9 @@ final class IspCapabilities extends Component
     public string $type = 'coverage';
 
     public string $name = '';
+
     public ?int $selectedCapabilityId = null;
+
     public string $status = 'active';
 
     public function createCapability(CreateIspCapability $create): void

@@ -16,6 +16,7 @@ final class PortalDashboard extends Component
     use WithPagination;
 
     public string $type = '';
+
     public int $perPage = 25;
 
     public function updatedType(): void

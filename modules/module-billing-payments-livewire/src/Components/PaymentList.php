@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Liberu\Billing\Payments\Livewire\Components;
 
-use Illuminate\View\View;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\View\View;
 use Liberu\Billing\Payments\Actions\CreatePayment;
 use Liberu\Billing\Payments\Models\Payment;
 use Liberu\Billing\Payments\Queries\ListPayments;

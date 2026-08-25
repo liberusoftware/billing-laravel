@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Liberu\Billing\Collections\Actions\OpenCollectionCase;
 use Liberu\Billing\Collections\Actions\ApplyCreditControl;
+use Liberu\Billing\Collections\Actions\OpenCollectionCase;
 use Liberu\Billing\Collections\Actions\PromisePayment;
 use Liberu\Billing\Collections\Actions\RecoverCollectionCase;
 use Liberu\Billing\Collections\Actions\ScheduleDunning;

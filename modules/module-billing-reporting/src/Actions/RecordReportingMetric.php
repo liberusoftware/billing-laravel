@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Liberu\Billing\Reporting\Actions;
 
-use Illuminate\Support\Facades\DB;
 use Carbon\CarbonImmutable;
+use Illuminate\Support\Facades\DB;
 use Liberu\Billing\Reporting\Enums\ReportingMetricType;
 use Liberu\Billing\Reporting\Models\ReportingMetric;
 

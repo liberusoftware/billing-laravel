@@ -16,7 +16,9 @@ final class CommunicationInventory extends Component
     public string $number = '';
 
     public string $type = 'phone';
+
     public ?int $selectedNumberId = null;
+
     public string $status = 'active';
 
     public function provision(ProvisionCommunicationNumber $provision): void

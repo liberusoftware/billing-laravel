@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Liberu\Billing\Orders\Livewire\Components;
 
+use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 use Liberu\Billing\Orders\Models\Cart;
 use Liberu\Billing\Orders\Models\Quote;
-use Illuminate\Support\Facades\Gate;
 use Livewire\Component;
 
 final class OrderSupport extends Component

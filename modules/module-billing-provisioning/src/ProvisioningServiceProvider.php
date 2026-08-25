@@ -6,10 +6,10 @@ namespace Liberu\Billing\Provisioning;
 
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
-use Liberu\Billing\Provisioning\Services\ProvisioningDriverRegistry;
 use Liberu\Billing\Provisioning\Models\ProvisionedService;
 use Liberu\Billing\Provisioning\Models\ProvisioningOperation;
 use Liberu\Billing\Provisioning\Policies\ProvisioningPolicy;
+use Liberu\Billing\Provisioning\Services\ProvisioningDriverRegistry;
 
 final class ProvisioningServiceProvider extends ServiceProvider
 {

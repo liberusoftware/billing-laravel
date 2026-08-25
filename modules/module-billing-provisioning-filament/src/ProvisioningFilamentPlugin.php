@@ -6,8 +6,8 @@ namespace Liberu\Billing\Provisioning\Filament;
 
 use Filament\Contracts\Plugin;
 use Filament\Panel;
-use Liberu\Billing\Provisioning\Filament\Resources\ProvisioningOperationResource;
 use Liberu\Billing\Provisioning\Filament\Resources\ProvisionedServiceResource;
+use Liberu\Billing\Provisioning\Filament\Resources\ProvisioningOperationResource;
 
 final class ProvisioningFilamentPlugin implements Plugin
 {

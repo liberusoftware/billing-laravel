@@ -7,10 +7,11 @@ namespace Liberu\Billing\Usage\Filament\Resources;
 use BackedEnum;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Liberu\Billing\Usage\Actions\CheckUsageThreshold;
 use Liberu\Billing\Usage\Actions\RateUsage;
@@ -39,7 +40,7 @@ final class MeterResource extends Resource
                     $quantity = (float) $data['quantity'];
                     $amount = app(RateUsage::class)->execute($record, $quantity);
                     $reached = app(CheckUsageThreshold::class)->execute($record, $quantity);
-                    \Filament\Notifications\Notification::make()->title('Usage rated')->body("{$amount} minor units; threshold ".($reached ? 'reached' : 'not reached').'.')->success()->send();
+                    Notification::make()->title('Usage rated')->body("{$amount} minor units; threshold ".($reached ? 'reached' : 'not reached').'.')->success()->send();
                 }),
         ])->defaultSort('id', 'desc');
     }

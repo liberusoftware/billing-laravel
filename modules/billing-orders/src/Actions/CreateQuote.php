@@ -17,6 +17,6 @@ final class CreateQuote
             throw new \InvalidArgumentException('Quote total and items are invalid.');
         }
 
-return DB::transaction(fn (): Quote => Quote::query()->create(['team_id' => $attributes['team_id'] ?? null, 'customer_id' => $attributes['customer_id'] ?? null, 'quote_number' => $attributes['quote_number'] ?? 'QUO-'.strtoupper(bin2hex(random_bytes(5))), 'currency' => strtoupper($attributes['currency']), 'total_minor' => $total, 'items' => $attributes['items'], 'valid_until' => $attributes['valid_until'] ?? null, 'status' => 'draft']));
+        return DB::transaction(fn (): Quote => Quote::query()->create(['team_id' => $attributes['team_id'] ?? null, 'customer_id' => $attributes['customer_id'] ?? null, 'quote_number' => $attributes['quote_number'] ?? 'QUO-'.strtoupper(bin2hex(random_bytes(5))), 'currency' => strtoupper($attributes['currency']), 'total_minor' => $total, 'items' => $attributes['items'], 'valid_until' => $attributes['valid_until'] ?? null, 'status' => 'draft']));
     }
 }

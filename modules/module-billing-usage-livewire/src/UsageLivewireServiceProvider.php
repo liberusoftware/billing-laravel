@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Liberu\Billing\Usage\Livewire;
 
 use Illuminate\Support\ServiceProvider;
-use Livewire\Livewire;
-use Liberu\Billing\Usage\Livewire\Components\UsageDashboard;
 use Liberu\Billing\Usage\Livewire\Components\MeterList;
+use Liberu\Billing\Usage\Livewire\Components\UsageDashboard;
 use Liberu\Billing\Usage\Livewire\Components\UsageRecords;
+use Livewire\Livewire;
 
 final class UsageLivewireServiceProvider extends ServiceProvider
 {

@@ -8,15 +8,15 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
-use Liberu\Billing\Collections\Actions\OpenCollectionCase;
 use Liberu\Billing\Collections\Actions\ApplyCreditControl;
+use Liberu\Billing\Collections\Actions\OpenCollectionCase;
 use Liberu\Billing\Collections\Actions\PromisePayment;
 use Liberu\Billing\Collections\Actions\RecoverCollectionCase;
 use Liberu\Billing\Collections\Actions\RetryCollectionCase;
-use Liberu\Billing\Collections\Actions\SuspendCollectionCase;
-use Liberu\Billing\Collections\Actions\WriteOffCollectionCase;
 use Liberu\Billing\Collections\Actions\ScheduleDunning;
 use Liberu\Billing\Collections\Actions\ScheduleReminder;
+use Liberu\Billing\Collections\Actions\SuspendCollectionCase;
+use Liberu\Billing\Collections\Actions\WriteOffCollectionCase;
 use Liberu\Billing\Collections\Models\CollectionCase;
 use Liberu\Billing\Collections\Queries\ListCollectionCases;
 
@@ -85,7 +85,7 @@ final class CollectionCaseController extends Controller
         Gate::authorize('update', $case);
         $data = $request->validate(['next_action_at' => ['required', 'date', 'after:now']]);
 
-        return response()->json(['data' => $this->resource($schedule->execute($case, new \DateTimeImmutable($data['next_action_at']))) ]);
+        return response()->json(['data' => $this->resource($schedule->execute($case, new \DateTimeImmutable($data['next_action_at'])))]);
     }
 
     public function reminder(Request $request, CollectionCase $case, ScheduleReminder $schedule): JsonResponse
@@ -93,7 +93,7 @@ final class CollectionCaseController extends Controller
         Gate::authorize('update', $case);
         $data = $request->validate(['next_action_at' => ['required', 'date', 'after:now']]);
 
-        return response()->json(['data' => $this->resource($schedule->execute($case, new \DateTimeImmutable($data['next_action_at']))) ]);
+        return response()->json(['data' => $this->resource($schedule->execute($case, new \DateTimeImmutable($data['next_action_at'])))]);
     }
 
     public function creditControl(Request $request, CollectionCase $case, ApplyCreditControl $apply): JsonResponse

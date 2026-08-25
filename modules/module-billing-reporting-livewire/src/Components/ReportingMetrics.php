@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Liberu\Billing\Reporting\Livewire\Components;
 
+use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 use Liberu\Billing\Reporting\Models\ReportingMetric;
-use Illuminate\Support\Facades\Gate;
 use Livewire\Component;
 
 final class ReportingMetrics extends Component

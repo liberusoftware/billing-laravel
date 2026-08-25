@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Liberu\Billing\Collections\Livewire\Components;
 
-use Illuminate\View\View;
 use Illuminate\Support\Facades\Gate;
-use Liberu\Billing\Collections\Actions\OpenCollectionCase;
+use Illuminate\View\View;
 use Liberu\Billing\Collections\Actions\ApplyCreditControl;
+use Liberu\Billing\Collections\Actions\OpenCollectionCase;
 use Liberu\Billing\Collections\Actions\PromisePayment;
 use Liberu\Billing\Collections\Actions\RecoverCollectionCase;
 use Liberu\Billing\Collections\Actions\RetryCollectionCase;

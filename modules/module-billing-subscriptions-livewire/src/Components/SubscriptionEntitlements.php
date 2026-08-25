@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Liberu\Billing\Subscriptions\Livewire\Components;
 
+use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 use Liberu\Billing\Subscriptions\Models\Subscription;
-use Illuminate\Support\Facades\Gate;
 use Livewire\Component;
 
 final class SubscriptionEntitlements extends Component

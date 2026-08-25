@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Liberu\Billing\Isp;
 
-use Liberu\Billing\Isp\Services\NetworkAdapterRegistry;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Liberu\Billing\Isp\Models\AccessService;
 use Liberu\Billing\Isp\Models\IspCapability;
 use Liberu\Billing\Isp\Policies\AccessServicePolicy;
 use Liberu\Billing\Isp\Policies\IspCapabilityPolicy;
+use Liberu\Billing\Isp\Services\NetworkAdapterRegistry;
 
 final class IspServiceProvider extends ServiceProvider
 {

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Liberu\Billing\Reporting\Livewire;
 
 use Illuminate\Support\ServiceProvider;
-use Liberu\Billing\Reporting\Livewire\Components\ReportingMetrics;
 use Liberu\Billing\Reporting\Livewire\Components\ReportingDashboard;
+use Liberu\Billing\Reporting\Livewire\Components\ReportingMetrics;
 use Liberu\Billing\Reporting\Livewire\Components\ReportingSnapshots;
 use Livewire\Livewire;
 

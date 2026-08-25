@@ -18,6 +18,6 @@ final class UpsertDnsRecord
             throw new InvalidArgumentException('DNS record details are invalid.');
         }
 
-return DB::transaction(fn (): DnsRecord => DnsRecord::query()->updateOrCreate(['team_id' => $teamId, 'domain_id' => (int) $attributes['domain_id'], 'type' => $type, 'host' => $attributes['host']], ['value' => $attributes['value'], 'ttl' => max(60, (int) ($attributes['ttl'] ?? 3600))]));
+        return DB::transaction(fn (): DnsRecord => DnsRecord::query()->updateOrCreate(['team_id' => $teamId, 'domain_id' => (int) $attributes['domain_id'], 'type' => $type, 'host' => $attributes['host']], ['value' => $attributes['value'], 'ttl' => max(60, (int) ($attributes['ttl'] ?? 3600))]));
     }
 }

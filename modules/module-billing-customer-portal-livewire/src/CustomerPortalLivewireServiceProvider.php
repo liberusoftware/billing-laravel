@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Liberu\Billing\CustomerPortal\Livewire;
 
 use Illuminate\Support\ServiceProvider;
-use Liberu\Billing\CustomerPortal\Livewire\Components\PortalItems;
 use Liberu\Billing\CustomerPortal\Livewire\Components\PortalDashboard;
+use Liberu\Billing\CustomerPortal\Livewire\Components\PortalItems;
 use Livewire\Livewire;
 
 final class CustomerPortalLivewireServiceProvider extends ServiceProvider

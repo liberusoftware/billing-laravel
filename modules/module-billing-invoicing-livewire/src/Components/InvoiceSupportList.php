@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Liberu\Billing\Invoicing\Livewire\Components;
 
+use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 use Liberu\Billing\Invoicing\Models\InvoiceSupport;
-use Illuminate\Support\Facades\Gate;
 use Livewire\Component;
 
 final class InvoiceSupportList extends Component

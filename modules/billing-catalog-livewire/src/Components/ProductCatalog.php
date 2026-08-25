@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Liberu\Billing\Catalog\Livewire\Components;
 
-use Illuminate\View\View;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\View\View;
 use Liberu\Billing\Catalog\Actions\CreateProduct;
 use Liberu\Billing\Catalog\Actions\TransitionProductLifecycle;
 use Liberu\Billing\Catalog\Enums\ProductStatus;
@@ -24,7 +24,9 @@ final class ProductCatalog extends Component
     public int $basePriceMinor = 0;
 
     public bool $showCreate = false;
+
     public ?int $selectedProductId = null;
+
     public string $status = 'draft';
 
     public function save(CreateProduct $create): void

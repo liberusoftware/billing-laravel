@@ -18,7 +18,7 @@ final readonly class CheckoutCart
             throw new \LogicException('Only open, non-expired carts can be checked out.');
         }
 
-return $this->database->transaction(function () use ($cart, $attributes): Order {
+        return $this->database->transaction(function () use ($cart, $attributes): Order {
             $order = $this->createOrder->execute([...$attributes, 'team_id' => $cart->team_id, 'customer_id' => $cart->customer_id, 'currency' => $cart->currency]);
             $cart->update(['status' => 'checked_out']);
 

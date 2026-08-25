@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Liberu\Billing\Domains\Livewire\Components;
 
+use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 use Liberu\Billing\Domains\Models\DomainContact;
-use Illuminate\Support\Facades\Gate;
 use Livewire\Component;
 
 final class DomainSupport extends Component

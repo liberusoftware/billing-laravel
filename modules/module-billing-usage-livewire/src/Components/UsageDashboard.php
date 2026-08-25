@@ -4,16 +4,17 @@ declare(strict_types=1);
 
 namespace Liberu\Billing\Usage\Livewire\Components;
 
-use Illuminate\View\View;
 use Illuminate\Support\Facades\Gate;
-use Livewire\Component;
+use Illuminate\View\View;
 use Liberu\Billing\Usage\Models\Meter;
 use Liberu\Billing\Usage\Queries\AggregateUsage;
 use Liberu\Billing\Usage\Queries\ListMeters;
+use Livewire\Component;
 
 final class UsageDashboard extends Component
 {
     public ?int $meterId = null;
+
     public ?int $customerId = null;
 
     public function render(ListMeters $meters, AggregateUsage $aggregate): View

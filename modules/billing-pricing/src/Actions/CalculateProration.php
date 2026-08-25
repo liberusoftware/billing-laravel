@@ -12,6 +12,6 @@ final class CalculateProration
             throw new \InvalidArgumentException('Proration inputs are invalid.');
         }
 
-return (int) round($amountMinor * $remainingDays / $periodDays);
+        return (int) round($amountMinor * $remainingDays / $periodDays);
     }
 }

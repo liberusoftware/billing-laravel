@@ -6,10 +6,10 @@ namespace Liberu\Billing\Invoicing\Filament;
 
 use Filament\Contracts\Plugin;
 use Filament\Panel;
-use Liberu\Billing\Invoicing\Filament\Resources\InvoiceResource;
-use Liberu\Billing\Invoicing\Filament\Resources\InvoiceSupportResource;
 use Liberu\Billing\Invoicing\Filament\Resources\InvoiceLineResource;
+use Liberu\Billing\Invoicing\Filament\Resources\InvoiceResource;
 use Liberu\Billing\Invoicing\Filament\Resources\InvoiceScheduleResource;
+use Liberu\Billing\Invoicing\Filament\Resources\InvoiceSupportResource;
 
 final class InvoicingFilamentPlugin implements Plugin
 {

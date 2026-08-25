@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Liberu\Billing\Catalog\Livewire\Components;
 
-use Illuminate\View\View;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\View\View;
 use Liberu\Billing\Catalog\Actions\CreateCatalogRecord;
 use Liberu\Billing\Catalog\Actions\TransitionCatalogLifecycle;
 use Liberu\Billing\Catalog\Enums\CatalogStatus;
