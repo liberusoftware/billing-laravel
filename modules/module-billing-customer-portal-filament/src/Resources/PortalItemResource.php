@@ -14,12 +14,15 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\CustomerPortal\Actions\TransitionPortalItem;
+use Liberu\Billing\CustomerPortal\Filament\Concerns\ScopesCurrentTeam;
 use Liberu\Billing\CustomerPortal\Filament\Resources\PortalItemResource\Pages\CreatePortalItem;
 use Liberu\Billing\CustomerPortal\Filament\Resources\PortalItemResource\Pages\ListPortalItems;
 use Liberu\Billing\CustomerPortal\Models\PortalItem;
 
 final class PortalItemResource extends Resource
 {
+    use ScopesCurrentTeam;
+
     protected static ?string $model = PortalItem::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';

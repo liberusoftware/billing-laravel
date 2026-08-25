@@ -13,12 +13,15 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\CustomerPortal\Actions\TransitionPortalRequest;
+use Liberu\Billing\CustomerPortal\Filament\Concerns\ScopesCurrentTeam;
 use Liberu\Billing\CustomerPortal\Filament\Resources\PortalRequestResource\Pages\CreatePortalRequest;
 use Liberu\Billing\CustomerPortal\Filament\Resources\PortalRequestResource\Pages\ListPortalRequests;
 use Liberu\Billing\CustomerPortal\Models\PortalRequest;
 
 final class PortalRequestResource extends Resource
 {
+    use ScopesCurrentTeam;
+
     protected static ?string $model = PortalRequest::class;
 
     public static function form(Schema $schema): Schema

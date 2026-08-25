@@ -15,12 +15,15 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Liberu\Billing\Usage\Actions\CheckUsageThreshold;
 use Liberu\Billing\Usage\Actions\RateUsage;
+use Liberu\Billing\Usage\Filament\Concerns\ScopesCurrentTeam;
 use Liberu\Billing\Usage\Filament\Resources\MeterResource\Pages\CreateMeter;
 use Liberu\Billing\Usage\Filament\Resources\MeterResource\Pages\ListMeters;
 use Liberu\Billing\Usage\Models\Meter;
 
 final class MeterResource extends Resource
 {
+    use ScopesCurrentTeam;
+
     protected static ?string $model = Meter::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-chart-bar';
@@ -32,7 +35,7 @@ final class MeterResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table->columns([TextColumn::make('name')->searchable(), TextColumn::make('code')->sortable(), TextColumn::make('unit'), TextColumn::make('unit_price_minor'), TextColumn::make('currency'), TextColumn::make('active')->boolean()])->actions([
+        return $table->columns([TextColumn::make('name')->searchable(), TextColumn::make('code')->sortable(), TextColumn::make('unit'), TextColumn::make('unit_price_minor'), TextColumn::make('currency'), TextColumn::make('active')->badge()])->actions([
             Action::make('rate')
                 ->label('Rate usage')
                 ->form([TextInput::make('quantity')->numeric()->minValue(0)->required()])
