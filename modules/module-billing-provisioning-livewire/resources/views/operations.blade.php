@@ -3,6 +3,11 @@
     @if (session()->has('module-billing-provisioning-message'))
         <p role="status">{{ session('module-billing-provisioning-message') }}</p>
     @endif
+    <form wire:submit="createService">
+        <label>{{ __('Provider') }} <input wire:model="provider" maxlength="100" required></label>
+        <label>{{ __('External ID') }} <input wire:model="externalId" maxlength="255"></label>
+        <button type="submit">{{ __('Create service') }}</button>
+    </form>
     <form wire:submit="queue">
         <label>{{ __('Service') }}
             <select wire:model="selectedServiceId" required>
@@ -21,6 +26,9 @@
         </label>
         <button type="submit">{{ __('Queue operation') }}</button>
         <button type="button" wire:click="reconcile">{{ __('Reconcile service') }}</button>
+        <label>{{ __('State') }} <select wire:model="state">@foreach (['pending', 'provisioning', 'active', 'suspended', 'failed', 'deprovisioning', 'deprovisioned'] as $availableState)<option value="{{ $availableState }}">{{ ucfirst($availableState) }}</option>@endforeach</select></label>
+        <label>{{ __('Error') }} <input wire:model="lastError" maxlength="2000"></label>
+        <button type="button" wire:click="transition">{{ __('Transition service') }}</button>
     </form>
     <ul>
         @forelse ($operations as $operation)
