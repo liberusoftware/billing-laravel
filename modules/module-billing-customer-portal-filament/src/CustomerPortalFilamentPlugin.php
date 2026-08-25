@@ -18,7 +18,7 @@ final class CustomerPortalFilamentPlugin implements Plugin
 
     public function getId(): string
     {
-        return 'liberu-billing-customer-portal';
+        return 'module-billing-customer-portal-filament';
     }
 
     public function register(Panel $panel): void

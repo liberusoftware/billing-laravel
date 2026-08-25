@@ -20,7 +20,7 @@ final class CommunicationsFilamentPlugin implements Plugin
 
     public function getId(): string
     {
-        return 'liberu-billing-communications';
+        return 'module-billing-communications-filament';
     }
 
     public function register(Panel $panel): void

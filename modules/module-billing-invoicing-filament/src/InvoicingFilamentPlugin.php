@@ -20,7 +20,7 @@ final class InvoicingFilamentPlugin implements Plugin
 
     public function getId(): string
     {
-        return 'liberu-billing-invoicing';
+        return 'module-billing-invoicing-filament';
     }
 
     public function register(Panel $panel): void

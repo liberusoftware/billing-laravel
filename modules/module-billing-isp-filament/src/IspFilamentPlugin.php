@@ -18,7 +18,7 @@ final class IspFilamentPlugin implements Plugin
 
     public function getId(): string
     {
-        return 'liberu-billing-isp';
+        return 'module-billing-isp-filament';
     }
 
     public function register(Panel $panel): void

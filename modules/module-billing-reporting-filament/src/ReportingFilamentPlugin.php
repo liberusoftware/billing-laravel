@@ -18,7 +18,7 @@ final class ReportingFilamentPlugin implements Plugin
 
     public function getId(): string
     {
-        return 'liberu-billing-reporting';
+        return 'module-billing-reporting-filament';
     }
 
     public function register(Panel $panel): void

@@ -18,7 +18,7 @@ final class UsageFilamentPlugin implements Plugin
 
     public function getId(): string
     {
-        return 'liberu-billing-usage';
+        return 'module-billing-usage-filament';
     }
 
     public function register(Panel $panel): void

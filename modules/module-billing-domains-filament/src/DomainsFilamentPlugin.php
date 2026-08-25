@@ -21,7 +21,7 @@ final class DomainsFilamentPlugin implements Plugin
 
     public function getId(): string
     {
-        return 'liberu-billing-domains';
+        return 'module-billing-domains-filament';
     }
 
     public function register(Panel $panel): void

@@ -18,7 +18,7 @@ final class ProvisioningFilamentPlugin implements Plugin
 
     public function getId(): string
     {
-        return 'liberu-billing-provisioning';
+        return 'module-billing-provisioning-filament';
     }
 
     public function register(Panel $panel): void
