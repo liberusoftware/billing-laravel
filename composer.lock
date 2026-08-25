@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4d5a99bb8e873ba33e5aedd73b21d6bb",
+    "content-hash": "606b839a91c90d729cae625d32172117",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -6446,6 +6446,41 @@
             }
         },
         {
+            "name": "liberusoftware/billing-paddle",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-paddle",
+                "reference": "c12bc800c3d9c9d5bae13f27e4640141b77c78ae"
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/support": "^13.0",
+                "liberusoftware/module-billing-payments": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-paddle"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Paddle\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Paddle Billing gateway adapter for Liberu Billing Payments.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
             "name": "liberusoftware/billing-pricing",
             "version": "0.1.2",
             "dist": {
@@ -6578,6 +6613,40 @@
                 "MIT"
             ],
             "description": "Livewire adapter for Liberu Billing Pricing.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/billing-stripe",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-stripe",
+                "reference": "fe6746a40d789454e02eb1bd3e86b062debd614b"
+            },
+            "require": {
+                "liberusoftware/module-billing-payments": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5",
+                "stripe/stripe-php": "^20.3"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-stripe"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Stripe\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Stripe gateway adapter for Liberu Billing Payments.",
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -7535,11 +7604,11 @@
                 "reference": "efe53a2e8d90702f6f98cdc49637dba979d24e79"
             },
             "require": {
-                "php": "^8.5",
                 "illuminate/database": "^13.0",
                 "illuminate/events": "^13.0",
                 "illuminate/support": "^13.0",
-                "liberusoftware/module-manager": "^1.0"
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
             },
             "type": "liberu-module",
             "extra": {
@@ -7570,9 +7639,9 @@
                 "reference": "91a0fbf400d78c2a3061b6ecd6786ef8403dbebe"
             },
             "require": {
-                "php": "^8.5",
                 "liberusoftware/module-billing-communications": "^0.1",
-                "liberusoftware/module-manager": "^1.0"
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
             },
             "type": "liberu-module",
             "extra": {
@@ -7603,9 +7672,9 @@
                 "reference": "09054ea99e51dcf1ed209f7a4d1d126ed58794f0"
             },
             "require": {
-                "php": "^8.5",
                 "liberusoftware/module-billing-communications": "^0.1",
-                "liberusoftware/module-manager": "^1.0"
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
             },
             "type": "liberu-module",
             "extra": {
@@ -7636,9 +7705,9 @@
                 "reference": "784e61c156df3fe29438b19f4d0b25fc91e42edc"
             },
             "require": {
-                "php": "^8.5",
                 "liberusoftware/module-billing-communications": "^0.1",
-                "liberusoftware/module-manager": "^1.0"
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
             },
             "type": "liberu-module",
             "extra": {
@@ -7669,11 +7738,11 @@
                 "reference": "481b4798124698d68fe680591d04d0255b140fa7"
             },
             "require": {
-                "php": "^8.5",
                 "illuminate/database": "^13.0",
                 "illuminate/events": "^13.0",
                 "illuminate/support": "^13.0",
-                "liberusoftware/module-manager": "^1.0"
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
             },
             "type": "liberu-module",
             "extra": {
@@ -7704,9 +7773,9 @@
                 "reference": "d0d10b4845e8b1038321a1ccad798a1f6d35e582"
             },
             "require": {
-                "php": "^8.5",
                 "liberusoftware/module-billing-customer-portal": "^0.1",
-                "liberusoftware/module-manager": "^1.0"
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
             },
             "type": "liberu-module",
             "extra": {
@@ -7737,9 +7806,9 @@
                 "reference": "28f6a55339c3a71915872efdee784a8c3a581f88"
             },
             "require": {
-                "php": "^8.5",
                 "liberusoftware/module-billing-customer-portal": "^0.1",
-                "liberusoftware/module-manager": "^1.0"
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
             },
             "type": "liberu-module",
             "extra": {
@@ -7770,9 +7839,9 @@
                 "reference": "ede404c70a608c1c88ef48644d190dd241329b01"
             },
             "require": {
-                "php": "^8.5",
                 "liberusoftware/module-billing-customer-portal": "^0.1",
-                "liberusoftware/module-manager": "^1.0"
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
             },
             "type": "liberu-module",
             "extra": {
@@ -7803,11 +7872,11 @@
                 "reference": "131ae74c2bcfbd341722c870a037dd660774a09b"
             },
             "require": {
-                "php": "^8.5",
                 "illuminate/database": "^13.0",
                 "illuminate/events": "^13.0",
                 "illuminate/support": "^13.0",
-                "liberusoftware/module-manager": "^1.0"
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
             },
             "type": "liberu-module",
             "extra": {
@@ -7838,9 +7907,9 @@
                 "reference": "779a90d97aa2b0e77a5917d555d8f1c4396c0f01"
             },
             "require": {
-                "php": "^8.5",
                 "liberusoftware/module-billing-domains": "^0.1",
-                "liberusoftware/module-manager": "^1.0"
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
             },
             "type": "liberu-module",
             "extra": {
@@ -7871,9 +7940,9 @@
                 "reference": "2f71ffac76b13d19e31d18348f68b6769b1a7e72"
             },
             "require": {
-                "php": "^8.5",
                 "liberusoftware/module-billing-domains": "^0.1",
-                "liberusoftware/module-manager": "^1.0"
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
             },
             "type": "liberu-module",
             "extra": {
@@ -7904,9 +7973,9 @@
                 "reference": "211c934b5aca0c1784bbe0f82cdf612d633af861"
             },
             "require": {
-                "php": "^8.5",
                 "liberusoftware/module-billing-domains": "^0.1",
-                "liberusoftware/module-manager": "^1.0"
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
             },
             "type": "liberu-module",
             "extra": {
@@ -7937,11 +8006,11 @@
                 "reference": "9b9aabda5fd5d46c506360f094c205e8fd4f80d6"
             },
             "require": {
-                "php": "^8.5",
                 "illuminate/database": "^13.0",
                 "illuminate/events": "^13.0",
                 "illuminate/support": "^13.0",
-                "liberusoftware/module-manager": "^1.0"
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
             },
             "type": "liberu-module",
             "extra": {
@@ -7972,9 +8041,9 @@
                 "reference": "9d67a5a269eb4143ef13270d206bdbb254240f9b"
             },
             "require": {
-                "php": "^8.5",
                 "liberusoftware/module-billing-hosting": "^0.1",
-                "liberusoftware/module-manager": "^1.0"
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
             },
             "type": "liberu-module",
             "extra": {
@@ -8005,9 +8074,9 @@
                 "reference": "b5f47ec9f787438cd45d1f65d26c2ec813ddee10"
             },
             "require": {
-                "php": "^8.5",
                 "liberusoftware/module-billing-hosting": "^0.1",
-                "liberusoftware/module-manager": "^1.0"
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
             },
             "type": "liberu-module",
             "extra": {
@@ -8038,9 +8107,9 @@
                 "reference": "f3fd019c833dbf7cce7b297cc84295965aef4a6d"
             },
             "require": {
-                "php": "^8.5",
                 "liberusoftware/module-billing-hosting": "^0.1",
-                "liberusoftware/module-manager": "^1.0"
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
             },
             "type": "liberu-module",
             "extra": {
@@ -8210,11 +8279,11 @@
                 "reference": "80925740d75cd9dfde751e0c9605fda9cf1b5cd8"
             },
             "require": {
-                "php": "^8.5",
                 "illuminate/database": "^13.0",
                 "illuminate/events": "^13.0",
                 "illuminate/support": "^13.0",
-                "liberusoftware/module-manager": "^1.0"
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
             },
             "type": "liberu-module",
             "extra": {
@@ -8245,9 +8314,9 @@
                 "reference": "26e93d0deb3ea8f5411fa7e8931646ff53a756a2"
             },
             "require": {
-                "php": "^8.5",
                 "liberusoftware/module-billing-isp": "^0.1",
-                "liberusoftware/module-manager": "^1.0"
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
             },
             "type": "liberu-module",
             "extra": {
@@ -8278,9 +8347,9 @@
                 "reference": "9567b4dc7bc97e73a0bd0c5e7f33f1aaac58c1a7"
             },
             "require": {
-                "php": "^8.5",
                 "liberusoftware/module-billing-isp": "^0.1",
-                "liberusoftware/module-manager": "^1.0"
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
             },
             "type": "liberu-module",
             "extra": {
@@ -8311,9 +8380,9 @@
                 "reference": "c965d54e74d7d5670b5b1f3b20eb1ac11bd0a2ed"
             },
             "require": {
-                "php": "^8.5",
                 "liberusoftware/module-billing-isp": "^0.1",
-                "liberusoftware/module-manager": "^1.0"
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
             },
             "type": "liberu-module",
             "extra": {
@@ -8365,140 +8434,6 @@
                 "MIT"
             ],
             "description": "Provider-neutral payment methods, capture, allocation, refunds, disputes, and reconciliation.",
-            "transport-options": {
-                "symlink": false,
-                "relative": true
-            }
-        },
-        {
-            "name": "liberusoftware/module-billing-reporting",
-            "version": "0.1.0",
-            "dist": {
-                "type": "path",
-                "url": "modules/module-billing-reporting",
-                "reference": "27656d238697064676de01e5d91535caf2160a28"
-            },
-            "require": {
-                "php": "^8.5",
-                "illuminate/database": "^13.0",
-                "illuminate/events": "^13.0",
-                "illuminate/support": "^13.0",
-                "liberusoftware/module-manager": "^1.0"
-            },
-            "type": "liberu-module",
-            "extra": {
-                "liberu": {
-                    "name": "module-billing-reporting"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Liberu\\Billing\\Reporting\\": "src/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "Provider-neutral Billing Reporting domain module.",
-            "transport-options": {
-                "symlink": false,
-                "relative": true
-            }
-        },
-        {
-            "name": "liberusoftware/module-billing-reporting-api",
-            "version": "0.1.0",
-            "dist": {
-                "type": "path",
-                "url": "modules/module-billing-reporting-api",
-                "reference": "3feca0e43c86f32f3eeedf811158bcb5c4fde00a"
-            },
-            "require": {
-                "php": "^8.5",
-                "liberusoftware/module-billing-reporting": "^0.1",
-                "liberusoftware/module-manager": "^1.0"
-            },
-            "type": "liberu-module",
-            "extra": {
-                "liberu": {
-                    "name": "module-billing-reporting-api"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Liberu\\Billing\\Reporting\\Api\\": "src/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "Api adapter for Billing Reporting.",
-            "transport-options": {
-                "symlink": false,
-                "relative": true
-            }
-        },
-        {
-            "name": "liberusoftware/module-billing-reporting-filament",
-            "version": "0.1.0",
-            "dist": {
-                "type": "path",
-                "url": "modules/module-billing-reporting-filament",
-                "reference": "26058d15ed5ff2535ea7992b99f2d6f5186bd61c"
-            },
-            "require": {
-                "php": "^8.5",
-                "liberusoftware/module-billing-reporting": "^0.1",
-                "liberusoftware/module-manager": "^1.0"
-            },
-            "type": "liberu-module",
-            "extra": {
-                "liberu": {
-                    "name": "module-billing-reporting-filament"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Liberu\\Billing\\Reporting\\Filament\\": "src/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "Filament adapter for Billing Reporting.",
-            "transport-options": {
-                "symlink": false,
-                "relative": true
-            }
-        },
-        {
-            "name": "liberusoftware/module-billing-reporting-livewire",
-            "version": "0.1.0",
-            "dist": {
-                "type": "path",
-                "url": "modules/module-billing-reporting-livewire",
-                "reference": "84beb6e766d2d3a14da1b8b888f930328b23dbd6"
-            },
-            "require": {
-                "php": "^8.5",
-                "liberusoftware/module-billing-reporting": "^0.1",
-                "liberusoftware/module-manager": "^1.0"
-            },
-            "type": "liberu-module",
-            "extra": {
-                "liberu": {
-                    "name": "module-billing-reporting-livewire"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Liberu\\Billing\\Reporting\\Livewire\\": "src/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "Livewire adapter for Billing Reporting.",
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -8652,12 +8587,12 @@
                 "reference": "2655bdccd31de420f250f873159007eac0614d28"
             },
             "require": {
-                "php": "^8.5",
                 "illuminate/http": "^13.0",
                 "illuminate/routing": "^13.0",
                 "laravel/sanctum": "^4.0",
                 "liberusoftware/module-billing-provisioning": "^0.1",
-                "liberusoftware/module-manager": "^1.0"
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
             },
             "type": "liberu-module",
             "extra": {
@@ -8688,10 +8623,10 @@
                 "reference": "f97638d44e930483127b132fea3f37879601903b"
             },
             "require": {
-                "php": "^8.5",
                 "filament/filament": "~5.1",
                 "liberusoftware/module-billing-provisioning": "^0.1",
-                "liberusoftware/module-manager": "^1.0"
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
             },
             "type": "liberu-module",
             "extra": {
@@ -8722,10 +8657,10 @@
                 "reference": "cea20897d7707d6a44113c1d7f71040a1bc6c59c"
             },
             "require": {
-                "php": "^8.5",
-                "livewire/livewire": "^4.0",
                 "liberusoftware/module-billing-provisioning": "^0.1",
-                "liberusoftware/module-manager": "^1.0"
+                "liberusoftware/module-manager": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
             },
             "type": "liberu-module",
             "extra": {
@@ -8742,6 +8677,140 @@
                 "MIT"
             ],
             "description": "Livewire adapter for Liberu Billing Provisioning.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-reporting",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-reporting",
+                "reference": "27656d238697064676de01e5d91535caf2160a28"
+            },
+            "require": {
+                "illuminate/database": "^13.0",
+                "illuminate/events": "^13.0",
+                "illuminate/support": "^13.0",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-reporting"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Reporting\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Provider-neutral Billing Reporting domain module.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-reporting-api",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-reporting-api",
+                "reference": "3feca0e43c86f32f3eeedf811158bcb5c4fde00a"
+            },
+            "require": {
+                "liberusoftware/module-billing-reporting": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-reporting-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Reporting\\Api\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Api adapter for Billing Reporting.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-reporting-filament",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-reporting-filament",
+                "reference": "26058d15ed5ff2535ea7992b99f2d6f5186bd61c"
+            },
+            "require": {
+                "liberusoftware/module-billing-reporting": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-reporting-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Reporting\\Filament\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament adapter for Billing Reporting.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-reporting-livewire",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-reporting-livewire",
+                "reference": "84beb6e766d2d3a14da1b8b888f930328b23dbd6"
+            },
+            "require": {
+                "liberusoftware/module-billing-reporting": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-reporting-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Reporting\\Livewire\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire adapter for Billing Reporting.",
             "transport-options": {
                 "symlink": false,
                 "relative": true
