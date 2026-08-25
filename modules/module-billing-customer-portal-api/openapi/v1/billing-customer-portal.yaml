@@ -8,6 +8,12 @@ paths:
       security: [{sanctum: []}]
       parameters: [{$ref: '#/components/parameters/PageSize'}]
       responses: {'200': {$ref: '#/components/responses/Collection'}, '401': {$ref: '#/components/responses/Unauthorized'}, '429': {$ref: '#/components/responses/RateLimited'}}
+    post:
+      operationId: billing.customerPortal.requests.create
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/PortalRequest'}}}}
+      responses: {'201': {$ref: '#/components/responses/Document'}, '422': {$ref: '#/components/responses/ValidationError'}}
   /api/v1/billing/customer-portal/items:
     get:
       operationId: billing.customerPortal.items.list
@@ -33,6 +39,10 @@ components:
   schemas:
     PortalItemRequest:
       type: object
-      required: [type, title]
-      properties: {type: {type: string, enum: [profile, orders, services, usage, invoices, payments, tickets, changes, cancellation]}, title: {type: string, maxLength: 255}, payload: {type: object, additionalProperties: true}}
+      required: [type, subject]
+      properties: {type: {type: string, enum: [profile, orders, services, usage, invoices, payments, tickets, changes, cancellation]}, subject: {type: string, maxLength: 255}, customer_id: {type: integer}, payload: {type: object, additionalProperties: true}}
+    PortalRequest:
+      type: object
+      required: [name]
+      properties: {name: {type: string, maxLength: 255}, status: {type: string, enum: [active, closed, failed]}, metadata: {type: object, additionalProperties: true}}
   securitySchemes: {sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}}

@@ -18,7 +18,7 @@ final class PortalItemController extends Controller
     {
         Gate::authorize('viewAny', PortalItem::class);
 
-        return response()->json($list->handle($this->team($request), $request->string('type')->toString() ?: null));
+        return response()->json($list->handle($this->team($request), $request->string('type')->toString() ?: null, $request->integer('per_page', 25)));
     }
 
     public function store(Request $request, CreatePortalItem $create): JsonResponse
@@ -31,6 +31,9 @@ final class PortalItemController extends Controller
 
     private function team(Request $request): int
     {
-        return (int) (data_get($request->user(), 'current_team_id') ?? data_get($request->user(), 'currentTeam.id'));
+        $team = data_get($request->user(), 'current_team_id') ?? data_get($request->user(), 'currentTeam.id');
+        abort_if($team === null, 403, 'A current team is required.');
+
+        return (int) $team;
     }
 }
