@@ -27,8 +27,16 @@ final class PortalDashboard extends Component
     public function render(ListPortalItems $items): View
     {
         Gate::authorize('viewAny', PortalItem::class);
-        $team = (int) (data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id'));
+        $team = $this->teamId();
 
         return view('billing-customer-portal-livewire::dashboard', ['items' => $items->handle($team, $this->type !== '' ? $this->type : null)]);
+    }
+
+    private function teamId(): int
+    {
+        $team = data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id');
+        abort_if($team === null, 403, 'A current team is required.');
+
+        return (int) $team;
     }
 }

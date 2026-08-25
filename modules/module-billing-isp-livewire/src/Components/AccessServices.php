@@ -23,7 +23,7 @@ final class AccessServices extends Component
     {
         Gate::authorize('create', AccessService::class);
         $this->validate(['name' => ['required', 'string', 'max:255']]);
-        $team = (int) (data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id'));
+        $team = $this->teamId();
         $create->handle($team, ['name' => $this->name]);
         $this->reset('name');
         session()->flash('isp-services-message', __('ISP access service created.'));
@@ -32,7 +32,7 @@ final class AccessServices extends Component
     public function transitionService(TransitionAccessService $transition): void
     {
         $this->validate(['selectedServiceId' => ['required', 'integer'], 'status' => ['required', 'in:pending,active,suspended,cancelled,failed']]);
-        $team = (int) (data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id'));
+        $team = $this->teamId();
         $service = AccessService::query()->forTeam($team)->findOrFail($this->selectedServiceId);
         Gate::authorize('update', $service);
         $transition->handle($service, $this->status);
@@ -42,8 +42,16 @@ final class AccessServices extends Component
     public function render(): View
     {
         Gate::authorize('viewAny', AccessService::class);
-        $team = (int) (data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id'));
+        $team = $this->teamId();
 
         return view('module-billing-isp-livewire::services', ['services' => AccessService::query()->forTeam($team)->latest()->get()]);
+    }
+
+    private function teamId(): int
+    {
+        $team = data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id');
+        abort_if($team === null, 403, 'A current team is required.');
+
+        return (int) $team;
     }
 }

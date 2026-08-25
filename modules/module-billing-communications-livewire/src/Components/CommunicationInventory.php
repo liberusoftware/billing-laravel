@@ -25,7 +25,9 @@ final class CommunicationInventory extends Component
     {
         Gate::authorize('create', CommunicationNumber::class);
         $this->validate(['number' => ['required', 'string', 'max:64'], 'type' => ['required', 'string', 'max:32']]);
-        $team = (int) (data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id'));
+        $team = data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id');
+        abort_if($team === null, 403, 'A current team is required.');
+        $team = (int) $team;
         $provision->handle($team, ['number' => $this->number, 'type' => $this->type]);
         $this->reset('number');
         session()->flash('billing-communications-message', __('Communication number provisioned.'));
@@ -34,7 +36,9 @@ final class CommunicationInventory extends Component
     public function render(): View
     {
         Gate::authorize('viewAny', CommunicationNumber::class);
-        $team = (int) (data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id'));
+        $team = data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id');
+        abort_if($team === null, 403, 'A current team is required.');
+        $team = (int) $team;
 
         return view('billing-communications-livewire::communication-inventory', ['numbers' => CommunicationNumber::query()->where('team_id', $team)->latest()->get()]);
     }
@@ -42,7 +46,9 @@ final class CommunicationInventory extends Component
     public function transitionNumber(TransitionCommunicationNumber $transition): void
     {
         $this->validate(['selectedNumberId' => ['required', 'integer'], 'status' => ['required', 'in:available,active,suspended,released,failed']]);
-        $team = (int) (data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id'));
+        $team = data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id');
+        abort_if($team === null, 403, 'A current team is required.');
+        $team = (int) $team;
         $number = CommunicationNumber::query()->whereKey($this->selectedNumberId)->where('team_id', $team)->firstOrFail();
         Gate::authorize('update', $number);
         $transition->handle($number, $this->status);

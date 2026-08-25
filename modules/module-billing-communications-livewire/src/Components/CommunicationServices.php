@@ -23,7 +23,9 @@ final class CommunicationServices extends Component
     {
         Gate::authorize('create', CommunicationService::class);
         $this->validate(['name' => ['required', 'string', 'max:255']]);
-        $team = (int) (data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id'));
+        $team = data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id');
+        abort_if($team === null, 403, 'A current team is required.');
+        $team = (int) $team;
         $create->handle($team, ['name' => $this->name]);
         $this->reset('name');
         session()->flash('billing-communications-services-message', __('Communication service created.'));
@@ -32,7 +34,9 @@ final class CommunicationServices extends Component
     public function transitionService(TransitionCommunicationService $transition): void
     {
         $this->validate(['selectedServiceId' => ['required', 'integer'], 'status' => ['required', 'in:pending,active,suspended,cancelled,failed']]);
-        $team = (int) (data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id'));
+        $team = data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id');
+        abort_if($team === null, 403, 'A current team is required.');
+        $team = (int) $team;
         $service = CommunicationService::query()->forTeam($team)->findOrFail($this->selectedServiceId);
         Gate::authorize('update', $service);
         $transition->handle($service, $this->status);
@@ -42,7 +46,9 @@ final class CommunicationServices extends Component
     public function render(): View
     {
         Gate::authorize('viewAny', CommunicationService::class);
-        $team = (int) (data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id'));
+        $team = data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id');
+        abort_if($team === null, 403, 'A current team is required.');
+        $team = (int) $team;
 
         return view('billing-communications-livewire::services', ['services' => CommunicationService::query()->forTeam($team)->latest()->get()]);
     }

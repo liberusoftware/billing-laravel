@@ -36,7 +36,7 @@ final class ProvisioningOperations extends Component
     {
         Gate::authorize('create', ProvisionedService::class);
         $this->validate(['provider' => ['required', 'string', 'max:100'], 'externalId' => ['nullable', 'string', 'max:255']]);
-        $team = data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id');
+        $team = $this->teamId();
         $create->execute(['team_id' => $team, 'provider' => $this->provider, 'external_id' => $this->externalId ?: null]);
         $this->reset(['provider', 'externalId']);
         session()->flash('module-billing-provisioning-message', __('Provisioned service created.'));
@@ -98,16 +98,17 @@ final class ProvisioningOperations extends Component
 
     private function serviceForCurrentTeam(): ProvisionedService
     {
-        $team = data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id');
-
         return ProvisionedService::query()
             ->whereKey($this->selectedServiceId)
-            ->where('team_id', $team)
+            ->where('team_id', $this->teamId())
             ->firstOrFail();
     }
 
     private function teamId(): int
     {
-        return (int) (data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id'));
+        $team = data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id');
+        abort_if($team === null, 403, 'A current team is required.');
+
+        return (int) $team;
     }
 }

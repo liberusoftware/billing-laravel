@@ -32,7 +32,7 @@ final class ReportingDashboard extends Component
     {
         Gate::authorize('create', ReportingMetric::class);
         $this->validate(['metric' => ['required', 'in:mrr,arr,churn,aging,revenue,tax,usage,provisioning,collection,provider'], 'periodStart' => ['required', 'date'], 'periodEnd' => ['required', 'date', 'after_or_equal:periodStart'], 'currency' => ['nullable', 'string', 'size:3', 'alpha']]);
-        $team = (int) (data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id'));
+        $team = $this->teamId();
         $data = $calculator->execute($team, $this->metric, CarbonImmutable::parse($this->periodStart), CarbonImmutable::parse($this->periodEnd), $this->currency ?: null);
         $record->execute($team, $data);
         session()->flash('module-billing-reporting-message', __('Metric calculated.'));
@@ -47,8 +47,16 @@ final class ReportingDashboard extends Component
     public function render(ListReportingMetrics $metrics): View
     {
         Gate::authorize('viewAny', ReportingMetric::class);
-        $team = (int) (data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id'));
+        $team = $this->teamId();
 
         return view('module-billing-reporting-livewire::dashboard', ['metrics' => $metrics->execute($team, $this->metric !== '' ? $this->metric : null, $this->perPage)]);
+    }
+
+    private function teamId(): int
+    {
+        $team = data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id');
+        abort_if($team === null, 403, 'A current team is required.');
+
+        return (int) $team;
     }
 }

@@ -25,7 +25,7 @@ final class IspCapabilities extends Component
     {
         Gate::authorize('create', IspCapability::class);
         $this->validate(['type' => ['required', 'in:coverage,installation,radius,usage,equipment,network_adapter'], 'name' => ['required', 'string', 'max:255']]);
-        $team = (int) (data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id'));
+        $team = $this->teamId();
         $create->handle($team, ['type' => $this->type, 'name' => $this->name]);
         $this->reset('name');
         session()->flash('isp-capabilities-message', __('ISP capability created.'));
@@ -34,7 +34,7 @@ final class IspCapabilities extends Component
     public function render(): View
     {
         Gate::authorize('viewAny', IspCapability::class);
-        $team = (int) (data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id'));
+        $team = $this->teamId();
 
         return view('module-billing-isp-livewire::capabilities', ['capabilities' => IspCapability::query()->where('team_id', $team)->latest()->get()]);
     }
@@ -42,10 +42,18 @@ final class IspCapabilities extends Component
     public function transitionCapability(TransitionIspCapability $transition): void
     {
         $this->validate(['selectedCapabilityId' => ['required', 'integer'], 'status' => ['required', 'in:pending,active,suspended,cancelled,failed']]);
-        $team = (int) (data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id'));
+        $team = $this->teamId();
         $capability = IspCapability::query()->whereKey($this->selectedCapabilityId)->where('team_id', $team)->firstOrFail();
         Gate::authorize('update', $capability);
         $transition->handle($capability, $this->status);
         session()->flash('isp-capabilities-message', __('ISP capability status updated.'));
+    }
+
+    private function teamId(): int
+    {
+        $team = data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id');
+        abort_if($team === null, 403, 'A current team is required.');
+
+        return (int) $team;
     }
 }
