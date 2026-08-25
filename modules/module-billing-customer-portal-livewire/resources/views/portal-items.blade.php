@@ -23,7 +23,7 @@
         @endforelse
     </ul>
     @if ($selectedItemId)
-        <form wire:submit="transition">
+        <form wire:submit="transitionItem">
             <select wire:model="status"><option value="open">{{ __('Open') }}</option><option value="in_progress">{{ __('In progress') }}</option><option value="completed">{{ __('Completed') }}</option><option value="cancelled">{{ __('Cancelled') }}</option><option value="failed">{{ __('Failed') }}</option></select>
             <button type="submit">{{ __('Update status') }}</button>
         </form>

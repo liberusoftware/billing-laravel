@@ -8,7 +8,7 @@
     <ul wire:loading.class="opacity-50">
         <li wire:loading>{{ __('Loading…') }}</li>
         @forelse ($services as $service)
-            <li wire:key="isp-service-{{ $service->id }}">{{ $service->name }} ({{ $service->status }}) <button type="button" wire:click="$set('selectedServiceId', {{ $service->id }})">{{ __('Select') }}</button> <button type="button" wire:click="transition">{{ __('Update status') }}</button></li>
+            <li wire:key="isp-service-{{ $service->id }}">{{ $service->name }} ({{ $service->status }}) <button type="button" wire:click="$set('selectedServiceId', {{ $service->id }})">{{ __('Select') }}</button> <button type="button" wire:click="transitionService">{{ __('Update status') }}</button></li>
         @empty
             <li>{{ __('No ISP access services found.') }}</li>
         @endforelse

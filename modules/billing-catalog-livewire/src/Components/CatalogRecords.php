@@ -32,7 +32,7 @@ final class CatalogRecords extends Component
 
     public string $transitionStatus = 'active';
 
-    public function transition(int $recordId, TransitionCatalogLifecycle $transition): void
+    public function transitionRecord(int $recordId, TransitionCatalogLifecycle $transition): void
     {
         $this->validate(['transitionStatus' => ['required', 'in:draft,active,archived']]);
         $model = $this->modelClass();

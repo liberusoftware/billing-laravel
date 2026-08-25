@@ -17,7 +17,7 @@
         @empty <li>{{ __('No products found.') }}</li> @endforelse
     </ul>
     @if ($selectedProductId)
-        <form wire:submit="transition">
+        <form wire:submit="transitionProduct">
             <select wire:model="status"><option value="draft">{{ __('Draft') }}</option><option value="active">{{ __('Active') }}</option><option value="archived">{{ __('Archived') }}</option></select>
             <button type="submit">{{ __('Update lifecycle') }}</button>
         </form>

@@ -19,7 +19,7 @@ final class HostingCapabilities extends Component
 
     public string $status = 'active';
 
-    public function transition(int $capabilityId, TransitionHostingCapability $transition): void
+    public function transitionCapability(int $capabilityId, TransitionHostingCapability $transition): void
     {
         $this->validate(['status' => ['required', 'in:pending,active,suspended,cancelled,failed']]);
         $team = (int) (data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id'));

@@ -45,7 +45,7 @@ final class PortalItems extends Component
         return view('billing-customer-portal-livewire::portal-items', ['items' => PortalItem::query()->where('team_id', $team)->latest()->get()]);
     }
 
-    public function transition(TransitionPortalItem $transition): void
+    public function transitionItem(TransitionPortalItem $transition): void
     {
         $this->validate(['selectedItemId' => ['required', 'integer'], 'status' => ['required', 'in:open,in_progress,completed,cancelled,failed']]);
         $team = (int) (data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id'));

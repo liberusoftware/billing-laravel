@@ -28,7 +28,7 @@ final class PortalRequests extends Component
         session()->flash('billing-customer-portal-requests-message', __('Portal request created.'));
     }
 
-    public function transition(TransitionPortalRequest $transition): void
+    public function transitionRequest(TransitionPortalRequest $transition): void
     {
         $this->validate(['selectedRequestId' => ['required', 'integer', 'min:1'], 'status' => ['required', 'in:active,closed,failed']]);
         $request = $this->requestForCurrentTeam();

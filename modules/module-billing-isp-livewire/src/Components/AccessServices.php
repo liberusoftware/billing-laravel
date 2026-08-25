@@ -29,7 +29,7 @@ final class AccessServices extends Component
         session()->flash('isp-services-message', __('ISP access service created.'));
     }
 
-    public function transition(TransitionAccessService $transition): void
+    public function transitionService(TransitionAccessService $transition): void
     {
         $this->validate(['selectedServiceId' => ['required', 'integer'], 'status' => ['required', 'in:pending,active,suspended,cancelled,failed']]);
         $team = (int) (data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id'));

@@ -8,7 +8,7 @@
     <ul wire:loading.class="opacity-50">
         <li wire:loading>{{ __('Loading…') }}</li>
         @forelse ($requests as $request)
-            <li wire:key="portal-request-{{ $request->id }}">{{ $request->name }} ({{ $request->status }}) <button type="button" wire:click="$set('selectedRequestId', {{ $request->id }})">{{ __('Select') }}</button><button type="button" wire:click="transition">{{ __('Update status') }}</button></li>
+            <li wire:key="portal-request-{{ $request->id }}">{{ $request->name }} ({{ $request->status }}) <button type="button" wire:click="$set('selectedRequestId', {{ $request->id }})">{{ __('Select') }}</button><button type="button" wire:click="transitionRequest">{{ __('Update status') }}</button></li>
         @empty<li>{{ __('No portal requests found.') }}</li>@endforelse
     </ul>
 </div>

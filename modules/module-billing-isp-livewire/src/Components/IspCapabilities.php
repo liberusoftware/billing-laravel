@@ -39,7 +39,7 @@ final class IspCapabilities extends Component
         return view('module-billing-isp-livewire::capabilities', ['capabilities' => IspCapability::query()->where('team_id', $team)->latest()->get()]);
     }
 
-    public function transition(TransitionIspCapability $transition): void
+    public function transitionCapability(TransitionIspCapability $transition): void
     {
         $this->validate(['selectedCapabilityId' => ['required', 'integer'], 'status' => ['required', 'in:pending,active,suspended,cancelled,failed']]);
         $team = (int) (data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id'));

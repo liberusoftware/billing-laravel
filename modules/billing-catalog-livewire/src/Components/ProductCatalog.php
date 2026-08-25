@@ -52,7 +52,7 @@ final class ProductCatalog extends Component
         return view('billing-catalog-livewire::product-catalog', ['products' => $query->execute($teamId !== null ? (int) $teamId : null)]);
     }
 
-    public function transition(TransitionProductLifecycle $transition): void
+    public function transitionProduct(TransitionProductLifecycle $transition): void
     {
         $this->validate(['selectedProductId' => ['required', 'integer'], 'status' => ['required', 'in:draft,active,archived']]);
         $teamId = data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id');
