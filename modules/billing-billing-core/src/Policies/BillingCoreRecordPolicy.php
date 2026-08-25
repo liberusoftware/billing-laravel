@@ -28,6 +28,11 @@ final class BillingCoreRecordPolicy
         return $this->access($user, 'write') && $this->sameTeam($user, $record->getAttribute('team_id'));
     }
 
+    public function delete(object $user, Model $record): bool
+    {
+        return $this->update($user, $record);
+    }
+
     private function access(object $user, string $ability): bool
     {
         return ! method_exists($user, 'tokenCan') || $user->tokenCan("billing.billing-core.$ability") || $user->tokenCan('*');
