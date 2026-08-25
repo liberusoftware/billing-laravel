@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Liberu\Billing\Provisioning\Filament\Resources;
 
+use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Gate;
