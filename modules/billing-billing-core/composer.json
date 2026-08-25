@@ -1,0 +1,39 @@
+{
+  "name": "liberusoftware/billing-billing-core",
+  "description": "Framework-neutral billing accounts, contacts, currencies, tax profiles, sequences, terms, settings, and period primitives.",
+  "type": "liberu-module",
+  "license": "MIT",
+  "require": {
+    "php": "^8.5",
+    "illuminate/database": "^13.0",
+    "illuminate/support": "^13.0",
+    "liberusoftware/module-manager": "^1.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Liberu\\Billing\\Core\\": "src/"
+    }
+  },
+  "extra": {
+    "liberu": {
+      "name": "billing-billing-core"
+    }
+  },
+  "version": "0.1.3",
+  "autoload-dev": {
+    "psr-4": {
+      "Liberu\\Billing\\Core\\Tests\\": "tests/"
+    }
+  },
+  "require-dev": {
+    "pestphp/pest": "^5.0"
+  },
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    }
+  },
+  "scripts": {
+    "test": "pest"
+  }
+}

@@ -123,7 +123,7 @@ class ProvisioningClientsTest extends TestCase
         // Public IP-literal hostname so CpanelClient::validateHostname() stays
         // deterministic (no DNS lookup of a random fake domain).
         $server = HostingServer::factory()->create(['hostname' => '203.0.113.10']);
-        $client = new $class;
+        $client = new $class();
         $client->setServer($server);
 
         $history = [];
@@ -141,7 +141,7 @@ class ProvisioningClientsTest extends TestCase
     public function test_failure_response_returns_false_without_throwing(string $class, string $successBody, int $failStatus, string $failBody, string $urlFragment, string $method): void
     {
         $server = HostingServer::factory()->create(['hostname' => '203.0.113.10']);
-        $client = new $class;
+        $client = new $class();
         $client->setServer($server);
 
         $history = [];
@@ -153,7 +153,7 @@ class ProvisioningClientsTest extends TestCase
     #[DataProvider('clientClasses')]
     public function test_method_throws_when_server_not_configured(string $class): void
     {
-        $client = new $class;
+        $client = new $class();
 
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Server not configured');
@@ -168,7 +168,7 @@ class ProvisioningClientsTest extends TestCase
     public function test_plesk_create_request_is_well_formed_xml(): void
     {
         $server = HostingServer::factory()->create();
-        $client = new PleskClient;
+        $client = new PleskClient();
         $client->setServer($server);
 
         $history = [];
@@ -184,7 +184,7 @@ class ProvisioningClientsTest extends TestCase
 
     public function test_softaculous_install_script_returns_true_on_success(): void
     {
-        $client = new SoftaculousClient;
+        $client = new SoftaculousClient();
 
         $history = [];
         $this->injectGuzzle($client, [new Response(200, [], '{"success":true}')], $history);
@@ -195,7 +195,7 @@ class ProvisioningClientsTest extends TestCase
 
     public function test_softaculous_install_script_returns_false_on_failure(): void
     {
-        $client = new SoftaculousClient;
+        $client = new SoftaculousClient();
 
         $history = [];
         $this->injectGuzzle($client, [new Response(200, [], '{"success":false}')], $history);

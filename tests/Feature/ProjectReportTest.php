@@ -32,7 +32,7 @@ class ProjectReportTest extends TestCase
         $otherTask = Task::factory()->create(['project_id' => $other->id]);
         TimeEntry::factory()->create(['task_id' => $otherTask->id]);
 
-        $perProject = (new ProjectReportService)->timeWorkedPerProject($team->id);
+        $perProject = (new ProjectReportService())->timeWorkedPerProject($team->id);
 
         $this->assertSame(10800, $perProject[$project->id]);
         $this->assertSame(3600, $perProject[$other->id]);
@@ -44,7 +44,7 @@ class ProjectReportTest extends TestCase
         Project::factory()->count(2)->create(['team_id' => $team->id, 'status' => ProjectStatus::Open]);
         Project::factory()->create(['team_id' => $team->id, 'status' => ProjectStatus::Completed]);
 
-        $counts = (new ProjectReportService)->projectCountByStatus($team->id);
+        $counts = (new ProjectReportService())->projectCountByStatus($team->id);
 
         $this->assertSame(2, $counts[ProjectStatus::Open->value]);
         $this->assertSame(1, $counts[ProjectStatus::Completed->value]);
@@ -58,7 +58,7 @@ class ProjectReportTest extends TestCase
         TimeEntry::factory()->count(2)->create(['task_id' => $task->id, 'is_billable' => true]);
         TimeEntry::factory()->create(['task_id' => $task->id, 'is_billable' => false]);
 
-        $split = (new ProjectReportService)->billableSplit($team->id);
+        $split = (new ProjectReportService())->billableSplit($team->id);
 
         $this->assertSame(7200, $split['billable']);
         $this->assertSame(3600, $split['non_billable']);
@@ -72,7 +72,7 @@ class ProjectReportTest extends TestCase
         $user = User::factory()->create();
         TimeEntry::factory()->count(2)->create(['task_id' => $task->id, 'user_id' => $user->id]);
 
-        $perStaff = (new ProjectReportService)->timeWorkedPerStaff($team->id);
+        $perStaff = (new ProjectReportService())->timeWorkedPerStaff($team->id);
 
         $this->assertSame(7200, $perStaff[$user->id]);
     }
@@ -103,7 +103,7 @@ class ProjectReportTest extends TestCase
             'is_billable' => true,
         ]);
 
-        $report = new ProjectReportService;
+        $report = new ProjectReportService();
 
         $perProject = $report->timeWorkedPerProject($teamA->id);
         $this->assertSame(3600, $perProject[$projectA->id] ?? null);

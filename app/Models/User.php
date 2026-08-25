@@ -2,16 +2,12 @@
 
 namespace App\Models;
 
-use BezhanSalleh\FilamentShield\Traits\HasPanelShield;
+use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasDefaultTenant;
 use Filament\Models\Contracts\HasTenants;
 use Filament\Panel;
-use Illuminate\Database\Eloquent\Attributes\Appends;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -20,158 +16,156 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use JoelButcher\Socialstream\HasConnectedAccounts;
 use JoelButcher\Socialstream\SetsProfilePhotoFromUrl;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Jetstream\HasTeams;
 use Laravel\Sanctum\HasApiTokens;
-use Override;
+use Liberu\Foundation\Identity\Socialstream\Contracts\ConnectedAccountOwner;
+use Liberu\Foundation\Observability\Contracts\ObservabilityActor;
+use Liberu\Foundation\Organizations\Contracts\OrganizationActor;
+use Liberu\Foundation\Organizations\Models\Team as FoundationTeam;
+use Liberu\Foundation\RolesPermissions\Contracts\PrivilegedActor;
+use Liberu\Foundation\RolesPermissions\Services\AnyTeamRoleLookup;
+use Liberu\Foundation\Search\Concerns\Searchable;
+use Spatie\Activitylog\Models\Concerns\LogsActivity;
+use Spatie\Activitylog\Support\LogOptions;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
- * @property int $id
- * @property string $name
- * @property string $email
- * @property string|null $phone
- * @property string|null $company
- * @property Carbon|null $email_verified_at
- * @property string $password
- * @property string|null $remember_token
- * @property int|null $current_team_id
- * @property string|null $profile_photo_path
+ * @property string|null $theme_preference
+ * @property string|null $locale
  * @property string|null $two_factor_secret
- * @property string|null $two_factor_recovery_codes
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @property array|null $dashboard_preferences
- * @property-read string $profile_photo_url
- * @property-read Team|null $latestTeam
- * @property-read Affiliate|null $affiliate
- * @property-read Affiliate|null $referrer
- * @property-read Collection<int, Integration> $integrations
- * @property-read Collection<int, SavedSearch> $savedSearches
+ * @property int|null $referred_by
  * @property-read Customer|null $customer
  * @property-read Subscription|null $subscription
- * @property-read Collection<int, Ticket> $tickets
+ * @property-read Collection<int, SavedSearch> $savedSearches
  * @property-read Collection<int, TeamInvitation> $invitations
- * @property-read Collection<int, ConnectedAccount> $connectedAccounts
+ * @property-read Collection<int, Ticket> $tickets
+ * @property-read Collection<int, Integration> $integrations
+ * @property-read Affiliate|null $referrer
  */
-#[Appends([
-    'profile_photo_url',
-])]
-#[Fillable([
-    'name',
-    'email',
-    'password',
-    'referred_by',
-])]
-#[Hidden([
-    'password',
-    'remember_token',
-    'two_factor_recovery_codes',
-    'two_factor_secret',
-])]
-class User extends Authenticatable implements FilamentUser, HasDefaultTenant, HasTenants
+class User extends Authenticatable implements ConnectedAccountOwner, FilamentUser, HasDefaultTenant, HasTenants, ObservabilityActor, OrganizationActor, PrivilegedActor
 {
     use HasApiTokens;
     use HasConnectedAccounts;
+
+    /** @use HasFactory<UserFactory> */
     use HasFactory;
-    use HasPanelShield;
+
     use HasProfilePhoto {
         HasProfilePhoto::profilePhotoUrl as getPhotoUrl;
     }
     use HasRoles, HasTeams {
+        // Both traits define teams(): Jetstream = team membership (used by allTeams()
+        // and Filament tenancy). Spatie's teams() (roles-derived) is excluded — Spatie
+        // scopes via the team_id column + DefaultTeamResolver, not this relation.
         HasTeams::teams insteadof HasRoles;
     }
+    use LogsActivity;
     use Notifiable;
+
+    // The scope `SearchService` calls. It used to be declared here, which meant
+    // the package could not be installed anywhere else without reimplementing it.
+    use Searchable;
     use SetsProfilePhotoFromUrl;
     use TwoFactorAuthenticatable;
 
-    #[Override]
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-            'dashboard_preferences' => 'array',
-        ];
-    }
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var list<string>
+     */
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'theme_preference',
+        'locale',
+        'timezone',
+    ];
 
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var list<string>
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
+        'two_factor_recovery_codes',
+        'two_factor_secret',
+        // PII: keep email off array/JSON serialization so public search endpoints
+        // (nested post.user / group.owner) can't be used to harvest addresses.
+        'email',
+        'email_verified_at',
+    ];
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'dashboard_preferences' => 'array',
+    ];
+
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var list<string>
+     */
+    protected $appends = [
+        'profile_photo_url',
+    ];
+
+    /**
+     * Get the URL to the user's profile photo.
+     *
+     * @return Attribute<string, never>
+     */
     protected function profilePhotoUrl(): Attribute
     {
-        return filter_var(
-            $this->profile_photo_path,
-            FILTER_VALIDATE_URL
-        )
+        return filter_var($this->profile_photo_path, FILTER_VALIDATE_URL)
             ? Attribute::get(fn () => $this->profile_photo_path)
             : $this->getPhotoUrl();
     }
 
-    /** @return array<Model>|Collection */
+    /**
+     * Livewire and panel requests may hydrate a deliberately partial user row.
+     * Fortify treats an absent confirmation timestamp as unconfirmed.
+     */
+    protected function twoFactorConfirmedAt(): Attribute
+    {
+        return Attribute::get(fn (?string $value): ?string => $value);
+    }
+
+    /**
+     * The teams this user may act within as a Filament tenant — owned + member teams,
+     * consistent with canAccessTenant()/belongsToTeam() so invited members aren't locked out.
+     *
+     * @return array<int, Model>|Collection<int, Model>
+     */
     public function getTenants(Panel $panel): array|Collection
     {
-        return $this->teams;
+        return $this->allTeams();
     }
 
     public function canAccessTenant(Model $tenant): bool
     {
-        // Security: without this check any user could load any team's tenant
-        // URL and Filament would scope queries to it, exposing other teams' data.
-        return $this->belongsToTeam($tenant);
+        return $tenant instanceof FoundationTeam && $this->belongsToTeam($tenant);
     }
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return match ($panel->getId()) {
-            'admin' => $this->hasRole(['admin', 'super_admin']),
-            default => true,
-        };
-    }
+        if ($panel->getId() === 'admin') {
+            return $this->hasAdminAccess();
+        }
 
-    public function getDefaultTenant(Panel $panel): ?Model
-    {
-        return $this->latestTeam;
-    }
-
-    public function latestTeam(): BelongsTo
-    {
-        return $this->belongsTo(
-            Team::class,
-            'current_team_id'
-        );
-    }
-
-    public function affiliate(): HasOne
-    {
-        return $this->hasOne(Affiliate::class);
-    }
-
-    public function referrer(): BelongsTo
-    {
-        return $this->belongsTo(
-            Affiliate::class,
-            'referred_by'
-        );
-    }
-
-    public function integrations(): HasMany
-    {
-        return $this->hasMany(Integration::class);
-    }
-
-    public function savedSearches(): HasMany
-    {
-        return $this->hasMany(SavedSearch::class);
-    }
-
-    public function hasIntegration(string $provider): bool
-    {
-        return $this->integrations()->where(
-            'provider',
-            $provider
-        )->exists();
+        return true;
     }
 
     public function customer(): HasOne
@@ -181,7 +175,17 @@ class User extends Authenticatable implements FilamentUser, HasDefaultTenant, Ha
 
     public function subscription(): HasOneThrough
     {
-        return $this->hasOneThrough(Subscription::class, Customer::class, 'user_id', 'customer_id');
+        return $this->hasOneThrough(Subscription::class, Customer::class);
+    }
+
+    public function savedSearches(): HasMany
+    {
+        return $this->hasMany(SavedSearch::class);
+    }
+
+    public function invitations(): HasMany
+    {
+        return $this->hasMany(TeamInvitation::class);
     }
 
     public function tickets(): HasMany
@@ -189,8 +193,95 @@ class User extends Authenticatable implements FilamentUser, HasDefaultTenant, Ha
         return $this->hasMany(Ticket::class);
     }
 
-    public function invitations(): HasMany
+    public function integrations(): HasMany
     {
-        return $this->hasMany(TeamInvitation::class);
+        return $this->hasMany(Integration::class);
+    }
+
+    public function referrer(): BelongsTo
+    {
+        return $this->belongsTo(Affiliate::class, 'referred_by');
+    }
+
+    /**
+     * True if the user holds an admin role in ANY team. Spatie roles are
+     * team-scoped, and the active team context is not reliably set when
+     * canAccessPanel() runs, so check the pivot directly across all teams.
+     */
+    public function hasAdminAccess(): bool
+    {
+        return $this->hasRoleInAnyTeam([(string) config('filament-shield.super_admin.name', 'super_admin'), 'admin']);
+    }
+
+    /**
+     * True if the user holds the super_admin role in ANY team. Team-agnostic
+     * (unlike Spatie's team-scoped hasRole), so it drives the policy-bypass gate
+     * reliably even when no team context is set on the request.
+     */
+    public function isSuperAdmin(): bool
+    {
+        return $this->hasRoleInAnyTeam((string) config('filament-shield.super_admin.name', 'super_admin'));
+    }
+
+    /** The pivot columns AnyTeamRoleLookup matches this actor on. */
+    public function authorizationIdentifier(): int|string
+    {
+        return $this->getKey();
+    }
+
+    public function authorizationType(): string
+    {
+        return $this->getMorphClass();
+    }
+
+    /**
+     * Team-agnostic role check. Spatie's hasRole() is bound to the active team
+     * context, which is unset on plain web requests and when canAccessPanel()
+     * runs, so the pivot is queried directly across every team.
+     *
+     * The query itself moved into the authorization package in 1.0.4; the host
+     * delegates rather than keeping its own copy.
+     *
+     * @param  string|list<string>  $roles
+     */
+    public function hasRoleInAnyTeam(string|array $roles): bool
+    {
+        return app(AnyTeamRoleLookup::class)->hasRoleInAnyTeam($this, $roles);
+    }
+
+    public function getDefaultTenant(Panel $panel): ?Model
+    {
+        return $this->latestTeam;
+    }
+
+    /**
+     * @return BelongsTo<Team, $this>
+     */
+    public function latestTeam(): BelongsTo
+    {
+        return $this->belongsTo(Team::class, 'current_team_id');
+    }
+
+    /**
+     * Only track safe profile fields — never password / 2FA / tokens.
+     */
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            // Jetstream may hydrate a partial authenticated user row during
+            // account deletion; only audit columns guaranteed on that row.
+            ->logOnly(['name', 'email'])
+            ->logOnlyDirty()
+            ->dontLogEmptyChanges();
+    }
+
+    /**
+     * Admin = super_admin in any team, or an allowlisted email. Used to gate the
+     * Telescope/Pulse dashboards.
+     */
+    public function isAdmin(): bool
+    {
+        return in_array($this->email, (array) config('app.admin_emails', []), true)
+            || $this->isSuperAdmin();
     }
 }

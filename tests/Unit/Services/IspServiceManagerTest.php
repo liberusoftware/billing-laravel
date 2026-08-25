@@ -18,7 +18,7 @@ class IspServiceManagerTest extends TestCase
     public function test_activation_synchronizes_radius_and_activates_subscriber(): void
     {
         $service = IspService::factory()->create();
-        $radius = new FakeRadiusClient;
+        $radius = new FakeRadiusClient();
 
         $activated = app(IspServiceManager::class)->activate($service, $radius);
 
@@ -31,7 +31,7 @@ class IspServiceManagerTest extends TestCase
     public function test_accounting_updates_are_idempotent_and_track_bandwidth_usage(): void
     {
         $service = IspService::factory()->create(['status' => IspServiceStatus::Active]);
-        $radius = new FakeRadiusClient;
+        $radius = new FakeRadiusClient();
         $manager = app(IspServiceManager::class);
 
         $payload = [
@@ -60,7 +60,7 @@ class IspServiceManagerTest extends TestCase
             'status' => IspServiceStatus::Active,
             'monthly_data_limit_bytes' => 1000,
         ]);
-        $radius = new FakeRadiusClient;
+        $radius = new FakeRadiusClient();
 
         app(IspServiceManager::class)->recordAccounting($service, [
             'accounting_session_id' => 'over-limit',

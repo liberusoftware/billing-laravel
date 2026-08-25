@@ -1,32 +1,497 @@
 {
-    "name": "liberusoftware/boilerplate-laravel",
+    "$schema": "https://getcomposer.org/schema.json",
+    "name": "liberusoftware/billing-laravel",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "Liberu Billing Laravel application.",
     "keywords": [
         "laravel",
-        "framework"
+        "framework",
+        "boilerplate"
     ],
     "license": "MIT",
+    "repositories": [
+        {
+            "type": "path",
+            "url": "themes/base",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "themes/default",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "themes/dark",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "themes/clear-signal",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/billing-billing-core",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/billing-core-api",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/billing-core-filament",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/billing-core-livewire",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/billing-catalog",
+            "options": {
+                "symlink": false
+            }
+        },
+        {"type": "path", "url": "modules/billing-catalog-api", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/billing-catalog-filament", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/billing-catalog-livewire", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/billing-pricing", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/billing-pricing-api", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/billing-pricing-filament", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/billing-pricing-livewire", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/billing-orders", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/billing-orders-api", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/billing-orders-filament", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/billing-orders-livewire", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-subscriptions", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-subscriptions-api", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-subscriptions-filament", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-subscriptions-livewire", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-payments", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-payments-api", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-payments-filament", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-payments-livewire", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-stripe", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-paddle", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-invoicing", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-invoicing-api", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-invoicing-filament", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-invoicing-livewire", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-collections", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-collections-api", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-collections-filament", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-collections-livewire", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-usage", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-usage-api", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-usage-filament", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-usage-livewire", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-provisioning", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-provisioning-api", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-provisioning-filament", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-provisioning-livewire", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-hosting", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-hosting-api", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-hosting-filament", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-hosting-livewire", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-domains", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-domains-api", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-domains-filament", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-domains-livewire", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-isp", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-isp-api", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-isp-filament", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-isp-livewire", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-communications", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-communications-api", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-communications-filament", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-communications-livewire", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-customer-portal", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-customer-portal-api", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-customer-portal-filament", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-customer-portal-livewire", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-reporting", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-reporting-api", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-reporting-filament", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-reporting-livewire", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-liberu-business-workflow-reconciliation", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-liberu-business-workflow-reconciliation-api", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-liberu-business-workflow-reconciliation-filament", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-liberu-business-workflow-reconciliation-livewire", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-liberu-executive-insights", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-liberu-executive-insights-api", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-liberu-executive-insights-filament", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-liberu-executive-insights-livewire", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-liberu-platform-orchestration", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-liberu-platform-orchestration-api", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-liberu-platform-orchestration-filament", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-liberu-platform-orchestration-livewire", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-liberu-revenue-and-care-orchestration", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-liberu-revenue-and-care-orchestration-api", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-liberu-revenue-and-care-orchestration-filament", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-liberu-revenue-and-care-orchestration-livewire", "options": {"symlink": false}},
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/composer-installer.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/analytics-contracts.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/boilerplate-scripts.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-activity-comments.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-analytics-core.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-analytics-google.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-analytics-meta.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-api-access.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-application.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-audit.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-currency-context.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-developer-experience.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-feature-flags.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-files-media.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-module-manager-filament.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-identity-core.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-identity-core-filament.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-identity-socialstream.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-import-export.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-integrations.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-jetstream-bridge.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-localization-core.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-localization-core-livewire.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-localization-mymemory.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-module-manager.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-notifications.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-observability.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-organizations-teams.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-organizations-teams-filament.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-profiles.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-roles-permissions.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-roles-permissions-filament.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-scheduler-queues.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-search.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-search-api.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-sessions-devices.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-sessions-devices-filament.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-settings.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-settings-filament.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-theme-support.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-theme-support-livewire.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-two-factor-authentication.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-webhooks.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/theme-clear-signal.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/theme-dark.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/theme-default.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/theme-base.git"
+        }
+    ],
     "require": {
         "php": "^8.5",
         "barryvdh/laravel-dompdf": "^3.1",
+        "liberusoftware/billing-billing-core": "0.1.3",
+        "liberusoftware/billing-core-api": "0.1.3",
+        "liberusoftware/billing-core-filament": "0.1.3",
+        "liberusoftware/billing-core-livewire": "0.1.3",
+        "liberusoftware/billing-catalog": "0.1.1",
+        "liberusoftware/billing-catalog-api": "0.1.0",
+        "liberusoftware/billing-catalog-filament": "0.1.0",
+        "liberusoftware/billing-catalog-livewire": "0.1.0",
+        "liberusoftware/billing-pricing": "0.1.2",
+        "liberusoftware/billing-pricing-api": "0.1.2",
+        "liberusoftware/billing-pricing-filament": "0.1.2",
+        "liberusoftware/billing-pricing-livewire": "0.1.2",
+        "liberusoftware/billing-orders": "0.1.0",
+        "liberusoftware/billing-orders-api": "0.1.0",
+        "liberusoftware/billing-orders-filament": "0.1.0",
+        "liberusoftware/billing-orders-livewire": "0.1.0",
+        "liberusoftware/module-billing-subscriptions": "0.1.0",
+        "liberusoftware/module-billing-subscriptions-api": "0.1.0",
+        "liberusoftware/module-billing-subscriptions-filament": "0.1.0",
+        "liberusoftware/module-billing-subscriptions-livewire": "0.1.0",
+        "liberusoftware/module-billing-payments": "0.1.0",
+        "liberusoftware/module-billing-payments-api": "0.1.0",
+        "liberusoftware/module-billing-payments-filament": "0.1.0",
+        "liberusoftware/module-billing-payments-livewire": "0.1.0",
+        "liberusoftware/billing-stripe": "0.1.0",
+        "liberusoftware/billing-paddle": "0.1.0",
+        "liberusoftware/module-billing-invoicing": "0.1.0",
+        "liberusoftware/module-billing-invoicing-api": "0.1.0",
+        "liberusoftware/module-billing-invoicing-filament": "0.1.0",
+        "liberusoftware/module-billing-invoicing-livewire": "0.1.0",
+        "liberusoftware/module-billing-collections": "0.1.0",
+        "liberusoftware/module-billing-collections-api": "0.1.0",
+        "liberusoftware/module-billing-collections-filament": "0.1.0",
+        "liberusoftware/module-billing-collections-livewire": "0.1.0",
+        "liberusoftware/module-billing-usage": "0.1.0",
+        "liberusoftware/module-billing-usage-api": "0.1.0",
+        "liberusoftware/module-billing-usage-filament": "0.1.0",
+        "liberusoftware/module-billing-usage-livewire": "0.1.0",
+        "liberusoftware/module-billing-provisioning": "0.1.0",
+        "liberusoftware/module-billing-provisioning-api": "0.1.0",
+        "liberusoftware/module-billing-provisioning-filament": "0.1.0",
+        "liberusoftware/module-billing-provisioning-livewire": "0.1.0",
+        "liberusoftware/module-billing-hosting": "0.1.0",
+        "liberusoftware/module-billing-hosting-api": "0.1.0",
+        "liberusoftware/module-billing-hosting-filament": "0.1.0",
+        "liberusoftware/module-billing-hosting-livewire": "0.1.0",
+        "liberusoftware/module-billing-domains": "0.1.0",
+        "liberusoftware/module-billing-domains-api": "0.1.0",
+        "liberusoftware/module-billing-domains-filament": "0.1.0",
+        "liberusoftware/module-billing-domains-livewire": "0.1.0",
+        "liberusoftware/module-billing-isp": "0.1.0",
+        "liberusoftware/module-billing-isp-api": "0.1.0",
+        "liberusoftware/module-billing-isp-filament": "0.1.0",
+        "liberusoftware/module-billing-isp-livewire": "0.1.0",
+        "liberusoftware/module-billing-communications": "0.1.0",
+        "liberusoftware/module-billing-communications-api": "0.1.0",
+        "liberusoftware/module-billing-communications-filament": "0.1.0",
+        "liberusoftware/module-billing-communications-livewire": "0.1.0",
+        "liberusoftware/module-billing-customer-portal": "0.1.0",
+        "liberusoftware/module-billing-customer-portal-api": "0.1.0",
+        "liberusoftware/module-billing-customer-portal-filament": "0.1.0",
+        "liberusoftware/module-billing-customer-portal-livewire": "0.1.0",
+        "liberusoftware/module-billing-reporting": "0.1.0",
+        "liberusoftware/module-billing-reporting-api": "0.1.0",
+        "liberusoftware/module-billing-reporting-filament": "0.1.0",
+        "liberusoftware/module-billing-reporting-livewire": "0.1.0",
+        "liberusoftware/module-liberu-business-workflow-reconciliation": "^1.0",
+        "liberusoftware/module-liberu-business-workflow-reconciliation-api": "^1.0",
+        "liberusoftware/module-liberu-business-workflow-reconciliation-filament": "^1.0",
+        "liberusoftware/module-liberu-business-workflow-reconciliation-livewire": "^1.0",
+        "liberusoftware/module-liberu-executive-insights": "^1.0",
+        "liberusoftware/module-liberu-executive-insights-api": "^1.0",
+        "liberusoftware/module-liberu-executive-insights-filament": "^1.0",
+        "liberusoftware/module-liberu-executive-insights-livewire": "^1.0",
+        "liberusoftware/module-liberu-platform-orchestration": "^1.0",
+        "liberusoftware/module-liberu-platform-orchestration-api": "^1.0",
+        "liberusoftware/module-liberu-platform-orchestration-filament": "^1.0",
+        "liberusoftware/module-liberu-platform-orchestration-livewire": "^1.0",
+        "liberusoftware/module-liberu-revenue-and-care-orchestration": "^1.0",
+        "liberusoftware/module-liberu-revenue-and-care-orchestration-api": "^1.0",
+        "liberusoftware/module-liberu-revenue-and-care-orchestration-filament": "^1.0",
+        "liberusoftware/module-liberu-revenue-and-care-orchestration-livewire": "^1.0",
         "bezhansalleh/filament-shield": "~4.0",
         "bursteri/socialstream": "^7.0",
-        "filament/filament": "^5.0",
+        "filament/filament": "~5.1",
         "filament/spatie-laravel-settings-plugin": "^5.0",
         "guzzlehttp/guzzle": "^7.8",
-        "laravel/framework": "^13",
+        "laravel/framework": "^13.0",
         "laravel/horizon": "^5.0",
         "laravel/jetstream": "^5.1",
         "laravel/octane": "^2.3",
+        "laravel/pulse": "^1.7",
         "laravel/reverb": "^1.0",
         "laravel/sanctum": "^4.0",
         "laravel/socialite": "^5.0",
         "laravel/tinker": "^3.0",
+        "liberusoftware/activity-comments": "^1.0",
+        "liberusoftware/analytics-contracts": "^1.0",
+        "liberusoftware/analytics-core": "^1.0",
+        "liberusoftware/analytics-google": "^1.0",
+        "liberusoftware/analytics-meta": "^1.0",
+        "liberusoftware/api-access": "^1.0",
+        "liberusoftware/application": "^1.0",
+        "liberusoftware/audit": "^1.0",
+        "liberusoftware/composer-installer": "^1.1",
+        "liberusoftware/currency-context": "^1.0",
+        "liberusoftware/developer-experience": "^1.0",
+        "liberusoftware/feature-flags": "^1.0",
+        "liberusoftware/files-media": "^1.0",
+        "liberusoftware/module-manager-filament": "^1.1",
+        "liberusoftware/identity-core": "^1.0",
+        "liberusoftware/identity-core-filament": "^1.0",
+        "liberusoftware/identity-socialstream": "^1.0",
+        "liberusoftware/import-export": "^1.0",
+        "liberusoftware/integrations": "^1.0",
+        "liberusoftware/jetstream-bridge": "^1.0",
+        "liberusoftware/localization-core": "^1.0",
+        "liberusoftware/localization-contracts": "^1.0",
+        "liberusoftware/localization-core-livewire": "^1.0",
+        "liberusoftware/localization-mymemory": "^1.0",
+        "liberusoftware/module-manager": "^1.0",
+        "liberusoftware/notifications": "^1.0",
+        "liberusoftware/observability": "^1.0",
+        "liberusoftware/organizations-teams": "^1.0",
+        "liberusoftware/organizations-teams-filament": "^1.0",
+        "liberusoftware/profiles": "^1.0",
+        "liberusoftware/roles-permissions": "^1.0",
+        "liberusoftware/roles-permissions-filament": "^1.0",
+        "liberusoftware/scheduler-queues": "^1.0",
+        "liberusoftware/search": "^1.0",
+        "liberusoftware/search-api": "^1.0",
+        "liberusoftware/sessions-devices": "^1.0",
+        "liberusoftware/sessions-devices-filament": "^1.1",
+        "liberusoftware/settings": "^1.0",
+        "liberusoftware/settings-filament": "^1.0",
+        "liberusoftware/theme-base": "^2.0",
+        "liberusoftware/theme-clear-signal": "^1.0",
+        "liberusoftware/theme-dark": "^1.0",
+        "liberusoftware/theme-default": "^1.0",
+        "liberusoftware/theme-support": "^1.0",
+        "liberusoftware/theme-support-livewire": "^1.1",
+        "liberusoftware/two-factor-authentication": "^1.0",
+        "liberusoftware/webhooks": "^1.0",
         "livewire/livewire": "^4.0",
         "orangehill/iseed": "^3.0",
         "phpoffice/phpspreadsheet": "^5.8",
+        "spatie/laravel-activitylog": "^5.0",
+        "spatie/laravel-backup": "^10.3",
         "spatie/laravel-menu": "^4.2",
+        "spatie/laravel-passkeys": "^1.6",
         "spatie/laravel-permission": "^7.0",
         "spiral/roadrunner-cli": "^2.6.0",
         "spiral/roadrunner-http": "^3.3.0",
@@ -34,18 +499,21 @@
         "stripe/stripe-php": "^20.3"
     },
     "require-dev": {
-        "driftingly/rector-laravel": "^2.0",
         "fakerphp/faker": "^1.23",
+        "filament/upgrade": "~5.1",
         "fruitcake/laravel-debugbar": "^4.3",
         "larastan/larastan": "^3.0",
         "laravel/boost": "^2.4",
-        "laravel/pail": "^1.2.2",
-        "laravel/pint": "^1.13",
-        "laravel/sail": "^1.41",
+        "laravel/mcp": "^0.9.1",
+        "laravel/pint": "^1.14",
+        "laravel/sail": "^1.28",
+        "laravel/telescope": "^5.20",
+        "liberusoftware/boilerplate-scripts": "^1.1",
         "mockery/mockery": "^1.6",
-        "nunomaduro/collision": "^8.6",
-        "phpunit/phpunit": "^13.0",
-        "rector/rector": "^2.0",
+        "nunomaduro/collision": "^8.8",
+        "pestphp/pest": "^5.0",
+        "pestphp/pest-plugin-laravel": "^5.0",
+        "phpunit/phpunit": "^13.1.8",
         "spatie/laravel-ignition": "^2.4"
     },
     "autoload": {
@@ -74,7 +542,8 @@
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
-        ]
+        ],
+        "test": "vendor/bin/pest"
     },
     "extra": {
         "laravel": {
@@ -83,16 +552,18 @@
     },
     "config": {
         "platform": {
-            "php": "8.5.0"
+            "php": "8.5"
         },
+        "platform-check": false,
         "optimize-autoloader": true,
         "preferred-install": "dist",
         "sort-packages": true,
         "allow-plugins": {
+            "liberusoftware/composer-installer": true,
             "pestphp/pest-plugin": true,
             "php-http/discovery": true
         }
     },
-    "minimum-stability": "beta",
+    "minimum-stability": "dev",
     "prefer-stable": true
 }

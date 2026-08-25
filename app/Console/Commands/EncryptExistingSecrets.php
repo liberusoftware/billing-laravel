@@ -33,7 +33,7 @@ class EncryptExistingSecrets extends Command
         $dryRun = (bool) $this->option('dry-run');
 
         foreach (self::MODELS as $modelClass) {
-            $model = new $modelClass;
+            $model = new $modelClass();
             $table = $model->getTable();
 
             // Derive columns from the model's cast list — only those cast as `encrypted`.

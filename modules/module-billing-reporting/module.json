@@ -1,0 +1,33 @@
+{
+  "$schema": "https://schemas.liberu.dev/module/v1.json",
+  "name": "module-billing-reporting",
+  "display_name": "Billing Reporting",
+  "description": "Provider-neutral Billing Reporting domain module.",
+  "version": "0.1.0",
+  "category": "capability",
+  "provider": "Liberu\\Billing\\Reporting\\ReportingServiceProvider",
+  "requires": {
+    "php": "^8.5",
+    "laravel": "^13.0",
+    "packages": {
+      "liberusoftware/module-manager": "^1.0"
+    }
+  },
+  "suggests": [],
+  "capabilities": [
+    "billing.reporting"
+  ],
+  "default_enabled": true,
+  "features": [
+    "mrr-arr",
+    "churn",
+    "aging",
+    "revenue",
+    "tax",
+    "usage",
+    "provisioning",
+    "collection",
+    "provider-metrics"
+  ]
+}
+

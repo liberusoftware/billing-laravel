@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: liberu-billing
+  name: boilerplate-laravel
   labels:
-    app.kubernetes.io/name: liberu-billing
-    app.kubernetes.io/part-of: liberu
+    name: boilerplate-laravel
+    app: liberu-boilerplate

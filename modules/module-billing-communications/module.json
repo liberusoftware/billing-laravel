@@ -1,0 +1,28 @@
+{
+  "$schema": "https://schemas.liberu.dev/module/v1.json",
+  "name": "module-billing-communications",
+  "display_name": "Billing Communications",
+  "description": "Provider-neutral Billing Communications domain module.",
+  "version": "0.1.0",
+  "category": "capability",
+  "provider": "Liberu\\Billing\\Communications\\CommunicationsServiceProvider",
+  "requires": {
+    "php": "^8.5",
+    "laravel": "^13.0",
+    "packages": {
+      "liberusoftware/module-manager": "^1.0"
+    }
+  },
+  "suggests": [],
+  "capabilities": [
+    "billing.communications"
+  ],
+  "default_enabled": true,
+  "features": [
+    "voip-sms-services",
+    "number-lifecycle",
+    "usage-rating-imports",
+    "provider-adapters"
+  ]
+}
+

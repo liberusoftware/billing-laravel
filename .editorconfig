@@ -1,48 +1,18 @@
-# EditorConfig helps maintain consistent coding styles.
-# Based on pint.json (preset: laravel)
-
 root = true
 
 [*]
 charset = utf-8
-
-# Match Laravel / Pint spacing standards
-indent_style = space
-indent_size = 4
-
-# Line endings consistent with Pint's default (LF)
 end_of_line = lf
-
-# Ensure files end with a newline
+indent_size = 4
+indent_style = space
 insert_final_newline = true
-
-# Remove trailing spaces
 trim_trailing_whitespace = true
 
-# Keep max line length flexible — Pint doesn’t enforce it
-max_line_length = off
+[*.md]
+trim_trailing_whitespace = false
 
-# Use Unix-style paths consistently
-ij_kotlin_imports_layout = ascii
-
-# PHP-specific
-[*.php]
-indent_size = 4
-indent_style = space
-
-# JSON, YAML, Markdown — typical Laravel project
-[*.{json,yml,yaml,md}]
+[*.{yml,yaml}]
 indent_size = 2
-indent_style = space
 
-# Blade templates often use 4 spaces like PHP
-[*.blade.php]
+[{compose,docker-compose}.{yml,yaml}]
 indent_size = 4
-indent_style = space
-
-# Ignore test stubs or temp folders excluded by Pint
-[tmp/**]
-indent_style = space
-
-[tests/TestCase.php]
-indent_style = space

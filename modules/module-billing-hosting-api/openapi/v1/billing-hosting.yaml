@@ -1,0 +1,49 @@
+openapi: 3.1.0
+info: {title: Billing Hosting API, version: 1.0.0, description: Team-scoped hosting accounts, plans, adapters, SSL, resources, and lifecycle operations.}
+servers: [{url: /}]
+paths:
+  /api/v1/billing/hosting:
+    get:
+      operationId: billing.hosting.accounts.list
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/PageSize'}]
+      responses: {'200': {$ref: '#/components/responses/Collection'}, '401': {$ref: '#/components/responses/Unauthorized'}}
+    post:
+      operationId: billing.hosting.accounts.create
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object, required: [name], properties: {name: {type: string, maxLength: 255}, status: {type: string}, metadata: {type: object, additionalProperties: true}}}}}}
+      responses: {'201': {$ref: '#/components/responses/Document'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/hosting/{account}/lifecycle:
+    patch:
+      operationId: billing.hosting.accounts.transition
+      security: [{sanctum: []}]
+      parameters: [{name: account, in: path, required: true, schema: {type: integer, minimum: 1}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object, required: [status], properties: {status: {type: string, enum: [pending, active, suspended, cancelled, failed]}}}}}}
+      responses: {'200': {$ref: '#/components/responses/Document'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/hosting/capabilities:
+    get: {operationId: billing.hosting.capabilities.list, security: [{sanctum: []}], responses: {'200': {$ref: '#/components/responses/Collection'}}}
+    post:
+      operationId: billing.hosting.capabilities.create
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/CapabilityRequest'}}}}
+      responses: {'201': {$ref: '#/components/responses/Document'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/hosting/capabilities/{capability}/lifecycle:
+    patch:
+      operationId: billing.hosting.capabilities.transition
+      security: [{sanctum: []}]
+      parameters: [{name: capability, in: path, required: true, schema: {type: integer, minimum: 1}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object, required: [status], properties: {status: {type: string, enum: [pending, active, suspended, cancelled, failed]}}}}}}
+      responses: {'200': {$ref: '#/components/responses/Document'}, '409': {description: Invalid lifecycle transition}, '422': {$ref: '#/components/responses/ValidationError'}}
+components:
+  parameters:
+    PageSize: {name: per_page, in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 25}}
+    IdempotencyKey: {name: Idempotency-Key, in: header, schema: {type: string, maxLength: 255}}
+  responses:
+    Collection: {description: Paginated team-scoped collection, content: {application/json: {schema: {type: object, required: [data, meta], properties: {data: {type: array, items: {type: object}}, meta: {type: object}}}}}}
+    Document: {description: Hosting resource, content: {application/json: {schema: {type: object, required: [data], properties: {data: {type: object}}}}}}
+    Unauthorized: {description: Authentication or scope is required.}
+    ValidationError: {description: RFC 9457-compatible validation problem.}
+  schemas: {CapabilityRequest: {type: object, required: [capability], properties: {capability: {type: string}, provider: {type: string}, configuration: {type: object, additionalProperties: true}}}}
+  securitySchemes: {sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}}

@@ -38,7 +38,7 @@ class ProjectReports extends Page
     {
         $tenant = Filament::getTenant();
         $teamId = $tenant instanceof Team ? $tenant->id : 0;
-        $report = new ProjectReportService;
+        $report = new ProjectReportService();
 
         $byProject = $report->timeWorkedPerProject($teamId);
         $projectNames = Project::where('team_id', $teamId)

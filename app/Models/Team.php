@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use App\Enums\OrganisationType;
+use Database\Factories\TeamFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -12,12 +12,13 @@ use Illuminate\Support\Carbon;
 use Laravel\Jetstream\Events\TeamCreated;
 use Laravel\Jetstream\Events\TeamDeleted;
 use Laravel\Jetstream\Events\TeamUpdated;
-use Laravel\Jetstream\Team as JetstreamTeam;
+use Liberu\Foundation\Organizations\Models\Team as FoundationTeam;
 use Override;
 
 /**
  * @property int $id
  * @property int $user_id
+ * @property bool $is_default_for_registration
  * @property int|null $parent_team_id
  * @property string $name
  * @property OrganisationType $organisation_type
@@ -40,9 +41,12 @@ use Override;
     'branding',
     'archived_at',
 ])]
-class Team extends JetstreamTeam
+class Team extends FoundationTeam
 {
-    use HasFactory;
+    protected static function newFactory(): TeamFactory
+    {
+        return TeamFactory::new();
+    }
 
     /**
      * The attributes that are mass assignable.
@@ -126,10 +130,10 @@ class Team extends JetstreamTeam
     protected static function booted(): void
     {
         static::saving(function (Team $team): void {
-            if ($team->is_default_for_registration && $team->isDirty('is_default_for_registration')) {
+            if ($team->is_default_for_registration) {
                 static::query()
                     ->where('is_default_for_registration', true)
-                    ->when($team->exists, fn ($query) => $query->whereKeyNot($team->getKey()))
+                    ->when($team->exists, fn ($query) => $query->where($team->getKeyName(), '<>', $team->getKey()))
                     ->update(['is_default_for_registration' => false]);
             }
         });

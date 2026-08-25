@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+return new class() extends Migration
 {
     /**
      * The api_key/secret_key/token/secret columns are now cast 'encrypted'.
@@ -24,9 +24,11 @@ return new class extends Migration
             $table->text('token')->nullable()->change();
         });
 
-        Schema::table('webhook_endpoints', function (Blueprint $table): void {
-            $table->text('secret')->nullable()->change();
-        });
+        if (Schema::hasTable('webhook_endpoints') && Schema::hasColumn('webhook_endpoints', 'secret')) {
+            Schema::table('webhook_endpoints', function (Blueprint $table): void {
+                $table->text('secret')->nullable()->change();
+            });
+        }
     }
 
     public function down(): void
@@ -40,8 +42,10 @@ return new class extends Migration
             $table->string('token')->nullable()->change();
         });
 
-        Schema::table('webhook_endpoints', function (Blueprint $table): void {
-            $table->string('secret')->nullable()->change();
-        });
+        if (Schema::hasTable('webhook_endpoints') && Schema::hasColumn('webhook_endpoints', 'secret')) {
+            Schema::table('webhook_endpoints', function (Blueprint $table): void {
+                $table->string('secret')->nullable()->change();
+            });
+        }
     }
 };

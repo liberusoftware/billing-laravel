@@ -21,7 +21,7 @@ class NewTicketNotification extends Notification implements ShouldQueue
 
     public function toMail($notifiable): MailMessage
     {
-        return (new MailMessage)
+        return (new MailMessage())
             ->subject('New Support Ticket Created')
             ->greeting('Hello!')
             ->line('A new support ticket has been created.')

@@ -35,7 +35,7 @@ class NotificationServicesTest extends TestCase
             '*' => Http::response(['id' => 'abc'], 200),
         ]);
 
-        $result = (new SmsService)->send('(415) 555-2671', 'Hello there');
+        $result = (new SmsService())->send('(415) 555-2671', 'Hello there');
 
         $this->assertTrue($result);
 
@@ -52,7 +52,7 @@ class NotificationServicesTest extends TestCase
     {
         Http::fake(['*' => Http::response([], 200)]);
 
-        (new SmsService)->send('+44 20 7946 0958', 'Hi');
+        (new SmsService())->send('+44 20 7946 0958', 'Hi');
 
         Http::assertSent(fn ($request) => $request['to'] === '+442079460958');
     }
@@ -61,7 +61,7 @@ class NotificationServicesTest extends TestCase
     {
         Http::fake(['*' => Http::response('nope', 500)]);
 
-        $this->assertFalse((new SmsService)->send('4155552671', 'x'));
+        $this->assertFalse((new SmsService())->send('4155552671', 'x'));
     }
 
     public function test_sms_no_ops_when_disabled(): void
@@ -69,7 +69,7 @@ class NotificationServicesTest extends TestCase
         config(['services.sms.enabled' => false]);
         Http::fake();
 
-        $this->assertFalse((new SmsService)->send('4155552671', 'x'));
+        $this->assertFalse((new SmsService())->send('4155552671', 'x'));
 
         Http::assertNothingSent();
     }
@@ -78,8 +78,8 @@ class NotificationServicesTest extends TestCase
     {
         Http::fake();
 
-        $this->assertFalse((new SmsService)->send('', 'x'));
-        $this->assertFalse((new SmsService)->send(null, 'x'));
+        $this->assertFalse((new SmsService())->send('', 'x'));
+        $this->assertFalse((new SmsService())->send(null, 'x'));
 
         Http::assertNothingSent();
     }
@@ -90,7 +90,7 @@ class NotificationServicesTest extends TestCase
     {
         Queue::fake();
 
-        $result = (new EmailNotificationService)->send(new StubNotificationMailable, 'user@example.test');
+        $result = (new EmailNotificationService())->send(new StubNotificationMailable(), 'user@example.test');
 
         $this->assertTrue($result);
 
@@ -104,7 +104,7 @@ class NotificationServicesTest extends TestCase
     {
         Mail::fake();
 
-        $result = (new EmailNotificationService)->sendNow(new StubNotificationMailable, 'user@example.test');
+        $result = (new EmailNotificationService())->sendNow(new StubNotificationMailable(), 'user@example.test');
 
         $this->assertTrue($result);
 

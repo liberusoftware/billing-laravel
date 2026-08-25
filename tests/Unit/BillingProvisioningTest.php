@@ -1,0 +1,74 @@
+<?php
+
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Liberu\Billing\Provisioning\Actions\CreateProvisionedService;
+use Liberu\Billing\Provisioning\Actions\QueueProvisioningOperation;
+use Liberu\Billing\Provisioning\Actions\RunProvisioningOperation;
+use Liberu\Billing\Provisioning\Contracts\ProvisioningDriver;
+use Liberu\Billing\Provisioning\Enums\ProvisioningState;
+use Liberu\Billing\Provisioning\Models\ProvisionedService;
+use Liberu\Billing\Provisioning\Services\ProvisioningDriverRegistry;
+
+uses(RefreshDatabase::class);
+
+it('creates a pending provisioned service through the domain action', function () {
+    $service = app(CreateProvisionedService::class)->execute(['team_id' => 10, 'provider' => 'test']);
+
+    expect($service->state)->toBe(ProvisioningState::Pending)
+        ->and($service->team_id)->toBe(10)
+        ->and($service->provider)->toBe('test');
+});
+
+it('runs a queued provider operation and records the external identity', function () {
+    $registry = app(ProvisioningDriverRegistry::class);
+    $registry->register('test', new class() implements ProvisioningDriver
+    {
+        public function provision(ProvisionedService $service): string
+        {
+            return 'external-123';
+        }
+
+        public function deprovision(ProvisionedService $service): void {}
+
+        public function poll(ProvisionedService $service): array
+        {
+            return ['state' => ProvisioningState::Active->value, 'external_id' => 'external-123'];
+        }
+    });
+
+    $service = ProvisionedService::query()->create(['team_id' => 10, 'provider' => 'test', 'state' => ProvisioningState::Pending, 'metadata' => []]);
+    $operation = app(QueueProvisioningOperation::class)->execute($service, 'provision');
+    $completed = app(RunProvisioningOperation::class)->execute($operation);
+
+    expect($completed->status)->toBe('completed')
+        ->and($service->refresh()->state)->toBe(ProvisioningState::Active)
+        ->and($service->external_id)->toBe('external-123');
+});
+
+it('records provider failures and schedules a retry', function () {
+    $registry = app(ProvisioningDriverRegistry::class);
+    $registry->register('failing', new class() implements ProvisioningDriver
+    {
+        public function provision(ProvisionedService $service): string
+        {
+            throw new RuntimeException('Provider unavailable');
+        }
+
+        public function deprovision(ProvisionedService $service): void {}
+
+        public function poll(ProvisionedService $service): array
+        {
+            return ['state' => ProvisioningState::Failed->value, 'error' => 'Provider unavailable'];
+        }
+    });
+
+    $service = ProvisionedService::query()->create(['team_id' => 10, 'provider' => 'failing', 'state' => ProvisioningState::Pending, 'metadata' => []]);
+    $operation = app(QueueProvisioningOperation::class)->execute($service, 'provision');
+
+    expect(fn () => app(RunProvisioningOperation::class)->execute($operation))
+        ->toThrow(RuntimeException::class, 'Provider unavailable');
+
+    expect($operation->refresh()->status)->toBe('failed')
+        ->and($operation->next_poll_at)->not->toBeNull()
+        ->and($operation->error)->toBe('Provider unavailable');
+});

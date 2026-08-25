@@ -20,7 +20,7 @@ class SecurityHeaders
         );
         $response->headers->set(
             'X-Frame-Options',
-            'SAMEORIGIN'
+            'DENY'
         );
         $response->headers->set(
             'X-XSS-Protection',

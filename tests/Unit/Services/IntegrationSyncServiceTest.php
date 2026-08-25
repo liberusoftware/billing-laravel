@@ -35,7 +35,7 @@ class IntegrationSyncServiceTest extends TestCase
             'team_id' => $customer->team_id,
             'connector_type' => ConnectorType::Crm,
         ]);
-        $connector = new FakeBusinessConnector;
+        $connector = new FakeBusinessConnector();
         $service = new IntegrationSyncService($connector);
 
         $this->assertSame(1, $service->synchronizeCustomer($customer));
@@ -58,7 +58,7 @@ class IntegrationSyncServiceTest extends TestCase
             'email' => 'prospect@example.test',
             'status' => 'new',
         ]);
-        $service = new IntegrationSyncService(new FakeBusinessConnector);
+        $service = new IntegrationSyncService(new FakeBusinessConnector());
 
         $customer = $service->convertLead($lead);
         $invoice = $service->billOpportunity($customer, [

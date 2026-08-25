@@ -1,0 +1,15 @@
+{
+  "$schema": "https://schemas.liberu.dev/module/v1.json",
+  "name": "module-billing-payments-filament",
+  "display_name": "Billing Payments Filament",
+  "description": "Filament 5 adapter for Billing Payments.",
+  "version": "0.1.0",
+  "category": "presentation",
+  "provider": "Liberu\\Billing\\Payments\\Filament\\PaymentsFilamentServiceProvider",
+  "requires": {"php": "^8.5", "laravel": "^13.0", "packages": {"liberusoftware/module-billing-payments": "^0.1", "liberusoftware/module-manager": "^1.0"}},
+  "suggests": [],
+  "presentation": {"filament": {"admin": ["Liberu\\Billing\\Payments\\Filament\\PaymentsFilamentPlugin"]}},
+  "capabilities": ["billing.payments.filament"],
+  "default_enabled": true,
+  "features": ["Payment resource", "Payment state display"]
+}

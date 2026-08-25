@@ -62,7 +62,7 @@ jobs:
             - v1-dependencies-
       - run: composer clearcache
       - run: sudo composer selfupdate
-      - run: composer install --no-scripts -n --prefer-dist
+      - run: composer install -n --prefer-dist
       - save_cache:
           key: v1-dependencies-{{ checksum "composer.json" }}
           paths:

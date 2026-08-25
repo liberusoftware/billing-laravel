@@ -1,0 +1,62 @@
+openapi: 3.1.0
+info: {title: Billing Customer Portal API, version: 1.0.0, description: Team-scoped customer portal requests and authorized portal items.}
+servers: [{url: /}]
+paths:
+  /api/v1/billing/customer-portal:
+    get:
+      operationId: billing.customerPortal.requests.list
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/PageSize'}]
+      responses: {'200': {$ref: '#/components/responses/Collection'}, '401': {$ref: '#/components/responses/Unauthorized'}, '429': {$ref: '#/components/responses/RateLimited'}}
+    post:
+      operationId: billing.customerPortal.requests.create
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/PortalRequest'}}}}
+      responses: {'201': {$ref: '#/components/responses/Document'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/customer-portal/items:
+    get:
+      operationId: billing.customerPortal.items.list
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/PageSize'}, {name: type, in: query, schema: {type: string, enum: [profile, orders, services, usage, invoices, payments, tickets, changes, cancellation]}}]
+      responses: {'200': {$ref: '#/components/responses/Collection'}, '401': {$ref: '#/components/responses/Unauthorized'}}
+    post:
+      operationId: billing.customerPortal.items.create
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/PortalItemRequest'}}}}
+      responses: {'201': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/customer-portal/items/{item}/status:
+    patch:
+      operationId: billing.customerPortal.items.status
+      security: [{sanctum: []}]
+      parameters: [{name: item, in: path, required: true, schema: {type: integer}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object, required: [status], properties: {status: {type: string, enum: [open, in_progress, completed, cancelled, failed]}}}}}}
+      responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/customer-portal/{record}/status:
+    patch:
+      operationId: billing.customerPortal.requests.status
+      security: [{sanctum: []}]
+      parameters: [{name: record, in: path, required: true, schema: {type: integer}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object, required: [status], properties: {status: {type: string, enum: [active, closed, failed]}}}}}}
+      responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
+components:
+  parameters:
+    PageSize: {name: per_page, in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 25}}
+    IdempotencyKey: {name: Idempotency-Key, in: header, schema: {type: string, maxLength: 255}}
+  responses:
+    Collection: {description: Paginated team-scoped collection, content: {application/json: {schema: {type: object, required: [data, meta], properties: {data: {type: array, items: {type: object}}, meta: {type: object}}}}}}
+    Document: {description: Portal item, content: {application/json: {schema: {type: object, required: [data], properties: {data: {type: object}}}}}}
+    Unauthorized: {description: Authentication or scope is required.}
+    ValidationError: {description: RFC 9457-compatible validation problem.}
+    RateLimited: {description: Request limit exceeded.}
+  schemas:
+    PortalItemRequest:
+      type: object
+      required: [type, subject]
+      properties: {type: {type: string, enum: [profile, orders, services, usage, invoices, payments, tickets, changes, cancellation]}, subject: {type: string, maxLength: 255}, customer_id: {type: integer}, payload: {type: object, additionalProperties: true}}
+    PortalRequest:
+      type: object
+      required: [name]
+      properties: {name: {type: string, maxLength: 255}, status: {type: string, enum: [active, closed, failed]}, metadata: {type: object, additionalProperties: true}}
+  securitySchemes: {sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}}

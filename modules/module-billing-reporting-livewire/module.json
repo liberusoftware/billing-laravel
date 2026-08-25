@@ -1,0 +1,31 @@
+{
+  "$schema": "https://schemas.liberu.dev/module/v1.json",
+  "name": "module-billing-reporting-livewire",
+  "display_name": "Billing Reporting Livewire",
+  "description": "Livewire adapter for Billing Reporting.",
+  "version": "0.1.0",
+  "category": "presentation",
+  "provider": "Liberu\\Billing\\Reporting\\Livewire\\ReportingLivewireServiceProvider",
+  "requires": {
+    "php": "^8.5",
+    "laravel": "^13.0",
+    "packages": {
+      "liberusoftware/module-billing-reporting": "^0.1",
+      "liberusoftware/module-manager": "^1.0"
+    }
+  },
+  "suggests": [],
+  "presentation": {
+    "livewire": {
+      "components": ["module-billing-reporting::dashboard", "module-billing-reporting::metrics", "module-billing-reporting::snapshots"]
+    }
+  },
+  "capabilities": [
+    "billing.reporting.livewire"
+  ],
+  "default_enabled": true,
+  "features": [
+    "Reporting Livewire integration",
+    "Metric calculation"
+  ]
+}

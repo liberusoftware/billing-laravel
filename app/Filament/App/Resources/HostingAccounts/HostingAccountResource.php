@@ -11,12 +11,14 @@ use App\Models\HostingAccount;
 use BackedEnum;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Facades\Filament;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Override;
 
 class HostingAccountResource extends Resource
@@ -26,6 +28,14 @@ class HostingAccountResource extends Resource
 
     #[Override]
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-server';
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        $team = Filament::getTenant();
+
+        return $team === null ? $query : $query->where('team_id', $team->getKey());
+    }
 
     #[Override]
     public static function form(Schema $schema): Schema

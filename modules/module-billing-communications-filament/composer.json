@@ -1,0 +1,27 @@
+{
+  "name": "liberusoftware/module-billing-communications-filament",
+  "description": "Filament adapter for Billing Communications.",
+  "type": "liberu-module",
+  "license": "MIT",
+  "require": {
+    "php": "^8.5",
+    "liberusoftware/module-billing-communications": "^0.1",
+    "liberusoftware/module-manager": "^1.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Liberu\\Billing\\Communications\\Filament\\": "src/"
+    }
+  },
+  "extra": {
+    "liberu": {
+      "name": "module-billing-communications-filament"
+    }
+  },
+  "version": "0.1.0",
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    }
+  }
+}

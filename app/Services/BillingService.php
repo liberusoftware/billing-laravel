@@ -41,9 +41,9 @@ class BillingService
         ?RefundService $refundService = null
     ) {
         $this->paymentPlanService = $paymentPlanService ?? new PaymentPlanService($this);
-        $this->paymentGatewayService = $paymentGatewayService ?? new PaymentGatewayService;
-        $this->pricingService = $pricingService ?? new PricingService;
-        $this->smsService = $smsService ?? new SmsService;
+        $this->paymentGatewayService = $paymentGatewayService ?? new PaymentGatewayService();
+        $this->pricingService = $pricingService ?? new PricingService();
+        $this->smsService = $smsService ?? new SmsService();
         $this->partialPaymentService = $partialPaymentService ?? new PartialPaymentService($this->paymentGatewayService);
         $this->refundService = $refundService ?? new RefundService($this->paymentGatewayService);
     }

@@ -26,7 +26,7 @@ class AuditLogServiceTest extends TestCase
         $user = User::factory()->withPersonalTeam()->create();
         $this->actingAs($user);
 
-        new \stdClass;
+        new \stdClass();
 
         $this->service->log('test_action', null, null, ['key' => 'value']);
 

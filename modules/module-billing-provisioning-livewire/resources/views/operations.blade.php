@@ -1,0 +1,32 @@
+<section aria-labelledby="module-billing-provisioning-heading" wire:loading.class="opacity-50">
+    <h2 id="module-billing-provisioning-heading">{{ __('Provisioning') }}</h2>
+    @if (session()->has('module-billing-provisioning-message'))
+        <p role="status">{{ session('module-billing-provisioning-message') }}</p>
+    @endif
+    <form wire:submit="queue">
+        <label>{{ __('Service') }}
+            <select wire:model="selectedServiceId" required>
+                <option value="">{{ __('Select a service') }}</option>
+                @foreach ($services as $service)
+                    <option value="{{ $service->id }}">{{ $service->provider }} — {{ $service->state->value }}</option>
+                @endforeach
+            </select>
+        </label>
+        <label>{{ __('Operation') }}
+            <select wire:model="operation">
+                @foreach (['provision', 'deprovision', 'poll', 'reconcile', 'rollback'] as $availableOperation)
+                    <option value="{{ $availableOperation }}">{{ ucfirst($availableOperation) }}</option>
+                @endforeach
+            </select>
+        </label>
+        <button type="submit">{{ __('Queue operation') }}</button>
+        <button type="button" wire:click="reconcile">{{ __('Reconcile service') }}</button>
+    </form>
+    <ul>
+        @forelse ($operations as $operation)
+            <li wire:key="provisioning-operation-{{ $operation->id }}">{{ $operation->operation }} ({{ $operation->status }})</li>
+        @empty
+            <li>{{ __('No provisioning operations found.') }}</li>
+        @endforelse
+    </ul>
+</section>

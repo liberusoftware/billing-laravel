@@ -20,7 +20,7 @@ class VoipBillingServiceTest extends TestCase
     public function test_provisioning_activates_and_synchronizes_sip_account(): void
     {
         $account = VoipAccount::factory()->create();
-        $client = new FakeVoipPlatformClient;
+        $client = new FakeVoipPlatformClient();
 
         $provisioned = app(VoipBillingService::class)->provision($account, $client);
 

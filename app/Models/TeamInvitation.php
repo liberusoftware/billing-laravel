@@ -13,16 +13,21 @@ use Override;
 /**
  * @property int $id
  * @property int $team_id
+ * @property int|null $user_id
  * @property string $email
  * @property string|null $role
  * @property string $token
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Team|null $team
+ * @property-read User|null $user
  */
 #[Fillable([
     'email',
     'role',
+    'team_id',
+    'user_id',
+    'token',
 ])]
 class TeamInvitation extends JetstreamTeamInvitation
 {
@@ -50,5 +55,10 @@ class TeamInvitation extends JetstreamTeamInvitation
     public function team(): BelongsTo
     {
         return $this->belongsTo(Jetstream::teamModel());
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

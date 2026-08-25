@@ -1,193 +1,20 @@
 <?php
 
-declare(strict_types=1);
-
 return [
+    // Composer-installed module packages. Local paths may be appended for development.
+    'paths' => [base_path('modules')],
 
-    /*
-    |--------------------------------------------------------------------------
-    | Modules Path
-    |--------------------------------------------------------------------------
-    |
-    | This value determines the path where modules are stored. By default,
-    | modules are stored in the app/Modules directory.
-    |
-    */
+    // Which modules boot is the manifests' decision, not this file's: ModuleRegistry::resolve()
+    // selects every installed module whose module.json declares default_enabled, so installing a
+    // package is what offers it and its own manifest is what turns it on. The two lists below are
+    // deployment overrides on top of that, empty by default.
+    //
+    // MODULES_ENABLED adds modules their manifests leave off — the three adapters that need
+    // third-party credentials. MODULES_DISABLED removes modules their manifests turn on, and
+    // wins over both the manifest and MODULES_ENABLED.
+    'enabled' => array_values(array_filter(explode(',', (string) env('MODULES_ENABLED', '')))),
+    'disabled' => array_values(array_filter(explode(',', (string) env('MODULES_DISABLED', '')))),
 
-    'path' => app_path('Modules'),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Auto Discovery
-    |--------------------------------------------------------------------------
-    |
-    | When enabled, the module system will automatically discover and register
-    | modules found in the modules directory.
-    |
-    */
-
-    'auto_discovery' => true,
-
-    /*
-    |--------------------------------------------------------------------------
-    | Cache Modules
-    |--------------------------------------------------------------------------
-    |
-    | When enabled, module information will be cached to improve performance.
-    | This is recommended for production environments.
-    |
-    */
-
-    'cache' => env('MODULES_CACHE', true),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Cache Key
-    |--------------------------------------------------------------------------
-    |
-    | The cache key used to store module information.
-    |
-    */
-
-    'cache_key' => 'app.modules',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Cache TTL
-    |--------------------------------------------------------------------------
-    |
-    | The time-to-live for cached module information in seconds.
-    |
-    */
-
-    'cache_ttl' => 3600,
-
-    /*
-    |--------------------------------------------------------------------------
-    | Module Namespace
-    |--------------------------------------------------------------------------
-    |
-    | The base namespace for modules in app/Modules/ (legacy pattern).
-    | For app-modules/ (modular pattern) set alt_namespace below.
-    |
-    */
-
-    'namespace' => 'App\\Modules',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Alternative Module Namespace
-    |--------------------------------------------------------------------------
-    |
-    | The PSR-4 namespace for modules located in app-modules/ (modular pattern).
-    | These modules use a src/ subdirectory layout.
-    |
-    */
-
-    'alt_namespace' => 'Modules',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Enabled Modules
-    |--------------------------------------------------------------------------
-    |
-    | List of modules that should be enabled by default. This is useful
-    | for ensuring critical modules are always available.
-    |
-    */
-
-    'enabled' => [
-        // 'ExampleModule',
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Module Assets
-    |--------------------------------------------------------------------------
-    |
-    | Configuration for module assets publishing.
-    |
-    */
-
-    'assets' => [
-        'path' => public_path('modules'),
-        'url' => '/modules',
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Module Views
-    |--------------------------------------------------------------------------
-    |
-    | Configuration for module views.
-    |
-    */
-
-    'views' => [
-        'namespace_prefix' => 'module',
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Module Translations
-    |--------------------------------------------------------------------------
-    |
-    | Configuration for module translations.
-    |
-    */
-
-    'translations' => [
-        'namespace_prefix' => 'module',
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Development Mode
-    |--------------------------------------------------------------------------
-    |
-    | When enabled, additional debugging information will be available
-    | and modules will be reloaded on each request.
-    |
-    */
-
-    'development' => env('MODULES_DEVELOPMENT', env('APP_DEBUG', false)),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Module Requirements
-    |--------------------------------------------------------------------------
-    |
-    | Global requirements that all modules must meet.
-    |
-    */
-
-    'requirements' => [
-        'php' => '8.5',
-        'laravel' => '13.0',
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | External Module Paths
-    |--------------------------------------------------------------------------
-    |
-    | Additional filesystem paths to scan for modules outside the main
-    | modules directory (e.g. plugin directories).
-    |
-    */
-
-    'external_paths' => [],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Load Composer Modules
-    |--------------------------------------------------------------------------
-    |
-    | When enabled, Composer packages that expose a `laravel-module` extra key
-    | will be loaded as modules automatically.
-    |
-    */
-
-    'load_composer_modules' => env('MODULES_LOAD_COMPOSER', false),
-
+    'cache' => env('MODULES_CACHE', false),
+    'cache_key' => 'liberu.modules.registry.v1',
 ];

@@ -18,7 +18,7 @@ class WebhookServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->webhookService = new WebhookService;
+        $this->webhookService = new WebhookService();
     }
 
     public function test_can_dispatch_webhook_event(): void

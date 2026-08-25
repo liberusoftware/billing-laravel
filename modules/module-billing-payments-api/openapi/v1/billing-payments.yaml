@@ -1,0 +1,134 @@
+openapi: 3.1.0
+info:
+  title: Billing Payments API
+  version: 1.0.0
+  description: Team-scoped payment collection and creation contract.
+  license: {name: MIT, identifier: MIT}
+servers: [{url: /}]
+paths:
+  /api/v1/billing/payments:
+    get:
+      operationId: billing.payments.list
+      summary: List authorized payments
+      security: [{sanctum: []}]
+      parameters: [{name: per_page, in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 25}}]
+      responses:
+        '200': {$ref: '#/components/responses/Collection'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+    post:
+      operationId: billing.payments.create
+      summary: Create a pending payment
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/CreatePaymentRequest'}
+      responses:
+        '201': {$ref: '#/components/responses/Document'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '422': {$ref: '#/components/responses/ValidationError'}
+  /api/v1/billing/payments/{payment}/capture:
+    post:
+      operationId: billing.payments.capture
+      summary: Capture a pending payment
+      security: [{sanctum: []}]
+      parameters: [{name: payment, in: path, required: true, schema: {type: string}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      responses:
+        '200': {$ref: '#/components/responses/Document'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+  /api/v1/billing/payments/{payment}/refund:
+    post:
+      operationId: billing.payments.refund
+      summary: Refund part or all of a captured payment
+      security: [{sanctum: []}]
+      parameters: [{name: payment, in: path, required: true, schema: {type: string}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [amount_minor]
+              properties:
+                amount_minor: {type: integer, minimum: 1}
+                reason: {type: string, maxLength: 255}
+      responses:
+        '200': {$ref: '#/components/responses/Document'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+  /api/v1/billing/payments/{payment}/dispute:
+    post:
+      operationId: billing.payments.dispute
+      summary: Open a payment dispute
+      security: [{sanctum: []}]
+      parameters: [{name: payment, in: path, required: true, schema: {type: string}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [amount_minor, reason]
+              properties:
+                amount_minor: {type: integer, minimum: 1}
+                reason: {type: string, maxLength: 255}
+      responses:
+        '200': {$ref: '#/components/responses/Document'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+components:
+  parameters:
+    IdempotencyKey: {name: Idempotency-Key, in: header, required: false, schema: {type: string, maxLength: 255}}
+  responses:
+    Collection:
+      description: Paginated authorized payments.
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [data, meta]
+            properties:
+              data: {type: array, items: {$ref: '#/components/schemas/Resource'}}
+              meta: {type: object}
+    Document:
+      description: Created payment.
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [data]
+            properties: {data: {$ref: '#/components/schemas/Resource'}}
+    Unauthorized: {description: Authentication is required.}
+    ValidationError: {description: Validation failed.}
+  schemas:
+    Resource:
+      type: object
+      required: [id, type, attributes]
+      properties:
+        id: {type: string}
+        type: {type: string, const: billing-payments}
+        attributes: {$ref: '#/components/schemas/PaymentAttributes'}
+    PaymentAttributes:
+      type: object
+      required: [amount_minor, currency, status, refunded_minor]
+      properties:
+        amount_minor: {type: integer, minimum: 1}
+        currency: {type: string, pattern: '^[A-Z]{3}$'}
+        status: {type: string, enum: [pending, captured, failed, refunded, disputed]}
+        payment_method: {type: string}
+        gateway: {type: string}
+        provider_reference: {type: string}
+        captured_at: {type: string, format: date-time}
+        refunded_minor: {type: integer, minimum: 0}
+    CreatePaymentRequest:
+      type: object
+      required: [amount_minor, currency]
+      properties:
+        customer_id: {type: integer, minimum: 1}
+        amount_minor: {type: integer, minimum: 1}
+        currency: {type: string, pattern: '^[A-Za-z]{3}$'}
+        payment_method: {type: string, maxLength: 100}
+        gateway: {type: string, maxLength: 100}
+        metadata: {type: object, additionalProperties: true}
+  securitySchemes:
+    sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}

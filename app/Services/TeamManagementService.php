@@ -23,19 +23,24 @@ class TeamManagementService
     {
         DB::transaction(
             function () use ($user): void {
-                $team = Team::firstOrCreate(
-                    [
-                        'name' => $user->name."'s Team",
-                        'user_id' => $user->id,
-                    ],
-                    ['personal_team' => true]
-                );
+                $team = Team::defaultForRegistration();
 
-                if (! $user->belongsToTeam($team)) {
+                if ($team !== null && ! $user->belongsToTeam($team)) {
                     $user->teams()->attach(
                         $team,
                         ['role' => 'admin']
                     );
+                }
+
+                if ($team === null) {
+                    /** @var Team $team */
+                    $team = $user->ownedTeams()->create([
+                        'name' => $user->name."'s Team",
+                        'personal_team' => true,
+                    ]);
+                    $user->switchTeam($team);
+
+                    return;
                 }
 
                 $user->forceFill(['current_team_id' => $team->id])->save();

@@ -18,7 +18,7 @@ class PricingServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->pricing = new PricingService;
+        $this->pricing = new PricingService();
     }
 
     #[Test]

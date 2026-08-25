@@ -1,0 +1,111 @@
+openapi: 3.1.0
+info: {title: Billing Collections API, version: 1.0.0, license: {name: MIT, identifier: MIT}}
+servers: [{url: /}]
+paths:
+  /api/v1/billing/collections:
+    get:
+      operationId: billing.collections.list
+      summary: List collection cases
+      security: [{sanctum: []}]
+      responses: {'200': {$ref: '#/components/responses/Collection'}, '401': {$ref: '#/components/responses/Unauthorized'}}
+    post:
+      operationId: billing.collections.create
+      summary: Open a collection case
+      security: [{sanctum: []}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/CreateCaseRequest'}}}}
+      responses: {'201': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}}
+  /api/v1/billing/collections/{case}/promise:
+    post:
+      operationId: billing.collections.promise
+      summary: Record a payment promise
+      security: [{sanctum: []}]
+      parameters: [{name: case, in: path, required: true, schema: {type: string}}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object, required: [due_at], properties: {due_at: {type: string, format: date-time}}}}}}
+      responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/collections/{case}/suspend:
+    post:
+      operationId: billing.collections.suspend
+      summary: Suspend a collection case
+      security: [{sanctum: []}]
+      parameters: [{name: case, in: path, required: true, schema: {type: string}}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object, required: [reason], properties: {reason: {type: string}}}}}}
+      responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/collections/{case}/recover:
+    post:
+      operationId: billing.collections.recover
+      summary: Recover a collection case
+      security: [{sanctum: []}]
+      parameters: [{name: case, in: path, required: true, schema: {type: string}}]
+      responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}}
+  /api/v1/billing/collections/{case}/dunning:
+    post:
+      operationId: billing.collections.dunning
+      summary: Schedule dunning activity
+      security: [{sanctum: []}]
+      parameters: [{name: case, in: path, required: true, schema: {type: string}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/ScheduleRequest'}}}}
+      responses: {'200': {$ref: '#/components/responses/Document'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/collections/{case}/reminder:
+    post:
+      operationId: billing.collections.reminder
+      summary: Schedule a customer reminder
+      security: [{sanctum: []}]
+      parameters: [{name: case, in: path, required: true, schema: {type: string}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/ScheduleRequest'}}}}
+      responses: {'200': {$ref: '#/components/responses/Document'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/collections/{case}/credit-control:
+    post:
+      operationId: billing.collections.creditControl
+      summary: Apply credit-control action
+      security: [{sanctum: []}]
+      parameters: [{name: case, in: path, required: true, schema: {type: string}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/CreditControlRequest'}}}}
+      responses: {'200': {$ref: '#/components/responses/Document'}, '422': {$ref: '#/components/responses/ValidationError'}}
+components:
+  parameters:
+    IdempotencyKey: {name: Idempotency-Key, in: header, required: false, schema: {type: string, maxLength: 255}}
+  responses:
+    Collection: {description: Collection cases, content: {application/json: {schema: {type: object, properties: {data: {type: array, items: {$ref: '#/components/schemas/Resource'}}, meta: {type: object}}}}}}
+    Document: {description: Collection case resource, content: {application/json: {schema: {type: object, properties: {data: {$ref: '#/components/schemas/Resource'}}}}}}
+    Unauthorized: {description: Authentication is required.}
+    ValidationError: {description: Validation failed.}
+  schemas:
+    Resource:
+      type: object
+      required: [id, type, attributes]
+      properties:
+        id: {type: string}
+        type: {type: string, const: billing-collection-cases}
+        attributes: {$ref: '#/components/schemas/Attributes'}
+    Attributes:
+      type: object
+      required: [type, status, amount_minor, currency]
+      properties:
+        type: {type: string}
+        status: {type: string, enum: [open, promised, suspended, written_off, recovered, closed]}
+        amount_minor: {type: integer, minimum: 1}
+        currency: {type: string, pattern: '^[A-Z]{3}$'}
+        next_action_at: {type: [string, 'null'], format: date-time}
+        promise_due_at: {type: [string, 'null'], format: date-time}
+        reason: {type: [string, 'null']}
+    CreateCaseRequest:
+      type: object
+      required: [amount_minor, currency]
+      properties:
+        customer_id: {type: integer, minimum: 1}
+        invoice_id: {type: integer, minimum: 1}
+        type: {type: string}
+        amount_minor: {type: integer, minimum: 1}
+        currency: {type: string, pattern: '^[A-Za-z]{3}$'}
+        reason: {type: string}
+        metadata: {type: object, additionalProperties: true}
+    ScheduleRequest:
+      type: object
+      required: [next_action_at]
+      properties: {next_action_at: {type: string, format: date-time}}
+    CreditControlRequest:
+      type: object
+      required: [level]
+      properties: {level: {type: string, maxLength: 50}, reason: {type: string, maxLength: 1000}}
+  securitySchemes:
+    sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}

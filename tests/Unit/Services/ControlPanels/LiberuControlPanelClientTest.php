@@ -23,7 +23,7 @@ class LiberuControlPanelClientTest extends TestCase
         parent::setUp();
 
         $this->guzzleClient = Mockery::mock(Client::class);
-        $this->liberuClient = new LiberuControlPanelClient;
+        $this->liberuClient = new LiberuControlPanelClient();
 
         // Use reflection to inject the mock Guzzle client
         $reflection = new \ReflectionClass($this->liberuClient);

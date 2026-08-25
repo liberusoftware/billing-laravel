@@ -1,0 +1,164 @@
+openapi: 3.1.0
+info:
+  title: Billing Invoicing API
+  version: 1.0.0
+  license: {name: MIT, identifier: MIT}
+servers: [{url: /}]
+paths:
+  /api/v1/billing/invoicing:
+    get:
+      operationId: billing.invoicing.list
+      summary: List authorized invoices
+      security: [{sanctum: []}]
+      responses:
+        '200': {$ref: '#/components/responses/Collection'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+    post:
+      operationId: billing.invoicing.create
+      summary: Create a draft invoice
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/CreateInvoiceRequest'}
+      responses:
+        '201': {$ref: '#/components/responses/Document'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '422': {$ref: '#/components/responses/ValidationError'}
+  /api/v1/billing/invoicing/{invoice}/lines:
+    post:
+      operationId: billing.invoicing.addLine
+      summary: Add a line to a draft invoice
+      security: [{sanctum: []}]
+      parameters: [{name: invoice, in: path, required: true, schema: {type: string}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/AddLineRequest'}
+      responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}}
+  /api/v1/billing/invoicing/schedules:
+    post:
+      operationId: billing.invoicing.createSchedule
+      summary: Create a recurring invoice schedule
+      security: [{sanctum: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/CreateScheduleRequest'}
+      responses: {'201': {$ref: '#/components/responses/ScheduleDocument'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/invoicing/schedules/{schedule}/run:
+    post:
+      operationId: billing.invoicing.runSchedule
+      summary: Generate the next invoice for a schedule
+      security: [{sanctum: []}]
+      parameters: [{name: schedule, in: path, required: true, schema: {type: string}}]
+      responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}}
+  /api/v1/billing/invoicing/{invoice}/finalize:
+    post:
+      operationId: billing.invoicing.finalize
+      summary: Finalize a draft invoice
+      security: [{sanctum: []}]
+      parameters: [{name: invoice, in: path, required: true, schema: {type: string}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}}
+  /api/v1/billing/invoicing/{invoice}/adjustments:
+    post:
+      operationId: billing.invoicing.adjust
+      summary: Apply a credit or adjustment to an invoice
+      security: [{sanctum: []}]
+      parameters: [{name: invoice, in: path, required: true, schema: {type: string}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/AdjustmentRequest'}}}}
+      responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/invoicing/{invoice}/document:
+    post:
+      operationId: billing.invoicing.document
+      summary: Generate an invoice document
+      security: [{sanctum: []}]
+      parameters: [{name: invoice, in: path, required: true, schema: {type: string}}]
+      responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}}
+  /api/v1/billing/invoicing/{invoice}/deliver:
+    post:
+      operationId: billing.invoicing.deliver
+      summary: Record invoice delivery
+      security: [{sanctum: []}]
+      parameters: [{name: invoice, in: path, required: true, schema: {type: string}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/DeliveryRequest'}}}}
+      responses: {'201': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
+components:
+  parameters:
+    IdempotencyKey: {name: Idempotency-Key, in: header, required: false, schema: {type: string, maxLength: 255}}
+  responses:
+    Collection:
+      description: Paginated invoice collection.
+      content: {application/json: {schema: {type: object, required: [data, meta], properties: {data: {type: array, items: {$ref: '#/components/schemas/Resource'}}, meta: {type: object}}}}}
+    Document:
+      description: Invoice resource.
+      content: {application/json: {schema: {type: object, required: [data], properties: {data: {$ref: '#/components/schemas/Resource'}}}}}
+    Unauthorized: {description: Authentication is required.}
+    ValidationError: {description: Validation failed.}
+    ScheduleDocument:
+      description: Invoice schedule resource.
+      content: {application/json: {schema: {type: object, required: [data], properties: {data: {type: object}}}}}
+  schemas:
+    Resource:
+      type: object
+      required: [id, type, attributes]
+      properties:
+        id: {type: string}
+        type: {type: string, const: billing-invoices}
+        attributes: {$ref: '#/components/schemas/InvoiceAttributes'}
+    InvoiceAttributes:
+      type: object
+      required: [status, currency, subtotal_minor, tax_minor, total_minor]
+      properties:
+        number: {type: [string, 'null']}
+        status: {type: string, enum: [draft, finalized, paid, void]}
+        currency: {type: string, pattern: '^[A-Z]{3}$'}
+        subtotal_minor: {type: integer, minimum: 0}
+        tax_minor: {type: integer, minimum: 0}
+        total_minor: {type: integer, minimum: 0}
+        due_at: {type: [string, 'null'], format: date-time}
+        finalized_at: {type: [string, 'null'], format: date-time}
+    CreateInvoiceRequest:
+      type: object
+      required: [currency]
+      properties:
+        customer_id: {type: integer, minimum: 1}
+        currency: {type: string, pattern: '^[A-Za-z]{3}$'}
+        due_at: {type: string, format: date-time}
+        metadata: {type: object, additionalProperties: true}
+    AddLineRequest:
+      type: object
+      required: [description, quantity, unit_amount_minor]
+      properties:
+        description: {type: string, maxLength: 1000}
+        quantity: {type: integer, minimum: 1}
+        unit_amount_minor: {type: integer, minimum: 0}
+        tax_rate: {type: number, minimum: 0, maximum: 100}
+    CreateScheduleRequest:
+      type: object
+      required: [frequency]
+      properties:
+        customer_id: {type: integer, minimum: 1}
+        frequency: {type: string, enum: [daily, weekly, monthly, yearly]}
+        next_run_at: {type: string, format: date-time}
+        active: {type: boolean}
+        metadata: {type: object, additionalProperties: true}
+    AdjustmentRequest:
+      type: object
+      required: [amount_minor, reason]
+      properties:
+        amount_minor: {type: integer, not: {const: 0}}
+        reason: {type: string, maxLength: 1000}
+        type: {type: string, enum: [credit, adjustment]}
+    DeliveryRequest:
+      type: object
+      required: [destination]
+      properties:
+        destination: {type: string, format: email}
+        document_id: {type: integer, minimum: 1}
+  securitySchemes:
+    sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}

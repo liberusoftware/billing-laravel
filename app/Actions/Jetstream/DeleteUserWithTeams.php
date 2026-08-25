@@ -2,12 +2,12 @@
 
 namespace App\Actions\Jetstream;
 
-use App\Models\Team;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Laravel\Jetstream\Contracts\DeletesTeams;
 use Laravel\Jetstream\Contracts\DeletesUsers;
+use Liberu\Foundation\Organizations\Models\Team;
 
 class DeleteUserWithTeams implements DeletesUsers
 {

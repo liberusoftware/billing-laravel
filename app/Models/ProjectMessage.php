@@ -52,7 +52,7 @@ class ProjectMessage extends Model
     public static function postAsCustomer(Project $project, User $user, string $body): self
     {
         if ($project->customer->email !== $user->email) {
-            throw new AuthorizationException;
+            throw new AuthorizationException();
         }
 
         return $project->messages()->create([

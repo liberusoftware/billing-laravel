@@ -1,0 +1,26 @@
+{
+  "$schema": "https://schemas.liberu.dev/module/v1.json",
+  "name": "module-billing-hosting-livewire",
+  "display_name": "Billing Hosting Livewire",
+  "description": "Livewire adapter for Billing Hosting.",
+  "version": "0.1.0",
+  "category": "presentation",
+  "provider": "Liberu\\Billing\\Hosting\\Livewire\\HostingLivewireServiceProvider",
+  "requires": {
+    "php": "^8.5",
+    "laravel": "^13.0",
+    "packages": {
+      "liberusoftware/module-billing-hosting": "^0.1",
+      "liberusoftware/module-manager": "^1.0"
+    }
+  },
+  "suggests": [],
+  "capabilities": [
+    "billing.hosting.livewire"
+  ],
+  "default_enabled": true,
+  "features": [
+    "Hosting Livewire integration"
+  ]
+}
+

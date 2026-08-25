@@ -1,0 +1,32 @@
+<?php
+
+declare(strict_types=1);
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class() extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('billing_catalog_products', function (Blueprint $table): void {
+            $table->id();
+            $table->unsignedBigInteger('team_id')->nullable()->index();
+            $table->string('name');
+            $table->string('sku');
+            $table->text('description')->nullable();
+            $table->unsignedBigInteger('base_price_minor');
+            $table->char('currency', 3);
+            $table->string('status', 32)->index();
+            $table->json('metadata')->nullable();
+            $table->timestamps();
+            $table->unique(['team_id', 'sku']);
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('billing_catalog_products');
+    }
+};

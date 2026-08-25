@@ -66,7 +66,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function (): void {
 
 // Route::redirect('/register', '/app/register')->name('register');
 
-Route::redirect('/dashboard', '/app')->name('dashboard');
+Route::get('/dashboard', function () {
+    return auth()->user()?->hasAdminAccess()
+        ? redirect('/admin')
+        : redirect('/app');
+})->name('dashboard');
 
 Route::get('/team-invitations/{invitation}', [TeamInvitationController::class, 'accept'])
     ->middleware(['signed', 'verified', 'auth', AuthenticateSession::class])

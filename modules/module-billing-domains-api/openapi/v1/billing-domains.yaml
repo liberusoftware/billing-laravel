@@ -1,0 +1,64 @@
+openapi: 3.1.0
+info: {title: Billing Domains API, version: 1.0.0, description: Team-scoped domain search, registration, transfer, renewal, DNS, EPP, and registrar operations.}
+servers: [{url: /}]
+paths:
+  /api/v1/billing/domains/search:
+    get:
+      operationId: billing.domains.search
+      security: [{sanctum: []}]
+      parameters: [{name: domain, in: query, required: true, schema: {type: string, minLength: 1, format: hostname}}, {name: registrar, in: query, required: true, schema: {type: string, maxLength: 50}}]
+      responses: {'200': {description: Availability results}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/domains:
+    get:
+      operationId: billing.domains.list
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/PageSize'}]
+      responses: {'200': {$ref: '#/components/responses/Collection'}, '401': {$ref: '#/components/responses/Unauthorized'}}
+    post:
+      operationId: billing.domains.create
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/DomainRequest'}}}}
+      responses: {'201': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/domains/epp-operations:
+    get:
+      operationId: billing.domains.eppOperations.list
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/PageSize'}]
+      responses: {'200': {$ref: '#/components/responses/Collection'}, '401': {$ref: '#/components/responses/Unauthorized'}}
+  /api/v1/billing/domains/{domain}/register:
+    post:
+      operationId: billing.domains.register
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/Domain'}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      responses: {'202': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '409': {description: Registration conflict}}
+  /api/v1/billing/domains/{domain}/renew:
+    post:
+      operationId: billing.domains.renew
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/Domain'}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      responses: {'202': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}}
+  /api/v1/billing/domains/{domain}/transfer:
+    post:
+      operationId: billing.domains.transfer
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/Domain'}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object, required: [auth_code], properties: {auth_code: {type: string, writeOnly: true}}}}}}
+      responses: {'202': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/domains/{domain}/dns:
+    get: {operationId: billing.domains.dns.list, security: [{sanctum: []}], parameters: [{$ref: '#/components/parameters/Domain'}], responses: {'200': {$ref: '#/components/responses/Collection'}}}
+    post: {operationId: billing.domains.dns.create, security: [{sanctum: []}], parameters: [{$ref: '#/components/parameters/Domain'}, {$ref: '#/components/parameters/IdempotencyKey'}], requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/DnsRequest'}}}}, responses: {'201': {$ref: '#/components/responses/Document'}, '422': {$ref: '#/components/responses/ValidationError'}}}
+components:
+  parameters:
+    PageSize: {name: per_page, in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 25}}
+    IdempotencyKey: {name: Idempotency-Key, in: header, schema: {type: string, maxLength: 255}}
+    Domain: {name: domain, in: path, required: true, schema: {type: integer, minimum: 1}}
+  responses:
+    Collection: {description: Paginated team-scoped collection, content: {application/json: {schema: {type: object, required: [data], properties: {data: {type: array, items: {type: object}}, meta: {type: object}}}}}}
+    Document: {description: Domain resource or asynchronous operation, content: {application/json: {schema: {type: object, required: [data], properties: {data: {type: object}}}}}}
+    Unauthorized: {description: Authentication or scope is required.}
+    ValidationError: {description: RFC 9457-compatible validation problem.}
+  schemas:
+    DomainRequest: {type: object, required: [name], properties: {name: {type: string, format: hostname}, registrar: {type: string}, metadata: {type: object, additionalProperties: true}}}
+    DnsRequest: {type: object, required: [type, name, value], properties: {type: {type: string}, name: {type: string}, value: {type: string}, ttl: {type: integer, minimum: 60}}}
+  securitySchemes: {sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}}

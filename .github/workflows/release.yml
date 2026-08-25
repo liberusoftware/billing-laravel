@@ -1,0 +1,67 @@
+name: Release
+
+on:
+  push:
+    tags: ['v[0-9]+.[0-9]+.[0-9]+']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Tag to release
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          fetch-depth: 0
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@b604ade2a87db23f8871b7182e69ec5e75effb45 # v2
+        with:
+          php-version: '8.5'
+          extensions: mbstring, pdo, pdo_sqlite, bcmath, opcache, zip, gd, intl, dom, curl
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Validate Composer metadata
+        run: composer validate --strict
+
+      - name: Audit dependencies
+        run: composer audit --locked
+
+      - name: Check formatting
+        run: vendor/bin/pint --test
+
+      - name: Static analysis
+        run: php -d memory_limit=1G vendor/bin/phpstan analyse --no-progress
+
+      # A release is a claim that this tree is the one the fleet resolves to. Both halves
+      # of that claim are checked here rather than assumed from a green Tests run on main:
+      # the packages must match their published releases, and the suite must pass against
+      # exactly those files.
+      - name: Installed packages match the tracked source
+        run: git diff --exit-code --stat -- modules themes
+
+      - name: Copy environment file
+        run: cp .env.example .env
+
+      - name: Generate application key
+        run: php artisan key:generate
+
+      - name: Run tests
+        run: vendor/bin/pest --no-coverage
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag || github.ref_name }}
+        run: gh release create "$TAG" --generate-notes --verify-tag

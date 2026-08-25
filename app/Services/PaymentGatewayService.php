@@ -6,6 +6,7 @@ use App\Models\Currency;
 use App\Models\Payment;
 use App\Models\PaymentGateway;
 use Exception;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Square\Legacy\Exceptions\ApiException;
 use Square\Legacy\Models\CreatePaymentRequest;
@@ -30,6 +31,7 @@ class PaymentGatewayService
         'google_pay',
         'apple_pay',
         'square',
+        'paddle',
         'bank_transfer',
     ];
 
@@ -121,6 +123,7 @@ class PaymentGatewayService
                 $payment,
                 $gateway
             ),
+            'Paddle' => $this->processPaddlePayment($payment, $gateway),
             'Google Pay' => $this->processGooglePayPayment($payment),
             default => throw new Exception('Unsupported payment gateway'),
         };
@@ -185,6 +188,7 @@ class PaymentGatewayService
                 $payment,
                 $amount
             ),
+            'Paddle' => $this->processPaddleRefund($payment, $gateway, $amount),
             'Authorize.net' => $this->processAuthorizeNetRefund(),
             default => throw new Exception('Unsupported payment gateway for refunds'),
         };
@@ -257,7 +261,7 @@ class PaymentGatewayService
             $amount = (int) ($payment->amount * 100);
             $currency = strtoupper($payment->currency);
 
-            $amountMoney = new Money;
+            $amountMoney = new Money();
             $amountMoney->setAmount($amount);
             $amountMoney->setCurrency($currency);
 
@@ -290,6 +294,83 @@ class PaymentGatewayService
                 $e
             );
         }
+    }
+
+    /**
+     * Create an automatically-collected Paddle Billing transaction.
+     * Paddle requires a catalog price for each transaction item; the price ID
+     * is supplied in the payment method details to avoid provider columns.
+     */
+    private function processPaddlePayment(Payment $payment, PaymentGateway $gateway): array
+    {
+        $details = is_array($payment->payment_method_details) ? $payment->payment_method_details : [];
+        $priceId = $details['paddle_price_id'] ?? null;
+        if (! is_string($priceId) || ! preg_match('/^pri_[a-z0-9]+$/', $priceId)) {
+            throw new Exception('A Paddle price ID is required for payment processing');
+        }
+
+        $payload = [
+            'collection_mode' => 'automatic',
+            'items' => [['price_id' => $priceId, 'quantity' => max(1, (int) ($details['paddle_quantity'] ?? 1))]],
+            'custom_data' => ['billing_payment_id' => (string) $payment->getKey()],
+        ];
+        if (isset($details['paddle_customer_id'])) {
+            $payload['customer_id'] = (string) $details['paddle_customer_id'];
+        }
+
+        try {
+            $transaction = $this->paddleRequest($gateway, 'post', 'transactions', $payload)['data'] ?? [];
+            $payment->update([
+                'transaction_id' => $transaction['id'] ?? null,
+                'status' => ($transaction['status'] ?? null) === 'completed' ? 'completed' : 'pending',
+            ]);
+
+            return $transaction;
+        } catch (Exception $e) {
+            $payment->update(['status' => 'failed']);
+            throw new Exception('Paddle payment failed: '.$e->getMessage(), (int) $e->getCode(), $e);
+        }
+    }
+
+    private function processPaddleRefund(Payment $payment, PaymentGateway $gateway, float $amount): array
+    {
+        if (! is_string($payment->transaction_id) || $payment->transaction_id === '') {
+            throw new Exception('A Paddle transaction ID is required for refunds');
+        }
+        $details = is_array($payment->payment_method_details) ? $payment->payment_method_details : [];
+        $fullRefund = $amount >= (float) $payment->amount;
+        $payload = [
+            'action' => 'refund',
+            'type' => $fullRefund ? 'full' : 'partial',
+            'transaction_id' => $payment->transaction_id,
+            'reason' => 'requested_by_customer',
+        ];
+        if (! $fullRefund) {
+            $itemId = $details['paddle_transaction_item_id'] ?? null;
+            if (! is_string($itemId) || $itemId === '') {
+                throw new Exception('A Paddle transaction item ID is required for partial refunds');
+            }
+            $payload['items'] = [['item_id' => $itemId, 'type' => 'partial', 'amount' => (string) (int) round($amount * 100)]];
+        }
+
+        return $this->paddleRequest($gateway, 'post', 'adjustments', $payload)['data'] ?? [];
+    }
+
+    /** @return array<string,mixed> */
+    private function paddleRequest(PaymentGateway $gateway, string $method, string $path, array $payload = []): array
+    {
+        $baseUrl = rtrim((string) config('services.paddle.base_url', 'https://api.paddle.com'), '/');
+        $response = Http::acceptJson()
+            ->withToken((string) $gateway->secret_key)
+            ->timeout(30)
+            ->retry(2, 250)
+            ->{$method}($baseUrl.'/'.$path, $payload);
+
+        if ($response->failed()) {
+            throw new Exception('Paddle API returned HTTP '.$response->status().': '.substr($response->body(), 0, 500));
+        }
+
+        return $response->json();
     }
 
     private function processGooglePayPayment(Payment $payment)

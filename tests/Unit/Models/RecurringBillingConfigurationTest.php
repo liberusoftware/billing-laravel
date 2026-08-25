@@ -30,7 +30,7 @@ class RecurringBillingConfigurationTest extends TestCase
 
     private function config(string $frequency, ?int $billingDay): RecurringBillingConfiguration
     {
-        $config = new RecurringBillingConfiguration;
+        $config = new RecurringBillingConfiguration();
         $config->frequency = $frequency;
         $config->billing_day = $billingDay;
 

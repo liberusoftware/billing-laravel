@@ -37,7 +37,7 @@ class ProjectFileTest extends TestCase
 
         $file = ProjectFile::factory()->for($project)->create(['customer_visible' => false]);
 
-        $this->assertFalse((new ProjectFilePolicy)->view($user, $file));
+        $this->assertFalse((new ProjectFilePolicy())->view($user, $file));
     }
 
     public function test_client_can_download_own_customer_visible_file(): void
@@ -48,7 +48,7 @@ class ProjectFileTest extends TestCase
 
         $file = ProjectFile::factory()->for($project)->create(['customer_visible' => true]);
 
-        $this->assertTrue((new ProjectFilePolicy)->view($user, $file));
+        $this->assertTrue((new ProjectFilePolicy())->view($user, $file));
     }
 
     public function test_client_cannot_download_another_customers_file(): void
@@ -59,6 +59,6 @@ class ProjectFileTest extends TestCase
 
         $file = ProjectFile::factory()->for($otherProject)->create(['customer_visible' => true]);
 
-        $this->assertFalse((new ProjectFilePolicy)->view($user, $file));
+        $this->assertFalse((new ProjectFilePolicy())->view($user, $file));
     }
 }

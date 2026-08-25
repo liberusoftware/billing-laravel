@@ -1,0 +1,26 @@
+{
+  "$schema": "https://schemas.liberu.dev/module/v1.json",
+  "name": "module-billing-domains-livewire",
+  "display_name": "Billing Domains Livewire",
+  "description": "Livewire adapter for Billing Domains.",
+  "version": "0.1.0",
+  "category": "presentation",
+  "provider": "Liberu\\Billing\\Domains\\Livewire\\DomainsLivewireServiceProvider",
+  "requires": {
+    "php": "^8.5",
+    "laravel": "^13.0",
+    "packages": {
+      "liberusoftware/module-billing-domains": "^0.1",
+      "liberusoftware/module-manager": "^1.0"
+    }
+  },
+  "presentation": {"livewire": {"components": ["module-billing-domains::domain-list", "module-billing-domains::search", "module-billing-domains::tld-list"]}},
+  "suggests": [],
+  "capabilities": [
+    "billing.domains.livewire"
+  ],
+  "default_enabled": true,
+  "features": [
+    "Domain search, lifecycle, TLD, and support workflows"
+  ]
+}

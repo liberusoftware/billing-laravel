@@ -6,13 +6,15 @@ namespace Database\Factories;
 
 use App\Models\Team;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Factories\Factory;
+use Liberu\Foundation\Organizations\Database\Factories\TeamFactory as FoundationTeamFactory;
 
 /**
  * @extends Factory<Team>
  */
-class TeamFactory extends Factory
+class TeamFactory extends FoundationTeamFactory
 {
+    protected $model = Team::class;
+
     /**
      * Define the model's default state.
      *

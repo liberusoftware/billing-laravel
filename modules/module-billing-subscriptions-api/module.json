@@ -1,0 +1,22 @@
+{
+  "$schema": "https://schemas.liberu.dev/module/v1.json",
+  "name": "module-billing-subscriptions-api",
+  "display_name": "Billing Subscriptions API",
+  "description": "Sanctum-protected API adapter for Billing Subscriptions.",
+  "version": "0.1.0",
+  "category": "presentation",
+  "provider": "Liberu\\Billing\\Subscriptions\\Api\\SubscriptionsApiServiceProvider",
+  "requires": {
+    "php": "^8.5",
+    "laravel": "^13.0",
+    "packages": {
+      "liberusoftware/api-access": "^1.0",
+      "liberusoftware/module-billing-subscriptions": "^0.1",
+      "liberusoftware/module-manager": "^1.0"
+    }
+  },
+  "suggests": [],
+  "capabilities": ["billing.subscriptions.api"],
+  "default_enabled": true,
+  "features": ["Subscription collection", "Activation", "Lifecycle actions"]
+}
