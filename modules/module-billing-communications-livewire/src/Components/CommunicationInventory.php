@@ -39,7 +39,7 @@ final class CommunicationInventory extends Component
         return view('billing-communications-livewire::communication-inventory', ['numbers' => CommunicationNumber::query()->where('team_id', $team)->latest()->get()]);
     }
 
-    public function transition(TransitionCommunicationNumber $transition): void
+    public function transitionNumber(TransitionCommunicationNumber $transition): void
     {
         $this->validate(['selectedNumberId' => ['required', 'integer'], 'status' => ['required', 'in:available,active,suspended,released,failed']]);
         $team = (int) (data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id'));

@@ -1,5 +1,6 @@
 # Changelog
 
+- Add provider management and usage import workflows to the Livewire adapter.
 - Added team-scoped communication-service creation and lifecycle management component.
 
 - Added communication-number lifecycle controls.

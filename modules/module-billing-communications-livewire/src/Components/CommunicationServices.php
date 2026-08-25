@@ -29,7 +29,7 @@ final class CommunicationServices extends Component
         session()->flash('billing-communications-services-message', __('Communication service created.'));
     }
 
-    public function transition(TransitionCommunicationService $transition): void
+    public function transitionService(TransitionCommunicationService $transition): void
     {
         $this->validate(['selectedServiceId' => ['required', 'integer'], 'status' => ['required', 'in:pending,active,suspended,cancelled,failed']]);
         $team = (int) (data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id'));
