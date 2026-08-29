@@ -20,9 +20,14 @@ final readonly class TransitionProvisionedService
         }
 
         return $this->database->transaction(function () use ($service, $state, $error): ProvisionedService {
-            $service->forceFill(['state' => $state, 'last_error' => $error])->save();
+            $locked = ProvisionedService::query()->lockForUpdate()->findOrFail($service->getKey());
+            if (! $this->allowed($locked->state, $state)) {
+                throw new InvalidArgumentException("Invalid provisioning transition from [{$locked->state->value}] to [{$state->value}].");
+            }
 
-            return $service->refresh();
+            $locked->forceFill(['state' => $state, 'last_error' => $error])->save();
+
+            return $locked->refresh();
         });
     }
 

@@ -4,6 +4,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Liberu\Billing\Provisioning\Actions\CreateProvisionedService;
 use Liberu\Billing\Provisioning\Actions\QueueProvisioningOperation;
 use Liberu\Billing\Provisioning\Actions\RunProvisioningOperation;
+use Liberu\Billing\Provisioning\Actions\TransitionProvisionedService;
 use Liberu\Billing\Provisioning\Contracts\ProvisioningDriver;
 use Liberu\Billing\Provisioning\Enums\ProvisioningState;
 use Liberu\Billing\Provisioning\Models\ProvisionedService;
@@ -96,4 +97,13 @@ it('does not execute a stale operation after it has already completed', function
     $operation->update(['status' => 'completed']);
 
     expect(app(RunProvisioningOperation::class)->execute($operation)->status)->toBe('completed');
+});
+
+it('does not transition a service using a stale persisted state', function (): void {
+    $service = app(CreateProvisionedService::class)->execute(['team_id' => 10, 'provider' => 'test']);
+    $service->refresh();
+    ProvisionedService::query()->whereKey($service->getKey())->update(['state' => ProvisioningState::Active->value]);
+
+    expect(fn () => app(TransitionProvisionedService::class)->execute($service, ProvisioningState::Provisioning))
+        ->toThrow(InvalidArgumentException::class, 'Invalid provisioning transition from [active] to [provisioning].');
 });
