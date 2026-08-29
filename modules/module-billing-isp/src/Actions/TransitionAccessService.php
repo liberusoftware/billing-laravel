@@ -15,11 +15,18 @@ final class TransitionAccessService
         if (! in_array($status, ['pending', 'active', 'suspended', 'cancelled', 'failed'], true)) {
             throw new InvalidArgumentException('ISP access-service lifecycle status is invalid.');
         }
+        if ($service->status === 'cancelled' && $status !== 'cancelled') {
+            throw new \LogicException('A cancelled ISP access service cannot be reactivated.');
+        }
 
         return DB::transaction(function () use ($service, $status): AccessService {
-            $service->update(['status' => $status]);
+            $locked = AccessService::query()->lockForUpdate()->findOrFail($service->getKey());
+            if ($locked->status === 'cancelled' && $status !== 'cancelled') {
+                throw new \LogicException('A cancelled ISP access service cannot be reactivated.');
+            }
+            $locked->update(['status' => $status]);
 
-            return $service->refresh();
+            return $locked->refresh();
         });
     }
 }

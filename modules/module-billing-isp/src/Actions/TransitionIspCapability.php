@@ -15,11 +15,18 @@ final class TransitionIspCapability
         if (! in_array($status, ['pending', 'active', 'suspended', 'cancelled', 'failed'], true)) {
             throw new InvalidArgumentException('ISP capability status is invalid.');
         }
+        if ($capability->status === 'cancelled' && $status !== 'cancelled') {
+            throw new \LogicException('A cancelled ISP capability cannot be reactivated.');
+        }
 
         return DB::transaction(function () use ($capability, $status): IspCapability {
-            $capability->update(['status' => $status]);
+            $locked = IspCapability::query()->lockForUpdate()->findOrFail($capability->getKey());
+            if ($locked->status === 'cancelled' && $status !== 'cancelled') {
+                throw new \LogicException('A cancelled ISP capability cannot be reactivated.');
+            }
+            $locked->update(['status' => $status]);
 
-            return $capability->refresh();
+            return $locked->refresh();
         });
     }
 }
