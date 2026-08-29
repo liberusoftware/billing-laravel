@@ -1,11 +1,19 @@
 <?php
 
+use App\Models\Customer;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Liberu\Billing\Communications\Actions\CreateCommunicationService;
+use Liberu\Billing\Communications\Actions\CreateVoipAccount;
+use Liberu\Billing\Communications\Actions\IngestCallDetailRecord;
+use Liberu\Billing\Communications\Actions\ProvisionVoipAccount;
 use Liberu\Billing\Communications\Actions\TransitionCommunicationNumber;
 use Liberu\Billing\Communications\Actions\TransitionCommunicationService;
+use Liberu\Billing\Communications\Contracts\VoiceProvider;
+use Liberu\Billing\Communications\Models\CallRateRule;
 use Liberu\Billing\Communications\Models\CommunicationNumber;
 use Liberu\Billing\Communications\Models\CommunicationService;
+use Liberu\Billing\Communications\Services\VoiceProviderRegistry;
 
 uses(RefreshDatabase::class);
 
@@ -40,4 +48,43 @@ it('does not reactivate a communication number after its persisted state becomes
 
     expect(fn () => app(TransitionCommunicationNumber::class)->handle($number, 'active'))
         ->toThrow(InvalidArgumentException::class, 'Released communication numbers cannot be reactivated.');
+});
+
+it('provisions voice accounts through the registered provider', function (): void {
+    $user = User::factory()->withPersonalTeam()->create();
+    $team = $user->currentTeam;
+    $customer = Customer::factory()->create(['team_id' => $team->id]);
+    app(VoiceProviderRegistry::class)->register(new class() implements VoiceProvider
+    {
+        public function key(): string
+        {
+            return ' asterisk ';
+        }
+
+        public function provision(array $attributes): array
+        {
+            return ['external_id' => 'voice-1'];
+        }
+    });
+    $account = app(CreateVoipAccount::class)->handle($team->id, ['customer_id' => $customer->id, 'platform' => 'asterisk', 'sip_username' => 'sip-100', 'sip_secret' => 'secret']);
+
+    $provisioned = app(ProvisionVoipAccount::class)->handle($account);
+
+    expect($provisioned->status)->toBe('active')->and($provisioned->provider_result)->toBe(['external_id' => 'voice-1']);
+});
+
+it('rates voice calls by longest prefix and remains idempotent', function (): void {
+    $user = User::factory()->withPersonalTeam()->create();
+    $team = $user->currentTeam;
+    $customer = Customer::factory()->create(['team_id' => $team->id]);
+    $account = app(CreateVoipAccount::class)->handle($team->id, ['customer_id' => $customer->id, 'platform' => 'asterisk', 'sip_username' => 'sip-101', 'sip_secret' => 'secret']);
+    CallRateRule::query()->create(['team_id' => $team->id, 'name' => 'Generic', 'destination_prefix' => '+44', 'rate_per_minute' => 1, 'billing_increment_seconds' => 60]);
+    CallRateRule::query()->create(['team_id' => $team->id, 'name' => 'London', 'destination_prefix' => '+4420', 'connection_fee' => 0.10, 'rate_per_minute' => 0.20, 'billing_increment_seconds' => 30, 'currency' => 'GBP']);
+    $data = ['external_id' => 'call-1', 'source' => '+15551234567', 'destination' => '+442071234567', 'started_at' => now()->subMinute()->toISOString(), 'duration_seconds' => 61];
+
+    $cdr = app(IngestCallDetailRecord::class)->handle($account, $data);
+    $duplicate = app(IngestCallDetailRecord::class)->handle($account, $data);
+
+    expect($cdr->billable_seconds)->toBe(90)->and((float) $cdr->rated_cost)->toBe(0.4)->and($duplicate->getKey())->toBe($cdr->getKey())
+        ->and($account->refresh()->current_usage_cost)->toBe('0.4000');
 });
