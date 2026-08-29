@@ -125,6 +125,24 @@ it('runs a due recurring schedule and advances its next run', function () {
         ->and($schedule->refresh()->next_run_at->isFuture())->toBeTrue();
 });
 
+it('claims a recurring schedule before allowing another invoice run', function () {
+    $schedule = app(CreateInvoiceSchedule::class)->execute([
+        'team_id' => 10,
+        'frequency' => 'monthly',
+        'next_run_at' => now()->subMinute(),
+        'metadata' => [
+            'currency' => 'USD',
+            'lines' => [['description' => 'Service', 'quantity' => 1, 'unit_amount_minor' => 1000]],
+        ],
+    ]);
+
+    app(RunInvoiceSchedule::class)->execute($schedule);
+
+    expect(fn () => app(RunInvoiceSchedule::class)->execute($schedule->refresh()))
+        ->toThrow(LogicException::class, 'Invoice schedule is not due yet.')
+        ->and($schedule->refresh()->next_run_at->isFuture())->toBeTrue();
+});
+
 it('rejects invalid invoice schedule frequencies', function () {
     expect(fn () => app(CreateInvoiceSchedule::class)->execute(['frequency' => 'hourly']))
         ->toThrow(InvalidArgumentException::class);
