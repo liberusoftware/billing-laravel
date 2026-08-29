@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Customer;
+use App\Models\Team;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Liberu\Billing\Provisioning\Actions\CreateProvisionedService;
 use Liberu\Billing\Provisioning\Actions\QueueProvisioningOperation;
@@ -19,6 +21,15 @@ it('creates a pending provisioned service through the domain action', function (
     expect($service->state)->toBe(ProvisioningState::Pending)
         ->and($service->team_id)->toBe(10)
         ->and($service->provider)->toBe('test');
+});
+
+it('rejects a provisioned service customer owned by another team', function (): void {
+    $team = Team::factory()->create(['id' => 20]);
+    $customerId = Customer::factory()->create(['team_id' => $team->getKey()])->getKey();
+
+    expect(fn () => app(CreateProvisionedService::class)->execute([
+        'team_id' => 10, 'customer_id' => $customerId, 'provider' => 'test',
+    ]))->toThrow(InvalidArgumentException::class, 'Customer reference is invalid.');
 });
 
 it('runs a queued provider operation and records the external identity', function () {
