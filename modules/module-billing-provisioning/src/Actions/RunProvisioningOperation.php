@@ -15,14 +15,27 @@ final readonly class RunProvisioningOperation
 
     public function execute(ProvisioningOperation $operation): ProvisioningOperation
     {
-        if ($operation->status === 'completed') {
-            return $operation;
+        $claimed = $this->database->transaction(function () use ($operation): ?ProvisioningOperation {
+            $locked = ProvisioningOperation::query()->lockForUpdate()->findOrFail($operation->getKey());
+            if ($locked->status === 'completed') {
+                return null;
+            }
+            if ($locked->status === 'running') {
+                throw new \LogicException('Provisioning operation is already running.');
+            }
+
+            $locked->update(['status' => 'running', 'attempts' => ((int) $locked->attempts) + 1]);
+
+            return $locked->load('service');
+        });
+
+        if ($claimed === null) {
+            return $operation->refresh();
         }
 
+        $operation = $claimed;
         $service = $operation->service;
         $driver = $this->drivers->resolve((string) $service->provider);
-
-        $operation->update(['status' => 'running', 'attempts' => ((int) $operation->attempts) + 1]);
 
         try {
             $result = match ($operation->operation) {

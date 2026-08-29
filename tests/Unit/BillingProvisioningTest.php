@@ -72,3 +72,28 @@ it('records provider failures and schedules a retry', function () {
         ->and($operation->next_poll_at)->not->toBeNull()
         ->and($operation->error)->toBe('Provider unavailable');
 });
+
+it('does not execute a stale operation after it has already completed', function (): void {
+    $registry = app(ProvisioningDriverRegistry::class);
+    $registry->register('already-complete', new class() implements ProvisioningDriver
+    {
+        public function provision(ProvisionedService $service): string
+        {
+            throw new RuntimeException('The completed operation must not call the provider.');
+        }
+
+        public function deprovision(ProvisionedService $service): void {}
+
+        public function poll(ProvisionedService $service): array
+        {
+            return [];
+        }
+    });
+
+    $service = ProvisionedService::query()->create(['team_id' => 10, 'provider' => 'already-complete', 'state' => ProvisioningState::Pending, 'metadata' => []]);
+    $operation = app(QueueProvisioningOperation::class)->execute($service, 'provision');
+    $operation->refresh();
+    $operation->update(['status' => 'completed']);
+
+    expect(app(RunProvisioningOperation::class)->execute($operation)->status)->toBe('completed');
+});
