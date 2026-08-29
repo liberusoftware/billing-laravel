@@ -11,6 +11,7 @@ use Liberu\Billing\Collections\Actions\SuspendCollectionCase;
 use Liberu\Billing\Collections\Actions\WriteOffCollectionCase;
 use Liberu\Billing\Collections\Enums\CollectionStatus;
 use Liberu\Billing\Collections\Models\CollectionCase;
+use Liberu\Billing\Invoicing\Models\Invoice;
 
 uses(RefreshDatabase::class);
 
@@ -32,6 +33,17 @@ it('rejects unsupported collection case types', function (): void {
     expect(fn () => app(OpenCollectionCase::class)->execute([
         'amount_minor' => 100, 'currency' => 'USD', 'type' => 'unsupported',
     ]))->toThrow(InvalidArgumentException::class, 'Collection case type is invalid.');
+});
+
+it('rejects a collection case invoice owned by another team', function (): void {
+    $invoice = Invoice::query()->create([
+        'team_id' => 20, 'status' => 'draft', 'currency' => 'USD',
+        'subtotal_minor' => 100, 'tax_minor' => 0, 'total_minor' => 100,
+    ]);
+
+    expect(fn () => app(OpenCollectionCase::class)->execute([
+        'team_id' => 10, 'invoice_id' => $invoice->getKey(), 'amount_minor' => 100, 'currency' => 'USD',
+    ]))->toThrow(InvalidArgumentException::class, 'Collection invoice reference is invalid.');
 });
 
 it('does not write off a case after its persisted state becomes recovered', function (): void {
