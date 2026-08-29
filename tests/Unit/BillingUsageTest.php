@@ -24,6 +24,27 @@ it('rejects invalid usage events', function () {
         ->toThrow(InvalidArgumentException::class);
 });
 
+it('normalizes meter identifiers and rejects invalid thresholds', function () {
+    $meter = app(DefineMeter::class)->execute([
+        'team_id' => 10,
+        'code' => ' API.Calls ',
+        'name' => ' API calls ',
+        'unit' => ' request ',
+        'currency' => 'usd',
+        'unit_price_minor' => 5,
+        'threshold' => '100.5',
+    ]);
+
+    expect($meter->code)->toBe('api.calls')
+        ->and($meter->name)->toBe('API calls')
+        ->and($meter->unit)->toBe('request')
+        ->and((float) $meter->threshold)->toBe(100.5);
+
+    expect(fn () => app(DefineMeter::class)->execute([
+        'code' => 'requests', 'currency' => 'USD', 'unit_price_minor' => 1, 'threshold' => -1,
+    ]))->toThrow(InvalidArgumentException::class);
+});
+
 it('rates usage progressively across sorted tiers', function () {
     $meter = app(DefineMeter::class)->execute([
         'team_id' => 10,
