@@ -17,9 +17,14 @@ final class TransitionCommunicationService
         }
 
         return DB::transaction(function () use ($service, $status): CommunicationService {
-            $service->update(['status' => $status]);
+            $locked = CommunicationService::query()->lockForUpdate()->findOrFail($service->getKey());
+            if ($locked->status === 'cancelled' && $status !== 'cancelled') {
+                throw new InvalidArgumentException('Cancelled communication services cannot be reactivated.');
+            }
 
-            return $service->refresh();
+            $locked->update(['status' => $status]);
+
+            return $locked->refresh();
         });
     }
 }

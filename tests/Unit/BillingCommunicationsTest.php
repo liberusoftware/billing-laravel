@@ -1,8 +1,11 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Liberu\Billing\Communications\Actions\CreateCommunicationService;
 use Liberu\Billing\Communications\Actions\TransitionCommunicationNumber;
+use Liberu\Billing\Communications\Actions\TransitionCommunicationService;
 use Liberu\Billing\Communications\Models\CommunicationNumber;
+use Liberu\Billing\Communications\Models\CommunicationService;
 
 uses(RefreshDatabase::class);
 
@@ -19,4 +22,13 @@ it('rejects unknown communication number states', function () {
 
     expect(fn () => app(TransitionCommunicationNumber::class)->handle($number, 'unknown'))
         ->toThrow(InvalidArgumentException::class);
+});
+
+it('does not reactivate a communication service after its persisted state becomes cancelled', function (): void {
+    $service = app(CreateCommunicationService::class)->handle(10, ['name' => 'Transactional email']);
+    $service->refresh();
+    CommunicationService::query()->whereKey($service->getKey())->update(['status' => 'cancelled']);
+
+    expect(fn () => app(TransitionCommunicationService::class)->handle($service, 'active'))
+        ->toThrow(InvalidArgumentException::class, 'Cancelled communication services cannot be reactivated.');
 });
