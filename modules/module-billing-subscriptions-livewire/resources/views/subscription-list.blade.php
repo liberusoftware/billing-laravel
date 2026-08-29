@@ -9,6 +9,7 @@
         <form wire:submit="activate">
             <label>{{ __('Pricing plan ID') }} <input type="number" min="0" wire:model="pricingPlanId"></label>
             <label>{{ __('Trial days') }} <input type="number" min="0" max="365" wire:model="trialDays"></label>
+            <label>{{ __('Period days') }} <input type="number" min="1" max="3660" wire:model="periodDays"></label>
             <button type="submit">{{ __('Activate') }}</button>
         </form>
     @endif

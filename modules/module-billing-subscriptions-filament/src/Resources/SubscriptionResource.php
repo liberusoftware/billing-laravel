@@ -36,6 +36,7 @@ final class SubscriptionResource extends Resource
             TextInput::make('customer_id')->integer()->minValue(1),
             TextInput::make('pricing_plan_id')->integer()->minValue(1),
             TextInput::make('trial_days')->integer()->minValue(0)->default(0),
+            TextInput::make('period_days')->integer()->minValue(1)->maxValue(3660)->default(30),
         ]);
     }
 
@@ -51,8 +52,9 @@ final class SubscriptionResource extends Resource
         ])->defaultSort('id', 'desc')->actions([
             Action::make('renew')
                 ->label('Renew')
+                ->form([TextInput::make('period_days')->integer()->minValue(1)->maxValue(3660)])
                 ->visible(fn (Subscription $record): bool => ! in_array($record->getRawOriginal('status'), ['cancelled', 'expired'], true))
-                ->action(fn (Subscription $record): Subscription => app(RenewSubscription::class)->execute($record)),
+                ->action(fn (Subscription $record, array $data): Subscription => app(RenewSubscription::class)->execute($record, isset($data['period_days']) ? (int) $data['period_days'] : null)),
             Action::make('pause')
                 ->label('Pause')
                 ->visible(fn (Subscription $record): bool => ! in_array($record->getRawOriginal('status'), ['paused', 'cancelled', 'expired'], true))

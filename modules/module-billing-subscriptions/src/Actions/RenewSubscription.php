@@ -13,8 +13,9 @@ final readonly class RenewSubscription
 {
     public function __construct(private DatabaseManager $database) {}
 
-    public function execute(Subscription $subscription, int $periodDays = 30): Subscription
+    public function execute(Subscription $subscription, ?int $periodDays = null): Subscription
     {
+        $periodDays ??= (int) ($subscription->period_days ?? 30);
         if ($periodDays < 1) {
             throw new \InvalidArgumentException('Renewal period must be positive.');
         }

@@ -20,6 +20,10 @@ final readonly class ActivateSubscription
     {
         $startsAt = $attributes['starts_at'] ?? now();
         $trialDays = max(0, (int) ($attributes['trial_days'] ?? 0));
+        $periodDays = (int) ($attributes['period_days'] ?? 30);
+        if ($periodDays < 1) {
+            throw new \InvalidArgumentException('Subscription period must be positive.');
+        }
         $trialEndsAt = $trialDays > 0 ? now()->parse($startsAt)->addDays($trialDays) : null;
 
         if (($attributes['team_id'] ?? null) === null && ($attributes['customer_id'] ?? null) === null) {
@@ -42,7 +46,7 @@ final readonly class ActivateSubscription
             throw new \InvalidArgumentException('Subscription pricing plan reference is invalid.');
         }
 
-        $subscription = $this->database->transaction(function () use ($attributes, $startsAt, $trialEndsAt, $trialDays, $pricingPlanId, $customerId): Subscription {
+        $subscription = $this->database->transaction(function () use ($attributes, $startsAt, $trialEndsAt, $trialDays, $periodDays, $pricingPlanId, $customerId): Subscription {
             return Subscription::query()->create([
                 'team_id' => $attributes['team_id'] ?? null,
                 'customer_id' => $customerId,
@@ -51,6 +55,7 @@ final readonly class ActivateSubscription
                 'starts_at' => $startsAt,
                 'trial_ends_at' => $trialEndsAt,
                 'current_period_ends_at' => $attributes['current_period_ends_at'] ?? null,
+                'period_days' => $periodDays,
                 'auto_renew' => $attributes['auto_renew'] ?? true,
                 'id_protection' => $attributes['id_protection'] ?? false,
                 'entitlement_state' => $attributes['entitlement_state'] ?? ['active' => true],
