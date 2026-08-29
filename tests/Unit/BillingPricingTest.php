@@ -59,6 +59,13 @@ it('rejects a product owned by another team', function (): void {
     ]))->toThrow(InvalidArgumentException::class, 'Pricing product reference is invalid.');
 });
 
+it('rejects a missing product reference', function (): void {
+    expect(fn () => app(CreatePricingPlan::class)->execute([
+        'team_id' => 10, 'product_id' => 999999, 'name' => 'Plan',
+        'pricing_model' => 'one_time', 'currency' => 'USD', 'unit_amount_minor' => 100,
+    ]))->toThrow(InvalidArgumentException::class, 'Pricing product reference is invalid.');
+});
+
 it('calculates fixed, usage, and graduated tiered plan amounts in minor units', function () {
     $create = app(CreatePricingPlan::class);
     $fixed = $create->execute(['name' => 'Fixed', 'pricing_model' => 'one_time', 'currency' => 'USD', 'unit_amount_minor' => 1250]);

@@ -40,8 +40,9 @@ final readonly class CreatePricingPlan
 
         $productId = $attributes['product_id'] ?? null;
         if ($productId !== null && Schema::hasTable('billing_catalog_products')) {
-            $productTeam = $this->database->table('billing_catalog_products')->where('id', (int) $productId)->value('team_id');
-            if ($productTeam !== null && ($teamId = $attributes['team_id'] ?? null) !== null && (int) $productTeam !== (int) $teamId) {
+            $product = $this->database->table('billing_catalog_products')->where('id', (int) $productId)->first(['team_id']);
+            $teamId = $attributes['team_id'] ?? null;
+            if ($product === null || ($product->team_id !== null && ($teamId === null || (int) $product->team_id !== (int) $teamId))) {
                 throw new \InvalidArgumentException('Pricing product reference is invalid.');
             }
         } elseif ($productId !== null) {
