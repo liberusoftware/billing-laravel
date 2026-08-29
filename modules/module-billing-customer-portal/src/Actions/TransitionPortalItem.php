@@ -17,9 +17,14 @@ final class TransitionPortalItem
         }
 
         return DB::transaction(function () use ($item, $status): PortalItem {
-            $item->update(['status' => $status]);
+            $locked = PortalItem::query()->lockForUpdate()->findOrFail($item->getKey());
+            if (in_array($locked->status, ['completed', 'cancelled'], true) && $status !== $locked->status) {
+                throw new InvalidArgumentException('Completed or cancelled portal items cannot be reopened.');
+            }
 
-            return $item->refresh();
+            $locked->update(['status' => $status]);
+
+            return $locked->refresh();
         });
     }
 }

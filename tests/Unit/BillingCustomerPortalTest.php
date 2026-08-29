@@ -31,3 +31,12 @@ it('does not reopen a portal request after its persisted state becomes closed', 
     expect(fn () => app(TransitionPortalRequest::class)->handle($request, 'active'))
         ->toThrow(InvalidArgumentException::class, 'Closed portal requests cannot be reopened.');
 });
+
+it('does not reopen a portal item after its persisted state becomes completed', function (): void {
+    $item = PortalItem::query()->create(['team_id' => 10, 'type' => 'services', 'status' => 'open', 'subject' => 'Provision service']);
+    $item->refresh();
+    PortalItem::query()->whereKey($item->getKey())->update(['status' => 'completed']);
+
+    expect(fn () => app(TransitionPortalItem::class)->handle($item, 'in_progress'))
+        ->toThrow(InvalidArgumentException::class, 'Completed or cancelled portal items cannot be reopened.');
+});
