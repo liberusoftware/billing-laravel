@@ -13,6 +13,7 @@ use Liberu\Billing\Subscriptions\Enums\SubscriptionStatus;
 use Liberu\Billing\Subscriptions\Events\SubscriptionEntitlementsUpdated;
 use Liberu\Billing\Subscriptions\Events\SubscriptionPaused;
 use Liberu\Billing\Subscriptions\Events\SubscriptionPlanChanged;
+use Liberu\Billing\Subscriptions\Models\Subscription;
 
 uses(RefreshDatabase::class);
 
@@ -86,4 +87,15 @@ it('requires an owner and rejects terminal lifecycle mutations', function () {
 
     expect(fn () => app(PauseSubscription::class)->execute($subscription))
         ->toThrow(LogicException::class);
+});
+
+it('rechecks the locked subscription before renewing stale worker state', function () {
+    $subscription = app(ActivateSubscription::class)->execute(['team_id' => 10]);
+    $stale = Subscription::query()->findOrFail($subscription->getKey());
+
+    app(CancelSubscription::class)->execute($subscription);
+
+    expect(fn () => app(RenewSubscription::class)->execute($stale))
+        ->toThrow(LogicException::class, 'Subscription cannot be renewed.')
+        ->and($subscription->refresh()->status)->toBe(SubscriptionStatus::Cancelled);
 });
