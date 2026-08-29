@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Customer;
+use App\Models\Team;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
@@ -182,4 +184,13 @@ it('rejects a pricing plan owned by another team', function (): void {
 
     expect(fn () => app(ChangeSubscriptionPlan::class)->execute($subscription, $planId))
         ->toThrow(InvalidArgumentException::class, 'Subscription pricing plan reference is invalid.');
+});
+
+it('rejects a subscription customer owned by another team', function (): void {
+    $team = Team::factory()->create(['id' => 20]);
+    $customerId = Customer::factory()->create(['team_id' => $team->getKey()])->getKey();
+
+    expect(fn () => app(ActivateSubscription::class)->execute([
+        'team_id' => 10, 'customer_id' => $customerId,
+    ]))->toThrow(InvalidArgumentException::class, 'Customer reference is invalid.');
 });
