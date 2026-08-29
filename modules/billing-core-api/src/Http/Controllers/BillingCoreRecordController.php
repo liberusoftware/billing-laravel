@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
+use Liberu\Billing\Core\Actions\CalculateTax;
 use Liberu\Billing\Core\Actions\ConvertCurrency;
 use Liberu\Billing\Core\Actions\CreateBillingRecord;
 use Liberu\Billing\Core\Actions\UpdateBillingRecord;
@@ -46,6 +47,14 @@ final class BillingCoreRecordController extends Controller
         $data = $request->validate(['amount' => ['required', 'numeric'], 'from' => ['required', 'string', 'size:3', 'alpha'], 'to' => ['required', 'string', 'size:3', 'alpha']]);
 
         return response()->json(['data' => $convert->execute($this->teamId($request), (float) $data['amount'], $data['from'], $data['to'])]);
+    }
+
+    public function calculateTax(Request $request, CalculateTax $calculate): JsonResponse
+    {
+        Gate::authorize('viewAny', BillingTaxProfile::class);
+        $data = $request->validate(['amount' => ['required', 'numeric', 'min:0'], 'jurisdiction' => ['nullable', 'string', 'max:100']]);
+
+        return response()->json(['data' => $calculate->execute($this->teamId($request), (float) $data['amount'], $data['jurisdiction'] ?? null)]);
     }
 
     public function update(Request $request, string $type, int $record, UpdateBillingRecord $update): JsonResponse

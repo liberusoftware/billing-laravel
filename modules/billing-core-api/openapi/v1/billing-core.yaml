@@ -11,6 +11,12 @@ paths:
       security: [{sanctum: []}]
       requestBody: {required: true, content: {application/json: {schema: {type: object, required: [amount, from, to], properties: {amount: {type: number}, from: {type: string, pattern: '^[A-Za-z]{3}$'}, to: {type: string, pattern: '^[A-Za-z]{3}$'}}}}}}
       responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/billing-core/tax/calculate:
+    post:
+      operationId: billing.core.tax.calculate
+      security: [{sanctum: []}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object, required: [amount], properties: {amount: {type: number, minimum: 0}, jurisdiction: {type: [string, 'null'], maxLength: 100}}}}}}
+      responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
   /api/v1/billing/billing-core:
     get:
       operationId: billing.core.accounts.list

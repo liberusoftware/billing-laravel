@@ -12,6 +12,7 @@ Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.billi
     ->group(function (): void {
         Route::get('/', [BillingAccountController::class, 'index'])->name('accounts.index');
         Route::post('/currencies/convert', [BillingCoreRecordController::class, 'convertCurrency'])->name('currencies.convert');
+        Route::post('/tax/calculate', [BillingCoreRecordController::class, 'calculateTax'])->name('tax.calculate');
         Route::get('/{type}', [BillingCoreRecordController::class, 'index'])->whereIn('type', ['contacts', 'currencies', 'tax-profiles', 'sequences', 'terms', 'settings'])->name('records.index');
     });
 
