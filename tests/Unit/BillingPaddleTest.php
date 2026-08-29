@@ -3,7 +3,9 @@
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
 use Liberu\Billing\Paddle\PaddleGatewayDriver;
+use Liberu\Billing\Payments\Contracts\GatewayDriver;
 use Liberu\Billing\Payments\Models\Payment;
+use Liberu\Billing\Payments\Services\GatewayManager;
 
 it('captures a Paddle transaction through the provider-neutral gateway contract', function (): void {
     config()->set('services.paddle.token', 'pdl_test_token');
@@ -71,4 +73,23 @@ it('does not treat a checkout-ready Paddle transaction as captured', function ()
     expect(fn () => app(PaddleGatewayDriver::class)->capture(new Payment([
         'metadata' => ['paddle_price_id' => 'pri_valid'],
     ])))->toThrow(RuntimeException::class, 'Paddle transaction is not complete: ready');
+});
+
+it('resolves the Paddle gateway without case-sensitive aliases', function (): void {
+    $manager = new GatewayManager();
+    $driver = new class() implements GatewayDriver
+    {
+        public function capture(Payment $payment): array
+        {
+            return [];
+        }
+
+        public function refund(Payment $payment, int $amountMinor): array
+        {
+            return [];
+        }
+    };
+    $manager->register(' Paddle ', $driver);
+
+    expect($manager->driver('PADDLE'))->toBe($driver);
 });
