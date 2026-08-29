@@ -53,5 +53,18 @@ it('rejects invalid order amounts', function () {
         'currency' => 'USD',
         'subtotal_minor' => 100,
         'discount_minor' => 101,
-    ]))->toThrow(InvalidArgumentException::class);
+        ]))->toThrow(InvalidArgumentException::class);
+});
+
+it('does not transition an order after its persisted state becomes terminal', function (): void {
+    $order = app(CreateOrder::class)->execute([
+        'order_number' => 'ORD-1003',
+        'currency' => 'USD',
+        'subtotal_minor' => 100,
+    ]);
+    $order->refresh();
+    $order->update(['status' => OrderStatus::Completed]);
+
+    expect(fn () => app(TransitionOrder::class)->execute($order, OrderStatus::Cancelled))
+        ->toThrow(LogicException::class, 'Terminal orders cannot transition.');
 });
