@@ -1,5 +1,7 @@
 # Changelog
 
+- Added access-service synchronization, RADIUS accounting, usage-limit, and reset actions.
+
 - Added an ISP capability status action.
 
 ## 0.1.0

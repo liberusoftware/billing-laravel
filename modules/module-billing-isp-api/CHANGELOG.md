@@ -1,6 +1,7 @@
 # Changelog
 
 - Added the guarded ISP capability lifecycle endpoint.
+- Added network synchronization, idempotent RADIUS accounting, usage-limit suspension, and usage reset endpoints.
 
 ## 0.1.0
 
