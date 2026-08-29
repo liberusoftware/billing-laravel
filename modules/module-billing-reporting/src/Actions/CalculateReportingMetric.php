@@ -87,7 +87,7 @@ final readonly class CalculateReportingMetric
         }
         $query = $this->database->table('billing_invoices')->where('team_id', $teamId)->when($currency !== null, fn ($query) => $query->where('currency', $currency));
         if ($kind === 'aging') {
-            return (float) $query->whereIn('status', ['finalized', 'draft'])->whereNotNull('due_at')->where('due_at', '<=', $at)->sum('total_minor');
+            return (float) $query->where('status', 'finalized')->whereNotNull('due_at')->where('due_at', '<=', $at)->sum('total_minor');
         }
 
         $column = $kind === 'tax' ? 'tax_minor' : 'total_minor';
