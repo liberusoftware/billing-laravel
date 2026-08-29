@@ -16,5 +16,5 @@
   "suggests": [],
   "capabilities": ["billing.core"],
   "default_enabled": true,
-  "features": ["Accounts", "Contacts", "Currencies", "Currency conversion", "Tax profiles", "Tax calculation", "Sequences", "Terms", "Billing settings", "Billing periods", "Deterministic amounts"]
+  "features": ["Accounts", "Contacts", "Currencies", "Currency conversion", "Tax profiles", "Tax calculation", "Tax exemptions", "Threshold tax rates", "Sequences", "Terms", "Billing settings", "Billing periods", "Deterministic amounts"]
 }

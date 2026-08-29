@@ -3,6 +3,7 @@
     <form wire:submit="calculate">
         <input wire:model="amount" type="number" step="any" min="0" required aria-label="{{ __('Amount') }}">
         <input wire:model="jurisdiction" placeholder="{{ __('Jurisdiction') }}" aria-label="{{ __('Jurisdiction') }}">
+        <input wire:model="customerId" type="number" min="1" placeholder="{{ __('Customer ID (optional)') }}" aria-label="{{ __('Customer ID') }}">
         <button type="submit">{{ __('Calculate') }}</button>
     </form>
     @if ($result)

@@ -4,6 +4,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Liberu\Billing\Core\Actions\CalculateTax;
 use Liberu\Billing\Core\Actions\ConvertCurrency;
 use Liberu\Billing\Core\Models\BillingCurrency;
+use Liberu\Billing\Core\Models\BillingTaxExemption;
 use Liberu\Billing\Core\Models\BillingTaxProfile;
 
 uses(RefreshDatabase::class);
@@ -29,4 +30,14 @@ it('calculates exclusive and inclusive tax from an enabled jurisdiction profile'
 
     BillingTaxProfile::query()->update(['inclusive' => true]);
     expect(app(CalculateTax::class)->execute(10, 120, 'GB'))->toMatchArray(['subtotal' => 100.0, 'tax' => 20.0, 'total' => 120.0]);
+});
+
+it('applies tiered tax rates and active customer exemptions', function (): void {
+    BillingTaxProfile::query()->create(['team_id' => 10, 'name' => 'Tiered VAT', 'rate' => 10, 'threshold_amount' => 100, 'threshold_rate' => 20, 'enabled' => true]);
+
+    expect(app(CalculateTax::class)->execute(10, 200))->toMatchArray(['tax' => 30.0, 'total' => 230.0, 'exempt' => false]);
+
+    BillingTaxExemption::query()->create(['team_id' => 10, 'customer_id' => 55, 'enabled' => true]);
+
+    expect(app(CalculateTax::class)->execute(10, 200, null, 55))->toMatchArray(['tax' => 0.0, 'total' => 200.0, 'exempt' => true]);
 });

@@ -11,6 +11,7 @@
             <option value="contacts">{{ __('Contacts') }}</option>
             <option value="currencies">{{ __('Currencies') }}</option>
             <option value="tax-profiles">{{ __('Tax profiles') }}</option>
+            <option value="tax-exemptions">{{ __('Tax exemptions') }}</option>
             <option value="sequences">{{ __('Sequences') }}</option>
             <option value="terms">{{ __('Terms') }}</option>
             <option value="settings">{{ __('Billing settings') }}</option>
@@ -30,6 +31,10 @@
                 <label>{{ __('ISO code') }} <input wire:model="code" maxlength="3" required></label>
             @elseif ($type === 'tax-profiles')
                 <label>{{ __('Rate') }} <input wire:model="rate" type="number" min="0" max="100" step="0.00001" required></label>
+            @elseif ($type === 'tax-exemptions')
+                <label>{{ __('Customer ID') }} <input wire:model="customerId" type="number" min="1" required></label>
+                <label>{{ __('Expires at') }} <input wire:model="expiresAt" type="datetime-local"></label>
+                <label>{{ __('Reason') }} <input wire:model="reason"></label>
             @elseif ($type === 'sequences')
                 <label>{{ __('Prefix') }} <input wire:model="prefix"></label>
                 <label>{{ __('Next number') }} <input wire:model="nextNumber" type="number" min="1" required></label>

@@ -16,6 +16,7 @@ use Liberu\Billing\Core\Models\BillingContact;
 use Liberu\Billing\Core\Models\BillingCurrency;
 use Liberu\Billing\Core\Models\BillingSequence;
 use Liberu\Billing\Core\Models\BillingSetting;
+use Liberu\Billing\Core\Models\BillingTaxExemption;
 use Liberu\Billing\Core\Models\BillingTaxProfile;
 use Liberu\Billing\Core\Models\BillingTerm;
 use Liberu\Billing\Core\Queries\ListBillingRecords;
@@ -52,9 +53,9 @@ final class BillingCoreRecordController extends Controller
     public function calculateTax(Request $request, CalculateTax $calculate): JsonResponse
     {
         Gate::authorize('viewAny', BillingTaxProfile::class);
-        $data = $request->validate(['amount' => ['required', 'numeric', 'min:0'], 'jurisdiction' => ['nullable', 'string', 'max:100']]);
+        $data = $request->validate(['amount' => ['required', 'numeric', 'min:0'], 'jurisdiction' => ['nullable', 'string', 'max:100'], 'customer_id' => ['nullable', 'integer', 'min:1']]);
 
-        return response()->json(['data' => $calculate->execute($this->teamId($request), (float) $data['amount'], $data['jurisdiction'] ?? null)]);
+        return response()->json(['data' => $calculate->execute($this->teamId($request), (float) $data['amount'], $data['jurisdiction'] ?? null, isset($data['customer_id']) ? (int) $data['customer_id'] : null)]);
     }
 
     public function update(Request $request, string $type, int $record, UpdateBillingRecord $update): JsonResponse
@@ -85,6 +86,7 @@ final class BillingCoreRecordController extends Controller
             'contacts' => BillingContact::class,
             'currencies' => BillingCurrency::class,
             'tax-profiles' => BillingTaxProfile::class,
+            'tax-exemptions' => BillingTaxExemption::class,
             'sequences' => BillingSequence::class,
             'terms' => BillingTerm::class,
             'settings' => BillingSetting::class,
@@ -100,7 +102,8 @@ final class BillingCoreRecordController extends Controller
         return match ($type) {
             'contacts' => ['name' => [$name, 'string', 'max:255'], 'email' => ['nullable', 'email', 'max:255'], 'phone' => ['nullable', 'string', 'max:50'], 'metadata' => ['sometimes', 'array']],
             'currencies' => ['code' => [$name, 'string', 'size:3', 'alpha'], 'name' => [$name, 'string', 'max:100'], 'decimal_places' => ['sometimes', 'integer', 'between:0,8'], 'enabled' => ['sometimes', 'boolean'], 'exchange_rate' => ['nullable', 'numeric', 'gt:0']],
-            'tax-profiles' => ['name' => [$name, 'string', 'max:255'], 'rate' => [$name, 'numeric', 'between:0,100'], 'jurisdiction' => ['nullable', 'string', 'max:100'], 'inclusive' => ['sometimes', 'boolean'], 'enabled' => ['sometimes', 'boolean']],
+            'tax-profiles' => ['name' => [$name, 'string', 'max:255'], 'rate' => [$name, 'numeric', 'between:0,100'], 'jurisdiction' => ['nullable', 'string', 'max:100'], 'inclusive' => ['sometimes', 'boolean'], 'enabled' => ['sometimes', 'boolean'], 'threshold_amount' => ['nullable', 'numeric', 'min:0'], 'threshold_rate' => ['nullable', 'numeric', 'between:0,100']],
+            'tax-exemptions' => ['customer_id' => [$name, 'integer', 'min:1'], 'expires_at' => ['nullable', 'date'], 'enabled' => ['sometimes', 'boolean'], 'reason' => ['nullable', 'string', 'max:255']],
             'sequences' => ['name' => [$name, 'string', 'max:100'], 'prefix' => ['nullable', 'string', 'max:30'], 'next_number' => ['sometimes', 'integer', 'min:1']],
             'terms' => ['name' => [$name, 'string', 'max:100'], 'due_days' => ['sometimes', 'integer', 'min:0', 'max:3650'], 'default' => ['sometimes', 'boolean']],
             'settings' => ['values' => [$required ? 'required' : 'sometimes', 'array']],
