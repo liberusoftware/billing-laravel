@@ -15,18 +15,19 @@ final readonly class TransitionCatalogLifecycle
 
     public function execute(CatalogRecord $record, CatalogStatus $status): CatalogRecord
     {
-        $current = $record->status;
-        if ($current === CatalogStatus::Archived && $status !== CatalogStatus::Archived) {
-            throw ValidationException::withMessages(['status' => 'Archived catalog records cannot be reactivated.']);
-        }
-        if ($current === CatalogStatus::Draft && $status === CatalogStatus::Archived) {
-            throw ValidationException::withMessages(['status' => 'A draft must be activated before it can be archived.']);
-        }
-
         return $this->database->transaction(function () use ($record, $status): CatalogRecord {
-            $record->update(['status' => $status]);
+            $locked = $record::query()->lockForUpdate()->findOrFail($record->getKey());
+            $current = $locked->status;
+            if ($current === CatalogStatus::Archived && $status !== CatalogStatus::Archived) {
+                throw ValidationException::withMessages(['status' => 'Archived catalog records cannot be reactivated.']);
+            }
+            if ($current === CatalogStatus::Draft && $status === CatalogStatus::Archived) {
+                throw ValidationException::withMessages(['status' => 'A draft must be activated before it can be archived.']);
+            }
 
-            return $record->refresh();
+            $locked->update(['status' => $status]);
+
+            return $locked->refresh();
         });
     }
 }

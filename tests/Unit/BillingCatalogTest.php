@@ -1,9 +1,12 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Validation\ValidationException;
 use Liberu\Billing\Catalog\Actions\CreateCatalogRecord;
 use Liberu\Billing\Catalog\Actions\CreateProduct;
+use Liberu\Billing\Catalog\Actions\TransitionCatalogLifecycle;
 use Liberu\Billing\Catalog\Actions\TransitionProductLifecycle;
+use Liberu\Billing\Catalog\Enums\CatalogStatus;
 use Liberu\Billing\Catalog\Enums\ProductStatus;
 use Liberu\Billing\Catalog\Models\Plan;
 use Liberu\Billing\Catalog\Models\Product;
@@ -54,4 +57,15 @@ it('does not reopen a product after its persisted state becomes archived', funct
 
     expect(fn () => app(TransitionProductLifecycle::class)->execute($product, ProductStatus::Active))
         ->toThrow(InvalidArgumentException::class, 'An archived product cannot be reopened.');
+});
+
+it('does not reopen a catalog record after its persisted state becomes archived', function (): void {
+    $plan = app(CreateCatalogRecord::class)->execute(Plan::class, [
+        'team_id' => 10, 'name' => 'Archived plan', 'code' => 'ARCHIVED-PLAN',
+    ]);
+    $plan->refresh();
+    Plan::query()->whereKey($plan->getKey())->update(['status' => 'archived']);
+
+    expect(fn () => app(TransitionCatalogLifecycle::class)->execute($plan, CatalogStatus::Active))
+        ->toThrow(ValidationException::class, 'Archived catalog records cannot be reactivated.');
 });
