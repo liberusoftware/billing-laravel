@@ -1,9 +1,13 @@
 <?php
 
+use App\Models\Customer;
+use App\Models\Team;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Liberu\Billing\Orders\Actions\AddChangeOrder;
 use Liberu\Billing\Orders\Actions\CheckoutCart;
+use Liberu\Billing\Orders\Actions\CreateCart;
 use Liberu\Billing\Orders\Actions\CreateOrder;
+use Liberu\Billing\Orders\Actions\CreateQuote;
 use Liberu\Billing\Orders\Actions\ReviewFraud;
 use Liberu\Billing\Orders\Actions\TransitionOrder;
 use Liberu\Billing\Orders\Enums\FraudReviewStatus;
@@ -71,6 +75,21 @@ it('rejects a quote owned by another team', function (): void {
     expect(fn () => app(CreateOrder::class)->execute([
         'team_id' => 10, 'quote_id' => $quote->getKey(), 'currency' => 'USD', 'subtotal_minor' => 100,
     ]))->toThrow(InvalidArgumentException::class, 'Order quote reference is invalid.');
+});
+
+it('rejects foreign customer references for orders, quotes, and carts', function (): void {
+    $team = Team::factory()->create(['id' => 20]);
+    $customerId = Customer::factory()->create(['team_id' => $team->getKey()])->getKey();
+
+    expect(fn () => app(CreateOrder::class)->execute([
+        'team_id' => 10, 'customer_id' => $customerId, 'currency' => 'USD', 'subtotal_minor' => 100,
+    ]))->toThrow(InvalidArgumentException::class, 'Customer reference is invalid.')
+        ->and(fn () => app(CreateQuote::class)->execute([
+            'team_id' => 10, 'customer_id' => $customerId, 'currency' => 'USD', 'total_minor' => 100, 'items' => [['name' => 'Item']],
+        ]))->toThrow(InvalidArgumentException::class, 'Customer reference is invalid.')
+        ->and(fn () => app(CreateCart::class)->execute([
+            'team_id' => 10, 'customer_id' => $customerId, 'currency' => 'USD', 'items' => [['name' => 'Item']],
+        ]))->toThrow(InvalidArgumentException::class, 'Customer reference is invalid.');
 });
 
 it('does not transition an order after its persisted state becomes terminal', function (): void {

@@ -9,6 +9,7 @@ use Liberu\Billing\Orders\Enums\FraudReviewStatus;
 use Liberu\Billing\Orders\Enums\OrderStatus;
 use Liberu\Billing\Orders\Models\Order;
 use Liberu\Billing\Orders\Models\Quote;
+use Liberu\Billing\Orders\Support\CustomerReference;
 
 final readonly class CreateOrder
 {
@@ -24,12 +25,13 @@ final readonly class CreateOrder
             throw new \InvalidArgumentException('Order amounts are invalid.');
         }
         $teamId = $attributes['team_id'] ?? null;
+        $customerId = CustomerReference::assertBelongsToTeam($this->database, $attributes['customer_id'] ?? null, $teamId);
         $quoteId = $attributes['quote_id'] ?? null;
         if ($quoteId !== null && ! Quote::query()->whereKey((int) $quoteId)->where(fn ($query) => $query->whereNull('team_id')->orWhere('team_id', $teamId))->exists()) {
             throw new \InvalidArgumentException('Order quote reference is invalid.');
         }
         $review = (bool) ($attributes['fraud_review_required'] ?? false);
 
-        return $this->database->transaction(fn (): Order => Order::query()->create(['team_id' => $teamId, 'customer_id' => $attributes['customer_id'] ?? null, 'quote_id' => $quoteId, 'order_number' => $attributes['order_number'] ?? ('ORD-'.strtoupper(bin2hex(random_bytes(5)))), 'currency' => strtoupper((string) $attributes['currency']), 'subtotal_minor' => $subtotal, 'discount_minor' => $discount, 'tax_minor' => $tax, 'total_minor' => $subtotal - $discount + $tax, 'status' => $review ? OrderStatus::PendingReview : OrderStatus::Approved, 'fraud_status' => $review ? FraudReviewStatus::Pending : FraudReviewStatus::NotRequired, 'agreement' => $attributes['agreement'] ?? null, 'change_orders' => [], 'metadata' => $attributes['metadata'] ?? []]));
+        return $this->database->transaction(fn (): Order => Order::query()->create(['team_id' => $teamId, 'customer_id' => $customerId, 'quote_id' => $quoteId, 'order_number' => $attributes['order_number'] ?? ('ORD-'.strtoupper(bin2hex(random_bytes(5)))), 'currency' => strtoupper((string) $attributes['currency']), 'subtotal_minor' => $subtotal, 'discount_minor' => $discount, 'tax_minor' => $tax, 'total_minor' => $subtotal - $discount + $tax, 'status' => $review ? OrderStatus::PendingReview : OrderStatus::Approved, 'fraud_status' => $review ? FraudReviewStatus::Pending : FraudReviewStatus::NotRequired, 'agreement' => $attributes['agreement'] ?? null, 'change_orders' => [], 'metadata' => $attributes['metadata'] ?? []]));
     }
 }
