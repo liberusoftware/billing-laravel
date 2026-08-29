@@ -23,9 +23,14 @@ final readonly class ChangeSubscriptionPlan
         }
 
         $changed = $this->database->transaction(function () use ($subscription, $pricingPlanId): Subscription {
-            $subscription->update(['pricing_plan_id' => $pricingPlanId, 'metadata' => array_merge($subscription->metadata ?? [], ['plan_changed_at' => now()->toIso8601String()])]);
+            $locked = Subscription::query()->lockForUpdate()->findOrFail($subscription->getKey());
+            if (in_array($locked->status, [SubscriptionStatus::Cancelled, SubscriptionStatus::Expired], true)) {
+                throw new \LogicException('A terminal subscription cannot change plans.');
+            }
 
-            return $subscription->refresh();
+            $locked->update(['pricing_plan_id' => $pricingPlanId, 'metadata' => array_merge($locked->metadata ?? [], ['plan_changed_at' => now()->toIso8601String()])]);
+
+            return $locked->refresh();
         });
 
         SubscriptionPlanChanged::dispatch($changed);

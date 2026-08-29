@@ -99,3 +99,12 @@ it('rechecks the locked subscription before renewing stale worker state', functi
         ->toThrow(LogicException::class, 'Subscription cannot be renewed.')
         ->and($subscription->refresh()->status)->toBe(SubscriptionStatus::Cancelled);
 });
+
+it('does not change the plan after a subscription becomes terminal', function (): void {
+    $subscription = app(ActivateSubscription::class)->execute(['team_id' => 10, 'pricing_plan_id' => 1]);
+    $subscription->refresh();
+    Subscription::query()->whereKey($subscription->getKey())->update(['status' => SubscriptionStatus::Cancelled->value]);
+
+    expect(fn () => app(ChangeSubscriptionPlan::class)->execute($subscription, 2))
+        ->toThrow(LogicException::class, 'A terminal subscription cannot change plans.');
+});
