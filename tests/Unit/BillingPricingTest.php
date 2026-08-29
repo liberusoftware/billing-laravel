@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Liberu\Billing\Pricing\Actions\CalculatePricingPlanAmount;
 use Liberu\Billing\Pricing\Actions\CapturePricingSnapshot;
 use Liberu\Billing\Pricing\Actions\CreatePricingPlan;
 use Liberu\Billing\Pricing\Enums\PricingModel;
@@ -42,6 +43,41 @@ it('rejects negative amounts and empty tier definitions', function () {
     expect(fn () => $action->execute(['name' => 'Invalid', 'pricing_model' => 'recurring', 'currency' => 'USD', 'unit_amount_minor' => -1]))
         ->toThrow(InvalidArgumentException::class);
     expect(fn () => $action->execute(['name' => 'Invalid', 'pricing_model' => 'tiered', 'currency' => 'USD', 'unit_amount_minor' => 0, 'tiers' => []]))
+        ->toThrow(InvalidArgumentException::class);
+});
+
+it('calculates fixed, usage, and graduated tiered plan amounts in minor units', function () {
+    $create = app(CreatePricingPlan::class);
+    $fixed = $create->execute(['name' => 'Fixed', 'pricing_model' => 'one_time', 'currency' => 'USD', 'unit_amount_minor' => 1250]);
+    $usage = $create->execute(['name' => 'Usage', 'pricing_model' => 'usage', 'currency' => 'USD', 'unit_amount_minor' => 7, 'usage_unit' => 'seat']);
+    $tiered = $create->execute(['name' => 'Tiered', 'pricing_model' => 'tiered', 'currency' => 'USD', 'unit_amount_minor' => 0, 'tiers' => [
+        ['up_to' => 10, 'unit_amount_minor' => 100],
+        ['up_to' => 20, 'unit_amount_minor' => 75],
+        ['unit_amount_minor' => 50],
+    ]]);
+
+    $calculate = app(CalculatePricingPlanAmount::class);
+    expect($calculate->execute($fixed, ['quantity' => 99]))->toBe(1250)
+        ->and($calculate->execute($usage, ['quantity' => 3]))->toBe(21)
+        ->and($calculate->execute($tiered, ['quantity' => 25]))->toBe(2000);
+});
+
+it('rejects malformed pricing quantities and tiers', function () {
+    $plan = app(CreatePricingPlan::class)->execute(['name' => 'Tiered', 'pricing_model' => 'tiered', 'currency' => 'USD', 'unit_amount_minor' => 0, 'tiers' => [
+        ['up_to' => 10, 'unit_amount_minor' => 100],
+    ]]);
+    $calculate = app(CalculatePricingPlanAmount::class);
+
+    expect(fn () => $calculate->execute($plan, ['quantity' => -1]))
+        ->toThrow(InvalidArgumentException::class);
+
+    expect($calculate->execute($plan, ['quantity' => 20]))->toBe(2000);
+
+    $plan->tiers = [
+        ['up_to' => 10, 'unit_amount_minor' => 100],
+        ['up_to' => 5, 'unit_amount_minor' => 50],
+    ];
+    expect(fn () => $calculate->execute($plan, ['quantity' => 1]))
         ->toThrow(InvalidArgumentException::class);
 });
 
