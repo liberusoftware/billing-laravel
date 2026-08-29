@@ -2,6 +2,7 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Liberu\Billing\Domains\Actions\CreateDomain;
+use Liberu\Billing\Domains\Actions\UpdateDomain;
 use Liberu\Billing\Domains\Actions\UpsertDnsRecord;
 use Liberu\Billing\Domains\Contracts\RegistrarClient;
 use Liberu\Billing\Domains\Models\DomainTld;
@@ -107,4 +108,15 @@ it('synchronizes registrar TLD costs with the configured markup', function () {
     expect(app(DomainPricingService::class)->syncTlds('test', 20))->toBe(2)
         ->and(DomainTld::query()->where('name', '.com')->value('markup_value'))->toBe('20.0000')
         ->and(DomainTld::query()->where('name', '.net')->value('registrar_cost'))->toBe('8.0000');
+});
+
+it('updates the persisted domain row instead of a stale model instance', function (): void {
+    $domain = app(CreateDomain::class)->handle(10, ['name' => 'example.com']);
+    $domain->refresh();
+    app(UpdateDomain::class)->handle($domain, ['status' => 'registered']);
+
+    $updated = app(UpdateDomain::class)->handle($domain, ['name' => 'new-example.com']);
+
+    expect($updated->name)->toBe('new-example.com')
+        ->and($updated->status)->toBe('registered');
 });

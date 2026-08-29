@@ -13,7 +13,8 @@ final class UpdateDomain
     public function handle(Domain $domain, array $attributes): Domain
     {
         return DB::transaction(function () use ($domain, $attributes): Domain {
-            $domain->fill(array_filter([
+            $locked = Domain::query()->lockForUpdate()->findOrFail($domain->getKey());
+            $locked->fill(array_filter([
                 'name' => array_key_exists('name', $attributes) ? $this->normalizeName((string) $attributes['name']) : null,
                 'status' => $attributes['status'] ?? null,
                 'registrar' => $attributes['registrar'] ?? null,
@@ -22,9 +23,9 @@ final class UpdateDomain
                 'registered_at' => $attributes['registered_at'] ?? null,
                 'metadata' => $attributes['metadata'] ?? null,
             ], static fn (mixed $value): bool => $value !== null));
-            $domain->save();
+            $locked->save();
 
-            return $domain->refresh();
+            return $locked->refresh();
         });
     }
 
