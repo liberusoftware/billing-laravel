@@ -17,9 +17,15 @@ final class TransitionHostingAccount
         }
 
         return DB::transaction(function () use ($account, $status): HostingAccount {
-            $account->update(['status' => $status]);
+            $lockedAccount = HostingAccount::query()->lockForUpdate()->findOrFail($account->getKey());
 
-            return $account->refresh();
+            if ($lockedAccount->status === 'cancelled' && $status !== 'cancelled') {
+                throw new InvalidArgumentException('Cancelled hosting accounts cannot be reactivated.');
+            }
+
+            $lockedAccount->update(['status' => $status]);
+
+            return $lockedAccount->refresh();
         });
     }
 }
