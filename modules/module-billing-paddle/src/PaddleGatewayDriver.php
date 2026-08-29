@@ -26,11 +26,14 @@ final readonly class PaddleGatewayDriver implements GatewayDriver
         }
         $transaction = $this->request('post', 'transactions', $payload);
         $status = data_get($transaction, 'data.status');
-        if (! in_array($status, ['completed', 'billed', 'ready'], true)) {
+        $reference = data_get($transaction, 'data.id');
+        // `ready` only means that Paddle has prepared the transaction for
+        // checkout; it is not evidence that funds were collected.
+        if (! in_array($status, ['completed', 'billed', 'paid'], true) || ! is_string($reference) || $reference === '') {
             throw new \RuntimeException('Paddle transaction is not complete: '.(string) $status);
         }
 
-        return ['reference' => (string) data_get($transaction, 'data.id')];
+        return ['reference' => $reference];
     }
 
     public function refund(Payment $payment, int $amountMinor): array
@@ -50,7 +53,13 @@ final readonly class PaddleGatewayDriver implements GatewayDriver
             $payload['items'] = [['item_id' => $itemId, 'type' => 'partial', 'amount' => (string) $amountMinor]];
         }
 
-        return ['reference' => (string) data_get($this->request('post', 'adjustments', $payload), 'data.id')];
+        $response = $this->request('post', 'adjustments', $payload);
+        $providerReference = data_get($response, 'data.id');
+        if (! is_string($providerReference) || $providerReference === '') {
+            throw new \RuntimeException('Paddle refund did not return an adjustment reference.');
+        }
+
+        return ['reference' => $providerReference];
     }
 
     /** @return array<string,mixed> */
