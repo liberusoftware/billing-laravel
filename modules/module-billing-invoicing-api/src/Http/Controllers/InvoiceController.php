@@ -43,6 +43,7 @@ final class InvoiceController extends Controller
 
     public function line(Request $request, Invoice $invoice, AddInvoiceLine $add): JsonResponse
     {
+        $invoice = $this->forCurrentTeam($request, $invoice);
         Gate::authorize('update', $invoice);
         $data = $request->validate(['description' => ['required', 'string', 'max:1000'], 'quantity' => ['required', 'integer', 'min:1'], 'unit_amount_minor' => ['required', 'integer', 'min:0'], 'tax_rate' => ['sometimes', 'numeric', 'min:0', 'max:100']]);
         $add->execute($invoice, $data['description'], $data['quantity'], $data['unit_amount_minor'], (float) ($data['tax_rate'] ?? 0));
@@ -50,8 +51,9 @@ final class InvoiceController extends Controller
         return response()->json(['data' => $this->resource($invoice->refresh())]);
     }
 
-    public function finalize(Invoice $invoice, FinalizeInvoice $finalize): JsonResponse
+    public function finalize(Request $request, Invoice $invoice, FinalizeInvoice $finalize): JsonResponse
     {
+        $invoice = $this->forCurrentTeam($request, $invoice);
         Gate::authorize('update', $invoice);
 
         return response()->json(['data' => $this->resource($finalize->execute($invoice))]);
@@ -73,8 +75,9 @@ final class InvoiceController extends Controller
         return response()->json(['data' => $this->scheduleResource($create->execute($data))], 201);
     }
 
-    public function runSchedule(InvoiceSchedule $schedule, RunInvoiceSchedule $run): JsonResponse
+    public function runSchedule(Request $request, InvoiceSchedule $schedule, RunInvoiceSchedule $run): JsonResponse
     {
+        $schedule = $this->forCurrentTeamSchedule($request, $schedule);
         Gate::authorize('update', $schedule);
 
         return response()->json(['data' => $this->resource($run->execute($schedule))]);
@@ -82,6 +85,7 @@ final class InvoiceController extends Controller
 
     public function adjust(Request $request, Invoice $invoice, ApplyInvoiceAdjustment $adjust): JsonResponse
     {
+        $invoice = $this->forCurrentTeam($request, $invoice);
         Gate::authorize('update', $invoice);
         $data = $request->validate(['amount_minor' => ['required', 'integer', 'not_in:0'], 'reason' => ['required', 'string', 'max:1000'], 'type' => ['sometimes', 'in:credit,adjustment']]);
         $amount = (int) $data['amount_minor'];
@@ -92,8 +96,9 @@ final class InvoiceController extends Controller
         return response()->json(['data' => $this->resource($adjust->execute($invoice, $amount, $data['reason'], $data['type'] ?? 'adjustment'))]);
     }
 
-    public function document(Invoice $invoice, GenerateInvoiceDocument $document): JsonResponse
+    public function document(Request $request, Invoice $invoice, GenerateInvoiceDocument $document): JsonResponse
     {
+        $invoice = $this->forCurrentTeam($request, $invoice);
         Gate::authorize('update', $invoice);
 
         return response()->json(['data' => $document->execute($invoice)]);
@@ -101,6 +106,7 @@ final class InvoiceController extends Controller
 
     public function deliver(Request $request, Invoice $invoice, DeliverInvoice $deliver): JsonResponse
     {
+        $invoice = $this->forCurrentTeam($request, $invoice);
         Gate::authorize('update', $invoice);
         $data = $request->validate(['destination' => ['required', 'email', 'max:255'], 'document_id' => ['nullable', 'integer', 'min:1']]);
 
@@ -115,5 +121,19 @@ final class InvoiceController extends Controller
     private function scheduleResource(InvoiceSchedule $schedule): array
     {
         return ['id' => (string) $schedule->getKey(), 'type' => 'billing-invoice-schedules', 'attributes' => ['frequency' => $schedule->frequency, 'next_run_at' => $schedule->next_run_at?->toIso8601String(), 'active' => $schedule->active, 'metadata' => $schedule->metadata]];
+    }
+
+    private function forCurrentTeam(Request $request, Invoice $invoice): Invoice
+    {
+        $teamId = data_get($request->user(), 'current_team_id') ?? data_get($request->user(), 'currentTeam.id');
+
+        return Invoice::query()->whereKey($invoice->getKey())->where('team_id', $teamId)->firstOrFail();
+    }
+
+    private function forCurrentTeamSchedule(Request $request, InvoiceSchedule $schedule): InvoiceSchedule
+    {
+        $teamId = data_get($request->user(), 'current_team_id') ?? data_get($request->user(), 'currentTeam.id');
+
+        return InvoiceSchedule::query()->whereKey($schedule->getKey())->where('team_id', $teamId)->firstOrFail();
     }
 }
