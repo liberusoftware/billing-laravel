@@ -1,6 +1,9 @@
 <?php
 
+use App\Models\Customer;
+use App\Models\Team;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Liberu\Billing\CustomerPortal\Actions\CreatePortalItem;
 use Liberu\Billing\CustomerPortal\Actions\TransitionPortalItem;
 use Liberu\Billing\CustomerPortal\Actions\TransitionPortalRequest;
 use Liberu\Billing\CustomerPortal\Models\PortalItem;
@@ -39,4 +42,13 @@ it('does not reopen a portal item after its persisted state becomes completed', 
 
     expect(fn () => app(TransitionPortalItem::class)->handle($item, 'in_progress'))
         ->toThrow(InvalidArgumentException::class, 'Completed or cancelled portal items cannot be reopened.');
+});
+
+it('rejects a portal item customer owned by another team', function (): void {
+    $team = Team::factory()->create(['id' => 20]);
+    $customerId = Customer::factory()->create(['team_id' => $team->getKey()])->getKey();
+
+    expect(fn () => app(CreatePortalItem::class)->handle(10, [
+        'customer_id' => $customerId, 'type' => 'invoices', 'subject' => 'View invoices',
+    ]))->toThrow(InvalidArgumentException::class, 'Customer reference is invalid.');
 });
