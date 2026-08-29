@@ -1,9 +1,12 @@
 <?php
 
+use App\Models\Customer;
+use App\Models\Team;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Liberu\Billing\Catalog\Models\Product;
 use Liberu\Billing\Pricing\Actions\CalculatePricingPlanAmount;
 use Liberu\Billing\Pricing\Actions\CapturePricingSnapshot;
+use Liberu\Billing\Pricing\Actions\CreatePricingContract;
 use Liberu\Billing\Pricing\Actions\CreatePricingPlan;
 use Liberu\Billing\Pricing\Enums\PricingModel;
 use Liberu\Billing\Pricing\Enums\PricingPlanStatus;
@@ -64,6 +67,25 @@ it('rejects a missing product reference', function (): void {
         'team_id' => 10, 'product_id' => 999999, 'name' => 'Plan',
         'pricing_model' => 'one_time', 'currency' => 'USD', 'unit_amount_minor' => 100,
     ]))->toThrow(InvalidArgumentException::class, 'Pricing product reference is invalid.');
+});
+
+it('validates pricing contract plan and customer ownership', function (): void {
+    $team = Team::factory()->create();
+    $customer = Customer::factory()->create(['team_id' => $team->getKey()]);
+    $plan = app(CreatePricingPlan::class)->execute([
+        'team_id' => $team->getKey(), 'name' => 'Contract plan', 'pricing_model' => 'one_time', 'currency' => 'USD', 'unit_amount_minor' => 100,
+    ]);
+
+    $contract = app(CreatePricingContract::class)->execute([
+        'team_id' => $team->getKey(), 'pricing_plan_id' => $plan->getKey(), 'customer_id' => $customer->getKey(),
+    ]);
+
+    expect($contract->customer_id)->toBe($customer->getKey())
+        ->and($contract->pricing_plan_id)->toBe($plan->getKey());
+
+    expect(fn () => app(CreatePricingContract::class)->execute([
+        'team_id' => $team->getKey() + 1, 'pricing_plan_id' => $plan->getKey(), 'customer_id' => $customer->getKey(),
+    ]))->toThrow(InvalidArgumentException::class, 'Pricing customer reference is invalid.');
 });
 
 it('calculates fixed, usage, and graduated tiered plan amounts in minor units', function () {
