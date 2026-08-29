@@ -1,11 +1,14 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Liberu\Billing\Orders\Actions\AddChangeOrder;
+use Liberu\Billing\Orders\Actions\CheckoutCart;
 use Liberu\Billing\Orders\Actions\CreateOrder;
 use Liberu\Billing\Orders\Actions\ReviewFraud;
 use Liberu\Billing\Orders\Actions\TransitionOrder;
 use Liberu\Billing\Orders\Enums\FraudReviewStatus;
 use Liberu\Billing\Orders\Enums\OrderStatus;
+use Liberu\Billing\Orders\Models\Cart;
 use Liberu\Billing\Orders\Models\Order;
 
 uses(RefreshDatabase::class);
@@ -80,4 +83,25 @@ it('does not review fraud after an order becomes terminal', function (): void {
 
     expect(fn () => app(ReviewFraud::class)->execute($order, FraudReviewStatus::Blocked))
         ->toThrow(LogicException::class, 'Terminal orders cannot receive fraud reviews.');
+});
+
+it('appends change orders from the persisted order state', function (): void {
+    $order = app(CreateOrder::class)->execute([
+        'order_number' => 'ORD-1005', 'currency' => 'USD', 'subtotal_minor' => 100,
+    ]);
+    $order->refresh();
+    Order::query()->whereKey($order->getKey())->update(['change_orders' => [['reason' => 'existing']]]);
+
+    $updated = app(AddChangeOrder::class)->execute($order, ['reason' => 'new change']);
+
+    expect($updated->change_orders)->toHaveCount(2);
+});
+
+it('does not check out a cart after its persisted state becomes checked out', function (): void {
+    $cart = Cart::query()->create(['currency' => 'USD', 'items' => [], 'status' => 'open']);
+    $cart->refresh();
+    Cart::query()->whereKey($cart->getKey())->update(['status' => 'checked_out']);
+
+    expect(fn () => app(CheckoutCart::class)->execute($cart, ['subtotal_minor' => 100]))
+        ->toThrow(LogicException::class, 'Only open, non-expired carts can be checked out.');
 });

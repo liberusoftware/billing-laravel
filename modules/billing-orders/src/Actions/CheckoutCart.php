@@ -19,8 +19,13 @@ final readonly class CheckoutCart
         }
 
         return $this->database->transaction(function () use ($cart, $attributes): Order {
-            $order = $this->createOrder->execute([...$attributes, 'team_id' => $cart->team_id, 'customer_id' => $cart->customer_id, 'currency' => $cart->currency]);
-            $cart->update(['status' => 'checked_out']);
+            $locked = Cart::query()->lockForUpdate()->findOrFail($cart->getKey());
+            if ($locked->status !== 'open' || ($locked->expires_at !== null && $locked->expires_at->isPast())) {
+                throw new \LogicException('Only open, non-expired carts can be checked out.');
+            }
+
+            $order = $this->createOrder->execute([...$attributes, 'team_id' => $locked->team_id, 'customer_id' => $locked->customer_id, 'currency' => $locked->currency]);
+            $locked->update(['status' => 'checked_out']);
 
             return $order;
         });
