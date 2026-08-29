@@ -2,6 +2,7 @@
 
 use App\Models\Customer;
 use App\Models\Team;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
@@ -9,12 +10,14 @@ use Illuminate\Support\Facades\Schema;
 use Liberu\Billing\Subscriptions\Actions\ActivateSubscription;
 use Liberu\Billing\Subscriptions\Actions\CancelSubscription;
 use Liberu\Billing\Subscriptions\Actions\ChangeSubscriptionPlan;
+use Liberu\Billing\Subscriptions\Actions\ExpireSubscriptions;
 use Liberu\Billing\Subscriptions\Actions\PauseSubscription;
 use Liberu\Billing\Subscriptions\Actions\RenewSubscription;
 use Liberu\Billing\Subscriptions\Actions\ResumeSubscription;
 use Liberu\Billing\Subscriptions\Actions\UpdateEntitlementState;
 use Liberu\Billing\Subscriptions\Enums\SubscriptionStatus;
 use Liberu\Billing\Subscriptions\Events\SubscriptionEntitlementsUpdated;
+use Liberu\Billing\Subscriptions\Events\SubscriptionExpired;
 use Liberu\Billing\Subscriptions\Events\SubscriptionPaused;
 use Liberu\Billing\Subscriptions\Events\SubscriptionPlanChanged;
 use Liberu\Billing\Subscriptions\Models\Subscription;
@@ -115,6 +118,21 @@ it('requires an owner and rejects terminal lifecycle mutations', function () {
 
     expect(fn () => app(PauseSubscription::class)->execute($subscription))
         ->toThrow(LogicException::class);
+});
+
+it('expires due non-renewing subscriptions and emits an event', function (): void {
+    Event::fake([SubscriptionExpired::class]);
+    $due = app(ActivateSubscription::class)->execute(['team_id' => 10, 'auto_renew' => false, 'current_period_ends_at' => '2026-08-01 00:00:00']);
+    $future = app(ActivateSubscription::class)->execute(['team_id' => 10, 'auto_renew' => false, 'current_period_ends_at' => '2026-09-01 00:00:00']);
+    $renewing = app(ActivateSubscription::class)->execute(['team_id' => 10, 'auto_renew' => true, 'current_period_ends_at' => '2026-08-01 00:00:00']);
+
+    expect(app(ExpireSubscriptions::class)->execute(10, Carbon::parse('2026-08-15')))->toBe(1)
+        ->and($due->refresh()->status)->toBe(SubscriptionStatus::Expired)
+        ->and($due->entitlement_state['active'])->toBeFalse()
+        ->and($future->refresh()->status)->toBe(SubscriptionStatus::Active)
+        ->and($renewing->refresh()->status)->toBe(SubscriptionStatus::Active);
+    Event::assertDispatched(SubscriptionExpired::class, 1);
+    expect(app(ExpireSubscriptions::class)->execute(10, Carbon::parse('2026-08-15')))->toBe(0);
 });
 
 it('rechecks the locked subscription before renewing stale worker state', function () {
