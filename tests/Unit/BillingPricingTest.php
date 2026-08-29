@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Liberu\Billing\Catalog\Models\Product;
 use Liberu\Billing\Pricing\Actions\CalculatePricingPlanAmount;
 use Liberu\Billing\Pricing\Actions\CapturePricingSnapshot;
 use Liberu\Billing\Pricing\Actions\CreatePricingPlan;
@@ -44,6 +45,18 @@ it('rejects negative amounts and empty tier definitions', function () {
         ->toThrow(InvalidArgumentException::class);
     expect(fn () => $action->execute(['name' => 'Invalid', 'pricing_model' => 'tiered', 'currency' => 'USD', 'unit_amount_minor' => 0, 'tiers' => []]))
         ->toThrow(InvalidArgumentException::class);
+});
+
+it('rejects a product owned by another team', function (): void {
+    $product = Product::query()->create([
+        'team_id' => 20, 'name' => 'Foreign product', 'sku' => 'FOREIGN-PRODUCT',
+        'base_price_minor' => 100, 'currency' => 'USD', 'status' => 'draft',
+    ]);
+
+    expect(fn () => app(CreatePricingPlan::class)->execute([
+        'team_id' => 10, 'product_id' => $product->getKey(), 'name' => 'Plan',
+        'pricing_model' => 'one_time', 'currency' => 'USD', 'unit_amount_minor' => 100,
+    ]))->toThrow(InvalidArgumentException::class, 'Pricing product reference is invalid.');
 });
 
 it('calculates fixed, usage, and graduated tiered plan amounts in minor units', function () {

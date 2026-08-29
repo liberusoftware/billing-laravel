@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Liberu\Billing\Pricing\Actions;
 
 use Illuminate\Database\DatabaseManager;
+use Illuminate\Support\Facades\Schema;
 use Liberu\Billing\Pricing\Enums\PricingModel;
 use Liberu\Billing\Pricing\Enums\PricingPlanStatus;
 use Liberu\Billing\Pricing\Models\PricingPlan;
@@ -37,9 +38,19 @@ final readonly class CreatePricingPlan
             throw new \InvalidArgumentException('Pricing amount and tiers are invalid.');
         }
 
+        $productId = $attributes['product_id'] ?? null;
+        if ($productId !== null && Schema::hasTable('billing_catalog_products')) {
+            $productTeam = $this->database->table('billing_catalog_products')->where('id', (int) $productId)->value('team_id');
+            if ($productTeam !== null && ($teamId = $attributes['team_id'] ?? null) !== null && (int) $productTeam !== (int) $teamId) {
+                throw new \InvalidArgumentException('Pricing product reference is invalid.');
+            }
+        } elseif ($productId !== null) {
+            throw new \InvalidArgumentException('Pricing product reference is invalid.');
+        }
+
         return $this->database->transaction(fn (): PricingPlan => PricingPlan::query()->create([
             'team_id' => $attributes['team_id'] ?? null,
-            'product_id' => $attributes['product_id'] ?? null,
+            'product_id' => $productId,
             'name' => $name,
             'pricing_model' => $model,
             'currency' => $currency,
