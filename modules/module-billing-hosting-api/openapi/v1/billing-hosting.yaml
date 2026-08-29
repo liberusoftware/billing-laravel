@@ -21,6 +21,13 @@ paths:
       parameters: [{name: account, in: path, required: true, schema: {type: integer, minimum: 1}}, {$ref: '#/components/parameters/IdempotencyKey'}]
       requestBody: {required: true, content: {application/json: {schema: {type: object, required: [status], properties: {status: {type: string, enum: [pending, active, suspended, cancelled, failed]}}}}}}
       responses: {'200': {$ref: '#/components/responses/Document'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/hosting/{account}/operation:
+    post:
+      operationId: billing.hosting.accounts.operation
+      security: [{sanctum: []}]
+      parameters: [{name: account, in: path, required: true, schema: {type: integer, minimum: 1}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object, required: [operation], properties: {operation: {type: string, enum: [provision, suspend, terminate]}}}}}}
+      responses: {'200': {$ref: '#/components/responses/Document'}, '422': {$ref: '#/components/responses/ValidationError'}}
   /api/v1/billing/hosting/capabilities:
     get: {operationId: billing.hosting.capabilities.list, security: [{sanctum: []}], responses: {'200': {$ref: '#/components/responses/Collection'}}}
     post:

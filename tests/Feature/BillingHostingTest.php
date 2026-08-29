@@ -1,6 +1,7 @@
 <?php
 
 use Liberu\Billing\Hosting\Actions\CreateHostingAccount;
+use Liberu\Billing\Hosting\Actions\PerformHostingOperation;
 use Liberu\Billing\Hosting\Actions\TransitionHostingAccount;
 use Liberu\Billing\Hosting\Actions\TransitionHostingCapability;
 use Liberu\Billing\Hosting\Contracts\HostingDriver;
@@ -70,4 +71,37 @@ it('normalizes hosting driver keys for registration and lookup', function (): vo
 it('rejects hosting accounts with an invalid initial lifecycle status', function (): void {
     expect(fn () => app(CreateHostingAccount::class)->handle(1, ['name' => 'invalid-hosting', 'status' => 'unknown']))
         ->toThrow(InvalidArgumentException::class, 'A team and name are required.');
+});
+
+it('performs provider-backed hosting lifecycle operations', function (): void {
+    $registry = app(HostingDriverRegistry::class);
+    $registry->register(new class() implements HostingDriver
+    {
+        public function key(): string
+        {
+            return 'test';
+        }
+
+        public function provision(array $attributes): array
+        {
+            return ['provider_id' => 'acct-1'];
+        }
+
+        public function suspend(array $attributes): array
+        {
+            return ['suspended' => true];
+        }
+
+        public function terminate(array $attributes): array
+        {
+            return ['terminated' => true];
+        }
+    });
+    $account = app(CreateHostingAccount::class)->handle(1, ['name' => 'provider-account', 'status' => 'pending', 'metadata' => ['driver' => 'test']]);
+
+    $account = app(PerformHostingOperation::class)->handle($account, 'provision');
+    expect($account->status)->toBe('active')->and($account->metadata['last_operation']['result'])->toBe(['provider_id' => 'acct-1']);
+    $account = app(PerformHostingOperation::class)->handle($account, 'suspend');
+    $account = app(PerformHostingOperation::class)->handle($account, 'terminate');
+    expect($account->status)->toBe('cancelled');
 });

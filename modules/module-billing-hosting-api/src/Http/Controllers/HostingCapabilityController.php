@@ -10,6 +10,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\Hosting\Actions\CreateHostingAccount;
 use Liberu\Billing\Hosting\Actions\CreateHostingCapability;
+use Liberu\Billing\Hosting\Actions\PerformHostingOperation;
 use Liberu\Billing\Hosting\Actions\TransitionHostingAccount;
 use Liberu\Billing\Hosting\Actions\TransitionHostingCapability;
 use Liberu\Billing\Hosting\Models\HostingAccount;
@@ -56,6 +57,15 @@ final class HostingCapabilityController extends Controller
         $data = $request->validate(['status' => ['required', 'string']]);
 
         return response()->json(['data' => $transition->handle($model, $data['status'])]);
+    }
+
+    public function operation(Request $request, int $account, PerformHostingOperation $perform): JsonResponse
+    {
+        $model = HostingAccount::query()->forTeam($this->team($request))->findOrFail($account);
+        Gate::authorize('update', $model);
+        $data = $request->validate(['operation' => ['required', 'in:provision,suspend,terminate']]);
+
+        return response()->json(['data' => $perform->handle($model, $data['operation'])]);
     }
 
     private function team(Request $request): int
