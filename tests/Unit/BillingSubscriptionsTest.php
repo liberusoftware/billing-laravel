@@ -54,6 +54,18 @@ it('carries legacy domain protection into the subscription boundary', function (
 
 it('supports plan changes, pause, renewal, and cancellation', function () {
     Event::fake([SubscriptionPaused::class, SubscriptionPlanChanged::class]);
+    DB::table('billing_pricing_plans')->insert([
+        'id' => 4,
+        'team_id' => 10,
+        'name' => 'Changed plan',
+        'pricing_model' => 'flat',
+        'currency' => 'USD',
+        'unit_amount_minor' => 1000,
+        'status' => 'active',
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+
     $subscription = app(ActivateSubscription::class)->execute(['team_id' => 10]);
     $subscription = app(ChangeSubscriptionPlan::class)->execute($subscription, 4);
     $subscription = app(PauseSubscription::class)->execute($subscription);
@@ -165,4 +177,9 @@ it('rejects a pricing plan owned by another team', function (): void {
         'team_id' => 10,
         'pricing_plan_id' => $planId,
     ]))->toThrow(InvalidArgumentException::class, 'Subscription pricing plan reference is invalid.');
+
+    $subscription = app(ActivateSubscription::class)->execute(['team_id' => 10]);
+
+    expect(fn () => app(ChangeSubscriptionPlan::class)->execute($subscription, $planId))
+        ->toThrow(InvalidArgumentException::class, 'Subscription pricing plan reference is invalid.');
 });
