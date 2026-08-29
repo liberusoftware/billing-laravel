@@ -67,3 +67,13 @@ it('requires a gateway before refunding a captured payment', function () {
     expect(fn () => app(RefundPayment::class)->execute($payment->refresh(), 1))
         ->toThrow(InvalidArgumentException::class);
 });
+
+it('does not open a dispute after the persisted payment state changes', function (): void {
+    $payment = app(CreatePayment::class)->execute(['amount_minor' => 100, 'currency' => 'EUR']);
+    $payment->update(['status' => PaymentStatus::Captured]);
+    $payment->refresh();
+    Payment::query()->whereKey($payment->getKey())->update(['status' => PaymentStatus::Disputed]);
+
+    expect(fn () => app(OpenDispute::class)->execute($payment, 1, 'customer claim'))
+        ->toThrow(InvalidArgumentException::class);
+});

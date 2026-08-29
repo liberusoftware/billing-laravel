@@ -21,9 +21,14 @@ final readonly class OpenDispute
         }
 
         return $this->database->transaction(function () use ($payment, $amountMinor, $reason): PaymentDispute {
-            $payment->update(['status' => PaymentStatus::Disputed]);
+            $locked = Payment::query()->lockForUpdate()->findOrFail($payment->getKey());
+            if ($locked->status !== PaymentStatus::Captured || $amountMinor > (int) $locked->amount_minor) {
+                throw new \InvalidArgumentException('Dispute amount or payment state is invalid.');
+            }
 
-            return PaymentDispute::query()->create(['payment_id' => $payment->getKey(), 'amount_minor' => $amountMinor, 'status' => DisputeStatus::Open, 'reason' => trim($reason)]);
+            $locked->update(['status' => PaymentStatus::Disputed]);
+
+            return PaymentDispute::query()->create(['payment_id' => $locked->getKey(), 'amount_minor' => $amountMinor, 'status' => DisputeStatus::Open, 'reason' => trim($reason)]);
         });
     }
 }
