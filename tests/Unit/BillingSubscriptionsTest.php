@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Schema;
 use Liberu\Billing\Subscriptions\Actions\ActivateSubscription;
 use Liberu\Billing\Subscriptions\Actions\CancelSubscription;
 use Liberu\Billing\Subscriptions\Actions\ChangeSubscriptionPlan;
@@ -18,6 +20,18 @@ use Liberu\Billing\Subscriptions\Models\Subscription;
 uses(RefreshDatabase::class);
 
 it('activates a trial subscription with an entitlement', function () {
+    DB::table('billing_pricing_plans')->insert([
+        'id' => 2,
+        'team_id' => 10,
+        'name' => 'Trial plan',
+        'pricing_model' => 'flat',
+        'currency' => 'USD',
+        'unit_amount_minor' => 1000,
+        'status' => 'active',
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+
     $subscription = app(ActivateSubscription::class)->execute([
         'team_id' => 10,
         'pricing_plan_id' => 2,
@@ -101,6 +115,18 @@ it('rechecks the locked subscription before renewing stale worker state', functi
 });
 
 it('does not change the plan after a subscription becomes terminal', function (): void {
+    DB::table('billing_pricing_plans')->insert([
+        'id' => 1,
+        'team_id' => 10,
+        'name' => 'Current plan',
+        'pricing_model' => 'flat',
+        'currency' => 'USD',
+        'unit_amount_minor' => 1000,
+        'status' => 'active',
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+
     $subscription = app(ActivateSubscription::class)->execute(['team_id' => 10, 'pricing_plan_id' => 1]);
     $subscription->refresh();
     Subscription::query()->whereKey($subscription->getKey())->update(['status' => SubscriptionStatus::Cancelled->value]);
@@ -116,4 +142,27 @@ it('does not pause a subscription after its persisted state becomes terminal', f
 
     expect(fn () => app(PauseSubscription::class)->execute($subscription))
         ->toThrow(LogicException::class, 'A terminal subscription cannot be paused.');
+});
+
+it('rejects a pricing plan owned by another team', function (): void {
+    if (! Schema::hasTable('billing_pricing_plans')) {
+        $this->markTestSkipped('Pricing tables are not installed.');
+    }
+
+    $planId = DB::table('billing_pricing_plans')->insertGetId([
+        'team_id' => 20,
+        'name' => 'Foreign plan',
+        'pricing_model' => 'flat',
+        'currency' => 'USD',
+        'unit_amount_minor' => 1000,
+        'status' => 'active',
+        'metadata' => json_encode([]),
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+
+    expect(fn () => app(ActivateSubscription::class)->execute([
+        'team_id' => 10,
+        'pricing_plan_id' => $planId,
+    ]))->toThrow(InvalidArgumentException::class, 'Subscription pricing plan reference is invalid.');
 });
