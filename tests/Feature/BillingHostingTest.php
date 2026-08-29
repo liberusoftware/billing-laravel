@@ -1,5 +1,6 @@
 <?php
 
+use Liberu\Billing\Hosting\Actions\CreateHostingAccount;
 use Liberu\Billing\Hosting\Actions\TransitionHostingAccount;
 use Liberu\Billing\Hosting\Actions\TransitionHostingCapability;
 use Liberu\Billing\Hosting\Contracts\HostingDriver;
@@ -64,4 +65,9 @@ it('normalizes hosting driver keys for registration and lookup', function (): vo
         ->and($registry->keys())->toBe(['cpanel'])
         ->and(fn () => $registry->register($driver))
         ->toThrow(InvalidArgumentException::class, 'Hosting driver keys must be non-empty and unique.');
+});
+
+it('rejects hosting accounts with an invalid initial lifecycle status', function (): void {
+    expect(fn () => app(CreateHostingAccount::class)->handle(1, ['name' => 'invalid-hosting', 'status' => 'unknown']))
+        ->toThrow(InvalidArgumentException::class, 'A team and name are required.');
 });
