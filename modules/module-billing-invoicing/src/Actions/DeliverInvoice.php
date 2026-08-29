@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Liberu\Billing\Invoicing\Actions;
 
 use Illuminate\Database\DatabaseManager;
+use Liberu\Billing\Invoicing\Enums\InvoiceStatus;
 use Liberu\Billing\Invoicing\Models\Invoice;
 use Liberu\Billing\Invoicing\Models\InvoiceSupport;
 
@@ -18,6 +19,13 @@ final readonly class DeliverInvoice
             throw new \InvalidArgumentException('A valid invoice delivery destination is required.');
         }
 
-        return $this->database->transaction(fn (): InvoiceSupport => InvoiceSupport::query()->create(['team_id' => $invoice->team_id, 'invoice_id' => $invoice->getKey(), 'type' => 'delivery', 'status' => 'delivered', 'amount_minor' => 0, 'currency' => $invoice->currency, 'destination' => strtolower(trim($destination)), 'payload' => ['document_id' => $documentId]]));
+        return $this->database->transaction(function () use ($invoice, $destination, $documentId): InvoiceSupport {
+            $locked = Invoice::query()->lockForUpdate()->findOrFail($invoice->getKey());
+            if (! in_array($locked->status, [InvoiceStatus::Finalized, InvoiceStatus::Paid], true)) {
+                throw new \LogicException('Only finalized invoices can be delivered.');
+            }
+
+            return InvoiceSupport::query()->create(['team_id' => $locked->team_id, 'invoice_id' => $locked->getKey(), 'type' => 'delivery', 'status' => 'delivered', 'amount_minor' => 0, 'currency' => $locked->currency, 'destination' => strtolower(trim($destination)), 'payload' => ['document_id' => $documentId]]);
+        });
     }
 }

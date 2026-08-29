@@ -53,6 +53,13 @@ it('rejects empty finalization and invalid currency', function () {
         ->toThrow(LogicException::class);
 });
 
+it('does not deliver a draft invoice after its persisted state changes', function (): void {
+    $invoice = app(CreateInvoice::class)->execute(['team_id' => 10, 'currency' => 'USD']);
+
+    expect(fn () => app(DeliverInvoice::class)->execute($invoice, 'billing@example.com'))
+        ->toThrow(LogicException::class, 'Only finalized invoices can be delivered.');
+});
+
 it('allows read tokens to view but not update their team invoice', function () {
     $invoice = app(CreateInvoice::class)->execute(['team_id' => 10, 'currency' => 'USD']);
     $readUser = new class() implements Authenticatable
