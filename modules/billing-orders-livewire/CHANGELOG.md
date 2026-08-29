@@ -5,3 +5,4 @@
 
 - Initial Orders Livewire 4 checkout and support components.
 - Add fraud review and change-order interactions.
+- Add quote lifecycle and conversion component.
