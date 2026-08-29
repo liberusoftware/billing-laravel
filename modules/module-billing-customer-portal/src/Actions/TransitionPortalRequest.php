@@ -17,9 +17,14 @@ final class TransitionPortalRequest
         }
 
         return DB::transaction(function () use ($request, $status): PortalRequest {
-            $request->update(['status' => $status]);
+            $locked = PortalRequest::query()->lockForUpdate()->findOrFail($request->getKey());
+            if ($locked->status === 'closed' && $status !== 'closed') {
+                throw new InvalidArgumentException('Closed portal requests cannot be reopened.');
+            }
 
-            return $request->refresh();
+            $locked->update(['status' => $status]);
+
+            return $locked->refresh();
         });
     }
 }

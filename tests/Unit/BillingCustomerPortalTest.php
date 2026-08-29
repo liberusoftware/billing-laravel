@@ -22,3 +22,12 @@ it('rejects unsupported portal lifecycle states', function () {
     expect(fn () => app(TransitionPortalItem::class)->handle($item, 'unknown'))
         ->toThrow(InvalidArgumentException::class);
 });
+
+it('does not reopen a portal request after its persisted state becomes closed', function (): void {
+    $request = PortalRequest::query()->create(['team_id' => 10, 'name' => 'Stale request', 'status' => 'active']);
+    $request->refresh();
+    PortalRequest::query()->whereKey($request->getKey())->update(['status' => 'closed']);
+
+    expect(fn () => app(TransitionPortalRequest::class)->handle($request, 'active'))
+        ->toThrow(InvalidArgumentException::class, 'Closed portal requests cannot be reopened.');
+});
