@@ -10,6 +10,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Liberu\Billing\Subscriptions\Actions\CancelSubscription;
 use Liberu\Billing\Subscriptions\Actions\ChangeSubscriptionPlan;
@@ -49,6 +50,9 @@ final class SubscriptionResource extends Resource
             TextColumn::make('starts_at')->dateTime()->sortable(),
             TextColumn::make('current_period_ends_at')->dateTime()->sortable(),
             TextColumn::make('auto_renew')->badge(),
+        ])->filters([
+            SelectFilter::make('status')->options(['trialing' => 'Trialing', 'active' => 'Active', 'paused' => 'Paused', 'cancelled' => 'Cancelled', 'expired' => 'Expired']),
+            SelectFilter::make('customer_id')->label('Customer ID')->options(fn (): array => Subscription::query()->whereNotNull('customer_id')->distinct()->pluck('customer_id', 'customer_id')->mapWithKeys(fn ($id): array => [(string) $id => (string) $id])->all()),
         ])->defaultSort('id', 'desc')->actions([
             Action::make('renew')
                 ->label('Renew')

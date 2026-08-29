@@ -4,6 +4,8 @@
         <p role="status">{{ session('module-billing-subscriptions-message') }}</p>
     @endif
     <button type="button" wire:click="expireDue">{{ __('Expire due subscriptions') }}</button>
+    <label>{{ __('Customer ID') }} <input type="number" min="0" wire:model.live="filterCustomerId"></label>
+    <label>{{ __('Status') }} <select wire:model.live="filterStatus"><option value="">{{ __('All') }}</option><option value="trialing">{{ __('Trialing') }}</option><option value="active">{{ __('Active') }}</option><option value="paused">{{ __('Paused') }}</option><option value="cancelled">{{ __('Cancelled') }}</option><option value="expired">{{ __('Expired') }}</option></select></label>
     <button type="button" wire:click="$set('showActivate', true)">{{ __('Activate subscription') }}</button>
     @if ($showActivate)
         <form wire:submit="activate">

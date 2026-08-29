@@ -17,6 +17,7 @@ use Liberu\Billing\Subscriptions\Actions\PauseSubscription;
 use Liberu\Billing\Subscriptions\Actions\RenewSubscription;
 use Liberu\Billing\Subscriptions\Actions\ResumeSubscription;
 use Liberu\Billing\Subscriptions\Actions\UpdateEntitlementState;
+use Liberu\Billing\Subscriptions\Enums\SubscriptionStatus;
 use Liberu\Billing\Subscriptions\Models\Subscription;
 use Liberu\Billing\Subscriptions\Queries\ListSubscriptions;
 
@@ -26,7 +27,8 @@ final class SubscriptionController extends Controller
     {
         Gate::authorize('viewAny', Subscription::class);
         $teamId = data_get($request->user(), 'current_team_id') ?? data_get($request->user(), 'currentTeam.id');
-        $subscriptions = $query->execute($teamId === null ? null : (int) $teamId, $request->integer('per_page', 25));
+        $data = $request->validate(['customer_id' => ['nullable', 'integer', 'min:1'], 'status' => ['nullable', 'string', 'in:trialing,active,paused,cancelled,expired']]);
+        $subscriptions = $query->execute($teamId === null ? null : (int) $teamId, $request->integer('per_page', 25), $data['customer_id'] ?? null, isset($data['status']) ? SubscriptionStatus::from($data['status']) : null);
 
         return response()->json([
             'data' => $subscriptions->getCollection()->map(fn (Subscription $subscription): array => $this->resource($subscription))->values(),
@@ -121,6 +123,7 @@ final class SubscriptionController extends Controller
             'type' => 'billing-subscriptions',
             'attributes' => [
                 'status' => $subscription->status->value,
+                'customer_id' => $subscription->customer_id,
                 'pricing_plan_id' => $subscription->pricing_plan_id,
                 'starts_at' => $subscription->starts_at?->toIso8601String(),
                 'trial_ends_at' => $subscription->trial_ends_at?->toIso8601String(),

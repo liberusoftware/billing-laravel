@@ -21,6 +21,7 @@ use Liberu\Billing\Subscriptions\Events\SubscriptionExpired;
 use Liberu\Billing\Subscriptions\Events\SubscriptionPaused;
 use Liberu\Billing\Subscriptions\Events\SubscriptionPlanChanged;
 use Liberu\Billing\Subscriptions\Models\Subscription;
+use Liberu\Billing\Subscriptions\Queries\ListSubscriptions;
 
 uses(RefreshDatabase::class);
 
@@ -224,4 +225,20 @@ it('rejects a subscription customer owned by another team', function (): void {
     expect(fn () => app(ActivateSubscription::class)->execute([
         'team_id' => 10, 'customer_id' => $customerId,
     ]))->toThrow(InvalidArgumentException::class, 'Customer reference is invalid.');
+});
+
+it('filters subscription listings by customer and status', function (): void {
+    $team = Team::factory()->create(['id' => 10]);
+    $customer = Customer::factory()->create(['team_id' => $team->getKey()]);
+    $otherCustomer = Customer::factory()->create(['team_id' => $team->getKey()]);
+    app(ActivateSubscription::class)->execute(['team_id' => 10, 'customer_id' => $customer->getKey()]);
+    $paused = app(ActivateSubscription::class)->execute(['team_id' => 10, 'customer_id' => $customer->getKey()]);
+    app(PauseSubscription::class)->execute($paused);
+    app(ActivateSubscription::class)->execute(['team_id' => 10, 'customer_id' => $otherCustomer->getKey()]);
+
+    $result = app(ListSubscriptions::class)->execute(10, 25, $customer->getKey(), SubscriptionStatus::Paused);
+
+    expect($result->total())->toBe(1)
+        ->and($result->first()->customer_id)->toBe($customer->getKey())
+        ->and($result->first()->status)->toBe(SubscriptionStatus::Paused);
 });

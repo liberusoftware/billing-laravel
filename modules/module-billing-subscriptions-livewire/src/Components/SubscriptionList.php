@@ -13,6 +13,7 @@ use Liberu\Billing\Subscriptions\Actions\ExpireSubscriptions;
 use Liberu\Billing\Subscriptions\Actions\PauseSubscription;
 use Liberu\Billing\Subscriptions\Actions\RenewSubscription;
 use Liberu\Billing\Subscriptions\Actions\ResumeSubscription;
+use Liberu\Billing\Subscriptions\Enums\SubscriptionStatus;
 use Liberu\Billing\Subscriptions\Models\Subscription;
 use Liberu\Billing\Subscriptions\Queries\ListSubscriptions;
 use Livewire\Component;
@@ -26,6 +27,10 @@ final class SubscriptionList extends Component
     public int $periodDays = 30;
 
     public bool $showActivate = false;
+
+    public int $filterCustomerId = 0;
+
+    public string $filterStatus = '';
 
     public function activate(ActivateSubscription $activate): void
     {
@@ -102,7 +107,7 @@ final class SubscriptionList extends Component
         $teamId = data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id');
 
         return view('module-billing-subscriptions-livewire::subscription-list', [
-            'subscriptions' => $query->execute($teamId === null ? null : (int) $teamId),
+            'subscriptions' => $query->execute($teamId === null ? null : (int) $teamId, 25, $this->filterCustomerId > 0 ? $this->filterCustomerId : null, $this->filterStatus !== '' ? SubscriptionStatus::tryFrom($this->filterStatus) : null),
         ]);
     }
 }
