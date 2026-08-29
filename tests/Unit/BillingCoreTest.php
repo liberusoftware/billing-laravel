@@ -5,6 +5,7 @@ use Liberu\Billing\Core\Actions\CreateBillingAccount;
 use Liberu\Billing\Core\Actions\TransitionBillingAccount;
 use Liberu\Billing\Core\Actions\UpdateBillingAccount;
 use Liberu\Billing\Core\Enums\BillingAccountStatus;
+use Liberu\Billing\Core\Models\BillingAccount;
 
 uses(RefreshDatabase::class);
 
@@ -25,4 +26,13 @@ it('does not reopen a closed billing account', function () {
 
     expect(fn () => app(TransitionBillingAccount::class)->execute($closed, BillingAccountStatus::Active))
         ->toThrow(InvalidArgumentException::class);
+});
+
+it('does not transition an account after its persisted state becomes closed', function (): void {
+    $account = app(CreateBillingAccount::class)->execute(['team_id' => 10, 'name' => 'Stale', 'currency' => 'USD']);
+    $account->refresh();
+    BillingAccount::query()->whereKey($account->getKey())->update(['status' => BillingAccountStatus::Closed->value]);
+
+    expect(fn () => app(TransitionBillingAccount::class)->execute($account, BillingAccountStatus::Active))
+        ->toThrow(InvalidArgumentException::class, 'A closed billing account cannot be reopened.');
 });
