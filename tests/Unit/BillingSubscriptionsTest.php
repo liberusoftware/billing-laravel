@@ -108,3 +108,12 @@ it('does not change the plan after a subscription becomes terminal', function ()
     expect(fn () => app(ChangeSubscriptionPlan::class)->execute($subscription, 2))
         ->toThrow(LogicException::class, 'A terminal subscription cannot change plans.');
 });
+
+it('does not pause a subscription after its persisted state becomes terminal', function (): void {
+    $subscription = app(ActivateSubscription::class)->execute(['team_id' => 10]);
+    $subscription->refresh();
+    Subscription::query()->whereKey($subscription->getKey())->update(['status' => SubscriptionStatus::Cancelled->value]);
+
+    expect(fn () => app(PauseSubscription::class)->execute($subscription))
+        ->toThrow(LogicException::class, 'A terminal subscription cannot be paused.');
+});

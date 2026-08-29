@@ -20,9 +20,14 @@ final readonly class CancelSubscription
         }
 
         $cancelled = $this->database->transaction(function () use ($subscription): Subscription {
-            $subscription->update(['status' => SubscriptionStatus::Cancelled, 'cancelled_at' => now(), 'auto_renew' => false, 'entitlement_state' => array_merge($subscription->entitlement_state ?? [], ['active' => false])]);
+            $locked = Subscription::query()->lockForUpdate()->findOrFail($subscription->getKey());
+            if ($locked->status === SubscriptionStatus::Cancelled) {
+                return $locked;
+            }
 
-            return $subscription->refresh();
+            $locked->update(['status' => SubscriptionStatus::Cancelled, 'cancelled_at' => now(), 'auto_renew' => false, 'entitlement_state' => array_merge($locked->entitlement_state ?? [], ['active' => false])]);
+
+            return $locked->refresh();
         });
         SubscriptionCancelled::dispatch($cancelled);
 
