@@ -19,9 +19,23 @@ final readonly class ReconcilePayment
             throw new \InvalidArgumentException('A provider reference is required.');
         }
 
-        return $this->database->transaction(fn (): PaymentReconciliation => PaymentReconciliation::query()->create([
-            'payment_id' => $payment->getKey(), 'status' => $matched ? ReconciliationStatus::Matched : ReconciliationStatus::Mismatch,
-            'provider_reference' => trim($providerReference), 'notes' => $notes,
-        ]));
+        $providerReference = trim($providerReference);
+
+        return $this->database->transaction(function () use ($payment, $providerReference, $matched, $notes): PaymentReconciliation {
+            $locked = Payment::query()->lockForUpdate()->findOrFail($payment->getKey());
+            $existing = PaymentReconciliation::query()
+                ->where('payment_id', $locked->getKey())
+                ->where('provider_reference', $providerReference)
+                ->first();
+
+            if ($existing !== null) {
+                return $existing;
+            }
+
+            return PaymentReconciliation::query()->create([
+                'payment_id' => $locked->getKey(), 'status' => $matched ? ReconciliationStatus::Matched : ReconciliationStatus::Mismatch,
+                'provider_reference' => $providerReference, 'notes' => $notes,
+            ]);
+        });
     }
 }

@@ -36,12 +36,14 @@ it('captures, allocates, refunds, disputes, and reconciles a payment', function 
     $refund = app(RefundPayment::class)->execute($payment, 400);
     $dispute = app(OpenDispute::class)->execute($payment->refresh(), 100, 'customer claim');
     $reconciliation = app(ReconcilePayment::class)->execute($payment, 'capture-1');
+    $duplicateReconciliation = app(ReconcilePayment::class)->execute($payment, ' capture-1 ');
 
     expect($payment->refresh()->status)->toBe(PaymentStatus::Disputed)
         ->and($allocation->amount_minor)->toBe(600)
         ->and($refund->amount_minor)->toBe(400)
         ->and($dispute->status)->toBe(DisputeStatus::Open)
-        ->and($reconciliation->status)->toBe(ReconciliationStatus::Matched);
+        ->and($reconciliation->status)->toBe(ReconciliationStatus::Matched)
+        ->and($duplicateReconciliation->is($reconciliation))->toBeTrue();
 });
 
 it('rejects over-allocation and refunds on a pending payment', function () {
