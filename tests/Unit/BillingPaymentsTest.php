@@ -102,6 +102,18 @@ it('rejects an allocation invoice owned by another team', function (): void {
         ->toThrow(InvalidArgumentException::class, 'Payment invoice reference is invalid.');
 });
 
+it('rejects an allocation invoice for another customer', function (): void {
+    Team::factory()->create(['id' => 10]);
+    $paymentCustomer = Customer::factory()->create(['team_id' => 10]);
+    $invoiceCustomer = Customer::factory()->create(['team_id' => 10]);
+    $invoice = app(CreateInvoice::class)->execute(['team_id' => 10, 'customer_id' => $invoiceCustomer->getKey(), 'currency' => 'USD']);
+    $payment = app(CreatePayment::class)->execute(['team_id' => 10, 'customer_id' => $paymentCustomer->getKey(), 'amount_minor' => 100, 'currency' => 'USD']);
+    $payment->update(['status' => PaymentStatus::Captured]);
+
+    expect(fn () => app(AllocatePayment::class)->execute($payment->refresh(), 100, $invoice->getKey()))
+        ->toThrow(InvalidArgumentException::class, 'Payment invoice reference is invalid.');
+});
+
 it('does not open a dispute after the persisted payment state changes', function (): void {
     $payment = app(CreatePayment::class)->execute(['amount_minor' => 100, 'currency' => 'EUR']);
     $payment->update(['status' => PaymentStatus::Captured]);

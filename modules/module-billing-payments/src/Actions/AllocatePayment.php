@@ -24,8 +24,8 @@ final readonly class AllocatePayment
             }
 
             if ($invoiceId !== null && Schema::hasTable('billing_invoices')) {
-                $invoice = $this->database->table('billing_invoices')->where('id', $invoiceId)->first(['team_id']);
-                if ($invoice === null || ($invoice->team_id !== null && ($locked->team_id === null || (int) $invoice->team_id !== (int) $locked->team_id))) {
+                $invoice = $this->database->table('billing_invoices')->where('id', $invoiceId)->first(['team_id', 'customer_id']);
+                if ($invoice === null || ($invoice->team_id !== null && ($locked->team_id === null || (int) $invoice->team_id !== (int) $locked->team_id)) || ($invoice->customer_id !== null && ($locked->customer_id === null || (int) $invoice->customer_id !== (int) $locked->customer_id))) {
                     throw new \InvalidArgumentException('Payment invoice reference is invalid.');
                 }
             } elseif ($invoiceId !== null) {
