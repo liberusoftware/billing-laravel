@@ -2,9 +2,12 @@
 
 use App\Models\Customer;
 use App\Models\Team;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Liberu\Billing\Catalog\Models\Product;
 use Liberu\Billing\Pricing\Actions\CalculatePricingPlanAmount;
+use Liberu\Billing\Pricing\Actions\CalculateUsageBasedPrice;
 use Liberu\Billing\Pricing\Actions\CapturePricingSnapshot;
 use Liberu\Billing\Pricing\Actions\CreatePricingContract;
 use Liberu\Billing\Pricing\Actions\CreatePricingPlan;
@@ -102,6 +105,32 @@ it('calculates fixed, usage, and graduated tiered plan amounts in minor units', 
     expect($calculate->execute($fixed, ['quantity' => 99]))->toBe(1250)
         ->and($calculate->execute($usage, ['quantity' => 3]))->toBe(21)
         ->and($calculate->execute($tiered, ['quantity' => 25]))->toBe(2000);
+});
+
+it('prices modular usage records within a customer and date period', function () {
+    $plan = app(CreatePricingPlan::class)->execute([
+        'team_id' => 10, 'name' => 'Metered', 'pricing_model' => 'usage', 'currency' => 'USD', 'unit_amount_minor' => 25, 'usage_unit' => 'call',
+    ]);
+    DB::table('billing_usage_meters')->insert(['id' => 501, 'team_id' => 10, 'name' => 'API calls', 'code' => 'api-calls', 'unit' => 'call', 'unit_price_minor' => 25, 'currency' => 'USD', 'active' => true, 'created_at' => now(), 'updated_at' => now()]);
+    DB::table('billing_usage_records')->insert([
+        ['team_id' => 10, 'customer_id' => 77, 'meter_id' => 501, 'event_key' => 'inside-1', 'quantity' => 2.5, 'unit_price_minor' => 25, 'amount_minor' => 63, 'currency' => 'USD', 'occurred_at' => '2026-08-10 12:00:00', 'created_at' => now(), 'updated_at' => now()],
+        ['team_id' => 10, 'customer_id' => 77, 'meter_id' => 501, 'event_key' => 'outside', 'quantity' => 100, 'unit_price_minor' => 25, 'amount_minor' => 2500, 'currency' => 'USD', 'occurred_at' => '2026-07-10 12:00:00', 'created_at' => now(), 'updated_at' => now()],
+        ['team_id' => 10, 'customer_id' => 88, 'meter_id' => 501, 'event_key' => 'other-customer', 'quantity' => 100, 'unit_price_minor' => 25, 'amount_minor' => 2500, 'currency' => 'USD', 'occurred_at' => '2026-08-10 12:00:00', 'created_at' => now(), 'updated_at' => now()],
+    ]);
+
+    $result = app(CalculateUsageBasedPrice::class)->execute($plan, 501, Carbon::parse('2026-08-01'), Carbon::parse('2026-08-31 23:59:59'), 77);
+
+    expect($result['quantity'])->toBe(2.5)->and($result['amount_minor'])->toBe(63)->and($result['currency'])->toBe('USD');
+});
+
+it('rejects usage calculation for non-usage plans or inverted periods', function () {
+    $plan = app(CreatePricingPlan::class)->execute(['team_id' => 10, 'name' => 'Fixed', 'pricing_model' => 'one_time', 'currency' => 'USD', 'unit_amount_minor' => 100]);
+    $calculate = app(CalculateUsageBasedPrice::class);
+
+    expect(fn () => $calculate->execute($plan, 1, Carbon::parse('2026-08-02'), Carbon::parse('2026-08-01')))
+        ->toThrow(InvalidArgumentException::class, 'Usage period end must be on or after its start.');
+    expect(fn () => $calculate->execute($plan, 1, Carbon::parse('2026-08-01'), Carbon::parse('2026-08-02')))
+        ->toThrow(InvalidArgumentException::class, 'Usage pricing requires a usage or tiered pricing plan.');
 });
 
 it('rejects malformed pricing quantities and tiers', function () {

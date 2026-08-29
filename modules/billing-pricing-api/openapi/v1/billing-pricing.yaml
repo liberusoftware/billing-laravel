@@ -55,6 +55,13 @@ paths:
       security: [{sanctum: []}]
       requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/ProrationRequest'}}}}
       responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/pricing/plans/{plan}/usage:
+    post:
+      operationId: billing.pricing.usage.calculate
+      security: [{sanctum: []}]
+      parameters: [{name: plan, in: path, required: true, schema: {type: integer}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/UsagePriceRequest'}}}}
+      responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '403': {$ref: '#/components/responses/Forbidden'}, '422': {$ref: '#/components/responses/ValidationError'}}
 components:
   parameters:
     PageSize: {name: per_page, in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 25}}
@@ -82,4 +89,8 @@ components:
       type: object
       required: [amount_minor, remaining_days, period_days]
       properties: {amount_minor: {type: integer, minimum: 0}, remaining_days: {type: integer, minimum: 0}, period_days: {type: integer, minimum: 1}}
+    UsagePriceRequest:
+      type: object
+      required: [meter_id, start, end]
+      properties: {meter_id: {type: integer, minimum: 1}, customer_id: {type: integer, minimum: 1}, start: {type: string, format: date-time}, end: {type: string, format: date-time}}
   securitySchemes: {sanctum: {type: http, scheme: bearer, bearerFormat: Sanctum}}

@@ -10,6 +10,7 @@ Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.prici
     Route::get('/discounts', [PricingSupportController::class, 'discounts'])->name('discounts.index');
     Route::get('/snapshots', [PricingSupportController::class, 'snapshots'])->name('snapshots.index');
     Route::post('/proration', [PricingSupportController::class, 'proration'])->name('proration');
+    Route::post('/plans/{plan}/usage', [PricingSupportController::class, 'usage'])->name('plans.usage');
 });
 
 Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.pricing.write', 'idempotency'])->prefix('api/v1/billing/pricing')->name('billing.pricing.')->group(function (): void {

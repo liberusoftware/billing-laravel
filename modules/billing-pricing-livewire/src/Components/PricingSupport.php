@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Liberu\Billing\Pricing\Livewire\Components;
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 use Liberu\Billing\Pricing\Actions\CalculateProration;
+use Liberu\Billing\Pricing\Actions\CalculateUsageBasedPrice;
 use Liberu\Billing\Pricing\Actions\CapturePricingSnapshot;
 use Liberu\Billing\Pricing\Actions\RedeemPricingDiscount;
 use Liberu\Billing\Pricing\Models\PricingDiscount;
@@ -28,6 +30,16 @@ final class PricingSupport extends Component
 
     public ?int $prorationResult = null;
 
+    public ?int $usageMeterId = null;
+
+    public ?int $usageCustomerId = null;
+
+    public string $usageStart = '';
+
+    public string $usageEnd = '';
+
+    public ?array $usageResult = null;
+
     public function calculateProration(CalculateProration $calculate): void
     {
         Gate::authorize('viewAny', PricingPlan::class);
@@ -42,6 +54,15 @@ final class PricingSupport extends Component
         Gate::authorize('update', $plan);
         $capture->execute($plan);
         session()->flash('billing-pricing-support-message', __('Pricing snapshot captured.'));
+    }
+
+    public function calculateUsage(CalculateUsageBasedPrice $calculate): void
+    {
+        $plan = PricingPlan::query()->whereKey($this->selectedPlanId)->where('team_id', $this->team())->firstOrFail();
+        Gate::authorize('view', $plan);
+        $this->validate(['selectedPlanId' => ['required', 'integer'], 'usageMeterId' => ['required', 'integer', 'min:1'], 'usageCustomerId' => ['nullable', 'integer', 'min:1'], 'usageStart' => ['required', 'date'], 'usageEnd' => ['required', 'date', 'after_or_equal:usageStart']]);
+        $this->usageResult = $calculate->execute($plan, (int) $this->usageMeterId, Carbon::parse($this->usageStart), Carbon::parse($this->usageEnd), $this->usageCustomerId);
+        session()->flash('billing-pricing-support-message', __('Usage price calculated.'));
     }
 
     public function redeemDiscount(RedeemPricingDiscount $redeem): void

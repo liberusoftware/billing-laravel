@@ -10,5 +10,5 @@
   "suggests": [],
   "capabilities": ["billing.pricing"],
   "default_enabled": true,
-  "features": ["Pricing plans", "Contracts", "Discounts", "Proration", "Price snapshots"]
+  "features": ["Pricing plans", "Contracts", "Discounts", "Proration", "Usage-based price calculation", "Price snapshots"]
 }
