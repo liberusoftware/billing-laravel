@@ -61,6 +61,10 @@ final class OrderController extends Controller
     public function checkout(Request $request, Cart $cart, CheckoutCart $checkout): JsonResponse
     {
         Gate::authorize('create', Order::class);
+        $cart = Cart::query()
+            ->whereKey($cart->getKey())
+            ->where('team_id', $this->team($request))
+            ->firstOrFail();
         $data = $request->validate(['subtotal_minor' => ['required', 'integer', 'min:0'], 'discount_minor' => ['sometimes', 'integer', 'min:0'], 'tax_minor' => ['sometimes', 'integer', 'min:0'], 'fraud_review_required' => ['sometimes', 'boolean'], 'agreement' => ['nullable', 'array']]);
 
         return response()->json(['data' => $this->resource($checkout->execute($cart, $data))], 201);
