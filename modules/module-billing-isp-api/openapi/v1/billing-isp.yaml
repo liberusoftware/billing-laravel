@@ -2,6 +2,26 @@ openapi: 3.1.0
 info: {title: Billing ISP API, version: 1.0.0, description: Team-scoped access services, coverage, installation, RADIUS, usage, equipment, and network adapters.}
 servers: [{url: /}]
 paths:
+  /api/v1/billing/isp/{service}/synchronize:
+    post:
+      operationId: billing.isp.services.synchronize
+      security: [{sanctum: []}]
+      parameters: [{name: service, in: path, required: true, schema: {type: integer}}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object, required: [adapter], properties: {adapter: {type: string}}}}}}
+      responses: {'200': {description: Service synchronized}}
+  /api/v1/billing/isp/{service}/accounting:
+    post:
+      operationId: billing.isp.services.accounting
+      security: [{sanctum: []}]
+      parameters: [{name: service, in: path, required: true, schema: {type: integer}}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object, required: [accounting_session_id, started_at], properties: {accounting_session_id: {type: string}, started_at: {type: string, format: date-time}, ended_at: {type: [string, 'null'], format: date-time}, input_bytes: {type: integer, minimum: 0}, output_bytes: {type: integer, minimum: 0}}}}}}
+      responses: {'201': {description: Accounting session recorded}}
+  /api/v1/billing/isp/{service}/usage/reset:
+    post:
+      operationId: billing.isp.services.usage.reset
+      security: [{sanctum: []}]
+      parameters: [{name: service, in: path, required: true, schema: {type: integer}}]
+      responses: {'200': {description: Usage period reset}}
   /api/v1/billing/isp/capabilities/{capability}/lifecycle:
     patch:
       operationId: billing.isp.capabilities.lifecycle

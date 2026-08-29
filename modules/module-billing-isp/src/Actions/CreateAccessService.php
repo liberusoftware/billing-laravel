@@ -19,7 +19,7 @@ final class CreateAccessService
         }
 
         return DB::transaction(fn (): AccessService => AccessService::query()->create([
-            'team_id' => $teamId, 'name' => $name, 'status' => $attributes['status'] ?? 'active', 'metadata' => $attributes['metadata'] ?? null,
+            'team_id' => $teamId, 'name' => $name, 'status' => $attributes['status'] ?? 'active', 'monthly_data_limit_bytes' => isset($attributes['monthly_data_limit_bytes']) ? max(0, (int) $attributes['monthly_data_limit_bytes']) : null, 'current_period_usage_bytes' => 0, 'metadata' => $attributes['metadata'] ?? null,
         ]));
     }
 }

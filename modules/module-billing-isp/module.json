@@ -23,9 +23,10 @@
     "coverage",
     "installation",
     "radius-aaa",
+    "radius-accounting",
+    "usage-limits",
     "usage",
     "equipment",
     "network-adapters"
   ]
 }
-
