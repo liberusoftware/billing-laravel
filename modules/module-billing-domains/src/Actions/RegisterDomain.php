@@ -7,6 +7,7 @@ namespace Liberu\Billing\Domains\Actions;
 use Illuminate\Database\DatabaseManager;
 use Liberu\Billing\Domains\Models\Domain;
 use Liberu\Billing\Domains\Services\RegistrarManager;
+use Liberu\Billing\Domains\Support\CustomerReference;
 
 final readonly class RegisterDomain
 {
@@ -14,6 +15,7 @@ final readonly class RegisterDomain
 
     public function execute(Domain $domain, mixed $customerId): Domain
     {
+        CustomerReference::assertBelongsToTeam($this->database, $customerId, $domain->team_id);
         $result = $this->registrars->client((string) $domain->registrar)->registerDomain($domain->name, $customerId);
         if ($result === null) {
             throw new \RuntimeException('The registrar rejected the domain registration.');

@@ -20,9 +20,14 @@ final readonly class PauseSubscription
         }
 
         $paused = $this->database->transaction(function () use ($subscription): Subscription {
-            $subscription->update(['status' => SubscriptionStatus::Paused, 'paused_at' => now(), 'entitlement_state' => array_merge($subscription->entitlement_state ?? [], ['active' => false])]);
+            $locked = Subscription::query()->lockForUpdate()->findOrFail($subscription->getKey());
+            if (in_array($locked->status, [SubscriptionStatus::Cancelled, SubscriptionStatus::Expired], true)) {
+                throw new \LogicException('A terminal subscription cannot be paused.');
+            }
 
-            return $subscription->refresh();
+            $locked->update(['status' => SubscriptionStatus::Paused, 'paused_at' => now(), 'entitlement_state' => array_merge($locked->entitlement_state ?? [], ['active' => false])]);
+
+            return $locked->refresh();
         });
 
         SubscriptionPaused::dispatch($paused);

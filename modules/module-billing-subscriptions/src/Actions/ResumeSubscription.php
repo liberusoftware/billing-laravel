@@ -20,13 +20,18 @@ final readonly class ResumeSubscription
         }
 
         $resumed = $this->database->transaction(function () use ($subscription): Subscription {
-            $subscription->update([
+            $locked = Subscription::query()->lockForUpdate()->findOrFail($subscription->getKey());
+            if ($locked->status !== SubscriptionStatus::Paused) {
+                throw new \LogicException('Only paused subscriptions can be resumed.');
+            }
+
+            $locked->update([
                 'status' => SubscriptionStatus::Active,
                 'paused_at' => null,
-                'entitlement_state' => array_merge($subscription->entitlement_state ?? [], ['active' => true]),
+                'entitlement_state' => array_merge($locked->entitlement_state ?? [], ['active' => true]),
             ]);
 
-            return $subscription->refresh();
+            return $locked->refresh();
         });
 
         SubscriptionResumed::dispatch($resumed);

@@ -14,9 +14,10 @@ final readonly class ReconcileProvisionedService
     public function execute(ProvisionedService $service): ProvisionedService
     {
         return $this->database->transaction(function () use ($service): ProvisionedService {
-            $service->update(['last_reconciled_at' => now()]);
+            $locked = ProvisionedService::query()->lockForUpdate()->findOrFail($service->getKey());
+            $locked->update(['last_reconciled_at' => now()]);
 
-            return $service->refresh();
+            return $locked->refresh();
         });
     }
 }

@@ -52,8 +52,7 @@ final class InvoiceList extends Component
     public function adjust(ApplyInvoiceAdjustment $adjust): void
     {
         $this->validate(['selectedInvoiceId' => ['required', 'integer', 'min:1'], 'adjustmentMinor' => ['required', 'integer', 'not_in:0'], 'adjustmentReason' => ['required', 'string', 'max:1000']]);
-        $invoice = Invoice::query()->findOrFail($this->selectedInvoiceId);
-        Gate::authorize('update', $invoice);
+        $invoice = $this->authorizedInvoice($this->selectedInvoiceId);
         $adjust->execute($invoice, $this->adjustmentMinor, $this->adjustmentReason);
         $this->reset(['selectedInvoiceId', 'adjustmentMinor', 'adjustmentReason']);
         session()->flash('module-billing-invoicing-message', __('Invoice adjustment applied.'));
@@ -78,7 +77,8 @@ final class InvoiceList extends Component
 
     private function authorizedInvoice(int $invoiceId): Invoice
     {
-        $invoice = Invoice::query()->findOrFail($invoiceId);
+        $teamId = data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id');
+        $invoice = Invoice::query()->whereKey($invoiceId)->where('team_id', $teamId)->firstOrFail();
         Gate::authorize('update', $invoice);
 
         return $invoice;

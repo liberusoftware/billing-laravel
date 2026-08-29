@@ -20,9 +20,14 @@ final readonly class TransitionBillingAccount
         }
 
         return $this->database->transaction(function () use ($account, $status): BillingAccount {
-            $account->update(['status' => $status]);
+            $locked = BillingAccount::query()->lockForUpdate()->findOrFail($account->getKey());
+            if ($locked->status === BillingAccountStatus::Closed && $status !== BillingAccountStatus::Closed) {
+                throw new InvalidArgumentException('A closed billing account cannot be reopened.');
+            }
 
-            return $account->refresh();
+            $locked->update(['status' => $status]);
+
+            return $locked->refresh();
         });
     }
 }

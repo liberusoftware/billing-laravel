@@ -15,10 +15,11 @@ final readonly class UpdateBillingRecord
     public function execute(Model $record, array $attributes): Model
     {
         return $this->database->transaction(function () use ($record, $attributes): Model {
-            $record->fill($attributes);
-            $record->save();
+            $locked = $record->newQuery()->lockForUpdate()->findOrFail($record->getKey());
+            $locked->fill($attributes);
+            $locked->save();
 
-            return $record->refresh();
+            return $locked->refresh();
         });
     }
 }

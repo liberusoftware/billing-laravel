@@ -22,4 +22,9 @@ class Invoice extends Model
     {
         return $this->hasMany(InvoiceLine::class);
     }
+
+    public function supports()
+    {
+        return $this->hasMany(InvoiceSupport::class);
+    }
 }

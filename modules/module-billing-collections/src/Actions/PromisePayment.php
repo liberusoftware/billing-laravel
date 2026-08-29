@@ -19,9 +19,14 @@ final readonly class PromisePayment
         }
 
         return $this->database->transaction(function () use ($case, $dueAt): CollectionCase {
-            $case->update(['status' => CollectionStatus::Promised, 'promise_due_at' => $dueAt]);
+            $locked = CollectionCase::query()->lockForUpdate()->findOrFail($case->getKey());
+            if (in_array($locked->status, [CollectionStatus::WrittenOff, CollectionStatus::Recovered, CollectionStatus::Closed], true)) {
+                throw new \LogicException('This collection case cannot accept a promise.');
+            }
 
-            return $case->refresh();
+            $locked->update(['status' => CollectionStatus::Promised, 'promise_due_at' => $dueAt]);
+
+            return $locked->refresh();
         });
     }
 }

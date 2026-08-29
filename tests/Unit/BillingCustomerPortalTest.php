@@ -1,6 +1,9 @@
 <?php
 
+use App\Models\Customer;
+use App\Models\Team;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Liberu\Billing\CustomerPortal\Actions\CreatePortalItem;
 use Liberu\Billing\CustomerPortal\Actions\TransitionPortalItem;
 use Liberu\Billing\CustomerPortal\Actions\TransitionPortalRequest;
 use Liberu\Billing\CustomerPortal\Models\PortalItem;
@@ -21,4 +24,31 @@ it('rejects unsupported portal lifecycle states', function () {
 
     expect(fn () => app(TransitionPortalItem::class)->handle($item, 'unknown'))
         ->toThrow(InvalidArgumentException::class);
+});
+
+it('does not reopen a portal request after its persisted state becomes closed', function (): void {
+    $request = PortalRequest::query()->create(['team_id' => 10, 'name' => 'Stale request', 'status' => 'active']);
+    $request->refresh();
+    PortalRequest::query()->whereKey($request->getKey())->update(['status' => 'closed']);
+
+    expect(fn () => app(TransitionPortalRequest::class)->handle($request, 'active'))
+        ->toThrow(InvalidArgumentException::class, 'Closed portal requests cannot be reopened.');
+});
+
+it('does not reopen a portal item after its persisted state becomes completed', function (): void {
+    $item = PortalItem::query()->create(['team_id' => 10, 'type' => 'services', 'status' => 'open', 'subject' => 'Provision service']);
+    $item->refresh();
+    PortalItem::query()->whereKey($item->getKey())->update(['status' => 'completed']);
+
+    expect(fn () => app(TransitionPortalItem::class)->handle($item, 'in_progress'))
+        ->toThrow(InvalidArgumentException::class, 'Completed or cancelled portal items cannot be reopened.');
+});
+
+it('rejects a portal item customer owned by another team', function (): void {
+    $team = Team::factory()->create(['id' => 20]);
+    $customerId = Customer::factory()->create(['team_id' => $team->getKey()])->getKey();
+
+    expect(fn () => app(CreatePortalItem::class)->handle(10, [
+        'customer_id' => $customerId, 'type' => 'invoices', 'subject' => 'View invoices',
+    ]))->toThrow(InvalidArgumentException::class, 'Customer reference is invalid.');
 });

@@ -7,6 +7,7 @@ namespace Liberu\Billing\Payments\Actions;
 use Illuminate\Database\DatabaseManager;
 use Liberu\Billing\Payments\Enums\PaymentStatus;
 use Liberu\Billing\Payments\Models\Payment;
+use Liberu\Billing\Payments\Support\CustomerReference;
 
 final readonly class CreatePayment
 {
@@ -21,9 +22,12 @@ final readonly class CreatePayment
             throw new \InvalidArgumentException('Payment amount and currency are invalid.');
         }
 
+        $teamId = $attributes['team_id'] ?? null;
+        $customerId = CustomerReference::assertBelongsToTeam($this->database, $attributes['customer_id'] ?? null, $teamId);
+
         return $this->database->transaction(fn (): Payment => Payment::query()->create([
-            'team_id' => $attributes['team_id'] ?? null,
-            'customer_id' => $attributes['customer_id'] ?? null,
+            'team_id' => $teamId,
+            'customer_id' => $customerId,
             'amount_minor' => $amount,
             'currency' => $currency,
             'status' => PaymentStatus::Pending,

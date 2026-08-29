@@ -6,6 +6,7 @@ namespace Liberu\Billing\Hosting\Actions;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Liberu\Billing\Hosting\Models\HostingAccount;
 use Liberu\Billing\Hosting\Models\HostingCapability;
 
 final class CreateHostingCapability
@@ -19,6 +20,11 @@ final class CreateHostingCapability
             throw new InvalidArgumentException('Hosting capability type and name are invalid.');
         }
 
-        return DB::transaction(fn (): HostingCapability => HostingCapability::query()->create(['team_id' => $teamId, 'hosting_account_id' => $attributes['hosting_account_id'] ?? null, 'type' => $type, 'name' => $name, 'status' => 'pending', 'provider' => $attributes['provider'] ?? null, 'configuration' => $attributes['configuration'] ?? []]));
+        $accountId = $attributes['hosting_account_id'] ?? null;
+        if ($accountId !== null) {
+            HostingAccount::query()->forTeam($teamId)->findOrFail((int) $accountId);
+        }
+
+        return DB::transaction(fn (): HostingCapability => HostingCapability::query()->create(['team_id' => $teamId, 'hosting_account_id' => $accountId, 'type' => $type, 'name' => $name, 'status' => 'pending', 'provider' => $attributes['provider'] ?? null, 'configuration' => $attributes['configuration'] ?? []]));
     }
 }

@@ -1,9 +1,13 @@
 <?php
 
+use App\Models\Customer;
+use App\Models\Team;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Liberu\Billing\Invoicing\Actions\CreateInvoice;
 use Liberu\Billing\Payments\Actions\AllocatePayment;
 use Liberu\Billing\Payments\Actions\CapturePayment;
 use Liberu\Billing\Payments\Actions\CreatePayment;
+use Liberu\Billing\Payments\Actions\CreatePaymentMethod;
 use Liberu\Billing\Payments\Actions\OpenDispute;
 use Liberu\Billing\Payments\Actions\ReconcilePayment;
 use Liberu\Billing\Payments\Actions\RefundPayment;
@@ -32,16 +36,19 @@ it('captures, allocates, refunds, disputes, and reconciles a payment', function 
 
     $payment = app(CreatePayment::class)->execute(['team_id' => 10, 'amount_minor' => 1000, 'currency' => 'usd', 'gateway' => 'test']);
     $payment = app(CapturePayment::class)->execute($payment);
-    $allocation = app(AllocatePayment::class)->execute($payment, 600, 15);
+    $invoice = app(CreateInvoice::class)->execute(['team_id' => 10, 'currency' => 'USD']);
+    $allocation = app(AllocatePayment::class)->execute($payment, 600, $invoice->getKey());
     $refund = app(RefundPayment::class)->execute($payment, 400);
     $dispute = app(OpenDispute::class)->execute($payment->refresh(), 100, 'customer claim');
     $reconciliation = app(ReconcilePayment::class)->execute($payment, 'capture-1');
+    $duplicateReconciliation = app(ReconcilePayment::class)->execute($payment, ' capture-1 ');
 
     expect($payment->refresh()->status)->toBe(PaymentStatus::Disputed)
         ->and($allocation->amount_minor)->toBe(600)
         ->and($refund->amount_minor)->toBe(400)
         ->and($dispute->status)->toBe(DisputeStatus::Open)
-        ->and($reconciliation->status)->toBe(ReconciliationStatus::Matched);
+        ->and($reconciliation->status)->toBe(ReconciliationStatus::Matched)
+        ->and($duplicateReconciliation->is($reconciliation))->toBeTrue();
 });
 
 it('rejects over-allocation and refunds on a pending payment', function () {
@@ -65,5 +72,54 @@ it('requires a gateway before refunding a captured payment', function () {
     $payment->update(['status' => PaymentStatus::Captured]);
 
     expect(fn () => app(RefundPayment::class)->execute($payment->refresh(), 1))
+        ->toThrow(InvalidArgumentException::class);
+});
+
+it('rejects a payment method customer owned by another team', function (): void {
+    $team = Team::factory()->create(['id' => 20]);
+    $customerId = Customer::factory()->create(['team_id' => $team->getKey()])->getKey();
+
+    expect(fn () => app(CreatePaymentMethod::class)->execute([
+        'team_id' => 10, 'customer_id' => $customerId, 'type' => 'card', 'provider' => 'stripe',
+    ]))->toThrow(InvalidArgumentException::class, 'Customer reference is invalid.');
+});
+
+it('rejects a payment customer owned by another team', function (): void {
+    $team = Team::factory()->create(['id' => 20]);
+    $customerId = Customer::factory()->create(['team_id' => $team->getKey()])->getKey();
+
+    expect(fn () => app(CreatePayment::class)->execute([
+        'team_id' => 10, 'customer_id' => $customerId, 'amount_minor' => 100, 'currency' => 'USD',
+    ]))->toThrow(InvalidArgumentException::class, 'Customer reference is invalid.');
+});
+
+it('rejects an allocation invoice owned by another team', function (): void {
+    $invoice = app(CreateInvoice::class)->execute(['team_id' => 20, 'currency' => 'USD']);
+    $payment = app(CreatePayment::class)->execute(['team_id' => 10, 'amount_minor' => 100, 'currency' => 'USD']);
+    $payment->update(['status' => PaymentStatus::Captured]);
+
+    expect(fn () => app(AllocatePayment::class)->execute($payment->refresh(), 100, $invoice->getKey()))
+        ->toThrow(InvalidArgumentException::class, 'Payment invoice reference is invalid.');
+});
+
+it('rejects an allocation invoice for another customer', function (): void {
+    Team::factory()->create(['id' => 10]);
+    $paymentCustomer = Customer::factory()->create(['team_id' => 10]);
+    $invoiceCustomer = Customer::factory()->create(['team_id' => 10]);
+    $invoice = app(CreateInvoice::class)->execute(['team_id' => 10, 'customer_id' => $invoiceCustomer->getKey(), 'currency' => 'USD']);
+    $payment = app(CreatePayment::class)->execute(['team_id' => 10, 'customer_id' => $paymentCustomer->getKey(), 'amount_minor' => 100, 'currency' => 'USD']);
+    $payment->update(['status' => PaymentStatus::Captured]);
+
+    expect(fn () => app(AllocatePayment::class)->execute($payment->refresh(), 100, $invoice->getKey()))
+        ->toThrow(InvalidArgumentException::class, 'Payment invoice reference is invalid.');
+});
+
+it('does not open a dispute after the persisted payment state changes', function (): void {
+    $payment = app(CreatePayment::class)->execute(['amount_minor' => 100, 'currency' => 'EUR']);
+    $payment->update(['status' => PaymentStatus::Captured]);
+    $payment->refresh();
+    Payment::query()->whereKey($payment->getKey())->update(['status' => PaymentStatus::Disputed]);
+
+    expect(fn () => app(OpenDispute::class)->execute($payment, 1, 'customer claim'))
         ->toThrow(InvalidArgumentException::class);
 });

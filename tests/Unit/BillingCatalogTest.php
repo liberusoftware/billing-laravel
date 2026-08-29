@@ -1,9 +1,15 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Validation\ValidationException;
 use Liberu\Billing\Catalog\Actions\CreateCatalogRecord;
 use Liberu\Billing\Catalog\Actions\CreateProduct;
+use Liberu\Billing\Catalog\Actions\TransitionCatalogLifecycle;
+use Liberu\Billing\Catalog\Actions\TransitionProductLifecycle;
+use Liberu\Billing\Catalog\Enums\CatalogStatus;
+use Liberu\Billing\Catalog\Enums\ProductStatus;
 use Liberu\Billing\Catalog\Models\Plan;
+use Liberu\Billing\Catalog\Models\Product;
 use Liberu\Billing\Catalog\Policies\CatalogRecordPolicy;
 use Liberu\Billing\Catalog\Policies\ProductPolicy;
 
@@ -40,4 +46,26 @@ it('requires catalog write access for mutations and enforces team ownership', fu
         ->and(app(CatalogRecordPolicy::class)->create($readUser))->toBeFalse()
         ->and(app(CatalogRecordPolicy::class)->update($writeUser, $plan))->toBeTrue()
         ->and(app(CatalogRecordPolicy::class)->update($writeUser, $otherTeamPlan))->toBeFalse();
+});
+
+it('does not reopen a product after its persisted state becomes archived', function (): void {
+    $product = app(CreateProduct::class)->execute([
+        'team_id' => 10, 'name' => 'Archived hosting', 'sku' => 'ARCHIVED-HOST', 'base_price_minor' => 1000, 'currency' => 'USD',
+    ]);
+    $product->refresh();
+    Product::query()->whereKey($product->getKey())->update(['status' => 'archived']);
+
+    expect(fn () => app(TransitionProductLifecycle::class)->execute($product, ProductStatus::Active))
+        ->toThrow(InvalidArgumentException::class, 'An archived product cannot be reopened.');
+});
+
+it('does not reopen a catalog record after its persisted state becomes archived', function (): void {
+    $plan = app(CreateCatalogRecord::class)->execute(Plan::class, [
+        'team_id' => 10, 'name' => 'Archived plan', 'code' => 'ARCHIVED-PLAN',
+    ]);
+    $plan->refresh();
+    Plan::query()->whereKey($plan->getKey())->update(['status' => 'archived']);
+
+    expect(fn () => app(TransitionCatalogLifecycle::class)->execute($plan, CatalogStatus::Active))
+        ->toThrow(ValidationException::class, 'Archived catalog records cannot be reactivated.');
 });

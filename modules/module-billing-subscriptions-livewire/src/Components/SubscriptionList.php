@@ -76,7 +76,8 @@ final class SubscriptionList extends Component
 
     private function authorizedSubscription(int $subscriptionId): Subscription
     {
-        $subscription = Subscription::query()->findOrFail($subscriptionId);
+        $teamId = data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id');
+        $subscription = Subscription::query()->whereKey($subscriptionId)->where('team_id', $teamId)->firstOrFail();
         Gate::authorize('update', $subscription);
 
         return $subscription;

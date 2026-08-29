@@ -23,9 +23,17 @@ final readonly class TransitionOrder
         }
 
         return $this->database->transaction(function () use ($order, $status, $fraudStatus): Order {
-            $order->update(['status' => $status, 'fraud_status' => $fraudStatus ?? $order->fraud_status]);
+            $locked = Order::query()->lockForUpdate()->findOrFail($order->getKey());
+            if ($locked->status === OrderStatus::Completed || $locked->status === OrderStatus::Cancelled) {
+                throw new \LogicException('Terminal orders cannot transition.');
+            }
+            if ($status === OrderStatus::Approved && $locked->fraud_status === FraudReviewStatus::Blocked) {
+                throw new \LogicException('Blocked orders cannot be approved.');
+            }
 
-            return $order->refresh();
+            $locked->update(['status' => $status, 'fraud_status' => $fraudStatus ?? $locked->fraud_status]);
+
+            return $locked->refresh();
         });
     }
 }

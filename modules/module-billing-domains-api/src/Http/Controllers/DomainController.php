@@ -58,8 +58,9 @@ final class DomainController extends Controller
         return response()->json(['data' => $domains->items(), 'meta' => ['current_page' => $domains->currentPage(), 'last_page' => $domains->lastPage()]]);
     }
 
-    public function show(Domain $domain): Domain
+    public function show(Request $request, Domain $domain): Domain
     {
+        $domain = $this->forCurrentTeam($request, $domain);
         Gate::authorize('view', $domain);
 
         return $domain;
@@ -75,13 +76,15 @@ final class DomainController extends Controller
 
     public function update(Request $request, Domain $domain, UpdateDomain $update): Domain
     {
+        $domain = $this->forCurrentTeam($request, $domain);
         Gate::authorize('update', $domain);
 
         return $update->handle($domain, $request->validate($this->rules(false)));
     }
 
-    public function destroy(Domain $domain): JsonResponse
+    public function destroy(Request $request, Domain $domain): JsonResponse
     {
+        $domain = $this->forCurrentTeam($request, $domain);
         Gate::authorize('delete', $domain);
         $domain->delete();
 
@@ -98,6 +101,7 @@ final class DomainController extends Controller
 
     public function register(Request $request, Domain $domain, RegisterDomain $register): Domain
     {
+        $domain = $this->forCurrentTeam($request, $domain);
         Gate::authorize('update', $domain);
         $data = $request->validate(['customer_id' => ['required']]);
 
@@ -106,6 +110,7 @@ final class DomainController extends Controller
 
     public function renew(Request $request, Domain $domain, RenewDomain $renew): Domain
     {
+        $domain = $this->forCurrentTeam($request, $domain);
         Gate::authorize('update', $domain);
 
         return $renew->execute($domain, $request->integer('period', 1));
@@ -113,6 +118,7 @@ final class DomainController extends Controller
 
     public function transfer(Request $request, Domain $domain, TransferDomain $transfer): Domain
     {
+        $domain = $this->forCurrentTeam($request, $domain);
         Gate::authorize('update', $domain);
         $data = $request->validate(['auth_code' => ['required', 'string', 'max:255'], 'customer_id' => ['required'], 'registrar' => ['sometimes', 'nullable', 'string', 'max:50']]);
 
@@ -144,6 +150,7 @@ final class DomainController extends Controller
 
     public function dns(Request $request, Domain $domain): JsonResponse
     {
+        $domain = $this->forCurrentTeam($request, $domain);
         Gate::authorize('view', $domain);
 
         return response()->json(DnsRecord::query()->where('team_id', $this->teamId($request))->where('domain_id', $domain->id)->latest()->get());
@@ -151,14 +158,16 @@ final class DomainController extends Controller
 
     public function storeDns(Request $request, Domain $domain, UpsertDnsRecord $upsert): JsonResponse
     {
+        $domain = $this->forCurrentTeam($request, $domain);
         Gate::authorize('update', $domain);
         $data = $request->validate(['type' => ['required', 'string'], 'host' => ['required', 'string', 'max:255'], 'value' => ['required', 'string'], 'ttl' => ['sometimes', 'integer', 'min:60']]);
 
         return response()->json(['data' => $upsert->execute($this->teamId($request), [...$data, 'domain_id' => $domain->id])], 201);
     }
 
-    public function redeem(Domain $domain, RedeemDomain $redeem): Domain
+    public function redeem(Request $request, Domain $domain, RedeemDomain $redeem): Domain
     {
+        $domain = $this->forCurrentTeam($request, $domain);
         Gate::authorize('update', $domain);
 
         return $redeem->execute($domain);
@@ -181,5 +190,10 @@ final class DomainController extends Controller
     private function teamId(Request $request): int
     {
         return (int) (data_get($request->user(), 'current_team_id') ?? data_get($request->user(), 'currentTeam.id'));
+    }
+
+    private function forCurrentTeam(Request $request, Domain $domain): Domain
+    {
+        return Domain::query()->forTeam($this->teamId($request))->whereKey($domain->getKey())->firstOrFail();
     }
 }

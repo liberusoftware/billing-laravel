@@ -14,14 +14,20 @@ final readonly class WriteOffCollectionCase
 
     public function execute(CollectionCase $case, string $reason): CollectionCase
     {
-        if (in_array($case->status, [CollectionStatus::Recovered, CollectionStatus::WrittenOff, CollectionStatus::Closed], true)) {
+        $reason = trim($reason);
+        if ($reason === '' || in_array($case->status, [CollectionStatus::Recovered, CollectionStatus::WrittenOff, CollectionStatus::Closed], true)) {
             throw new \LogicException('This collection case cannot be written off.');
         }
 
         return $this->database->transaction(function () use ($case, $reason): CollectionCase {
-            $case->update(['status' => CollectionStatus::WrittenOff, 'reason' => $reason]);
+            $locked = CollectionCase::query()->lockForUpdate()->findOrFail($case->getKey());
+            if (in_array($locked->status, [CollectionStatus::Recovered, CollectionStatus::WrittenOff, CollectionStatus::Closed], true)) {
+                throw new \LogicException('This collection case cannot be written off.');
+            }
 
-            return $case->refresh();
+            $locked->update(['status' => CollectionStatus::WrittenOff, 'reason' => $reason]);
+
+            return $locked->refresh();
         });
     }
 }

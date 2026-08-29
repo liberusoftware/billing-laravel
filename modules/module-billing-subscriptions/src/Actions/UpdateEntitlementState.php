@@ -21,9 +21,14 @@ final readonly class UpdateEntitlementState
         }
 
         $updated = $this->database->transaction(function () use ($subscription, $entitlements): Subscription {
-            $subscription->update(['entitlement_state' => $entitlements]);
+            $locked = Subscription::query()->lockForUpdate()->findOrFail($subscription->getKey());
+            if (in_array($locked->status, [SubscriptionStatus::Cancelled, SubscriptionStatus::Expired], true)) {
+                throw new \LogicException('A terminal subscription cannot change entitlements.');
+            }
 
-            return $subscription->refresh();
+            $locked->update(['entitlement_state' => $entitlements]);
+
+            return $locked->refresh();
         });
 
         SubscriptionEntitlementsUpdated::dispatch($updated);

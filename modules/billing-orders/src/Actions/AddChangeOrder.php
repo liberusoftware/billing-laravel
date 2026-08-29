@@ -19,11 +19,12 @@ final readonly class AddChangeOrder
         }
 
         return $this->database->transaction(function () use ($order, $change): Order {
-            $changes = $order->change_orders ?? [];
+            $locked = Order::query()->lockForUpdate()->findOrFail($order->getKey());
+            $changes = $locked->change_orders ?? [];
             $changes[] = [...$change, 'created_at' => now()->toIso8601String()];
-            $order->update(['change_orders' => $changes]);
+            $locked->update(['change_orders' => $changes]);
 
-            return $order->refresh();
+            return $locked->refresh();
         });
     }
 }

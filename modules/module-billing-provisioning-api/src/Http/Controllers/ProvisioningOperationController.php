@@ -34,14 +34,16 @@ final class ProvisioningOperationController extends Controller
 
     public function queue(Request $request, ProvisionedService $provisionedService, QueueProvisioningOperation $queue): JsonResponse
     {
+        $provisionedService = $this->forCurrentTeam($request, $provisionedService);
         Gate::authorize('update', $provisionedService);
         $data = $request->validate(['operation' => ['required', 'in:provision,deprovision,poll,reconcile,rollback'], 'payload' => ['sometimes', 'array']]);
 
         return response()->json(['data' => $queue->execute($provisionedService, $data['operation'], $data['payload'] ?? [])], 202);
     }
 
-    public function reconcile(ProvisionedService $provisionedService, ReconcileProvisionedService $reconcile): JsonResponse
+    public function reconcile(Request $request, ProvisionedService $provisionedService, ReconcileProvisionedService $reconcile): JsonResponse
     {
+        $provisionedService = $this->forCurrentTeam($request, $provisionedService);
         Gate::authorize('update', $provisionedService);
 
         return response()->json(['data' => $reconcile->execute($provisionedService)]);
@@ -53,5 +55,10 @@ final class ProvisioningOperationController extends Controller
         abort_if($team === null, 403, 'A current team is required.');
 
         return (int) $team;
+    }
+
+    private function forCurrentTeam(Request $request, ProvisionedService $service): ProvisionedService
+    {
+        return ProvisionedService::query()->whereKey($service->getKey())->where('team_id', $this->team($request))->firstOrFail();
     }
 }

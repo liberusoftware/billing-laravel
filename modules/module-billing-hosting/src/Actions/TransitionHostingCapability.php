@@ -17,9 +17,14 @@ final class TransitionHostingCapability
         }
 
         return DB::transaction(function () use ($capability, $status): HostingCapability {
-            $capability->update(['status' => $status]);
+            $locked = HostingCapability::query()->lockForUpdate()->findOrFail($capability->getKey());
+            if ($locked->status === 'cancelled' && $status !== 'cancelled') {
+                throw new InvalidArgumentException('Cancelled hosting capabilities cannot be reactivated.');
+            }
 
-            return $capability->refresh();
+            $locked->update(['status' => $status]);
+
+            return $locked->refresh();
         });
     }
 }

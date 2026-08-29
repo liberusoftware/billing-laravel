@@ -50,29 +50,33 @@ final class SubscriptionController extends Controller
         return response()->json(['data' => $this->resource($activate->execute($data))], 201);
     }
 
-    public function renew(Subscription $subscription, RenewSubscription $renew): JsonResponse
+    public function renew(Request $request, Subscription $subscription, RenewSubscription $renew): JsonResponse
     {
+        $subscription = $this->forCurrentTeam($request, $subscription);
         Gate::authorize('update', $subscription);
 
         return response()->json(['data' => $this->resource($renew->execute($subscription))]);
     }
 
-    public function pause(Subscription $subscription, PauseSubscription $pause): JsonResponse
+    public function pause(Request $request, Subscription $subscription, PauseSubscription $pause): JsonResponse
     {
+        $subscription = $this->forCurrentTeam($request, $subscription);
         Gate::authorize('update', $subscription);
 
         return response()->json(['data' => $this->resource($pause->execute($subscription))]);
     }
 
-    public function cancel(Subscription $subscription, CancelSubscription $cancel): JsonResponse
+    public function cancel(Request $request, Subscription $subscription, CancelSubscription $cancel): JsonResponse
     {
+        $subscription = $this->forCurrentTeam($request, $subscription);
         Gate::authorize('update', $subscription);
 
         return response()->json(['data' => $this->resource($cancel->execute($subscription))]);
     }
 
-    public function resume(Subscription $subscription, ResumeSubscription $resume): JsonResponse
+    public function resume(Request $request, Subscription $subscription, ResumeSubscription $resume): JsonResponse
     {
+        $subscription = $this->forCurrentTeam($request, $subscription);
         Gate::authorize('update', $subscription);
 
         return response()->json(['data' => $this->resource($resume->execute($subscription))]);
@@ -80,6 +84,7 @@ final class SubscriptionController extends Controller
 
     public function changePlan(Request $request, Subscription $subscription, ChangeSubscriptionPlan $change): JsonResponse
     {
+        $subscription = $this->forCurrentTeam($request, $subscription);
         Gate::authorize('update', $subscription);
         $data = $request->validate(['pricing_plan_id' => ['nullable', 'integer', 'min:1']]);
 
@@ -88,6 +93,7 @@ final class SubscriptionController extends Controller
 
     public function entitlements(Request $request, Subscription $subscription, UpdateEntitlementState $update): JsonResponse
     {
+        $subscription = $this->forCurrentTeam($request, $subscription);
         Gate::authorize('update', $subscription);
         $data = $request->validate(['entitlement_state' => ['required', 'array']]);
 
@@ -112,5 +118,12 @@ final class SubscriptionController extends Controller
                 'entitlement_state' => $subscription->entitlement_state ?? [],
             ],
         ];
+    }
+
+    private function forCurrentTeam(Request $request, Subscription $subscription): Subscription
+    {
+        $teamId = data_get($request->user(), 'current_team_id') ?? data_get($request->user(), 'currentTeam.id');
+
+        return Subscription::query()->whereKey($subscription->getKey())->where('team_id', $teamId)->firstOrFail();
     }
 }

@@ -23,11 +23,16 @@ final readonly class ApplyCreditControl
         }
 
         return $this->database->transaction(function () use ($case, $level, $reason): CollectionCase {
-            $metadata = $case->metadata ?? [];
-            $metadata['credit_control_level'] = $level;
-            $case->update(['type' => 'credit_control', 'reason' => $reason ?: $case->reason, 'metadata' => $metadata]);
+            $locked = CollectionCase::query()->lockForUpdate()->findOrFail($case->getKey());
+            if (in_array($locked->status, [CollectionStatus::Recovered, CollectionStatus::WrittenOff, CollectionStatus::Closed], true)) {
+                throw new \LogicException('Credit control cannot be applied to a terminal case.');
+            }
 
-            return $case->refresh();
+            $metadata = $locked->metadata ?? [];
+            $metadata['credit_control_level'] = $level;
+            $locked->update(['type' => 'credit_control', 'reason' => $reason ?: $locked->reason, 'metadata' => $metadata]);
+
+            return $locked->refresh();
         });
     }
 }

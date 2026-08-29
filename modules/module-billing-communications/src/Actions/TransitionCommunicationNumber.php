@@ -17,9 +17,14 @@ final class TransitionCommunicationNumber
         }
 
         return DB::transaction(function () use ($number, $status): CommunicationNumber {
-            $number->update(['status' => $status]);
+            $locked = CommunicationNumber::query()->lockForUpdate()->findOrFail($number->getKey());
+            if ($locked->status === 'released' && $status !== 'released') {
+                throw new InvalidArgumentException('Released communication numbers cannot be reactivated.');
+            }
 
-            return $number->refresh();
+            $locked->update(['status' => $status]);
+
+            return $locked->refresh();
         });
     }
 }

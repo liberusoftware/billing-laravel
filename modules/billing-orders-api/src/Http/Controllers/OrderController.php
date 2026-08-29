@@ -61,6 +61,10 @@ final class OrderController extends Controller
     public function checkout(Request $request, Cart $cart, CheckoutCart $checkout): JsonResponse
     {
         Gate::authorize('create', Order::class);
+        $cart = Cart::query()
+            ->whereKey($cart->getKey())
+            ->where('team_id', $this->team($request))
+            ->firstOrFail();
         $data = $request->validate(['subtotal_minor' => ['required', 'integer', 'min:0'], 'discount_minor' => ['sometimes', 'integer', 'min:0'], 'tax_minor' => ['sometimes', 'integer', 'min:0'], 'fraud_review_required' => ['sometimes', 'boolean'], 'agreement' => ['nullable', 'array']]);
 
         return response()->json(['data' => $this->resource($checkout->execute($cart, $data))], 201);
@@ -68,6 +72,7 @@ final class OrderController extends Controller
 
     public function fraud(Request $request, Order $order, ReviewFraud $review): JsonResponse
     {
+        $order = $this->forCurrentTeam($request, $order);
         Gate::authorize('update', $order);
         $data = $request->validate(['fraud_status' => ['required', 'in:pending,cleared,blocked,not_required']]);
 
@@ -76,6 +81,7 @@ final class OrderController extends Controller
 
     public function change(Request $request, Order $order, AddChangeOrder $add): JsonResponse
     {
+        $order = $this->forCurrentTeam($request, $order);
         Gate::authorize('update', $order);
         $data = $request->validate(['reason' => ['required', 'string', 'max:1000'], 'items' => ['sometimes', 'array'], 'amount_minor' => ['sometimes', 'integer', 'min:0']]);
 
@@ -92,5 +98,10 @@ final class OrderController extends Controller
         $team = data_get($request->user(), 'current_team_id') ?? data_get($request->user(), 'currentTeam.id');
 
         return $team === null ? null : (int) $team;
+    }
+
+    private function forCurrentTeam(Request $request, Order $order): Order
+    {
+        return Order::query()->whereKey($order->getKey())->where('team_id', $this->team($request))->firstOrFail();
     }
 }

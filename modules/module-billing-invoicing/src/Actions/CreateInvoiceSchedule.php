@@ -6,6 +6,7 @@ namespace Liberu\Billing\Invoicing\Actions;
 
 use Illuminate\Database\DatabaseManager;
 use Liberu\Billing\Invoicing\Models\InvoiceSchedule;
+use Liberu\Billing\Invoicing\Support\CustomerReference;
 
 final readonly class CreateInvoiceSchedule
 {
@@ -23,9 +24,12 @@ final readonly class CreateInvoiceSchedule
             throw new \InvalidArgumentException('Invoice schedule metadata must be an array.');
         }
 
+        $teamId = $attributes['team_id'] ?? null;
+        $customerId = CustomerReference::assertBelongsToTeam($this->database, $attributes['customer_id'] ?? null, $teamId);
+
         return $this->database->transaction(fn (): InvoiceSchedule => InvoiceSchedule::query()->create([
-            'team_id' => $attributes['team_id'] ?? null,
-            'customer_id' => $attributes['customer_id'] ?? null,
+            'team_id' => $teamId,
+            'customer_id' => $customerId,
             'frequency' => $frequency,
             'next_run_at' => $attributes['next_run_at'] ?? now(),
             'active' => $attributes['active'] ?? true,

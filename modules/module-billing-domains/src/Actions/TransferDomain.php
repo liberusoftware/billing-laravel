@@ -7,6 +7,7 @@ namespace Liberu\Billing\Domains\Actions;
 use Illuminate\Database\DatabaseManager;
 use Liberu\Billing\Domains\Models\Domain;
 use Liberu\Billing\Domains\Services\RegistrarManager;
+use Liberu\Billing\Domains\Support\CustomerReference;
 
 final readonly class TransferDomain
 {
@@ -17,6 +18,7 @@ final readonly class TransferDomain
         if (trim($authCode) === '') {
             throw new \InvalidArgumentException('An EPP authorization code is required.');
         }
+        CustomerReference::assertBelongsToTeam($this->database, $customerId, $domain->team_id);
         $targetRegistrar = $registrar ?: (string) $domain->registrar;
         $result = $this->registrars->client($targetRegistrar)->transferDomain($domain->name, $authCode, $customerId);
         if ($result === null) {

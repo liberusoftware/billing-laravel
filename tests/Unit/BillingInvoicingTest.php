@@ -1,9 +1,12 @@
 <?php
 
+use App\Models\Customer;
+use App\Models\Team;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Liberu\Billing\Invoicing\Actions\AddInvoiceLine;
 use Liberu\Billing\Invoicing\Actions\ApplyInvoiceAdjustment;
+use Liberu\Billing\Invoicing\Actions\ApplyInvoiceLateFee;
 use Liberu\Billing\Invoicing\Actions\CreateInvoice;
 use Liberu\Billing\Invoicing\Actions\CreateInvoiceSchedule;
 use Liberu\Billing\Invoicing\Actions\CreateInvoiceSupport;
@@ -51,6 +54,25 @@ it('rejects empty finalization and invalid currency', function () {
     $invoice = app(CreateInvoice::class)->execute(['currency' => 'USD']);
     expect(fn () => app(FinalizeInvoice::class)->execute($invoice))
         ->toThrow(LogicException::class);
+});
+
+it('rejects foreign customer references for invoices and schedules', function (): void {
+    $team = Team::factory()->create(['id' => 20]);
+    $customerId = Customer::factory()->create(['team_id' => $team->getKey()])->getKey();
+
+    expect(fn () => app(CreateInvoice::class)->execute([
+        'team_id' => 10, 'customer_id' => $customerId, 'currency' => 'USD',
+    ]))->toThrow(InvalidArgumentException::class, 'Customer reference is invalid.')
+        ->and(fn () => app(CreateInvoiceSchedule::class)->execute([
+            'team_id' => 10, 'customer_id' => $customerId, 'frequency' => 'monthly',
+        ]))->toThrow(InvalidArgumentException::class, 'Customer reference is invalid.');
+});
+
+it('does not deliver a draft invoice after its persisted state changes', function (): void {
+    $invoice = app(CreateInvoice::class)->execute(['team_id' => 10, 'currency' => 'USD']);
+
+    expect(fn () => app(DeliverInvoice::class)->execute($invoice, 'billing@example.com'))
+        ->toThrow(LogicException::class, 'Only finalized invoices can be delivered.');
 });
 
 it('allows read tokens to view but not update their team invoice', function () {
@@ -125,6 +147,24 @@ it('runs a due recurring schedule and advances its next run', function () {
         ->and($schedule->refresh()->next_run_at->isFuture())->toBeTrue();
 });
 
+it('claims a recurring schedule before allowing another invoice run', function () {
+    $schedule = app(CreateInvoiceSchedule::class)->execute([
+        'team_id' => 10,
+        'frequency' => 'monthly',
+        'next_run_at' => now()->subMinute(),
+        'metadata' => [
+            'currency' => 'USD',
+            'lines' => [['description' => 'Service', 'quantity' => 1, 'unit_amount_minor' => 1000]],
+        ],
+    ]);
+
+    app(RunInvoiceSchedule::class)->execute($schedule);
+
+    expect(fn () => app(RunInvoiceSchedule::class)->execute($schedule->refresh()))
+        ->toThrow(LogicException::class, 'Invoice schedule is not due yet.')
+        ->and($schedule->refresh()->next_run_at->isFuture())->toBeTrue();
+});
+
 it('rejects invalid invoice schedule frequencies', function () {
     expect(fn () => app(CreateInvoiceSchedule::class)->execute(['frequency' => 'hourly']))
         ->toThrow(InvalidArgumentException::class);
@@ -146,4 +186,20 @@ it('applies credits and generates and delivers an invoice document', function ()
         ->and(base64_decode($document->payload['content_base64'], true))->toStartWith('%PDF')
         ->and($delivery->status)->toBe('delivered')
         ->and($delivery->destination)->toBe('billing@example.com');
+});
+
+it('applies one idempotent late fee per overdue invoice day', function (): void {
+    $dueAt = now()->subDay();
+    $invoice = app(CreateInvoice::class)->execute(['team_id' => 10, 'currency' => 'USD', 'due_at' => $dueAt]);
+    app(AddInvoiceLine::class)->execute($invoice, 'Service', 1, 1000, 0);
+    $invoice = app(FinalizeInvoice::class)->execute($invoice->refresh());
+
+    $at = $dueAt->copy()->addDay();
+    $updated = app(ApplyInvoiceLateFee::class)->execute($invoice, 125, $at);
+    $sameDay = app(ApplyInvoiceLateFee::class)->execute($updated, 250, $at);
+
+    expect($sameDay->total_minor)->toBe(1125)
+        ->and($sameDay->metadata['late_fees'])->toHaveCount(1)
+        ->and($sameDay->metadata['late_fees'][0]['amount_minor'])->toBe(125)
+        ->and($sameDay->supports()->count())->toBe(1);
 });

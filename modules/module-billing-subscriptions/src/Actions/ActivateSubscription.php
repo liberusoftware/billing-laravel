@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Liberu\Billing\Subscriptions\Actions;
 
 use Illuminate\Database\DatabaseManager;
+use Illuminate\Support\Facades\Schema;
 use Liberu\Billing\Subscriptions\Enums\SubscriptionStatus;
 use Liberu\Billing\Subscriptions\Events\SubscriptionActivated;
 use Liberu\Billing\Subscriptions\Models\Subscription;
+use Liberu\Billing\Subscriptions\Support\CustomerReference;
 
 final readonly class ActivateSubscription
 {
@@ -24,11 +26,27 @@ final readonly class ActivateSubscription
             throw new \InvalidArgumentException('A team or customer is required.');
         }
 
-        $subscription = $this->database->transaction(function () use ($attributes, $startsAt, $trialEndsAt, $trialDays): Subscription {
+        $pricingPlanId = $attributes['pricing_plan_id'] ?? null;
+        $teamId = $attributes['team_id'] ?? null;
+        $customerId = CustomerReference::assertBelongsToTeam($this->database, $attributes['customer_id'] ?? null, $teamId);
+
+        if ($pricingPlanId !== null && Schema::hasTable('billing_pricing_plans')) {
+            $pricingPlan = $this->database->table('billing_pricing_plans')
+                ->where('id', (int) $pricingPlanId)
+                ->first(['team_id']);
+
+            if ($pricingPlan === null || ($pricingPlan->team_id !== null && ($teamId === null || (int) $pricingPlan->team_id !== (int) $teamId))) {
+                throw new \InvalidArgumentException('Subscription pricing plan reference is invalid.');
+            }
+        } elseif ($pricingPlanId !== null) {
+            throw new \InvalidArgumentException('Subscription pricing plan reference is invalid.');
+        }
+
+        $subscription = $this->database->transaction(function () use ($attributes, $startsAt, $trialEndsAt, $trialDays, $pricingPlanId, $customerId): Subscription {
             return Subscription::query()->create([
                 'team_id' => $attributes['team_id'] ?? null,
-                'customer_id' => $attributes['customer_id'] ?? null,
-                'pricing_plan_id' => $attributes['pricing_plan_id'] ?? null,
+                'customer_id' => $customerId,
+                'pricing_plan_id' => $pricingPlanId,
                 'status' => $trialDays > 0 ? SubscriptionStatus::Trialing : SubscriptionStatus::Active,
                 'starts_at' => $startsAt,
                 'trial_ends_at' => $trialEndsAt,

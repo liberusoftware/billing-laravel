@@ -40,3 +40,14 @@ it('returns zero for optional metric tables that are not installed', function ()
 
     expect(app(CalculateReportingMetric::class)->execute(10, 'usage', $period, $period)['value'])->toBe(0.0);
 });
+
+it('excludes draft invoices from aging receivables', function (): void {
+    $dueAt = CarbonImmutable::parse('2026-08-20');
+    DB::table('billing_invoices')->insert([
+        ['team_id' => 10, 'status' => 'draft', 'currency' => 'USD', 'total_minor' => 900, 'due_at' => $dueAt, 'created_at' => $dueAt, 'updated_at' => $dueAt],
+        ['team_id' => 10, 'status' => 'finalized', 'currency' => 'USD', 'total_minor' => 1200, 'due_at' => $dueAt, 'created_at' => $dueAt, 'updated_at' => $dueAt],
+    ]);
+
+    expect(app(CalculateReportingMetric::class)->execute(10, 'aging', $dueAt->addDay(), $dueAt->addDay(), 'USD')['value'])
+        ->toBe(1200.0);
+});

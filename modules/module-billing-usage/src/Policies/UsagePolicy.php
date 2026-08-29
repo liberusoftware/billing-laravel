@@ -19,6 +19,13 @@ final class UsagePolicy
         return $user !== null && ($user->tokenCan('billing.usage.write') || $user->can('billing.usage.write'));
     }
 
+    public function view(?Authenticatable $user, Meter $meter): bool
+    {
+        $teamId = data_get($user, 'current_team_id') ?? data_get($user, 'currentTeam.id');
+
+        return $this->viewAny($user) && ($meter->team_id === null || ($teamId !== null && (int) $meter->team_id === (int) $teamId));
+    }
+
     public function update(?Authenticatable $user, Meter $meter): bool
     {
         $teamId = data_get($user, 'current_team_id') ?? data_get($user, 'currentTeam.id');

@@ -82,6 +82,7 @@ final class UsageController extends Controller
 
     public function aggregateForMeter(Request $request, Meter $meter, AggregateUsage $aggregate): JsonResponse
     {
+        $meter = $this->forCurrentTeam($request, $meter->getKey());
         Gate::authorize('view', $meter);
 
         return response()->json(['data' => $aggregate->execute((int) $meter->getKey(), $request->integer('customer_id') ?: null)]);
@@ -89,6 +90,7 @@ final class UsageController extends Controller
 
     public function rate(Request $request, Meter $meter, RateUsage $rate, CheckUsageThreshold $threshold): JsonResponse
     {
+        $meter = $this->forCurrentTeam($request, $meter->getKey());
         Gate::authorize('view', $meter);
         $data = $request->validate(['quantity' => ['required', 'numeric', 'min:0']]);
         $quantity = (float) $data['quantity'];
@@ -108,6 +110,13 @@ final class UsageController extends Controller
     private function team(Request $request): int
     {
         return (int) (data_get($request->user(), 'current_team_id') ?? data_get($request->user(), 'currentTeam.id'));
+    }
+
+    private function forCurrentTeam(Request $request, int $meterId): Meter
+    {
+        $teamId = $this->team($request);
+
+        return Meter::query()->whereKey($meterId)->where(fn ($query) => $query->whereNull('team_id')->orWhere('team_id', $teamId))->firstOrFail();
     }
 
     private function meter(Meter $meter): array
