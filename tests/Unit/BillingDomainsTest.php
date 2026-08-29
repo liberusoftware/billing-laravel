@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Liberu\Billing\Domains\Actions\CreateDomain;
+use Liberu\Billing\Domains\Actions\UpsertDnsRecord;
 use Liberu\Billing\Domains\Contracts\RegistrarClient;
 use Liberu\Billing\Domains\Models\DomainTld;
 use Liberu\Billing\Domains\Services\DomainPricingService;
@@ -21,6 +23,26 @@ it('prices supported TLDs with configured markup and preserves hosting bundles',
 it('rejects unsupported domain suffixes', function () {
     expect(fn () => app(DomainPricingService::class)->calculateDomainPrice('example.invalid'))
         ->toThrow(InvalidArgumentException::class);
+});
+
+it('only writes DNS records for domains owned by the current team', function () {
+    $domain = app(CreateDomain::class)->handle(20, ['name' => 'example.com']);
+
+    expect(fn () => app(UpsertDnsRecord::class)->execute(10, [
+        'domain_id' => $domain->id,
+        'type' => 'A',
+        'host' => '@',
+        'value' => '192.0.2.10',
+    ]))->toThrow(InvalidArgumentException::class);
+
+    $record = app(UpsertDnsRecord::class)->execute(20, [
+        'domain_id' => $domain->id,
+        'type' => 'A',
+        'host' => ' @ ',
+        'value' => ' 192.0.2.10 ',
+    ]);
+
+    expect($record->host)->toBe('@')->and($record->value)->toBe('192.0.2.10');
 });
 
 it('synchronizes registrar TLD costs with the configured markup', function () {
