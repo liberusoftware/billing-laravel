@@ -8,6 +8,7 @@ use Illuminate\Database\DatabaseManager;
 use Illuminate\Support\Facades\Schema;
 use Liberu\Billing\Collections\Enums\CollectionStatus;
 use Liberu\Billing\Collections\Models\CollectionCase;
+use Liberu\Billing\Collections\Support\CustomerReference;
 
 final readonly class OpenCollectionCase
 {
@@ -25,6 +26,9 @@ final readonly class OpenCollectionCase
             throw new \InvalidArgumentException('Collection case type is invalid.');
         }
 
+        $teamId = $attributes['team_id'] ?? null;
+        $customerId = CustomerReference::assertBelongsToTeam($this->database, $attributes['customer_id'] ?? null, $teamId);
+
         $invoiceId = $attributes['invoice_id'] ?? null;
         if ($invoiceId !== null && Schema::hasTable('billing_invoices')) {
             $invoiceTeam = $this->database->table('billing_invoices')->where('id', (int) $invoiceId)->value('team_id');
@@ -36,7 +40,7 @@ final readonly class OpenCollectionCase
         }
 
         return $this->database->transaction(fn (): CollectionCase => CollectionCase::query()->create([
-            'team_id' => $attributes['team_id'] ?? null, 'customer_id' => $attributes['customer_id'] ?? null, 'invoice_id' => $invoiceId,
+            'team_id' => $teamId, 'customer_id' => $customerId, 'invoice_id' => $invoiceId,
             'type' => $type, 'status' => CollectionStatus::Open, 'amount_minor' => $amount, 'currency' => $currency,
             'next_action_at' => $attributes['next_action_at'] ?? now(), 'reason' => $attributes['reason'] ?? null, 'metadata' => $attributes['metadata'] ?? [],
         ]));

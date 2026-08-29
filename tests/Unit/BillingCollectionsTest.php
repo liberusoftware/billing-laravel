@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Customer;
+use App\Models\Team;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Liberu\Billing\Collections\Actions\ApplyCreditControl;
 use Liberu\Billing\Collections\Actions\OpenCollectionCase;
@@ -44,6 +46,15 @@ it('rejects a collection case invoice owned by another team', function (): void 
     expect(fn () => app(OpenCollectionCase::class)->execute([
         'team_id' => 10, 'invoice_id' => $invoice->getKey(), 'amount_minor' => 100, 'currency' => 'USD',
     ]))->toThrow(InvalidArgumentException::class, 'Collection invoice reference is invalid.');
+});
+
+it('rejects a collection case customer owned by another team', function (): void {
+    $team = Team::factory()->create(['id' => 20]);
+    $customerId = Customer::factory()->create(['team_id' => $team->getKey()])->getKey();
+
+    expect(fn () => app(OpenCollectionCase::class)->execute([
+        'team_id' => 10, 'customer_id' => $customerId, 'amount_minor' => 100, 'currency' => 'USD',
+    ]))->toThrow(InvalidArgumentException::class, 'Customer reference is invalid.');
 });
 
 it('does not write off a case after its persisted state becomes recovered', function (): void {
