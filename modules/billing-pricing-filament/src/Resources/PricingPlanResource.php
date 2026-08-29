@@ -6,13 +6,16 @@ namespace Liberu\Billing\Pricing\Filament\Resources;
 
 use BackedEnum;
 use Filament\Actions\Action;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Gate;
+use Liberu\Billing\Pricing\Actions\CalculateUsageBasedPrice;
 use Liberu\Billing\Pricing\Actions\CapturePricingSnapshot;
 use Liberu\Billing\Pricing\Filament\Concerns\ScopesCurrentTeam;
 use Liberu\Billing\Pricing\Filament\Resources\PricingPlanResource\Pages\CreatePricingPlan;
@@ -50,6 +53,16 @@ final class PricingPlanResource extends Resource
             Action::make('snapshot')->label('Capture snapshot')->requiresConfirmation()->action(function (PricingPlan $record, CapturePricingSnapshot $capture): void {
                 Gate::authorize('update', $record);
                 $capture->execute($record);
+            }),
+            Action::make('usage')->label('Calculate usage')->visible(fn (PricingPlan $record): bool => in_array($record->pricing_model->value, ['usage', 'tiered'], true))->form([
+                TextInput::make('meter_id')->required()->integer()->minValue(1),
+                TextInput::make('customer_id')->integer()->minValue(1),
+                DateTimePicker::make('start')->required(),
+                DateTimePicker::make('end')->required(),
+            ])->action(function (PricingPlan $record, array $data, CalculateUsageBasedPrice $calculate): void {
+                Gate::authorize('view', $record);
+                $result = $calculate->execute($record, (int) $data['meter_id'], $data['start'], $data['end'], isset($data['customer_id']) ? (int) $data['customer_id'] : null);
+                Notification::make()->title(__('Usage price: :amount', ['amount' => $result['amount_minor']]))->success()->send();
             }),
         ])->defaultSort('id', 'desc');
     }

@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Liberu\Billing\Pricing\Api\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\Pricing\Actions\CalculateProration;
+use Liberu\Billing\Pricing\Actions\CalculateUsageBasedPrice;
 use Liberu\Billing\Pricing\Actions\CapturePricingSnapshot;
 use Liberu\Billing\Pricing\Actions\RedeemPricingDiscount;
 use Liberu\Billing\Pricing\Models\PricingContract;
@@ -54,6 +56,20 @@ final class PricingSupportController extends Controller
         $data = $request->validate(['amount_minor' => ['required', 'integer', 'min:0'], 'remaining_days' => ['required', 'integer', 'min:0'], 'period_days' => ['required', 'integer', 'min:1']]);
 
         return response()->json(['data' => ['amount_minor' => $calculate->execute($data['amount_minor'], $data['remaining_days'], $data['period_days'])]]);
+    }
+
+    public function usage(Request $request, PricingPlan $plan, CalculateUsageBasedPrice $calculate): JsonResponse
+    {
+        $plan = $this->forCurrentTeam($request, PricingPlan::class, $plan->getKey());
+        Gate::authorize('view', $plan);
+        $data = $request->validate([
+            'meter_id' => ['required', 'integer', 'min:1'],
+            'customer_id' => ['nullable', 'integer', 'min:1'],
+            'start' => ['required', 'date'],
+            'end' => ['required', 'date', 'after_or_equal:start'],
+        ]);
+
+        return response()->json(['data' => $calculate->execute($plan, $data['meter_id'], Carbon::parse($data['start']), Carbon::parse($data['end']), $data['customer_id'] ?? null)]);
     }
 
     private function list(Request $request, string $model): JsonResponse

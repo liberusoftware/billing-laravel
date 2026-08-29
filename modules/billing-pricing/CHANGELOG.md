@@ -7,3 +7,6 @@
   at the domain action boundary.
 - Enforce write authorization for pricing mutations and snapshot capture.
 - Added authoritative minor-unit pricing calculation for fixed, usage, and graduated-tier plans.
+## Unreleased
+
+- Add usage-based price calculation over modular usage records for API, Filament, and Livewire consumers.
