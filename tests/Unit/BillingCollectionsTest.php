@@ -27,6 +27,12 @@ it('rejects invalid collection amounts', function () {
         ->toThrow(InvalidArgumentException::class);
 });
 
+it('rejects unsupported collection case types', function (): void {
+    expect(fn () => app(OpenCollectionCase::class)->execute([
+        'amount_minor' => 100, 'currency' => 'USD', 'type' => 'unsupported',
+    ]))->toThrow(InvalidArgumentException::class, 'Collection case type is invalid.');
+});
+
 it('records dunning, reminder, and credit-control decisions', function () {
     $case = app(OpenCollectionCase::class)->execute(['team_id' => 10, 'amount_minor' => 1200, 'currency' => 'USD']);
     $nextAction = now()->addDays(3);
