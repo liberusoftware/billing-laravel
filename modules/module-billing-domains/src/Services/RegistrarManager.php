@@ -14,12 +14,17 @@ final class RegistrarManager
 
     public function register(string $name, RegistrarClient $client): void
     {
-        $this->clients[strtolower($name)] = $client;
+        $name = strtolower(trim($name));
+        if ($name === '') {
+            throw new InvalidArgumentException('Registrar name cannot be empty.');
+        }
+
+        $this->clients[$name] = $client;
     }
 
     public function client(string $name): RegistrarClient
     {
-        $client = $this->clients[strtolower($name)] ?? null;
+        $client = $this->clients[strtolower(trim($name))] ?? null;
         if (! $client instanceof RegistrarClient) {
             throw new InvalidArgumentException("Registrar [$name] is not registered.");
         }

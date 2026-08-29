@@ -47,7 +47,7 @@ it('only writes DNS records for domains owned by the current team', function () 
 });
 
 it('synchronizes registrar TLD costs with the configured markup', function () {
-    app(RegistrarManager::class)->register('test', new class() implements RegistrarClient
+    app(RegistrarManager::class)->register(' TEST ', new class() implements RegistrarClient
     {
         public function registerDomain(string $domainName, mixed $customerId): ?array
         {
