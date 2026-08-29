@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Customer;
+use App\Models\Team;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Liberu\Billing\Invoicing\Actions\AddInvoiceLine;
@@ -51,6 +53,18 @@ it('rejects empty finalization and invalid currency', function () {
     $invoice = app(CreateInvoice::class)->execute(['currency' => 'USD']);
     expect(fn () => app(FinalizeInvoice::class)->execute($invoice))
         ->toThrow(LogicException::class);
+});
+
+it('rejects foreign customer references for invoices and schedules', function (): void {
+    $team = Team::factory()->create(['id' => 20]);
+    $customerId = Customer::factory()->create(['team_id' => $team->getKey()])->getKey();
+
+    expect(fn () => app(CreateInvoice::class)->execute([
+        'team_id' => 10, 'customer_id' => $customerId, 'currency' => 'USD',
+    ]))->toThrow(InvalidArgumentException::class, 'Customer reference is invalid.')
+        ->and(fn () => app(CreateInvoiceSchedule::class)->execute([
+            'team_id' => 10, 'customer_id' => $customerId, 'frequency' => 'monthly',
+        ]))->toThrow(InvalidArgumentException::class, 'Customer reference is invalid.');
 });
 
 it('does not deliver a draft invoice after its persisted state changes', function (): void {
