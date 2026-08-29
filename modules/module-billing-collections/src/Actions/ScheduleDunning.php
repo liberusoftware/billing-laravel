@@ -19,11 +19,16 @@ final readonly class ScheduleDunning
         }
 
         return $this->database->transaction(function () use ($case, $nextActionAt): CollectionCase {
-            $metadata = $case->metadata ?? [];
-            $metadata['dunning_scheduled_at'] = now()->toIso8601String();
-            $case->update(['type' => 'dunning', 'status' => CollectionStatus::Open, 'next_action_at' => $nextActionAt, 'metadata' => $metadata]);
+            $locked = CollectionCase::query()->lockForUpdate()->findOrFail($case->getKey());
+            if (in_array($locked->status, [CollectionStatus::Recovered, CollectionStatus::WrittenOff, CollectionStatus::Closed], true)) {
+                throw new \LogicException('This collection case cannot be scheduled for dunning.');
+            }
 
-            return $case->refresh();
+            $metadata = $locked->metadata ?? [];
+            $metadata['dunning_scheduled_at'] = now()->toIso8601String();
+            $locked->update(['type' => 'dunning', 'status' => CollectionStatus::Open, 'next_action_at' => $nextActionAt, 'metadata' => $metadata]);
+
+            return $locked->refresh();
         });
     }
 }

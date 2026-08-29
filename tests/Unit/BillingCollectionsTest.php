@@ -8,6 +8,7 @@ use Liberu\Billing\Collections\Actions\RecoverCollectionCase;
 use Liberu\Billing\Collections\Actions\ScheduleDunning;
 use Liberu\Billing\Collections\Actions\ScheduleReminder;
 use Liberu\Billing\Collections\Actions\SuspendCollectionCase;
+use Liberu\Billing\Collections\Actions\WriteOffCollectionCase;
 use Liberu\Billing\Collections\Enums\CollectionStatus;
 use Liberu\Billing\Collections\Models\CollectionCase;
 
@@ -31,6 +32,15 @@ it('rejects unsupported collection case types', function (): void {
     expect(fn () => app(OpenCollectionCase::class)->execute([
         'amount_minor' => 100, 'currency' => 'USD', 'type' => 'unsupported',
     ]))->toThrow(InvalidArgumentException::class, 'Collection case type is invalid.');
+});
+
+it('does not write off a case after its persisted state becomes recovered', function (): void {
+    $case = app(OpenCollectionCase::class)->execute(['team_id' => 10, 'amount_minor' => 100, 'currency' => 'USD']);
+    $case->refresh();
+    CollectionCase::query()->whereKey($case->getKey())->update(['status' => CollectionStatus::Recovered->value]);
+
+    expect(fn () => app(WriteOffCollectionCase::class)->execute($case, 'uncollectible'))
+        ->toThrow(LogicException::class, 'This collection case cannot be written off.');
 });
 
 it('records dunning, reminder, and credit-control decisions', function () {

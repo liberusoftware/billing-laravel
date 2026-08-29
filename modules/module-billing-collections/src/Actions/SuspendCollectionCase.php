@@ -14,14 +14,20 @@ final readonly class SuspendCollectionCase
 
     public function execute(CollectionCase $case, string $reason): CollectionCase
     {
-        if ($case->status === CollectionStatus::Closed || $case->status === CollectionStatus::WrittenOff) {
+        $reason = trim($reason);
+        if ($reason === '' || $case->status === CollectionStatus::Closed || $case->status === CollectionStatus::WrittenOff) {
             throw new \LogicException('This collection case cannot be suspended.');
         }
 
         return $this->database->transaction(function () use ($case, $reason): CollectionCase {
-            $case->update(['status' => CollectionStatus::Suspended, 'reason' => $reason]);
+            $locked = CollectionCase::query()->lockForUpdate()->findOrFail($case->getKey());
+            if ($locked->status === CollectionStatus::Closed || $locked->status === CollectionStatus::WrittenOff) {
+                throw new \LogicException('This collection case cannot be suspended.');
+            }
 
-            return $case->refresh();
+            $locked->update(['status' => CollectionStatus::Suspended, 'reason' => $reason]);
+
+            return $locked->refresh();
         });
     }
 }

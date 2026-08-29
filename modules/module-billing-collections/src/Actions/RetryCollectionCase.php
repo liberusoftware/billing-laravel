@@ -19,11 +19,16 @@ final readonly class RetryCollectionCase
         }
 
         return $this->database->transaction(function () use ($case, $nextActionAt): CollectionCase {
-            $metadata = $case->metadata ?? [];
-            $metadata['retry_count'] = ((int) ($metadata['retry_count'] ?? 0)) + 1;
-            $case->update(['status' => CollectionStatus::Open, 'next_action_at' => $nextActionAt, 'metadata' => $metadata]);
+            $locked = CollectionCase::query()->lockForUpdate()->findOrFail($case->getKey());
+            if (in_array($locked->status, [CollectionStatus::Recovered, CollectionStatus::WrittenOff, CollectionStatus::Closed], true)) {
+                throw new \LogicException('This collection case cannot be retried.');
+            }
 
-            return $case->refresh();
+            $metadata = $locked->metadata ?? [];
+            $metadata['retry_count'] = ((int) ($metadata['retry_count'] ?? 0)) + 1;
+            $locked->update(['status' => CollectionStatus::Open, 'next_action_at' => $nextActionAt, 'metadata' => $metadata]);
+
+            return $locked->refresh();
         });
     }
 }
