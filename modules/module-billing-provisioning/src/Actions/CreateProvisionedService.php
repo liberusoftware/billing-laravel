@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Liberu\Billing\Provisioning\Actions;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Liberu\Billing\Provisioning\Enums\ProvisioningState;
 use Liberu\Billing\Provisioning\Models\ProvisionedService;
 
@@ -18,10 +19,20 @@ final class CreateProvisionedService
             throw new \InvalidArgumentException('A provisioning provider is required.');
         }
 
+        $subscriptionId = $attributes['subscription_id'] ?? null;
+        if ($subscriptionId !== null && Schema::hasTable('billing_subscriptions')) {
+            $subscriptionTeam = DB::table('billing_subscriptions')->where('id', (int) $subscriptionId)->value('team_id');
+            if ($subscriptionTeam === null || (int) $subscriptionTeam !== (int) ($attributes['team_id'] ?? 0)) {
+                throw new \InvalidArgumentException('Provisioning subscription reference is invalid.');
+            }
+        } elseif ($subscriptionId !== null) {
+            throw new \InvalidArgumentException('Provisioning subscription reference is invalid.');
+        }
+
         return DB::transaction(fn (): ProvisionedService => ProvisionedService::query()->create([
             'team_id' => $attributes['team_id'] ?? null,
             'customer_id' => $attributes['customer_id'] ?? null,
-            'subscription_id' => $attributes['subscription_id'] ?? null,
+            'subscription_id' => $subscriptionId,
             'provider' => $provider,
             'external_id' => $attributes['external_id'] ?? null,
             'state' => $attributes['state'] ?? ProvisioningState::Pending,

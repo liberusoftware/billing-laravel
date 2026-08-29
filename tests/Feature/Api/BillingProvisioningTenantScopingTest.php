@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use Liberu\Billing\Provisioning\Models\ProvisionedService;
+use Liberu\Billing\Subscriptions\Models\Subscription;
 use Tests\TestCase;
 
 class BillingProvisioningTenantScopingTest extends TestCase
@@ -31,6 +32,30 @@ class BillingProvisioningTenantScopingTest extends TestCase
 
         $this->assertDatabaseMissing('billing_provisioning_operations', [
             'provisioned_service_id' => $service->getKey(),
+        ]);
+    }
+
+    public function test_provisioned_service_cannot_reference_another_team_subscription(): void
+    {
+        $user = User::factory()->withPersonalTeam()->create();
+        $user->update(['current_team_id' => $user->currentTeam->id]);
+        $otherTeam = User::factory()->withPersonalTeam()->create()->currentTeam;
+        $subscription = Subscription::query()->create([
+            'team_id' => $otherTeam->id,
+            'status' => 'active',
+            'starts_at' => now(),
+            'auto_renew' => true,
+            'entitlement_state' => [],
+        ]);
+        Sanctum::actingAs($user, ['*']);
+
+        $this->postJson('/api/v1/billing/provisioning/services', [
+            'subscription_id' => $subscription->getKey(),
+            'provider' => 'test',
+        ])->assertNotFound();
+
+        $this->assertDatabaseMissing('billing_provisioned_services', [
+            'subscription_id' => $subscription->getKey(),
         ]);
     }
 }
