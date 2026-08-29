@@ -2,9 +2,11 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Liberu\Billing\Orders\Actions\CreateOrder;
+use Liberu\Billing\Orders\Actions\ReviewFraud;
 use Liberu\Billing\Orders\Actions\TransitionOrder;
 use Liberu\Billing\Orders\Enums\FraudReviewStatus;
 use Liberu\Billing\Orders\Enums\OrderStatus;
+use Liberu\Billing\Orders\Models\Order;
 
 uses(RefreshDatabase::class);
 
@@ -67,4 +69,15 @@ it('does not transition an order after its persisted state becomes terminal', fu
 
     expect(fn () => app(TransitionOrder::class)->execute($order, OrderStatus::Cancelled))
         ->toThrow(LogicException::class, 'Terminal orders cannot transition.');
+});
+
+it('does not review fraud after an order becomes terminal', function (): void {
+    $order = app(CreateOrder::class)->execute([
+        'order_number' => 'ORD-1004', 'currency' => 'USD', 'subtotal_minor' => 100,
+    ]);
+    $order->refresh();
+    Order::query()->whereKey($order->getKey())->update(['status' => OrderStatus::Completed->value]);
+
+    expect(fn () => app(ReviewFraud::class)->execute($order, FraudReviewStatus::Blocked))
+        ->toThrow(LogicException::class, 'Terminal orders cannot receive fraud reviews.');
 });
