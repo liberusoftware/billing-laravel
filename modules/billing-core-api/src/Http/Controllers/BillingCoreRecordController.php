@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
+use Liberu\Billing\Core\Actions\ConvertCurrency;
 use Liberu\Billing\Core\Actions\CreateBillingRecord;
 use Liberu\Billing\Core\Actions\UpdateBillingRecord;
 use Liberu\Billing\Core\Models\BillingContact;
@@ -37,6 +38,14 @@ final class BillingCoreRecordController extends Controller
         $data['team_id'] = $this->teamId($request);
 
         return response()->json(['data' => $create->execute($model, $data)], 201);
+    }
+
+    public function convertCurrency(Request $request, ConvertCurrency $convert): JsonResponse
+    {
+        Gate::authorize('viewAny', BillingCurrency::class);
+        $data = $request->validate(['amount' => ['required', 'numeric'], 'from' => ['required', 'string', 'size:3', 'alpha'], 'to' => ['required', 'string', 'size:3', 'alpha']]);
+
+        return response()->json(['data' => $convert->execute($this->teamId($request), (float) $data['amount'], $data['from'], $data['to'])]);
     }
 
     public function update(Request $request, string $type, int $record, UpdateBillingRecord $update): JsonResponse

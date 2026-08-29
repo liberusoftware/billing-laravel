@@ -5,6 +5,12 @@ info:
   description: Team-scoped accounts and billing configuration resources.
 servers: [{url: /}]
 paths:
+  /api/v1/billing/billing-core/currencies/convert:
+    post:
+      operationId: billing.core.currencies.convert
+      security: [{sanctum: []}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object, required: [amount, from, to], properties: {amount: {type: number}, from: {type: string, pattern: '^[A-Za-z]{3}$'}, to: {type: string, pattern: '^[A-Za-z]{3}$'}}}}}}
+      responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
   /api/v1/billing/billing-core:
     get:
       operationId: billing.core.accounts.list
