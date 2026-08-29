@@ -9,6 +9,7 @@ use Liberu\Billing\Collections\Actions\ScheduleDunning;
 use Liberu\Billing\Collections\Actions\ScheduleReminder;
 use Liberu\Billing\Collections\Actions\SuspendCollectionCase;
 use Liberu\Billing\Collections\Enums\CollectionStatus;
+use Liberu\Billing\Collections\Models\CollectionCase;
 
 uses(RefreshDatabase::class);
 
@@ -41,4 +42,13 @@ it('records dunning, reminder, and credit-control decisions', function () {
     expect($case->type)->toBe('credit_control')
         ->and($case->metadata['credit_control_level'])->toBe('suspend-service')
         ->and($case->reason)->toBe('Repeated non-payment');
+});
+
+it('does not recover a case after its persisted state becomes terminal', function (): void {
+    $case = app(OpenCollectionCase::class)->execute(['team_id' => 10, 'amount_minor' => 1200, 'currency' => 'USD']);
+    $case->refresh();
+    CollectionCase::query()->whereKey($case->getKey())->update(['status' => CollectionStatus::WrittenOff->value]);
+
+    expect(fn () => app(RecoverCollectionCase::class)->execute($case))
+        ->toThrow(LogicException::class, 'This collection case cannot be recovered.');
 });
