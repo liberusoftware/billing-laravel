@@ -43,6 +43,9 @@ paths:
       summary: Renew a subscription
       security: [{sanctum: []}]
       parameters: [{$ref: '#/components/parameters/SubscriptionId'}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody:
+        required: false
+        content: {application/json: {schema: {type: object, properties: {period_days: {type: integer, minimum: 1, maximum: 3660}}}}}
       responses:
         '200': {$ref: '#/components/responses/ResourceDocument'}
         '401': {$ref: '#/components/responses/Unauthorized'}
@@ -147,6 +150,7 @@ components:
         starts_at: {type: string, format: date-time}
         trial_ends_at: {anyOf: [{type: string, format: date-time}, {type: 'null'}]}
         current_period_ends_at: {anyOf: [{type: string, format: date-time}, {type: 'null'}]}
+        period_days: {type: integer, minimum: 1}
         cancelled_at: {anyOf: [{type: string, format: date-time}, {type: 'null'}]}
         paused_at: {anyOf: [{type: string, format: date-time}, {type: 'null'}]}
         auto_renew: {type: boolean}
@@ -158,6 +162,7 @@ components:
         pricing_plan_id: {anyOf: [{type: integer, minimum: 1}, {type: 'null'}]}
         trial_days: {type: integer, minimum: 0, maximum: 365, default: 0}
         current_period_ends_at: {anyOf: [{type: string, format: date-time}, {type: 'null'}]}
+        period_days: {type: integer, minimum: 1, default: 30}
         auto_renew: {type: boolean, default: true}
         metadata: {type: object, additionalProperties: true}
     PaginationMeta:

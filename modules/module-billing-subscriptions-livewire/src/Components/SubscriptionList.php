@@ -23,6 +23,8 @@ final class SubscriptionList extends Component
 
     public int $trialDays = 0;
 
+    public int $periodDays = 30;
+
     public bool $showActivate = false;
 
     public function activate(ActivateSubscription $activate): void
@@ -31,14 +33,17 @@ final class SubscriptionList extends Component
         $this->validate([
             'pricingPlanId' => ['nullable', 'integer', 'min:0'],
             'trialDays' => ['required', 'integer', 'min:0', 'max:365'],
+            'periodDays' => ['required', 'integer', 'min:1', 'max:3660'],
         ]);
         $teamId = data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id');
         $activate->execute([
             'team_id' => $teamId,
             'pricing_plan_id' => $this->pricingPlanId > 0 ? $this->pricingPlanId : null,
             'trial_days' => $this->trialDays,
+            'period_days' => $this->periodDays,
         ]);
-        $this->reset(['pricingPlanId', 'trialDays', 'showActivate']);
+        $this->reset(['pricingPlanId', 'trialDays', 'periodDays', 'showActivate']);
+        $this->periodDays = 30;
         session()->flash('module-billing-subscriptions-message', __('Subscription activated.'));
     }
 

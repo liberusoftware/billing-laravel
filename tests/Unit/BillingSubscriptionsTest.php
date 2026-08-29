@@ -87,6 +87,19 @@ it('supports plan changes, pause, renewal, and cancellation', function () {
         ->and($subscription->auto_renew)->toBeFalse();
 });
 
+it('preserves a configured custom period when renewing', function (): void {
+    $subscription = app(ActivateSubscription::class)->execute([
+        'team_id' => 10,
+        'period_days' => 45,
+        'current_period_ends_at' => '2026-08-01 00:00:00',
+    ]);
+
+    $renewed = app(RenewSubscription::class)->execute($subscription);
+
+    expect($renewed->period_days)->toBe(45)
+        ->and($renewed->current_period_ends_at->toDateString())->toBe('2026-09-15');
+});
+
 it('resumes only paused subscriptions and restores entitlements', function () {
     $subscription = app(ActivateSubscription::class)->execute(['team_id' => 10]);
     $subscription = app(PauseSubscription::class)->execute($subscription);

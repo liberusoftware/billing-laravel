@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Preserve configurable subscription period lengths during activation and renewal.
 - Add an idempotent expiry action for due non-renewing subscriptions and expose it through API, Filament, and Livewire.
 
 ## 0.1.0

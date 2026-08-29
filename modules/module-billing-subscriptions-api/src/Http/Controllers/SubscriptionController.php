@@ -42,6 +42,7 @@ final class SubscriptionController extends Controller
             'pricing_plan_id' => ['nullable', 'integer', 'min:1'],
             'trial_days' => ['sometimes', 'integer', 'min:0', 'max:365'],
             'current_period_ends_at' => ['nullable', 'date'],
+            'period_days' => ['sometimes', 'integer', 'min:1', 'max:3660'],
             'auto_renew' => ['sometimes', 'boolean'],
             'id_protection' => ['sometimes', 'boolean'],
             'metadata' => ['sometimes', 'array'],
@@ -57,7 +58,9 @@ final class SubscriptionController extends Controller
         $subscription = $this->forCurrentTeam($request, $subscription);
         Gate::authorize('update', $subscription);
 
-        return response()->json(['data' => $this->resource($renew->execute($subscription))]);
+        $data = $request->validate(['period_days' => ['nullable', 'integer', 'min:1', 'max:3660']]);
+
+        return response()->json(['data' => $this->resource($renew->execute($subscription, $data['period_days'] ?? null))]);
     }
 
     public function pause(Request $request, Subscription $subscription, PauseSubscription $pause): JsonResponse
@@ -122,6 +125,7 @@ final class SubscriptionController extends Controller
                 'starts_at' => $subscription->starts_at?->toIso8601String(),
                 'trial_ends_at' => $subscription->trial_ends_at?->toIso8601String(),
                 'current_period_ends_at' => $subscription->current_period_ends_at?->toIso8601String(),
+                'period_days' => $subscription->period_days,
                 'cancelled_at' => $subscription->cancelled_at?->toIso8601String(),
                 'paused_at' => $subscription->paused_at?->toIso8601String(),
             'auto_renew' => $subscription->auto_renew,
