@@ -1,7 +1,11 @@
 <?php
 
+use App\Models\Customer;
+use App\Models\Team;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Liberu\Billing\Domains\Actions\CreateDomain;
+use Liberu\Billing\Domains\Actions\RegisterDomain;
+use Liberu\Billing\Domains\Actions\TransferDomain;
 use Liberu\Billing\Domains\Actions\UpdateDomain;
 use Liberu\Billing\Domains\Actions\UpsertDnsRecord;
 use Liberu\Billing\Domains\Contracts\RegistrarClient;
@@ -119,4 +123,15 @@ it('updates the persisted domain row instead of a stale model instance', functio
 
     expect($updated->name)->toBe('new-example.com')
         ->and($updated->status)->toBe('registered');
+});
+
+it('rejects registrar operations for a customer owned by another team', function (): void {
+    $team = Team::factory()->create(['id' => 20]);
+    $customerId = Customer::factory()->create(['team_id' => $team->getKey()])->getKey();
+    $domain = app(CreateDomain::class)->handle(10, ['name' => 'example.com']);
+
+    expect(fn () => app(RegisterDomain::class)->execute($domain, $customerId))
+        ->toThrow(InvalidArgumentException::class, 'Customer reference is invalid.')
+        ->and(fn () => app(TransferDomain::class)->execute($domain, 'AUTH-CODE', $customerId))
+        ->toThrow(InvalidArgumentException::class, 'Customer reference is invalid.');
 });
