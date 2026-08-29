@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Liberu\Billing\Invoicing\Api\Http\Controllers;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -12,12 +13,15 @@ use Liberu\Billing\Invoicing\Actions\AddInvoiceLine;
 use Liberu\Billing\Invoicing\Actions\ApplyInvoiceAdjustment;
 use Liberu\Billing\Invoicing\Actions\CreateInvoice;
 use Liberu\Billing\Invoicing\Actions\CreateInvoiceSchedule;
+use Liberu\Billing\Invoicing\Actions\CreatePaymentPlan;
 use Liberu\Billing\Invoicing\Actions\DeliverInvoice;
 use Liberu\Billing\Invoicing\Actions\FinalizeInvoice;
 use Liberu\Billing\Invoicing\Actions\GenerateInvoiceDocument;
 use Liberu\Billing\Invoicing\Actions\RunInvoiceSchedule;
+use Liberu\Billing\Invoicing\Actions\RunPaymentPlan;
 use Liberu\Billing\Invoicing\Models\Invoice;
 use Liberu\Billing\Invoicing\Models\InvoiceSchedule;
+use Liberu\Billing\Invoicing\Models\PaymentPlan;
 use Liberu\Billing\Invoicing\Queries\ListInvoices;
 
 final class InvoiceController extends Controller
@@ -83,6 +87,23 @@ final class InvoiceController extends Controller
         return response()->json(['data' => $this->resource($run->execute($schedule))]);
     }
 
+    public function paymentPlan(Request $request, CreatePaymentPlan $create): JsonResponse
+    {
+        Gate::authorize('create', Invoice::class);
+        $data = $request->validate(['invoice_id' => ['required', 'integer', 'min:1'], 'total_installments' => ['required', 'integer', 'min:2'], 'frequency' => ['required', 'in:weekly,monthly,quarterly'], 'start_at' => ['nullable', 'date']]);
+        $invoice = $this->forCurrentTeam($request, Invoice::query()->findOrFail($data['invoice_id']));
+
+        return response()->json(['data' => $this->paymentPlanResource($create->execute($invoice, (int) $data['total_installments'], $data['frequency'], isset($data['start_at']) ? CarbonImmutable::parse($data['start_at']) : null))], 201);
+    }
+
+    public function runPaymentPlan(Request $request, PaymentPlan $paymentPlan, RunPaymentPlan $run): JsonResponse
+    {
+        $paymentPlan = $this->forCurrentTeamPaymentPlan($request, $paymentPlan);
+        Gate::authorize('update', $paymentPlan->invoice);
+
+        return response()->json(['data' => $this->resource($run->execute($paymentPlan))]);
+    }
+
     public function adjust(Request $request, Invoice $invoice, ApplyInvoiceAdjustment $adjust): JsonResponse
     {
         $invoice = $this->forCurrentTeam($request, $invoice);
@@ -123,6 +144,11 @@ final class InvoiceController extends Controller
         return ['id' => (string) $schedule->getKey(), 'type' => 'billing-invoice-schedules', 'attributes' => ['frequency' => $schedule->frequency, 'next_run_at' => $schedule->next_run_at?->toIso8601String(), 'active' => $schedule->active, 'metadata' => $schedule->metadata]];
     }
 
+    private function paymentPlanResource(PaymentPlan $paymentPlan): array
+    {
+        return ['id' => (string) $paymentPlan->getKey(), 'type' => 'billing-payment-plans', 'attributes' => ['invoice_id' => $paymentPlan->invoice_id, 'customer_id' => $paymentPlan->customer_id, 'total_installments' => $paymentPlan->total_installments, 'installment_amount_minor' => $paymentPlan->installment_amount_minor, 'frequency' => $paymentPlan->frequency, 'next_due_at' => $paymentPlan->next_due_at?->toIso8601String(), 'generated_installments' => $paymentPlan->generated_installments, 'status' => $paymentPlan->status]];
+    }
+
     private function forCurrentTeam(Request $request, Invoice $invoice): Invoice
     {
         $teamId = data_get($request->user(), 'current_team_id') ?? data_get($request->user(), 'currentTeam.id');
@@ -135,5 +161,12 @@ final class InvoiceController extends Controller
         $teamId = data_get($request->user(), 'current_team_id') ?? data_get($request->user(), 'currentTeam.id');
 
         return InvoiceSchedule::query()->whereKey($schedule->getKey())->where('team_id', $teamId)->firstOrFail();
+    }
+
+    private function forCurrentTeamPaymentPlan(Request $request, PaymentPlan $paymentPlan): PaymentPlan
+    {
+        $teamId = data_get($request->user(), 'current_team_id') ?? data_get($request->user(), 'currentTeam.id');
+
+        return PaymentPlan::query()->whereKey($paymentPlan->getKey())->where('team_id', $teamId)->firstOrFail();
     }
 }
