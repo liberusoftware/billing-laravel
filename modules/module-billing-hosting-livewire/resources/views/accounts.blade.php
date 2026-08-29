@@ -10,6 +10,7 @@
     @endif
 
     <label>{{ __('Transition status') }} <select wire:model="status"><option value="pending">{{ __('Pending') }}</option><option value="active">{{ __('Active') }}</option><option value="suspended">{{ __('Suspended') }}</option><option value="cancelled">{{ __('Cancelled') }}</option><option value="failed">{{ __('Failed') }}</option></select></label>
+    <label>{{ __('Provider operation') }} <select wire:model="operation"><option value="provision">{{ __('Provision') }}</option><option value="suspend">{{ __('Suspend') }}</option><option value="terminate">{{ __('Terminate') }}</option></select></label>
     <ul wire:loading.class="opacity-50">
         <li wire:loading>{{ __('Loading…') }}</li>
         @forelse ($accounts as $account)
@@ -17,6 +18,7 @@
                 {{ $account->name }} ({{ $account->status }})
                 <button type="button" wire:click="$set('selectedAccountId', {{ $account->id }})">{{ __('Select') }}</button>
                 <button type="button" wire:click="transitionAccount">{{ __('Update status') }}</button>
+                <button type="button" wire:click="performOperation">{{ __('Run provider operation') }}</button>
             </li>
         @empty
             <li>{{ __('No hosting accounts found.') }}</li>
