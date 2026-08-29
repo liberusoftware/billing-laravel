@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Customer;
+use App\Models\Team;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Liberu\Billing\Usage\Actions\CorrectUsage;
 use Liberu\Billing\Usage\Actions\DefineMeter;
@@ -78,4 +80,16 @@ it('does not ingest usage after the persisted meter is deactivated', function ()
 
     expect(fn () => app(IngestUsage::class)->execute($meter, ['event_key' => 'evt-inactive', 'quantity' => 1]))
         ->toThrow(LogicException::class, 'Usage cannot be ingested into an inactive meter.');
+});
+
+it('rejects usage for a customer owned by another team', function (): void {
+    $team = Team::factory()->create(['id' => 20]);
+    $customerId = Customer::factory()->create(['team_id' => $team->getKey()])->getKey();
+    $meter = app(DefineMeter::class)->execute([
+        'team_id' => 10, 'code' => 'requests', 'currency' => 'USD', 'unit_price_minor' => 1,
+    ]);
+
+    expect(fn () => app(IngestUsage::class)->execute($meter, [
+        'customer_id' => $customerId, 'event_key' => 'evt-foreign', 'quantity' => 1,
+    ]))->toThrow(InvalidArgumentException::class, 'Customer reference is invalid.');
 });

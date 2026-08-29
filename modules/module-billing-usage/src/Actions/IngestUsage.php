@@ -8,6 +8,7 @@ use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\QueryException;
 use Liberu\Billing\Usage\Models\Meter;
 use Liberu\Billing\Usage\Models\UsageRecord;
+use Liberu\Billing\Usage\Support\CustomerReference;
 
 final readonly class IngestUsage
 {
@@ -28,12 +29,14 @@ final readonly class IngestUsage
                     throw new \LogicException('Usage cannot be ingested into an inactive meter.');
                 }
 
+                $customerId = CustomerReference::assertBelongsToTeam($this->database, $attributes['customer_id'] ?? null, $locked->team_id);
+
                 $existing = UsageRecord::query()->where('meter_id', $locked->getKey())->where('event_key', $key)->first();
                 if ($existing !== null) {
                     return $existing;
                 }
 
-                return UsageRecord::query()->create(['team_id' => $locked->team_id, 'customer_id' => $attributes['customer_id'] ?? null, 'meter_id' => $locked->getKey(), 'event_key' => $key, 'quantity' => $quantity, 'unit_price_minor' => $locked->unit_price_minor, 'amount_minor' => (int) round($quantity * (int) $locked->unit_price_minor), 'currency' => $locked->currency, 'occurred_at' => $attributes['occurred_at'] ?? now(), 'metadata' => $attributes['metadata'] ?? []]);
+                return UsageRecord::query()->create(['team_id' => $locked->team_id, 'customer_id' => $customerId, 'meter_id' => $locked->getKey(), 'event_key' => $key, 'quantity' => $quantity, 'unit_price_minor' => $locked->unit_price_minor, 'amount_minor' => (int) round($quantity * (int) $locked->unit_price_minor), 'currency' => $locked->currency, 'occurred_at' => $attributes['occurred_at'] ?? now(), 'metadata' => $attributes['metadata'] ?? []]);
             });
         } catch (QueryException $exception) {
             if (! str_contains(strtolower($exception->getMessage()), 'unique')) {
