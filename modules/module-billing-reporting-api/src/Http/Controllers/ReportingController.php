@@ -11,6 +11,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\Reporting\Actions\CalculateReportingMetric;
 use Liberu\Billing\Reporting\Actions\CreateMetricSnapshot;
+use Liberu\Billing\Reporting\Actions\GenerateCustomerBillingSummary;
 use Liberu\Billing\Reporting\Actions\RecordReportingMetric;
 use Liberu\Billing\Reporting\Models\MetricSnapshot;
 use Liberu\Billing\Reporting\Models\ReportingMetric;
@@ -50,6 +51,14 @@ final class ReportingController extends Controller
         Gate::authorize('viewAny', MetricSnapshot::class);
 
         return response()->json($this->collection($snapshots->execute($this->team($request), $request->integer('per_page', 25))));
+    }
+
+    public function customerSummary(Request $request, GenerateCustomerBillingSummary $summary, int $customer): JsonResponse
+    {
+        Gate::authorize('viewAny', ReportingMetric::class);
+        $data = $request->validate(['currency' => ['nullable', 'string', 'size:3', 'alpha']]);
+
+        return response()->json(['data' => $summary->execute($this->team($request), $customer, $data['currency'] ?? null)]);
     }
 
     public function createSnapshot(Request $request, CreateMetricSnapshot $create): JsonResponse

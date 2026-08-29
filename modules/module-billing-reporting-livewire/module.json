@@ -17,7 +17,7 @@
   "suggests": [],
   "presentation": {
     "livewire": {
-      "components": ["module-billing-reporting::dashboard", "module-billing-reporting::metrics", "module-billing-reporting::snapshots"]
+      "components": ["module-billing-reporting::dashboard", "module-billing-reporting::metrics", "module-billing-reporting::snapshots", "module-billing-reporting::customer-summary"]
     }
   },
   "capabilities": [

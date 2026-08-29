@@ -2,6 +2,14 @@ openapi: 3.1.0
 info: {title: Billing Reporting API, version: 1.0.0, description: Team-scoped MRR, ARR, churn, aging, revenue, tax, usage, provisioning, collection, and provider metrics.}
 servers: [{url: /}]
 paths:
+  /api/v1/billing/reporting/customers/{customer}/summary:
+    get:
+      operationId: billing.reporting.customers.summary
+      security: [{sanctum: []}]
+      parameters:
+        - {name: customer, in: path, required: true, schema: {type: integer}}
+        - {name: currency, in: query, required: false, schema: {type: string, minLength: 3, maxLength: 3}}
+      responses: {'200': {description: Customer billing summary}}
   /api/v1/billing/reporting:
     get:
       operationId: billing.reporting.snapshots.list

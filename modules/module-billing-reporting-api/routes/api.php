@@ -13,6 +13,7 @@ Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.repor
 });
 
 Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.reporting.read'])->prefix('api/v1/billing/reporting')->group(function (): void {
+    Route::get('/customers/{customer}/summary', [ReportingController::class, 'customerSummary'])->whereNumber('customer')->name('billing.reporting.customers.summary');
     Route::get('/', [ReportingController::class, 'snapshots'])->name('billing.reporting.snapshots.index');
     Route::get('/{record}', [ReportingController::class, 'snapshot'])->whereNumber('record')->name('billing.reporting.snapshots.show');
 });
