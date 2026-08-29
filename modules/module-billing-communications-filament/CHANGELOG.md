@@ -1,5 +1,6 @@
 # Changelog
 
+- Added the team-scoped VoIP account resource and provider provisioning action.
 - Added a guarded communication-number lifecycle action.
 
 ## 0.1.0

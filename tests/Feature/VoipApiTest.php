@@ -10,6 +10,8 @@ use App\Models\User;
 use App\Models\VoipAccount;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
+use Liberu\Billing\Communications\Contracts\VoiceProvider;
+use Liberu\Billing\Communications\Services\VoiceProviderRegistry;
 use Tests\TestCase;
 
 class VoipApiTest extends TestCase
@@ -86,6 +88,51 @@ class VoipApiTest extends TestCase
             'team_id' => $team->id,
             'sip_username' => 'cross-tenant',
         ]);
+    }
+
+    public function test_modular_voice_api_provisions_and_ingests_a_rated_call(): void
+    {
+        [$user, $team] = $this->operator();
+        $customer = Customer::factory()->create(['team_id' => $team->id]);
+        Sanctum::actingAs($user, ['billing.communications.read', 'billing.communications.write']);
+        app(VoiceProviderRegistry::class)->register(new class() implements VoiceProvider
+        {
+            public function key(): string
+            {
+                return 'asterisk';
+            }
+
+            public function provision(array $attributes): array
+            {
+                return ['provider_account' => 'voice-1'];
+            }
+        });
+
+        $account = $this->postJson('/api/v1/billing/communications/voice/accounts', [
+            'customer_id' => $customer->id,
+            'platform' => 'asterisk',
+            'sip_username' => 'modular-sip-100',
+            'sip_secret' => 'secure-sip-password',
+        ])->assertCreated()->assertJsonMissingPath('data.sip_secret')->json('data.id');
+
+        $this->postJson('/api/v1/billing/communications/voice/rates', [
+            'name' => 'Modular US',
+            'destination_prefix' => '+1',
+            'rate_per_minute' => 0.05,
+            'billing_increment_seconds' => 60,
+        ])->assertCreated();
+        $this->postJson('/api/v1/billing/communications/voice/accounts/'.$account.'/provision')
+            ->assertAccepted()->assertJsonPath('data.status', 'active');
+        $this->postJson('/api/v1/billing/communications/voice/accounts/'.$account.'/cdrs', [
+            'external_id' => 'modular-call-1',
+            'source' => '+15551234567',
+            'destination' => '+15550001111',
+            'started_at' => now()->subMinute()->toISOString(),
+            'duration_seconds' => 45,
+        ])->assertAccepted()->assertJsonPath('data.billable_seconds', 60);
+
+        $this->getJson('/api/v1/billing/communications/voice/accounts/'.$account.'/cdrs')
+            ->assertOk()->assertJsonCount(1, 'data');
     }
 
     /** @return array{User, Team} */

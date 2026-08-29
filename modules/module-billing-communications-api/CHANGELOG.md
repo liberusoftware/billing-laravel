@@ -1,5 +1,6 @@
 # Changelog
 
+- Added team-scoped voice account, rate-rule, provisioning, and CDR endpoints with OpenAPI documentation.
 - Added the guarded communication-number status endpoint.
 
 ## 0.1.0
