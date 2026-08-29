@@ -82,6 +82,15 @@ it('rejects a payment method customer owned by another team', function (): void 
     ]))->toThrow(InvalidArgumentException::class, 'Customer reference is invalid.');
 });
 
+it('rejects a payment customer owned by another team', function (): void {
+    $team = Team::factory()->create(['id' => 20]);
+    $customerId = Customer::factory()->create(['team_id' => $team->getKey()])->getKey();
+
+    expect(fn () => app(CreatePayment::class)->execute([
+        'team_id' => 10, 'customer_id' => $customerId, 'amount_minor' => 100, 'currency' => 'USD',
+    ]))->toThrow(InvalidArgumentException::class, 'Customer reference is invalid.');
+});
+
 it('does not open a dispute after the persisted payment state changes', function (): void {
     $payment = app(CreatePayment::class)->execute(['amount_minor' => 100, 'currency' => 'EUR']);
     $payment->update(['status' => PaymentStatus::Captured]);
