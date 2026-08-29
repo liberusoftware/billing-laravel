@@ -11,5 +11,5 @@
   "capabilities": ["billing.core.livewire"],
   "default_enabled": true,
   "presentation": {"livewire": {"components": ["billing-core::billing-accounts", "billing-core::records", "billing-core::currency-converter", "billing-core::tax-calculator"]}},
-  "features": ["Account listing", "Account creation", "Contacts", "Currencies", "Currency conversion", "Tax profiles", "Tax calculation", "Sequences", "Terms", "Billing settings", "Validation and loading feedback"]
+  "features": ["Account listing", "Account creation", "Contacts", "Currencies", "Currency conversion", "Tax profiles", "Tax exemptions", "Threshold tax rates", "Tax calculation", "Sequences", "Terms", "Billing settings", "Validation and loading feedback"]
 }

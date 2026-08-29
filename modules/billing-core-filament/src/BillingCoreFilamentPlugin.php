@@ -11,6 +11,7 @@ use Liberu\Billing\Core\Filament\Resources\BillingContactResource;
 use Liberu\Billing\Core\Filament\Resources\BillingCurrencyResource;
 use Liberu\Billing\Core\Filament\Resources\BillingSequenceResource;
 use Liberu\Billing\Core\Filament\Resources\BillingSettingResource;
+use Liberu\Billing\Core\Filament\Resources\BillingTaxExemptionResource;
 use Liberu\Billing\Core\Filament\Resources\BillingTaxProfileResource;
 use Liberu\Billing\Core\Filament\Resources\BillingTermResource;
 
@@ -30,7 +31,7 @@ final class BillingCoreFilamentPlugin implements Plugin
     {
         $panel->resources([
             BillingAccountResource::class, BillingContactResource::class, BillingCurrencyResource::class,
-            BillingTaxProfileResource::class, BillingSequenceResource::class, BillingTermResource::class, BillingSettingResource::class,
+            BillingTaxProfileResource::class, BillingTaxExemptionResource::class, BillingSequenceResource::class, BillingTermResource::class, BillingSettingResource::class,
         ]);
     }
 

@@ -13,6 +13,7 @@ use Liberu\Billing\Core\Models\BillingContact;
 use Liberu\Billing\Core\Models\BillingCurrency;
 use Liberu\Billing\Core\Models\BillingSequence;
 use Liberu\Billing\Core\Models\BillingSetting;
+use Liberu\Billing\Core\Models\BillingTaxExemption;
 use Liberu\Billing\Core\Models\BillingTaxProfile;
 use Liberu\Billing\Core\Models\BillingTerm;
 use Liberu\Billing\Core\Queries\ListBillingRecords;
@@ -30,6 +31,12 @@ final class BillingCoreRecords extends Component
 
     public string $rate = '0';
 
+    public int|string $customerId = '';
+
+    public string $expiresAt = '';
+
+    public string $reason = '';
+
     public string $prefix = '';
 
     public int $dueDays = 0;
@@ -45,7 +52,7 @@ final class BillingCoreRecords extends Component
     public function updatedType(): void
     {
         $this->resetValidation();
-        $this->reset(['name', 'email', 'prefix', 'valuesJson', 'showCreate']);
+        $this->reset(['name', 'email', 'prefix', 'valuesJson', 'showCreate', 'customerId', 'expiresAt', 'reason']);
         $this->code = 'USD';
         $this->rate = '0';
         $this->dueDays = 0;
@@ -92,6 +99,7 @@ final class BillingCoreRecords extends Component
             'contacts' => BillingContact::class,
             'currencies' => BillingCurrency::class,
             'tax-profiles' => BillingTaxProfile::class,
+            'tax-exemptions' => BillingTaxExemption::class,
             'sequences' => BillingSequence::class,
             'terms' => BillingTerm::class,
             'settings' => BillingSetting::class,
@@ -106,6 +114,7 @@ final class BillingCoreRecords extends Component
             'contacts' => ['name' => ['required', 'string', 'max:255'], 'email' => ['nullable', 'email', 'max:255']],
             'currencies' => ['code' => ['required', 'string', 'size:3', 'alpha']],
             'tax-profiles' => ['name' => ['required', 'string', 'max:255'], 'rate' => ['required', 'numeric', 'between:0,100']],
+            'tax-exemptions' => ['customerId' => ['required', 'integer', 'min:1'], 'expiresAt' => ['nullable', 'date'], 'reason' => ['nullable', 'string', 'max:255']],
             'sequences' => ['name' => ['required', 'string', 'max:100'], 'nextNumber' => ['required', 'integer', 'min:1']],
             'terms' => ['name' => ['required', 'string', 'max:100'], 'dueDays' => ['required', 'integer', 'min:0', 'max:3650']],
             'settings' => ['valuesJson' => ['required', 'json']],
@@ -120,6 +129,7 @@ final class BillingCoreRecords extends Component
             'contacts' => ['name' => $this->name, 'email' => $this->email ?: null],
             'currencies' => ['code' => strtoupper($this->code), 'name' => strtoupper($this->code), 'decimal_places' => 2, 'enabled' => true],
             'tax-profiles' => ['name' => $this->name, 'rate' => $this->rate, 'enabled' => true],
+            'tax-exemptions' => ['customer_id' => (int) $this->customerId, 'expires_at' => $this->expiresAt ?: null, 'reason' => $this->reason ?: null, 'enabled' => true],
             'sequences' => ['name' => $this->name, 'prefix' => $this->prefix ?: null, 'next_number' => $this->nextNumber],
             'terms' => ['name' => $this->name, 'due_days' => $this->dueDays],
             'settings' => ['values' => json_decode($this->valuesJson, true, 512, JSON_THROW_ON_ERROR)],
