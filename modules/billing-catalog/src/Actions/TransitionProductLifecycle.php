@@ -18,9 +18,14 @@ final class TransitionProductLifecycle
         }
 
         return DB::transaction(function () use ($product, $status): Product {
-            $product->update(['status' => $status]);
+            $locked = Product::query()->lockForUpdate()->findOrFail($product->getKey());
+            if ($locked->status === ProductStatus::Archived && $status !== ProductStatus::Archived) {
+                throw new InvalidArgumentException('An archived product cannot be reopened.');
+            }
 
-            return $product->refresh();
+            $locked->update(['status' => $status]);
+
+            return $locked->refresh();
         });
     }
 }
