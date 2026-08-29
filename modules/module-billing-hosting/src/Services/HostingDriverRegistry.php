@@ -14,7 +14,7 @@ final class HostingDriverRegistry
 
     public function register(HostingDriver $driver): void
     {
-        $key = trim($driver->key());
+        $key = strtolower(trim($driver->key()));
         if ($key === '' || isset($this->drivers[$key])) {
             throw new InvalidArgumentException('Hosting driver keys must be non-empty and unique.');
         }
@@ -24,6 +24,8 @@ final class HostingDriverRegistry
 
     public function resolve(string $key): HostingDriver
     {
+        $key = strtolower(trim($key));
+
         return $this->drivers[$key] ?? throw new InvalidArgumentException("Hosting driver [{$key}] is not registered.");
     }
 
