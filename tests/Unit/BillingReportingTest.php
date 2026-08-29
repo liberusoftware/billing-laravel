@@ -4,6 +4,7 @@ use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Liberu\Billing\Reporting\Actions\CalculateReportingMetric;
+use Liberu\Billing\Reporting\Actions\ExportReportingMetrics;
 
 uses(RefreshDatabase::class);
 
@@ -50,4 +51,19 @@ it('excludes draft invoices from aging receivables', function (): void {
 
     expect(app(CalculateReportingMetric::class)->execute(10, 'aging', $dueAt->addDay(), $dueAt->addDay(), 'USD')['value'])
         ->toBe(1200.0);
+});
+
+it('exports only the current team reporting metrics as CSV', function (): void {
+    DB::table('billing_reporting_metrics')->insert([
+        ['team_id' => 10, 'metric' => 'revenue', 'period_start' => '2026-08-01', 'period_end' => '2026-08-31', 'value' => 1250, 'currency' => 'USD', 'source' => 'test', 'created_at' => now(), 'updated_at' => now()],
+        ['team_id' => 10, 'metric' => 'tax', 'period_start' => '2026-08-01', 'period_end' => '2026-08-31', 'value' => 250, 'currency' => 'USD', 'source' => 'test', 'created_at' => now(), 'updated_at' => now()],
+        ['team_id' => 11, 'metric' => 'revenue', 'period_start' => '2026-08-01', 'period_end' => '2026-08-31', 'value' => 9999, 'currency' => 'USD', 'source' => 'other', 'created_at' => now(), 'updated_at' => now()],
+    ]);
+
+    $csv = app(ExportReportingMetrics::class)->execute(10, 'revenue');
+
+    expect($csv)->toContain('metric,period_start,period_end,value,currency,source')
+        ->toContain('revenue,2026-08-01,2026-08-31,1250,USD,test')
+        ->not->toContain('tax,2026-08-01')
+        ->not->toContain('9999');
 });

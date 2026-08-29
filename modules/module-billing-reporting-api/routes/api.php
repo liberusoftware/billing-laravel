@@ -5,6 +5,7 @@ use Liberu\Billing\Reporting\Api\Http\Controllers\ReportingController;
 
 Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.reporting.read'])->prefix('api/v1/billing/reporting/metrics')->group(function (): void {
     Route::get('/', [ReportingController::class, 'metrics'])->name('billing.reporting.metrics.index');
+    Route::get('/export', [ReportingController::class, 'exportMetrics'])->name('billing.reporting.metrics.export');
 });
 
 Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.reporting.write', 'idempotency'])->prefix('api/v1/billing/reporting/metrics')->group(function (): void {
