@@ -13,11 +13,13 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Liberu\Billing\Reporting\Actions\CalculateReportingMetric;
+use Liberu\Billing\Reporting\Actions\ExportReportingMetrics;
 use Liberu\Billing\Reporting\Actions\RecordReportingMetric;
 use Liberu\Billing\Reporting\Filament\Concerns\ScopesCurrentTeam;
 use Liberu\Billing\Reporting\Filament\Resources\ReportingMetricResource\Pages\CreateReportingMetric;
 use Liberu\Billing\Reporting\Filament\Resources\ReportingMetricResource\Pages\ListReportingMetrics;
 use Liberu\Billing\Reporting\Models\ReportingMetric;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 final class ReportingMetricResource extends Resource
 {
@@ -45,6 +47,15 @@ final class ReportingMetricResource extends Resource
                 $team = (int) (data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id'));
                 $calculated = app(CalculateReportingMetric::class)->execute($team, (string) $record->getRawOriginal('metric'), CarbonImmutable::parse((string) $record->getRawOriginal('period_start')), CarbonImmutable::parse((string) $record->getRawOriginal('period_end')), $data['currency'] ?? (string) $record->getRawOriginal('currency'));
                 app(RecordReportingMetric::class)->execute($team, $calculated);
+            }),
+        ])->headerActions([
+            Action::make('exportCsv')->label('Export CSV')->action(function (): StreamedResponse {
+                $team = (int) (data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id'));
+                $csv = app(ExportReportingMetrics::class)->execute($team);
+
+                return response()->streamDownload(static function () use ($csv): void {
+                    echo $csv;
+                }, 'billing-reporting-metrics.csv', ['Content-Type' => 'text/csv']);
             }),
         ])->defaultSort('period_end', 'desc');
     }

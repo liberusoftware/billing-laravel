@@ -7,10 +7,12 @@ namespace Liberu\Billing\Reporting\Api\Http\Controllers;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\Reporting\Actions\CalculateReportingMetric;
 use Liberu\Billing\Reporting\Actions\CreateMetricSnapshot;
+use Liberu\Billing\Reporting\Actions\ExportReportingMetrics;
 use Liberu\Billing\Reporting\Actions\GenerateCustomerBillingSummary;
 use Liberu\Billing\Reporting\Actions\RecordReportingMetric;
 use Liberu\Billing\Reporting\Models\MetricSnapshot;
@@ -26,6 +28,13 @@ final class ReportingController extends Controller
         $results = $metrics->execute($this->team($request), $request->string('metric')->toString() ?: null, $request->integer('per_page', 25));
 
         return response()->json($this->collection($results));
+    }
+
+    public function exportMetrics(Request $request, ExportReportingMetrics $export): Response
+    {
+        Gate::authorize('viewAny', ReportingMetric::class);
+
+        return response($export->execute($this->team($request), $request->string('metric')->toString() ?: null), 200, ['Content-Type' => 'text/csv', 'Content-Disposition' => 'attachment; filename="billing-reporting-metrics.csv"']);
     }
 
     public function recordMetric(Request $request, RecordReportingMetric $record): JsonResponse
