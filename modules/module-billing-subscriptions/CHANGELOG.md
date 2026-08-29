@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Add an idempotent expiry action for due non-renewing subscriptions and expose it through API, Filament, and Livewire.
+
 ## 0.1.0
 
 - Add the independent Billing Subscriptions lifecycle boundary.

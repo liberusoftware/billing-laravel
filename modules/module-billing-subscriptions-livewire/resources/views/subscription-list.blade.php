@@ -3,6 +3,7 @@
     @if (session()->has('module-billing-subscriptions-message'))
         <p role="status">{{ session('module-billing-subscriptions-message') }}</p>
     @endif
+    <button type="button" wire:click="expireDue">{{ __('Expire due subscriptions') }}</button>
     <button type="button" wire:click="$set('showActivate', true)">{{ __('Activate subscription') }}</button>
     @if ($showActivate)
         <form wire:submit="activate">

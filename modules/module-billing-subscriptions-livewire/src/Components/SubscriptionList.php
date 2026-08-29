@@ -9,6 +9,7 @@ use Illuminate\View\View;
 use Liberu\Billing\Subscriptions\Actions\ActivateSubscription;
 use Liberu\Billing\Subscriptions\Actions\CancelSubscription;
 use Liberu\Billing\Subscriptions\Actions\ChangeSubscriptionPlan;
+use Liberu\Billing\Subscriptions\Actions\ExpireSubscriptions;
 use Liberu\Billing\Subscriptions\Actions\PauseSubscription;
 use Liberu\Billing\Subscriptions\Actions\RenewSubscription;
 use Liberu\Billing\Subscriptions\Actions\ResumeSubscription;
@@ -72,6 +73,14 @@ final class SubscriptionList extends Component
         $change->execute($this->authorizedSubscription($subscriptionId), $this->pricingPlanId);
         $this->reset('pricingPlanId');
         session()->flash('module-billing-subscriptions-message', __('Subscription plan changed.'));
+    }
+
+    public function expireDue(ExpireSubscriptions $expire): void
+    {
+        Gate::authorize('create', Subscription::class);
+        $teamId = data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id');
+        $count = $expire->execute($teamId === null ? null : (int) $teamId);
+        session()->flash('module-billing-subscriptions-message', trans_choice(':count subscription expired.|:count subscriptions expired.', $count, ['count' => $count]));
     }
 
     private function authorizedSubscription(int $subscriptionId): Subscription

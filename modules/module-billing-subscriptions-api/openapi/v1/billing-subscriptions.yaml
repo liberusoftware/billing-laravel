@@ -73,6 +73,25 @@ paths:
       responses:
         '200': {$ref: '#/components/responses/ResourceDocument'}
         '401': {$ref: '#/components/responses/Unauthorized'}
+  /api/v1/billing/subscriptions/expire:
+    post:
+      operationId: billing.subscriptions.expire
+      summary: Expire due non-renewing subscriptions
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {as_of: {type: string, format: date-time}}
+      responses:
+        '200':
+          description: Number of subscriptions expired.
+          content: {application/json: {schema: {type: object, properties: {data: {type: object, properties: {expired: {type: integer, minimum: 0}}}}}}}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '422': {$ref: '#/components/responses/ValidationError'}
 components:
   parameters:
     IdempotencyKey: {name: Idempotency-Key, in: header, required: false, schema: {type: string, maxLength: 255}}

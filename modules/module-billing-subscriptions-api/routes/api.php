@@ -23,4 +23,5 @@ Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.subsc
         Route::post('/{subscription}/cancel', [SubscriptionController::class, 'cancel'])->name('cancel');
         Route::patch('/{subscription}/plan', [SubscriptionController::class, 'changePlan'])->name('plan');
         Route::patch('/{subscription}/entitlements', [SubscriptionController::class, 'entitlements'])->name('entitlements');
+        Route::post('/expire', [SubscriptionController::class, 'expire'])->name('expire');
     });

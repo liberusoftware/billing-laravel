@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Liberu\Billing\Subscriptions\Api\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\Subscriptions\Actions\ActivateSubscription;
 use Liberu\Billing\Subscriptions\Actions\CancelSubscription;
 use Liberu\Billing\Subscriptions\Actions\ChangeSubscriptionPlan;
+use Liberu\Billing\Subscriptions\Actions\ExpireSubscriptions;
 use Liberu\Billing\Subscriptions\Actions\PauseSubscription;
 use Liberu\Billing\Subscriptions\Actions\RenewSubscription;
 use Liberu\Billing\Subscriptions\Actions\ResumeSubscription;
@@ -98,6 +100,15 @@ final class SubscriptionController extends Controller
         $data = $request->validate(['entitlement_state' => ['required', 'array']]);
 
         return response()->json(['data' => $this->resource($update->execute($subscription, $data['entitlement_state']))]);
+    }
+
+    public function expire(Request $request, ExpireSubscriptions $expire): JsonResponse
+    {
+        Gate::authorize('create', Subscription::class);
+        $data = $request->validate(['as_of' => ['nullable', 'date']]);
+        $teamId = data_get($request->user(), 'current_team_id') ?? data_get($request->user(), 'currentTeam.id');
+
+        return response()->json(['data' => ['expired' => $expire->execute($teamId === null ? null : (int) $teamId, isset($data['as_of']) ? Carbon::parse($data['as_of']) : null)]]);
     }
 
     private function resource(Subscription $subscription): array

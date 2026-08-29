@@ -13,6 +13,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Liberu\Billing\Subscriptions\Actions\CancelSubscription;
 use Liberu\Billing\Subscriptions\Actions\ChangeSubscriptionPlan;
+use Liberu\Billing\Subscriptions\Actions\ExpireSubscriptions;
 use Liberu\Billing\Subscriptions\Actions\PauseSubscription;
 use Liberu\Billing\Subscriptions\Actions\RenewSubscription;
 use Liberu\Billing\Subscriptions\Actions\ResumeSubscription;
@@ -65,6 +66,13 @@ final class SubscriptionResource extends Resource
                 ->requiresConfirmation()
                 ->visible(fn (Subscription $record): bool => ! in_array($record->getRawOriginal('status'), ['cancelled', 'expired'], true))
                 ->action(fn (Subscription $record): Subscription => app(CancelSubscription::class)->execute($record)),
+            Action::make('expire')
+                ->label('Expire')
+                ->requiresConfirmation()
+                ->visible(fn (Subscription $record): bool => $record->current_period_ends_at?->isPast() === true && ! $record->auto_renew && ! in_array($record->getRawOriginal('status'), ['cancelled', 'expired'], true))
+                ->action(function (Subscription $record): void {
+                    app(ExpireSubscriptions::class)->execute($record->team_id, now());
+                }),
             Action::make('change_plan')
                 ->label('Change plan')
                 ->form([TextInput::make('pricing_plan_id')->integer()->minValue(1)->required()])
