@@ -42,6 +42,7 @@ final class HostingCapabilityController extends Controller
 
     public function transition(Request $request, HostingCapability $capability, TransitionHostingCapability $transition): JsonResponse
     {
+        $capability = HostingCapability::query()->where('team_id', $this->team($request))->findOrFail($capability->getKey());
         Gate::authorize('update', $capability);
         $data = $request->validate(['status' => ['required', 'string']]);
 
