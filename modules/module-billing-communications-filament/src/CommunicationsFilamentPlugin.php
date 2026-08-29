@@ -10,6 +10,7 @@ use Liberu\Billing\Communications\Filament\Resources\CommunicationNumberResource
 use Liberu\Billing\Communications\Filament\Resources\CommunicationProviderResource;
 use Liberu\Billing\Communications\Filament\Resources\CommunicationServiceResource;
 use Liberu\Billing\Communications\Filament\Resources\CommunicationUsageImportResource;
+use Liberu\Billing\Communications\Filament\Resources\VoipAccountResource;
 
 final class CommunicationsFilamentPlugin implements Plugin
 {
@@ -25,7 +26,7 @@ final class CommunicationsFilamentPlugin implements Plugin
 
     public function register(Panel $panel): void
     {
-        $panel->resources([CommunicationServiceResource::class, CommunicationNumberResource::class, CommunicationProviderResource::class, CommunicationUsageImportResource::class]);
+        $panel->resources([CommunicationServiceResource::class, CommunicationNumberResource::class, CommunicationProviderResource::class, CommunicationUsageImportResource::class, VoipAccountResource::class]);
     }
 
     public function boot(Panel $panel): void {}

@@ -1,5 +1,6 @@
 # Changelog
 
+- Added the team-scoped voice-account creation and provisioning component.
 - Add provider management and usage import workflows to the Livewire adapter.
 - Added team-scoped communication-service creation and lifecycle management component.
 

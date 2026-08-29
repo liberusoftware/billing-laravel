@@ -8,6 +8,7 @@ use Illuminate\Support\ServiceProvider;
 use Liberu\Billing\Communications\Livewire\Components\CommunicationInventory;
 use Liberu\Billing\Communications\Livewire\Components\CommunicationProviders;
 use Liberu\Billing\Communications\Livewire\Components\CommunicationServices;
+use Liberu\Billing\Communications\Livewire\Components\VoiceAccounts;
 use Livewire\Livewire;
 
 final class CommunicationsLivewireServiceProvider extends ServiceProvider
@@ -18,5 +19,6 @@ final class CommunicationsLivewireServiceProvider extends ServiceProvider
         Livewire::component('module-billing-communications::inventory', CommunicationInventory::class);
         Livewire::component('module-billing-communications::providers', CommunicationProviders::class);
         Livewire::component('module-billing-communications::services', CommunicationServices::class);
+        Livewire::component('module-billing-communications::voice-accounts', VoiceAccounts::class);
     }
 }

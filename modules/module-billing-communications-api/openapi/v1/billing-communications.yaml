@@ -5,6 +5,46 @@ info:
   description: Team-scoped communications inventory, number lifecycle, usage imports, and provider adapters.
 servers: [{url: /}]
 paths:
+  /api/v1/billing/communications/voice/accounts:
+    get:
+      operationId: billing.communications.voice.accounts.list
+      security: [{sanctum: []}]
+      responses: {'200': {$ref: '#/components/responses/Collection'}, '401': {$ref: '#/components/responses/Unauthorized'}}
+    post:
+      operationId: billing.communications.voice.accounts.create
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/VoiceAccountRequest'}}}}
+      responses: {'201': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/communications/voice/accounts/{account}/provision:
+    post:
+      operationId: billing.communications.voice.accounts.provision
+      security: [{sanctum: []}]
+      parameters: [{name: account, in: path, required: true, schema: {type: integer, minimum: 1}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      responses: {'202': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/communications/voice/accounts/{account}/cdrs:
+    get:
+      operationId: billing.communications.voice.cdrs.list
+      security: [{sanctum: []}]
+      parameters: [{name: account, in: path, required: true, schema: {type: integer, minimum: 1}}, {$ref: '#/components/parameters/PageSize'}]
+      responses: {'200': {$ref: '#/components/responses/Collection'}, '401': {$ref: '#/components/responses/Unauthorized'}}
+    post:
+      operationId: billing.communications.voice.cdrs.ingest
+      security: [{sanctum: []}]
+      parameters: [{name: account, in: path, required: true, schema: {type: integer, minimum: 1}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/CallDetailRecordRequest'}}}}
+      responses: {'202': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/communications/voice/rates:
+    get:
+      operationId: billing.communications.voice.rates.list
+      security: [{sanctum: []}]
+      responses: {'200': {$ref: '#/components/responses/Collection'}, '401': {$ref: '#/components/responses/Unauthorized'}}
+    post:
+      operationId: billing.communications.voice.rates.create
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/RateRuleRequest'}}}}
+      responses: {'201': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
   /api/v1/billing/communications/numbers/{number}/status:
     patch:
       operationId: billing.communications.numbers.status
@@ -75,6 +115,18 @@ components:
     ValidationError: {description: RFC 9457-compatible validation problem.}
     RateLimited: {description: The caller exceeded the published request limit., headers: {Retry-After: {schema: {type: integer}}}}
   schemas:
+    VoiceAccountRequest:
+      type: object
+      required: [customer_id, platform, sip_username, sip_secret]
+      properties: {customer_id: {type: integer, minimum: 1}, subscription_id: {type: [integer, 'null'], minimum: 1}, platform: {type: string, maxLength: 100}, sip_username: {type: string, maxLength: 255}, sip_secret: {type: string, writeOnly: true}, caller_id: {type: [string, 'null']}, credit_limit: {type: [number, 'null'], minimum: 0}, max_concurrent_calls: {type: integer, minimum: 1}, international_enabled: {type: boolean}}
+    RateRuleRequest:
+      type: object
+      required: [name, destination_prefix, rate_per_minute]
+      properties: {name: {type: string, maxLength: 255}, destination_prefix: {type: string, maxLength: 64}, connection_fee: {type: number, minimum: 0}, rate_per_minute: {type: number, minimum: 0}, billing_increment_seconds: {type: integer, minimum: 1}, currency: {type: string, pattern: '^[A-Z]{3}$'}, is_active: {type: boolean}}
+    CallDetailRecordRequest:
+      type: object
+      required: [external_id, source, destination, started_at]
+      properties: {external_id: {type: string, maxLength: 255}, source: {type: string, maxLength: 255}, destination: {type: string, maxLength: 255}, direction: {type: string, maxLength: 32}, started_at: {type: string, format: date-time}, answered_at: {type: [string, 'null'], format: date-time}, ended_at: {type: [string, 'null'], format: date-time}, duration_seconds: {type: integer, minimum: 0}, disposition: {type: string, maxLength: 64}, metadata: {type: object, additionalProperties: true}}
     ProvisionNumberRequest:
       type: object
       required: [number]
