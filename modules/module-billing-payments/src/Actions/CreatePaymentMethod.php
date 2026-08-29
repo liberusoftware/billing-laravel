@@ -6,6 +6,7 @@ namespace Liberu\Billing\Payments\Actions;
 
 use Illuminate\Database\DatabaseManager;
 use Liberu\Billing\Payments\Models\PaymentMethod;
+use Liberu\Billing\Payments\Support\CustomerReference;
 
 final readonly class CreatePaymentMethod
 {
@@ -18,9 +19,12 @@ final readonly class CreatePaymentMethod
             throw new \InvalidArgumentException('Payment method type and provider are required.');
         }
 
+        $teamId = $attributes['team_id'] ?? null;
+        $customerId = CustomerReference::assertBelongsToTeam($this->database, $attributes['customer_id'] ?? null, $teamId);
+
         return $this->database->transaction(fn (): PaymentMethod => PaymentMethod::query()->create([
-            'team_id' => $attributes['team_id'] ?? null,
-            'customer_id' => $attributes['customer_id'] ?? null,
+            'team_id' => $teamId,
+            'customer_id' => $customerId,
             'type' => $attributes['type'],
             'provider' => strtolower((string) $attributes['provider']),
             'provider_reference' => $attributes['provider_reference'] ?? null,

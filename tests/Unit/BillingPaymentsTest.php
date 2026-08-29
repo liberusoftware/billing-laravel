@@ -1,9 +1,12 @@
 <?php
 
+use App\Models\Customer;
+use App\Models\Team;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Liberu\Billing\Payments\Actions\AllocatePayment;
 use Liberu\Billing\Payments\Actions\CapturePayment;
 use Liberu\Billing\Payments\Actions\CreatePayment;
+use Liberu\Billing\Payments\Actions\CreatePaymentMethod;
 use Liberu\Billing\Payments\Actions\OpenDispute;
 use Liberu\Billing\Payments\Actions\ReconcilePayment;
 use Liberu\Billing\Payments\Actions\RefundPayment;
@@ -68,6 +71,15 @@ it('requires a gateway before refunding a captured payment', function () {
 
     expect(fn () => app(RefundPayment::class)->execute($payment->refresh(), 1))
         ->toThrow(InvalidArgumentException::class);
+});
+
+it('rejects a payment method customer owned by another team', function (): void {
+    $team = Team::factory()->create(['id' => 20]);
+    $customerId = Customer::factory()->create(['team_id' => $team->getKey()])->getKey();
+
+    expect(fn () => app(CreatePaymentMethod::class)->execute([
+        'team_id' => 10, 'customer_id' => $customerId, 'type' => 'card', 'provider' => 'stripe',
+    ]))->toThrow(InvalidArgumentException::class, 'Customer reference is invalid.');
 });
 
 it('does not open a dispute after the persisted payment state changes', function (): void {
