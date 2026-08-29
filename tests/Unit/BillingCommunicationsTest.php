@@ -32,3 +32,12 @@ it('does not reactivate a communication service after its persisted state become
     expect(fn () => app(TransitionCommunicationService::class)->handle($service, 'active'))
         ->toThrow(InvalidArgumentException::class, 'Cancelled communication services cannot be reactivated.');
 });
+
+it('does not reactivate a communication number after its persisted state becomes released', function (): void {
+    $number = CommunicationNumber::query()->create(['team_id' => 10, 'number' => '+12025550102', 'type' => 'phone', 'status' => 'available']);
+    $number->refresh();
+    CommunicationNumber::query()->whereKey($number->getKey())->update(['status' => 'released']);
+
+    expect(fn () => app(TransitionCommunicationNumber::class)->handle($number, 'active'))
+        ->toThrow(InvalidArgumentException::class, 'Released communication numbers cannot be reactivated.');
+});
