@@ -35,13 +35,15 @@ final class PricingSupportController extends Controller
 
     public function redeem(Request $request, PricingDiscount $discount, RedeemPricingDiscount $redeem): JsonResponse
     {
+        $discount = $this->forCurrentTeam($request, PricingDiscount::class, $discount->getKey());
         Gate::authorize('update', $discount);
 
         return response()->json(['data' => $redeem->execute($discount)]);
     }
 
-    public function snapshot(PricingPlan $plan, CapturePricingSnapshot $capture): JsonResponse
+    public function snapshot(Request $request, PricingPlan $plan, CapturePricingSnapshot $capture): JsonResponse
     {
+        $plan = $this->forCurrentTeam($request, PricingPlan::class, $plan->getKey());
         Gate::authorize('update', $plan);
 
         return response()->json(['data' => $capture->execute($plan)], 201);
@@ -64,5 +66,13 @@ final class PricingSupportController extends Controller
     private function team(Request $request): int
     {
         return (int) (data_get($request->user(), 'current_team_id') ?? data_get($request->user(), 'currentTeam.id'));
+    }
+
+    /** @template TModel of object */
+    private function forCurrentTeam(Request $request, string $model, int $id): object
+    {
+        $teamId = $this->team($request);
+
+        return $model::query()->whereKey($id)->where(fn ($query) => $query->whereNull('team_id')->orWhere('team_id', $teamId))->firstOrFail();
     }
 }
