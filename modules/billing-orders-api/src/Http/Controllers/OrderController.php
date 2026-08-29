@@ -13,10 +13,14 @@ use Liberu\Billing\Orders\Actions\CheckoutCart;
 use Liberu\Billing\Orders\Actions\CreateCart;
 use Liberu\Billing\Orders\Actions\CreateOrder;
 use Liberu\Billing\Orders\Actions\CreateQuote;
+use Liberu\Billing\Orders\Actions\ConvertQuoteToOrder;
+use Liberu\Billing\Orders\Actions\ExpireQuotes;
+use Liberu\Billing\Orders\Actions\TransitionQuote;
 use Liberu\Billing\Orders\Actions\ReviewFraud;
 use Liberu\Billing\Orders\Enums\FraudReviewStatus;
 use Liberu\Billing\Orders\Models\Cart;
 use Liberu\Billing\Orders\Models\Order;
+use Liberu\Billing\Orders\Models\Quote;
 use Liberu\Billing\Orders\Queries\ListOrders;
 
 final class OrderController extends Controller
@@ -56,6 +60,30 @@ final class OrderController extends Controller
         $data['team_id'] = $this->team($request);
 
         return response()->json(['data' => $create->execute($data)], 201);
+    }
+
+    public function quoteTransition(Request $request, int $quote, TransitionQuote $transition): JsonResponse
+    {
+        $instance = Quote::query()->whereKey($quote)->where('team_id', $this->team($request))->firstOrFail();
+        Gate::authorize('update', $instance);
+        $data = $request->validate(['status' => ['required', 'in:draft,sent,viewed,accepted,declined,expired']]);
+
+        return response()->json(['data' => $transition->execute($instance, $data['status'])]);
+    }
+
+    public function convertQuote(Request $request, int $quote, ConvertQuoteToOrder $convert): JsonResponse
+    {
+        $instance = Quote::query()->whereKey($quote)->where('team_id', $this->team($request))->firstOrFail();
+        Gate::authorize('update', $instance);
+
+        return response()->json(['data' => $this->resource($convert->execute($instance))], 201);
+    }
+
+    public function expireQuotes(Request $request, ExpireQuotes $expire): JsonResponse
+    {
+        Gate::authorize('update', Quote::class);
+
+        return response()->json(['expired' => $expire->execute($this->team($request))]);
     }
 
     public function checkout(Request $request, Cart $cart, CheckoutCart $checkout): JsonResponse

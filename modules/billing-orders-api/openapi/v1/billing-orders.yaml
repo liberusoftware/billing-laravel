@@ -7,6 +7,24 @@ info:
 servers:
   - url: /
 paths:
+  /api/v1/billing/orders/quotes/{quote}/lifecycle:
+    patch:
+      operationId: billing.orders.quotes.lifecycle
+      security: [{sanctum: []}]
+      parameters: [{name: quote, in: path, required: true, schema: {type: integer}}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object, required: [status], properties: {status: {type: string, enum: [draft, sent, viewed, accepted, declined, expired]}}}}}}
+      responses: {'200': {description: Quote lifecycle updated}}
+  /api/v1/billing/orders/quotes/{quote}/convert:
+    post:
+      operationId: billing.orders.quotes.convert
+      security: [{sanctum: []}]
+      parameters: [{name: quote, in: path, required: true, schema: {type: integer}}]
+      responses: {'201': {description: Quote converted to order}}
+  /api/v1/billing/orders/quotes/expire:
+    post:
+      operationId: billing.orders.quotes.expire
+      security: [{sanctum: []}]
+      responses: {'200': {description: Expired quote count}}
   /api/v1/billing/orders:
     get:
       operationId: billing.orders.list

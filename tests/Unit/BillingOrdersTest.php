@@ -5,11 +5,14 @@ use App\Models\Team;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Liberu\Billing\Orders\Actions\AddChangeOrder;
 use Liberu\Billing\Orders\Actions\CheckoutCart;
+use Liberu\Billing\Orders\Actions\ConvertQuoteToOrder;
 use Liberu\Billing\Orders\Actions\CreateCart;
 use Liberu\Billing\Orders\Actions\CreateOrder;
 use Liberu\Billing\Orders\Actions\CreateQuote;
+use Liberu\Billing\Orders\Actions\ExpireQuotes;
 use Liberu\Billing\Orders\Actions\ReviewFraud;
 use Liberu\Billing\Orders\Actions\TransitionOrder;
+use Liberu\Billing\Orders\Actions\TransitionQuote;
 use Liberu\Billing\Orders\Enums\FraudReviewStatus;
 use Liberu\Billing\Orders\Enums\OrderStatus;
 use Liberu\Billing\Orders\Models\Cart;
@@ -135,4 +138,29 @@ it('does not check out a cart after its persisted state becomes checked out', fu
 
     expect(fn () => app(CheckoutCart::class)->execute($cart, ['subtotal_minor' => 100]))
         ->toThrow(LogicException::class, 'Only open, non-expired carts can be checked out.');
+});
+
+it('drives quote lifecycle and converts an accepted quote idempotently', function (): void {
+    $quote = app(CreateQuote::class)->execute(['team_id' => 10, 'currency' => 'USD', 'total_minor' => 2500, 'items' => [['name' => 'Service']]]);
+    $transition = app(TransitionQuote::class);
+
+    $transition->execute($quote, 'sent');
+    $accepted = $transition->execute($quote->refresh(), 'accepted');
+    $order = app(ConvertQuoteToOrder::class)->execute($accepted);
+    $sameOrder = app(ConvertQuoteToOrder::class)->execute($accepted->refresh());
+
+    expect($accepted->accepted_at)->not->toBeNull()
+        ->and($order->quote_id)->toBe($quote->id)
+        ->and($order->total_minor)->toBe(2500)
+        ->and($sameOrder->id)->toBe($order->id)
+        ->and(fn () => $transition->execute($accepted, 'declined'))->toThrow(LogicException::class);
+});
+
+it('expires only sent or viewed quotes past their validity date', function (): void {
+    Quote::query()->create(['team_id' => 10, 'quote_number' => 'QUO-EXPIRED', 'currency' => 'USD', 'total_minor' => 100, 'items' => [['name' => 'Item']], 'valid_until' => now()->subDay(), 'status' => 'sent']);
+    Quote::query()->create(['team_id' => 10, 'quote_number' => 'QUO-ACTIVE', 'currency' => 'USD', 'total_minor' => 100, 'items' => [['name' => 'Item']], 'valid_until' => now()->subDay(), 'status' => 'accepted']);
+
+    expect(app(ExpireQuotes::class)->execute(10))->toBe(1)
+        ->and(Quote::query()->where('quote_number', 'QUO-EXPIRED')->value('status'))->toBe('expired')
+        ->and(Quote::query()->where('quote_number', 'QUO-ACTIVE')->value('status'))->toBe('accepted');
 });
