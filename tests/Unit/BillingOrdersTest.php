@@ -10,6 +10,7 @@ use Liberu\Billing\Orders\Enums\FraudReviewStatus;
 use Liberu\Billing\Orders\Enums\OrderStatus;
 use Liberu\Billing\Orders\Models\Cart;
 use Liberu\Billing\Orders\Models\Order;
+use Liberu\Billing\Orders\Models\Quote;
 
 uses(RefreshDatabase::class);
 
@@ -59,6 +60,17 @@ it('rejects invalid order amounts', function () {
         'subtotal_minor' => 100,
         'discount_minor' => 101,
         ]))->toThrow(InvalidArgumentException::class);
+});
+
+it('rejects a quote owned by another team', function (): void {
+    $quote = Quote::query()->create([
+        'team_id' => 20, 'quote_number' => 'QUO-FOREIGN', 'currency' => 'USD',
+        'total_minor' => 100, 'items' => [], 'status' => 'draft',
+    ]);
+
+    expect(fn () => app(CreateOrder::class)->execute([
+        'team_id' => 10, 'quote_id' => $quote->getKey(), 'currency' => 'USD', 'subtotal_minor' => 100,
+    ]))->toThrow(InvalidArgumentException::class, 'Order quote reference is invalid.');
 });
 
 it('does not transition an order after its persisted state becomes terminal', function (): void {
