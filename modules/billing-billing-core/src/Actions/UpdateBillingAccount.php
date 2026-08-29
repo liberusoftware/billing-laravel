@@ -15,15 +15,16 @@ final readonly class UpdateBillingAccount
     public function execute(BillingAccount $account, array $attributes): BillingAccount
     {
         return $this->database->transaction(function () use ($account, $attributes): BillingAccount {
+            $locked = BillingAccount::query()->lockForUpdate()->findOrFail($account->getKey());
             if (array_key_exists('name', $attributes)) {
                 $attributes['name'] = trim((string) $attributes['name']);
             }
             if (array_key_exists('currency', $attributes)) {
                 $attributes['currency'] = strtoupper((string) $attributes['currency']);
             }
-            $account->fill($attributes)->save();
+            $locked->fill($attributes)->save();
 
-            return $account->refresh();
+            return $locked->refresh();
         });
     }
 }

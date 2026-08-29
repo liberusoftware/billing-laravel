@@ -51,3 +51,16 @@ it('updates a locked billing core record from its persisted state', function ():
     expect($updated->name)->toBe('Updated')
         ->and($updated->email)->toBe('original@example.com');
 });
+
+it('updates a billing account from its locked persisted state', function (): void {
+    $account = app(CreateBillingAccount::class)->execute([
+        'team_id' => 10, 'name' => 'Original account', 'currency' => 'USD', 'settings' => ['timezone' => 'UTC'],
+    ]);
+    $account->refresh();
+    BillingAccount::query()->whereKey($account->getKey())->update(['settings' => json_encode(['timezone' => 'Europe/London'])]);
+
+    $updated = app(UpdateBillingAccount::class)->execute($account, ['name' => 'Updated account']);
+
+    expect($updated->name)->toBe('Updated account')
+        ->and($updated->settings)->toBe(['timezone' => 'Europe/London']);
+});
