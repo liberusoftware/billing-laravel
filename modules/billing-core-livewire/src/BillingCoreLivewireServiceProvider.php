@@ -8,6 +8,7 @@ use Illuminate\Support\ServiceProvider;
 use Liberu\Billing\Core\Livewire\Components\BillingAccounts;
 use Liberu\Billing\Core\Livewire\Components\BillingCoreRecords;
 use Liberu\Billing\Core\Livewire\Components\CurrencyConverter;
+use Liberu\Billing\Core\Livewire\Components\TaxCalculator;
 use Livewire\Livewire;
 
 final class BillingCoreLivewireServiceProvider extends ServiceProvider
@@ -18,5 +19,6 @@ final class BillingCoreLivewireServiceProvider extends ServiceProvider
         Livewire::component('billing-core::billing-accounts', BillingAccounts::class);
         Livewire::component('billing-core::records', BillingCoreRecords::class);
         Livewire::component('billing-core::currency-converter', CurrencyConverter::class);
+        Livewire::component('billing-core::tax-calculator', TaxCalculator::class);
     }
 }

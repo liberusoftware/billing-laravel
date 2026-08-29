@@ -11,5 +11,5 @@
   "presentation": {"filament": {"admin": ["Liberu\\Billing\\Core\\Filament\\BillingCoreFilamentPlugin"]}},
   "capabilities": ["billing.core.filament"],
   "default_enabled": true,
-  "features": ["Billing account resource", "Contacts resource", "Currencies resource", "Currency conversion", "Tax profiles resource", "Sequences resource", "Terms resource", "Settings resource", "Scoped forms", "Lifecycle display"]
+  "features": ["Billing account resource", "Contacts resource", "Currencies resource", "Currency conversion", "Tax profiles resource", "Tax calculation", "Sequences resource", "Terms resource", "Settings resource", "Scoped forms", "Lifecycle display"]
 }
