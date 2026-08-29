@@ -6,6 +6,7 @@ namespace Liberu\Billing\Payments\Actions;
 
 use Illuminate\Database\DatabaseManager;
 use Liberu\Billing\Payments\Models\PaymentMandate;
+use Liberu\Billing\Payments\Models\PaymentMethod;
 
 final readonly class CreatePaymentMandate
 {
@@ -18,8 +19,13 @@ final readonly class CreatePaymentMandate
             throw new \InvalidArgumentException('Payment method and provider are required.');
         }
 
+        $teamId = $attributes['team_id'] ?? null;
+        PaymentMethod::query()->whereKey((int) $attributes['payment_method_id'])
+            ->where(fn ($query) => $query->whereNull('team_id')->orWhere('team_id', $teamId))
+            ->firstOrFail();
+
         return $this->database->transaction(fn (): PaymentMandate => PaymentMandate::query()->create([
-            'team_id' => $attributes['team_id'] ?? null,
+            'team_id' => $teamId,
             'customer_id' => $attributes['customer_id'] ?? null,
             'payment_method_id' => $attributes['payment_method_id'],
             'provider' => strtolower((string) $attributes['provider']),
