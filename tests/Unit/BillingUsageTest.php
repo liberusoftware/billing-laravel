@@ -5,6 +5,7 @@ use Liberu\Billing\Usage\Actions\CorrectUsage;
 use Liberu\Billing\Usage\Actions\DefineMeter;
 use Liberu\Billing\Usage\Actions\IngestUsage;
 use Liberu\Billing\Usage\Actions\RateUsage;
+use Liberu\Billing\Usage\Models\Meter;
 use Liberu\Billing\Usage\Queries\AggregateUsage;
 
 uses(RefreshDatabase::class);
@@ -66,4 +67,15 @@ it('rates usage progressively across sorted tiers', function () {
     $meter->update(['metadata' => ['tiers' => [['up_to' => 0, 'unit_price_minor' => 1]]]]);
     expect(fn () => app(RateUsage::class)->execute($meter, 1))
         ->toThrow(InvalidArgumentException::class);
+});
+
+it('does not ingest usage after the persisted meter is deactivated', function (): void {
+    $meter = app(DefineMeter::class)->execute([
+        'team_id' => 10, 'code' => 'requests', 'currency' => 'USD', 'unit_price_minor' => 1,
+    ]);
+    $meter->refresh();
+    Meter::query()->whereKey($meter->getKey())->update(['active' => false]);
+
+    expect(fn () => app(IngestUsage::class)->execute($meter, ['event_key' => 'evt-inactive', 'quantity' => 1]))
+        ->toThrow(LogicException::class, 'Usage cannot be ingested into an inactive meter.');
 });
