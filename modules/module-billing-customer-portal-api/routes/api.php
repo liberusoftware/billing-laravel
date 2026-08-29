@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Liberu\Billing\CustomerPortal\Api\Http\Controllers\CustomerBillingController;
 use Liberu\Billing\CustomerPortal\Api\Http\Controllers\PortalItemController;
 use Liberu\Billing\CustomerPortal\Api\Http\Controllers\PortalRequestController;
 
@@ -14,6 +15,7 @@ Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.custo
 });
 
 Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.customer-portal.read'])->prefix('api/v1/billing/customer-portal')->group(function (): void {
+    Route::get('/billing/{customer}', [CustomerBillingController::class, 'show'])->whereNumber('customer')->name('billing.customer-portal.billing.show');
     Route::get('/', [PortalRequestController::class, 'index'])->name('billing.customer-portal.requests.index');
     Route::get('/{record}', [PortalRequestController::class, 'show'])->whereNumber('record')->name('billing.customer-portal.requests.show');
 });
