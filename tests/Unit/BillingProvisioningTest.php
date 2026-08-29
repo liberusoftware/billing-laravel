@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Liberu\Billing\Provisioning\Actions\CreateProvisionedService;
 use Liberu\Billing\Provisioning\Actions\QueueProvisioningOperation;
+use Liberu\Billing\Provisioning\Actions\ReconcileProvisionedService;
 use Liberu\Billing\Provisioning\Actions\RunProvisioningOperation;
 use Liberu\Billing\Provisioning\Actions\TransitionProvisionedService;
 use Liberu\Billing\Provisioning\Contracts\ProvisioningDriver;
@@ -106,4 +107,15 @@ it('does not transition a service using a stale persisted state', function (): v
 
     expect(fn () => app(TransitionProvisionedService::class)->execute($service, ProvisioningState::Provisioning))
         ->toThrow(InvalidArgumentException::class, 'Invalid provisioning transition from [active] to [provisioning].');
+});
+
+it('reconciles the persisted provisioned service state', function (): void {
+    $service = app(CreateProvisionedService::class)->execute(['team_id' => 10, 'provider' => 'test']);
+    $service->refresh();
+    ProvisionedService::query()->whereKey($service->getKey())->update(['external_id' => 'provider-123']);
+
+    $reconciled = app(ReconcileProvisionedService::class)->execute($service);
+
+    expect($reconciled->external_id)->toBe('provider-123')
+        ->and($reconciled->last_reconciled_at)->not->toBeNull();
 });
