@@ -2,10 +2,13 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Liberu\Billing\Core\Actions\CreateBillingAccount;
+use Liberu\Billing\Core\Actions\CreateBillingRecord;
 use Liberu\Billing\Core\Actions\TransitionBillingAccount;
 use Liberu\Billing\Core\Actions\UpdateBillingAccount;
+use Liberu\Billing\Core\Actions\UpdateBillingRecord;
 use Liberu\Billing\Core\Enums\BillingAccountStatus;
 use Liberu\Billing\Core\Models\BillingAccount;
+use Liberu\Billing\Core\Models\BillingContact;
 
 uses(RefreshDatabase::class);
 
@@ -35,4 +38,16 @@ it('does not transition an account after its persisted state becomes closed', fu
 
     expect(fn () => app(TransitionBillingAccount::class)->execute($account, BillingAccountStatus::Active))
         ->toThrow(InvalidArgumentException::class, 'A closed billing account cannot be reopened.');
+});
+
+it('updates a locked billing core record from its persisted state', function (): void {
+    $contact = app(CreateBillingRecord::class)->execute(BillingContact::class, [
+        'team_id' => 10, 'name' => 'Original', 'email' => 'original@example.com',
+    ]);
+    $contact->refresh();
+
+    $updated = app(UpdateBillingRecord::class)->execute($contact, ['name' => 'Updated']);
+
+    expect($updated->name)->toBe('Updated')
+        ->and($updated->email)->toBe('original@example.com');
 });
