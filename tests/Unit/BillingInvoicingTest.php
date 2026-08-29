@@ -10,10 +10,12 @@ use Liberu\Billing\Invoicing\Actions\ApplyInvoiceLateFee;
 use Liberu\Billing\Invoicing\Actions\CreateInvoice;
 use Liberu\Billing\Invoicing\Actions\CreateInvoiceSchedule;
 use Liberu\Billing\Invoicing\Actions\CreateInvoiceSupport;
+use Liberu\Billing\Invoicing\Actions\CreatePaymentPlan;
 use Liberu\Billing\Invoicing\Actions\DeliverInvoice;
 use Liberu\Billing\Invoicing\Actions\FinalizeInvoice;
 use Liberu\Billing\Invoicing\Actions\GenerateInvoiceDocument;
 use Liberu\Billing\Invoicing\Actions\RunInvoiceSchedule;
+use Liberu\Billing\Invoicing\Actions\RunPaymentPlan;
 use Liberu\Billing\Invoicing\Enums\InvoiceStatus;
 use Liberu\Billing\Invoicing\Policies\InvoicePolicy;
 
@@ -202,4 +204,21 @@ it('applies one idempotent late fee per overdue invoice day', function (): void 
         ->and($sameDay->metadata['late_fees'])->toHaveCount(1)
         ->and($sameDay->metadata['late_fees'][0]['amount_minor'])->toBe(125)
         ->and($sameDay->supports()->count())->toBe(1);
+});
+
+it('creates and runs exact minor-unit payment plan installments', function (): void {
+    $invoice = app(CreateInvoice::class)->execute(['team_id' => 10, 'currency' => 'USD']);
+    app(AddInvoiceLine::class)->execute($invoice, 'Annual service', 1, 1000, 0);
+    $invoice = app(FinalizeInvoice::class)->execute($invoice->refresh());
+    $startAt = now()->subMonth();
+    $plan = app(CreatePaymentPlan::class)->execute($invoice, 3, 'monthly', $startAt);
+
+    $first = app(RunPaymentPlan::class)->execute($plan, $startAt->copy()->addMonth());
+    $second = app(RunPaymentPlan::class)->execute($plan->refresh(), $startAt->copy()->addMonths(2));
+    $third = app(RunPaymentPlan::class)->execute($plan->refresh(), $startAt->copy()->addMonths(3));
+
+    expect($first->number)->toEndWith('-INST1')
+        ->and($first->total_minor + $second->total_minor + $third->total_minor)->toBe(1000)
+        ->and($plan->refresh()->status)->toBe('completed')
+        ->and($plan->generated_installments)->toBe(3);
 });

@@ -22,6 +22,8 @@ Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.invoi
     Route::post('/', [InvoiceController::class, 'store'])->name('store');
     Route::post('/schedules', [InvoiceController::class, 'schedule'])->name('schedule');
     Route::post('/schedules/{schedule}/run', [InvoiceController::class, 'runSchedule'])->name('schedule.run');
+    Route::post('/payment-plans', [InvoiceController::class, 'paymentPlan'])->name('payment-plan.create');
+    Route::post('/payment-plans/{paymentPlan}/run', [InvoiceController::class, 'runPaymentPlan'])->name('payment-plan.run');
     Route::post('/{invoice}/lines', [InvoiceController::class, 'line'])->name('line');
     Route::post('/{invoice}/finalize', [InvoiceController::class, 'finalize'])->name('finalize');
     Route::post('/{invoice}/adjustments', [InvoiceController::class, 'adjust'])->name('adjust');

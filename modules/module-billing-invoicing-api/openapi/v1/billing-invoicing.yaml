@@ -57,6 +57,21 @@ paths:
       security: [{sanctum: []}]
       parameters: [{name: schedule, in: path, required: true, schema: {type: string}}]
       responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}}
+  /api/v1/billing/invoicing/payment-plans:
+    post:
+      operationId: billing.invoicing.createPaymentPlan
+      summary: Create an invoice payment plan
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/CreatePaymentPlanRequest'}}}}
+      responses: {'201': {$ref: '#/components/responses/PaymentPlanDocument'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/invoicing/payment-plans/{paymentPlan}/run:
+    post:
+      operationId: billing.invoicing.runPaymentPlan
+      summary: Generate the next payment-plan installment
+      security: [{sanctum: []}]
+      parameters: [{name: paymentPlan, in: path, required: true, schema: {type: string}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
   /api/v1/billing/invoicing/{invoice}/finalize:
     post:
       operationId: billing.invoicing.finalize
@@ -101,6 +116,9 @@ components:
     ValidationError: {description: Validation failed.}
     ScheduleDocument:
       description: Invoice schedule resource.
+      content: {application/json: {schema: {type: object, required: [data], properties: {data: {type: object}}}}}
+    PaymentPlanDocument:
+      description: Invoice payment plan resource.
       content: {application/json: {schema: {type: object, required: [data], properties: {data: {type: object}}}}}
   schemas:
     Resource:
@@ -147,6 +165,14 @@ components:
         next_run_at: {type: string, format: date-time}
         active: {type: boolean}
         metadata: {type: object, additionalProperties: true}
+    CreatePaymentPlanRequest:
+      type: object
+      required: [invoice_id, total_installments, frequency]
+      properties:
+        invoice_id: {type: integer, minimum: 1}
+        total_installments: {type: integer, minimum: 2}
+        frequency: {type: string, enum: [weekly, monthly, quarterly]}
+        start_at: {type: string, format: date-time}
     AdjustmentRequest:
       type: object
       required: [amount_minor, reason]
