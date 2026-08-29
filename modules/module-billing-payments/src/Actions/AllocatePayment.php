@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Liberu\Billing\Payments\Actions;
 
 use Illuminate\Database\DatabaseManager;
+use Illuminate\Support\Facades\Schema;
 use Liberu\Billing\Payments\Enums\PaymentStatus;
 use Liberu\Billing\Payments\Models\Payment;
 use Liberu\Billing\Payments\Models\PaymentAllocation;
@@ -20,6 +21,15 @@ final readonly class AllocatePayment
             $allocated = (int) $locked->allocations()->sum('amount_minor');
             if ($locked->status !== PaymentStatus::Captured || $amountMinor < 1 || $allocated + $amountMinor > (int) $locked->amount_minor) {
                 throw new \InvalidArgumentException('Allocation amount or payment state is invalid.');
+            }
+
+            if ($invoiceId !== null && Schema::hasTable('billing_invoices')) {
+                $invoice = $this->database->table('billing_invoices')->where('id', $invoiceId)->first(['team_id']);
+                if ($invoice === null || ($invoice->team_id !== null && ($locked->team_id === null || (int) $invoice->team_id !== (int) $locked->team_id))) {
+                    throw new \InvalidArgumentException('Payment invoice reference is invalid.');
+                }
+            } elseif ($invoiceId !== null) {
+                throw new \InvalidArgumentException('Payment invoice reference is invalid.');
             }
 
             return PaymentAllocation::query()->create([

@@ -3,6 +3,7 @@
 use App\Models\Customer;
 use App\Models\Team;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Liberu\Billing\Invoicing\Actions\CreateInvoice;
 use Liberu\Billing\Payments\Actions\AllocatePayment;
 use Liberu\Billing\Payments\Actions\CapturePayment;
 use Liberu\Billing\Payments\Actions\CreatePayment;
@@ -35,7 +36,8 @@ it('captures, allocates, refunds, disputes, and reconciles a payment', function 
 
     $payment = app(CreatePayment::class)->execute(['team_id' => 10, 'amount_minor' => 1000, 'currency' => 'usd', 'gateway' => 'test']);
     $payment = app(CapturePayment::class)->execute($payment);
-    $allocation = app(AllocatePayment::class)->execute($payment, 600, 15);
+    $invoice = app(CreateInvoice::class)->execute(['team_id' => 10, 'currency' => 'USD']);
+    $allocation = app(AllocatePayment::class)->execute($payment, 600, $invoice->getKey());
     $refund = app(RefundPayment::class)->execute($payment, 400);
     $dispute = app(OpenDispute::class)->execute($payment->refresh(), 100, 'customer claim');
     $reconciliation = app(ReconcilePayment::class)->execute($payment, 'capture-1');
@@ -89,6 +91,15 @@ it('rejects a payment customer owned by another team', function (): void {
     expect(fn () => app(CreatePayment::class)->execute([
         'team_id' => 10, 'customer_id' => $customerId, 'amount_minor' => 100, 'currency' => 'USD',
     ]))->toThrow(InvalidArgumentException::class, 'Customer reference is invalid.');
+});
+
+it('rejects an allocation invoice owned by another team', function (): void {
+    $invoice = app(CreateInvoice::class)->execute(['team_id' => 20, 'currency' => 'USD']);
+    $payment = app(CreatePayment::class)->execute(['team_id' => 10, 'amount_minor' => 100, 'currency' => 'USD']);
+    $payment->update(['status' => PaymentStatus::Captured]);
+
+    expect(fn () => app(AllocatePayment::class)->execute($payment->refresh(), 100, $invoice->getKey()))
+        ->toThrow(InvalidArgumentException::class, 'Payment invoice reference is invalid.');
 });
 
 it('does not open a dispute after the persisted payment state changes', function (): void {
