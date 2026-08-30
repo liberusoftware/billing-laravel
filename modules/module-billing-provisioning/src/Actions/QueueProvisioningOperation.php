@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Liberu\Billing\Provisioning\Actions;
 
 use Illuminate\Support\Facades\DB;
+use Liberu\Billing\Provisioning\Events\ProvisioningOperationQueued;
 use Liberu\Billing\Provisioning\Models\ProvisionedService;
 use Liberu\Billing\Provisioning\Models\ProvisioningOperation;
 
@@ -17,6 +18,11 @@ final class QueueProvisioningOperation
             throw new \InvalidArgumentException('Provisioning operation is invalid.');
         }
 
-        return DB::transaction(fn (): ProvisioningOperation => ProvisioningOperation::query()->create(['team_id' => $service->team_id, 'provisioned_service_id' => $service->id, 'operation' => $operation, 'status' => 'queued', 'payload' => $payload]));
+        return DB::transaction(function () use ($service, $operation, $payload): ProvisioningOperation {
+            $queued = ProvisioningOperation::query()->create(['team_id' => $service->team_id, 'provisioned_service_id' => $service->id, 'operation' => $operation, 'status' => 'queued', 'payload' => $payload]);
+            ProvisioningOperationQueued::dispatch($queued);
+
+            return $queued;
+        });
     }
 }

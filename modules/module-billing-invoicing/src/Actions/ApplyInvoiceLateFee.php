@@ -7,6 +7,7 @@ namespace Liberu\Billing\Invoicing\Actions;
 use Carbon\CarbonInterface;
 use Illuminate\Database\DatabaseManager;
 use Liberu\Billing\Invoicing\Enums\InvoiceStatus;
+use Liberu\Billing\Invoicing\Events\InvoiceLateFeeApplied;
 use Liberu\Billing\Invoicing\Models\Invoice;
 use Liberu\Billing\Invoicing\Models\InvoiceSupport;
 
@@ -40,7 +41,7 @@ final readonly class ApplyInvoiceLateFee
             $lateFees[] = ['date' => $feeDate, 'amount_minor' => $amountMinor, 'applied_at' => $at->toIso8601String()];
             $metadata['late_fees'] = $lateFees;
             $locked->update(['total_minor' => (int) $locked->total_minor + $amountMinor, 'metadata' => $metadata]);
-            InvoiceSupport::query()->create([
+            $lateFee = InvoiceSupport::query()->create([
                 'team_id' => $locked->team_id,
                 'invoice_id' => $locked->getKey(),
                 'type' => 'adjustment',
@@ -49,6 +50,7 @@ final readonly class ApplyInvoiceLateFee
                 'currency' => $locked->currency,
                 'payload' => ['amount_minor' => $amountMinor, 'reason' => 'late_fee', 'date' => $feeDate],
             ]);
+            InvoiceLateFeeApplied::dispatch($lateFee);
 
             return $locked->refresh();
         });

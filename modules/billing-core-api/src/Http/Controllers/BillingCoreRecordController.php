@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\Core\Actions\CalculateTax;
 use Liberu\Billing\Core\Actions\ConvertCurrency;
 use Liberu\Billing\Core\Actions\CreateBillingRecord;
+use Liberu\Billing\Core\Actions\DeleteBillingRecord;
 use Liberu\Billing\Core\Actions\UpdateBillingRecord;
 use Liberu\Billing\Core\Models\BillingContact;
 use Liberu\Billing\Core\Models\BillingCurrency;
@@ -69,12 +70,12 @@ final class BillingCoreRecordController extends Controller
         return response()->json(['data' => $update->execute($instance, $data)]);
     }
 
-    public function destroy(Request $request, string $type, int $record): JsonResponse
+    public function destroy(Request $request, string $type, int $record, DeleteBillingRecord $delete): JsonResponse
     {
         $model = $this->model($type);
         $instance = $this->forCurrentTeam($model, $record, $request);
         Gate::authorize('delete', $instance);
-        $instance->delete();
+        $delete->execute($instance, $type);
 
         return response()->json(status: 204);
     }

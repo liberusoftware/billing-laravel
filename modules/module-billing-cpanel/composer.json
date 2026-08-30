@@ -1,0 +1,16 @@
+{
+  "name": "liberusoftware/billing-cpanel",
+  "description": "cPanel/WHM hosting account driver for Liberu Billing Hosting.",
+  "type": "liberu-module",
+  "license": "MIT",
+  "require": {
+    "php": "^8.5",
+    "guzzlehttp/guzzle": "^7.8",
+    "liberusoftware/module-billing-hosting": "^0.1",
+    "liberusoftware/module-manager": "^1.0"
+  },
+  "autoload": {"psr-4": {"Liberu\\Billing\\Cpanel\\": "src/"}},
+  "extra": {"liberu": {"name": "module-billing-cpanel"}},
+  "version": "0.1.0",
+  "config": {"allow-plugins": {"pestphp/pest-plugin": true}}
+}

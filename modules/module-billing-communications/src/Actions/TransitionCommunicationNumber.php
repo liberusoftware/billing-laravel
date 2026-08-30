@@ -6,6 +6,7 @@ namespace Liberu\Billing\Communications\Actions;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Liberu\Billing\Communications\Events\CommunicationNumberStatusChanged;
 use Liberu\Billing\Communications\Models\CommunicationNumber;
 
 final class TransitionCommunicationNumber
@@ -23,8 +24,10 @@ final class TransitionCommunicationNumber
             }
 
             $locked->update(['status' => $status]);
+            $updated = $locked->refresh();
+            CommunicationNumberStatusChanged::dispatch($updated);
 
-            return $locked->refresh();
+            return $updated;
         });
     }
 }

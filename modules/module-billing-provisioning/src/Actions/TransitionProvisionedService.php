@@ -7,6 +7,7 @@ namespace Liberu\Billing\Provisioning\Actions;
 use Illuminate\Database\DatabaseManager;
 use InvalidArgumentException;
 use Liberu\Billing\Provisioning\Enums\ProvisioningState;
+use Liberu\Billing\Provisioning\Events\ProvisionedServiceStateChanged;
 use Liberu\Billing\Provisioning\Models\ProvisionedService;
 
 final readonly class TransitionProvisionedService
@@ -27,7 +28,10 @@ final readonly class TransitionProvisionedService
 
             $locked->forceFill(['state' => $state, 'last_error' => $error])->save();
 
-            return $locked->refresh();
+            $updated = $locked->refresh();
+            ProvisionedServiceStateChanged::dispatch($updated);
+
+            return $updated;
         });
     }
 

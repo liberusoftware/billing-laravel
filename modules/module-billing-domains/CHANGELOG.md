@@ -1,5 +1,6 @@
 # Changelog
 
+- Add after-commit events for domain, contact, DNS, and TLD mutations, and move domain deletion into a domain action.
 - Added EPP operation evidence for registrar lifecycle actions.
 
 ## 0.1.0

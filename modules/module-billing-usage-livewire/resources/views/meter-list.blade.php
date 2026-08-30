@@ -18,5 +18,5 @@
         <input wire:model="quantity" type="number" min="0.0001" step="0.0001" aria-label="{{ __('Quantity') }}">
         <button type="submit">{{ __('Record usage') }}</button>
     </form>
-    <ul>@forelse ($meters as $meter)<li wire:key="meter-row-{{ $meter->id }}">{{ $meter->name }} — {{ $meter->unit_price_minor }} {{ $meter->currency }}</li>@empty<li>{{ __('No meters defined.') }}</li>@endforelse</ul>
+    <ul>@forelse ($meters as $meter)<li wire:key="meter-row-{{ $meter->id }}">{{ $meter->name }} — {{ $meter->unit_price_minor }} {{ $meter->currency }} ({{ $meter->active ? __('Active') : __('Inactive') }}) <button type="button" wire:click="transition({{ $meter->id }})">{{ __('Update status') }}</button></li>@empty<li>{{ __('No meters defined.') }}</li>@endforelse</ul>
 </div>

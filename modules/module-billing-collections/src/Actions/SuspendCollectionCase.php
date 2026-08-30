@@ -6,6 +6,7 @@ namespace Liberu\Billing\Collections\Actions;
 
 use Illuminate\Database\DatabaseManager;
 use Liberu\Billing\Collections\Enums\CollectionStatus;
+use Liberu\Billing\Collections\Events\CollectionCaseSuspended;
 use Liberu\Billing\Collections\Models\CollectionCase;
 
 final readonly class SuspendCollectionCase
@@ -26,8 +27,10 @@ final readonly class SuspendCollectionCase
             }
 
             $locked->update(['status' => CollectionStatus::Suspended, 'reason' => $reason]);
+            $updated = $locked->refresh();
+            CollectionCaseSuspended::dispatch($updated);
 
-            return $locked->refresh();
+            return $updated;
         });
     }
 }

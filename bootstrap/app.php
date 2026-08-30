@@ -7,6 +7,7 @@ use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 use Laravel\Sanctum\Http\Middleware\CheckAbilities;
 use Laravel\Sanctum\Http\Middleware\CheckForAnyAbility;
+use Liberu\Foundation\ApiAccess\Http\Middleware\ReplayIdempotentRequest;
 use Liberu\Foundation\Localization\Http\Middleware\SetLocale;
 use Spatie\Permission\Middleware\PermissionMiddleware;
 use Spatie\Permission\Middleware\RoleMiddleware;
@@ -29,6 +30,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'permission' => PermissionMiddleware::class,
             'role' => RoleMiddleware::class,
             'role_or_permission' => RoleOrPermissionMiddleware::class,
+            'idempotency' => ReplayIdempotentRequest::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

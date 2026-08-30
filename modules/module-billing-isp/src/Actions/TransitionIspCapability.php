@@ -6,6 +6,7 @@ namespace Liberu\Billing\Isp\Actions;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Liberu\Billing\Isp\Events\IspCapabilityStatusChanged;
 use Liberu\Billing\Isp\Models\IspCapability;
 
 final class TransitionIspCapability
@@ -25,8 +26,10 @@ final class TransitionIspCapability
                 throw new \LogicException('A cancelled ISP capability cannot be reactivated.');
             }
             $locked->update(['status' => $status]);
+            $updated = $locked->refresh();
+            IspCapabilityStatusChanged::dispatch($updated);
 
-            return $locked->refresh();
+            return $updated;
         });
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Liberu\Billing\Domains\Actions;
 
 use Illuminate\Database\DatabaseManager;
+use Liberu\Billing\Domains\Events\DomainRenewed;
 use Liberu\Billing\Domains\Models\Domain;
 use Liberu\Billing\Domains\Services\RegistrarManager;
 
@@ -26,7 +27,10 @@ final readonly class RenewDomain
             $domain->update(['status' => 'registered', 'expires_at' => $result['new_expiration_date'] ?? null]);
             app(RecordEppOperation::class)->execute($domain, 'renew', 'completed', $result, $result['epp_code'] ?? null);
 
-            return $domain->refresh();
+            $updated = $domain->refresh();
+            DomainRenewed::dispatch($updated);
+
+            return $updated;
         });
     }
 }

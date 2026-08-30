@@ -6,6 +6,7 @@ namespace Liberu\Billing\Invoicing\Actions;
 
 use Illuminate\Database\DatabaseManager;
 use Liberu\Billing\Invoicing\Enums\InvoiceStatus;
+use Liberu\Billing\Invoicing\Events\InvoiceFinalized;
 use Liberu\Billing\Invoicing\Models\Invoice;
 
 final readonly class FinalizeInvoice
@@ -24,6 +25,7 @@ final readonly class FinalizeInvoice
                 throw new \LogicException('Only non-empty draft invoices can be finalized.');
             }
             $invoice->update(['status' => InvoiceStatus::Finalized, 'finalized_at' => now()]);
+            InvoiceFinalized::dispatch($invoice->refresh());
 
             return $invoice->refresh();
         });

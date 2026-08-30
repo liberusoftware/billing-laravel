@@ -43,7 +43,7 @@ final class HostingAccounts extends Component
 
     public function performOperation(PerformHostingOperation $perform): void
     {
-        $this->validate(['selectedAccountId' => ['required', 'integer', 'min:1'], 'operation' => ['required', 'in:provision,suspend,terminate']]);
+        $this->validate(['selectedAccountId' => ['required', 'integer', 'min:1'], 'operation' => ['required', 'in:provision,suspend,unsuspend,change_package,terminate,add_addon,remove_addon']]);
         $account = $this->account();
         Gate::authorize('update', $account);
         $perform->handle($account, $this->operation);

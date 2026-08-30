@@ -6,6 +6,7 @@ namespace Liberu\Billing\Communications\Actions;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Liberu\Billing\Communications\Events\VoipAccountProvisioned;
 use Liberu\Billing\Communications\Models\VoipAccount;
 use Liberu\Billing\Communications\Services\VoiceProviderRegistry;
 
@@ -23,8 +24,10 @@ final readonly class ProvisionVoipAccount
 
             $result = $this->providers->resolve((string) $locked->platform)->provision($locked->toArray());
             $locked->forceFill(['status' => 'active', 'provisioned_at' => $locked->provisioned_at ?? now(), 'platform_synced_at' => now()])->save();
+            $updated = $locked->refresh()->setAttribute('provider_result', $result);
+            VoipAccountProvisioned::dispatch($updated);
 
-            return $locked->refresh()->setAttribute('provider_result', $result);
+            return $updated;
         });
     }
 }

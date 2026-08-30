@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Liberu\Billing\Domains\Actions;
 
 use Illuminate\Database\DatabaseManager;
+use Liberu\Billing\Domains\Events\DomainRegistered;
 use Liberu\Billing\Domains\Models\Domain;
 use Liberu\Billing\Domains\Services\RegistrarManager;
 use Liberu\Billing\Domains\Support\CustomerReference;
@@ -25,7 +26,10 @@ final readonly class RegisterDomain
             $domain->update(['status' => 'registered', 'registered_at' => now(), 'expires_at' => $result['expiration_date'] ?? null]);
             app(RecordEppOperation::class)->execute($domain, 'register', 'completed', $result, $result['epp_code'] ?? null);
 
-            return $domain->refresh();
+            $updated = $domain->refresh();
+            DomainRegistered::dispatch($updated);
+
+            return $updated;
         });
     }
 }

@@ -6,6 +6,7 @@ namespace Liberu\Billing\Domains\Actions;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Liberu\Billing\Domains\Events\DomainTldUpserted;
 use Liberu\Billing\Domains\Models\DomainTld;
 
 final class UpsertDomainTld
@@ -21,12 +22,17 @@ final class UpsertDomainTld
             throw new InvalidArgumentException('TLD pricing details are invalid.');
         }
 
-        return DB::transaction(fn (): DomainTld => DomainTld::query()->updateOrCreate(['name' => $name], [
-            'registrar_cost' => $attributes['registrar_cost'] ?? null,
-            'base_price' => $basePrice,
-            'markup_type' => $markupType,
-            'markup_value' => $markupValue,
-            'enabled' => (bool) ($attributes['enabled'] ?? true),
-        ]));
+        return DB::transaction(function () use ($name, $attributes, $basePrice, $markupType, $markupValue): DomainTld {
+            $tld = DomainTld::query()->updateOrCreate(['name' => $name], [
+                'registrar_cost' => $attributes['registrar_cost'] ?? null,
+                'base_price' => $basePrice,
+                'markup_type' => $markupType,
+                'markup_value' => $markupValue,
+                'enabled' => (bool) ($attributes['enabled'] ?? true),
+            ]);
+            DomainTldUpserted::dispatch($tld);
+
+            return $tld;
+        });
     }
 }

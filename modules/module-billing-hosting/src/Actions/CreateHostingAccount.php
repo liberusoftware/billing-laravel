@@ -6,6 +6,7 @@ namespace Liberu\Billing\Hosting\Actions;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Liberu\Billing\Hosting\Events\HostingAccountCreated;
 use Liberu\Billing\Hosting\Models\HostingAccount;
 
 final class CreateHostingAccount
@@ -19,8 +20,13 @@ final class CreateHostingAccount
             throw new InvalidArgumentException('A team and name are required.');
         }
 
-        return DB::transaction(fn (): HostingAccount => HostingAccount::query()->create([
-            'team_id' => $teamId, 'name' => $name, 'status' => $status, 'metadata' => $attributes['metadata'] ?? null,
-        ]));
+        return DB::transaction(function () use ($teamId, $name, $status, $attributes): HostingAccount {
+            $account = HostingAccount::query()->create([
+                'team_id' => $teamId, 'name' => $name, 'status' => $status, 'metadata' => $attributes['metadata'] ?? null,
+            ]);
+            HostingAccountCreated::dispatch($account);
+
+            return $account;
+        });
     }
 }

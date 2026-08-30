@@ -6,6 +6,7 @@ namespace Liberu\Billing\Isp\Actions;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Liberu\Billing\Isp\Events\IspCapabilityCreated;
 use Liberu\Billing\Isp\Models\IspCapability;
 
 final class CreateIspCapability
@@ -19,6 +20,11 @@ final class CreateIspCapability
             throw new InvalidArgumentException('ISP capability details are invalid.');
         }
 
-        return DB::transaction(fn (): IspCapability => IspCapability::query()->create(['team_id' => $teamId, 'type' => $type, 'name' => $name, 'status' => 'pending', 'identifier' => $attributes['identifier'] ?? null, 'configuration' => $attributes['configuration'] ?? []]));
+        return DB::transaction(function () use ($teamId, $type, $name, $attributes): IspCapability {
+            $capability = IspCapability::query()->create(['team_id' => $teamId, 'type' => $type, 'name' => $name, 'status' => 'pending', 'identifier' => $attributes['identifier'] ?? null, 'configuration' => $attributes['configuration'] ?? []]);
+            IspCapabilityCreated::dispatch($capability);
+
+            return $capability;
+        });
     }
 }

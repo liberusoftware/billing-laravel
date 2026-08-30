@@ -7,6 +7,7 @@ namespace Liberu\Billing\Collections\Actions;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Support\Facades\Schema;
 use Liberu\Billing\Collections\Enums\CollectionStatus;
+use Liberu\Billing\Collections\Events\CollectionCaseOpened;
 use Liberu\Billing\Collections\Models\CollectionCase;
 use Liberu\Billing\Collections\Support\CustomerReference;
 
@@ -39,10 +40,15 @@ final readonly class OpenCollectionCase
             throw new \InvalidArgumentException('Collection invoice reference is invalid.');
         }
 
-        return $this->database->transaction(fn (): CollectionCase => CollectionCase::query()->create([
-            'team_id' => $teamId, 'customer_id' => $customerId, 'invoice_id' => $invoiceId,
-            'type' => $type, 'status' => CollectionStatus::Open, 'amount_minor' => $amount, 'currency' => $currency,
-            'next_action_at' => $attributes['next_action_at'] ?? now(), 'reason' => $attributes['reason'] ?? null, 'metadata' => $attributes['metadata'] ?? [],
-        ]));
+        return $this->database->transaction(function () use ($teamId, $customerId, $invoiceId, $type, $amount, $currency, $attributes): CollectionCase {
+            $case = CollectionCase::query()->create([
+                'team_id' => $teamId, 'customer_id' => $customerId, 'invoice_id' => $invoiceId,
+                'type' => $type, 'status' => CollectionStatus::Open, 'amount_minor' => $amount, 'currency' => $currency,
+                'next_action_at' => $attributes['next_action_at'] ?? now(), 'reason' => $attributes['reason'] ?? null, 'metadata' => $attributes['metadata'] ?? [],
+            ]);
+            CollectionCaseOpened::dispatch($case);
+
+            return $case;
+        });
     }
 }

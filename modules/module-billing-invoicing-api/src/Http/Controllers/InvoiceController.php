@@ -11,6 +11,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\Invoicing\Actions\AddInvoiceLine;
 use Liberu\Billing\Invoicing\Actions\ApplyInvoiceAdjustment;
+use Liberu\Billing\Invoicing\Actions\ApplyInvoiceLateFee;
 use Liberu\Billing\Invoicing\Actions\CreateInvoice;
 use Liberu\Billing\Invoicing\Actions\CreateInvoiceSchedule;
 use Liberu\Billing\Invoicing\Actions\CreatePaymentPlan;
@@ -115,6 +116,15 @@ final class InvoiceController extends Controller
         }
 
         return response()->json(['data' => $this->resource($adjust->execute($invoice, $amount, $data['reason'], $data['type'] ?? 'adjustment'))]);
+    }
+
+    public function lateFee(Request $request, Invoice $invoice, ApplyInvoiceLateFee $lateFee): JsonResponse
+    {
+        $invoice = $this->forCurrentTeam($request, $invoice);
+        Gate::authorize('update', $invoice);
+        $data = $request->validate(['amount_minor' => ['required', 'integer', 'min:1']]);
+
+        return response()->json(['data' => $this->resource($lateFee->execute($invoice, (int) $data['amount_minor']))]);
     }
 
     public function document(Request $request, Invoice $invoice, GenerateInvoiceDocument $document): JsonResponse

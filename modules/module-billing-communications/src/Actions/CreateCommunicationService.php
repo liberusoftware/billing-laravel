@@ -6,6 +6,7 @@ namespace Liberu\Billing\Communications\Actions;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Liberu\Billing\Communications\Events\CommunicationServiceCreated;
 use Liberu\Billing\Communications\Models\CommunicationService;
 
 final class CreateCommunicationService
@@ -18,8 +19,13 @@ final class CreateCommunicationService
             throw new InvalidArgumentException('A team and name are required.');
         }
 
-        return DB::transaction(fn (): CommunicationService => CommunicationService::query()->create([
-            'team_id' => $teamId, 'name' => $name, 'status' => $attributes['status'] ?? 'active', 'metadata' => $attributes['metadata'] ?? null,
-        ]));
+        return DB::transaction(function () use ($teamId, $name, $attributes): CommunicationService {
+            $service = CommunicationService::query()->create([
+                'team_id' => $teamId, 'name' => $name, 'status' => $attributes['status'] ?? 'active', 'metadata' => $attributes['metadata'] ?? null,
+            ]);
+            CommunicationServiceCreated::dispatch($service);
+
+            return $service;
+        });
     }
 }

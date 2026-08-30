@@ -26,7 +26,7 @@ paths:
       operationId: billing.hosting.accounts.operation
       security: [{sanctum: []}]
       parameters: [{name: account, in: path, required: true, schema: {type: integer, minimum: 1}}, {$ref: '#/components/parameters/IdempotencyKey'}]
-      requestBody: {required: true, content: {application/json: {schema: {type: object, required: [operation], properties: {operation: {type: string, enum: [provision, suspend, terminate]}}}}}}
+      requestBody: {required: true, content: {application/json: {schema: {type: object, required: [operation], properties: {operation: {type: string, enum: [provision, suspend, unsuspend, change_package, terminate, add_addon, remove_addon]}, account: {type: object}, server: {type: object}}}}}}
       responses: {'200': {$ref: '#/components/responses/Document'}, '422': {$ref: '#/components/responses/ValidationError'}}
   /api/v1/billing/hosting/capabilities:
     get: {operationId: billing.hosting.capabilities.list, security: [{sanctum: []}], responses: {'200': {$ref: '#/components/responses/Collection'}}}

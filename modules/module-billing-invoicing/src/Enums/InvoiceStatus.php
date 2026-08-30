@@ -8,6 +8,7 @@ enum InvoiceStatus: string
 {
     case Draft = 'draft';
     case Finalized = 'finalized';
+    case PartiallyPaid = 'partially_paid';
     case Paid = 'paid';
     case Void = 'void';
 }

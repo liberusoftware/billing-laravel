@@ -12,6 +12,7 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Gate;
+use Liberu\Billing\Payments\Actions\AllocatePayment;
 use Liberu\Billing\Payments\Actions\CapturePayment;
 use Liberu\Billing\Payments\Actions\OpenDispute;
 use Liberu\Billing\Payments\Actions\ReconcilePayment;
@@ -52,6 +53,10 @@ final class PaymentResource extends Resource
             Action::make('capture')->label('Capture')->visible(fn (Payment $record): bool => $record->getRawOriginal('status') === 'pending')->action(function (Payment $record): void {
                 Gate::authorize('update', $record);
                 app(CapturePayment::class)->execute($record);
+            }),
+            Action::make('allocate')->label('Allocate to invoice')->visible(fn (Payment $record): bool => in_array($record->getRawOriginal('status'), ['captured', 'disputed'], true))->form([TextInput::make('invoice_id')->integer()->minValue(1)->required(), TextInput::make('amount_minor')->integer()->minValue(1)->required()])->action(function (Payment $record, array $data): void {
+                Gate::authorize('update', $record);
+                app(AllocatePayment::class)->execute($record, (int) $data['amount_minor'], (int) $data['invoice_id']);
             }),
             Action::make('refund')->label('Refund')->visible(fn (Payment $record): bool => $record->getRawOriginal('status') === 'captured')->form([TextInput::make('amount_minor')->integer()->minValue(1)->required(), TextInput::make('reason')->required()->maxLength(255)])->action(function (Payment $record, array $data): void {
                 Gate::authorize('update', $record);

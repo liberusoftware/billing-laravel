@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Liberu\Billing\Payments\Actions;
 
 use Illuminate\Database\DatabaseManager;
+use Liberu\Billing\Payments\Enums\PaymentMethodStatus;
 use Liberu\Billing\Payments\Models\PaymentMethod;
 use Liberu\Billing\Payments\Support\CustomerReference;
 
@@ -32,6 +33,7 @@ final readonly class CreatePaymentMethod
             'last_four' => $attributes['last_four'] ?? null,
             'expires_at' => $attributes['expires_at'] ?? null,
             'is_default' => (bool) ($attributes['is_default'] ?? false),
+            'status' => PaymentMethodStatus::Active,
             'metadata' => $attributes['metadata'] ?? [],
         ]));
     }

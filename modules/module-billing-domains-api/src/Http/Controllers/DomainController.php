@@ -10,6 +10,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\Domains\Actions\CreateDomain;
 use Liberu\Billing\Domains\Actions\CreateDomainContact;
+use Liberu\Billing\Domains\Actions\DeleteDomain;
 use Liberu\Billing\Domains\Actions\RedeemDomain;
 use Liberu\Billing\Domains\Actions\RegisterDomain;
 use Liberu\Billing\Domains\Actions\RenewDomain;
@@ -82,11 +83,11 @@ final class DomainController extends Controller
         return $update->handle($domain, $request->validate($this->rules(false)));
     }
 
-    public function destroy(Request $request, Domain $domain): JsonResponse
+    public function destroy(Request $request, Domain $domain, DeleteDomain $delete): JsonResponse
     {
         $domain = $this->forCurrentTeam($request, $domain);
         Gate::authorize('delete', $domain);
-        $domain->delete();
+        $delete->execute($domain);
 
         return response()->json(status: 204);
     }

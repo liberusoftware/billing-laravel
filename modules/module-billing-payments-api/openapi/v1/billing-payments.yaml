@@ -6,6 +6,30 @@ info:
   license: {name: MIT, identifier: MIT}
 servers: [{url: /}]
 paths:
+  /api/v1/billing/payments/methods/{method}/status:
+    patch:
+      operationId: billing.payments.methods.status
+      summary: Transition a payment method
+      security: [{sanctum: []}]
+      parameters: [{name: method, in: path, required: true, schema: {type: string}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, required: [status], properties: {status: {type: string, enum: [active, inactive]}}}
+      responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/payments/mandates/{mandate}/status:
+    patch:
+      operationId: billing.payments.mandates.status
+      summary: Transition a payment mandate
+      security: [{sanctum: []}]
+      parameters: [{name: mandate, in: path, required: true, schema: {type: string}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, required: [status], properties: {status: {type: string, enum: [pending, active, revoked, expired]}}}
+      responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
   /api/v1/billing/payments:
     get:
       operationId: billing.payments.list
@@ -76,6 +100,24 @@ paths:
       responses:
         '200': {$ref: '#/components/responses/Document'}
         '401': {$ref: '#/components/responses/Unauthorized'}
+  /api/v1/billing/payments/{payment}/allocate:
+    post:
+      operationId: billing.payments.allocate
+      summary: Allocate part of a captured payment to an invoice
+      security: [{sanctum: []}]
+      parameters: [{name: payment, in: path, required: true, schema: {type: string}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [amount_minor]
+              properties: {amount_minor: {type: integer, minimum: 1}, invoice_id: {type: integer, minimum: 1}}
+      responses:
+        '201': {$ref: '#/components/responses/Document'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '422': {$ref: '#/components/responses/ValidationError'}
 components:
   parameters:
     IdempotencyKey: {name: Idempotency-Key, in: header, required: false, schema: {type: string, maxLength: 255}}

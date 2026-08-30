@@ -3,16 +3,24 @@
 use App\Models\Customer;
 use App\Models\Team;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
 use Liberu\Billing\Usage\Actions\CorrectUsage;
 use Liberu\Billing\Usage\Actions\DefineMeter;
 use Liberu\Billing\Usage\Actions\IngestUsage;
 use Liberu\Billing\Usage\Actions\RateUsage;
+use Liberu\Billing\Usage\Actions\TransitionMeter;
+use Liberu\Billing\Usage\Events\MeterDefined;
+use Liberu\Billing\Usage\Events\MeterStatusChanged;
+use Liberu\Billing\Usage\Events\UsageCorrected;
+use Liberu\Billing\Usage\Events\UsageIngested;
 use Liberu\Billing\Usage\Models\Meter;
 use Liberu\Billing\Usage\Queries\AggregateUsage;
 
 uses(RefreshDatabase::class);
 
 it('defines meters, deduplicates usage, aggregates, and corrects records', function () {
+    Event::fake([MeterDefined::class, MeterStatusChanged::class, UsageIngested::class, UsageCorrected::class]);
+
     $meter = app(DefineMeter::class)->execute(['team_id' => 10, 'code' => 'api_calls', 'currency' => 'USD', 'unit_price_minor' => 5]);
     $record = app(IngestUsage::class)->execute($meter, ['event_key' => 'evt-1', 'quantity' => 3]);
     $duplicate = app(IngestUsage::class)->execute($meter, ['event_key' => 'evt-1', 'quantity' => 99]);
@@ -24,11 +32,27 @@ it('defines meters, deduplicates usage, aggregates, and corrects records', funct
         ->and($duplicateCorrection->is($correction))->toBeTrue()
         ->and((float) $aggregate->quantity)->toBe(2.0)
         ->and((int) $aggregate->amount_minor)->toBe(10);
+
+    Event::assertDispatchedTimes(MeterDefined::class, 1);
+    Event::assertDispatchedTimes(UsageIngested::class, 1);
+    Event::assertDispatchedTimes(UsageCorrected::class, 1);
 });
 
 it('rejects invalid usage events', function () {
     expect(fn () => app(DefineMeter::class)->execute(['code' => '', 'currency' => 'USD', 'unit_price_minor' => 1]))
         ->toThrow(InvalidArgumentException::class);
+});
+
+it('transitions meter activity through the domain action', function (): void {
+    Event::fake([MeterStatusChanged::class]);
+    $meter = app(DefineMeter::class)->execute(['team_id' => 10, 'code' => 'status-meter', 'currency' => 'USD', 'unit_price_minor' => 1]);
+
+    $inactive = app(TransitionMeter::class)->execute($meter, false);
+
+    expect($inactive->active)->toBeFalse();
+    Event::assertDispatchedTimes(MeterStatusChanged::class, 1);
+    expect(app(TransitionMeter::class)->execute($inactive, false)->active)->toBeFalse();
+    Event::assertDispatchedTimes(MeterStatusChanged::class, 1);
 });
 
 it('normalizes meter identifiers and rejects invalid thresholds', function () {

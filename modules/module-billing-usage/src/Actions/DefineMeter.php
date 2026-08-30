@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Liberu\Billing\Usage\Actions;
 
 use Illuminate\Database\DatabaseManager;
+use Liberu\Billing\Usage\Events\MeterDefined;
 use Liberu\Billing\Usage\Models\Meter;
 
 final readonly class DefineMeter
@@ -22,6 +23,11 @@ final readonly class DefineMeter
             throw new \InvalidArgumentException('Meter code, currency, and price are invalid.');
         }
 
-        return $this->database->transaction(fn (): Meter => Meter::query()->create(['team_id' => $attributes['team_id'] ?? null, 'name' => $name, 'code' => $code, 'unit' => $unit, 'unit_price_minor' => $attributes['unit_price_minor'], 'currency' => $currency, 'threshold' => $threshold, 'active' => true, 'metadata' => $attributes['metadata'] ?? []]));
+        return $this->database->transaction(function () use ($attributes, $code, $name, $unit, $currency, $threshold): Meter {
+            $meter = Meter::query()->create(['team_id' => $attributes['team_id'] ?? null, 'name' => $name, 'code' => $code, 'unit' => $unit, 'unit_price_minor' => $attributes['unit_price_minor'], 'currency' => $currency, 'threshold' => $threshold, 'active' => true, 'metadata' => $attributes['metadata'] ?? []]);
+            MeterDefined::dispatch($meter);
+
+            return $meter;
+        });
     }
 }

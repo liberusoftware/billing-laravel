@@ -6,6 +6,7 @@ namespace Liberu\Billing\Domains\Actions;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Liberu\Billing\Domains\Events\DnsRecordUpserted;
 use Liberu\Billing\Domains\Models\DnsRecord;
 use Liberu\Billing\Domains\Models\Domain;
 
@@ -20,6 +21,11 @@ final class UpsertDnsRecord
             throw new InvalidArgumentException('DNS record details are invalid.');
         }
 
-        return DB::transaction(fn (): DnsRecord => DnsRecord::query()->updateOrCreate(['team_id' => $teamId, 'domain_id' => $domainId, 'type' => $type, 'host' => trim((string) $attributes['host'])], ['value' => trim((string) $attributes['value']), 'ttl' => max(60, (int) ($attributes['ttl'] ?? 3600))]));
+        return DB::transaction(function () use ($teamId, $domainId, $type, $attributes): DnsRecord {
+            $record = DnsRecord::query()->updateOrCreate(['team_id' => $teamId, 'domain_id' => $domainId, 'type' => $type, 'host' => trim((string) $attributes['host'])], ['value' => trim((string) $attributes['value']), 'ttl' => max(60, (int) ($attributes['ttl'] ?? 3600))]);
+            DnsRecordUpserted::dispatch($record);
+
+            return $record;
+        });
     }
 }

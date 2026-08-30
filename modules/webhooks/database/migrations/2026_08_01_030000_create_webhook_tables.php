@@ -8,37 +8,29 @@ return new class() extends Migration
 {
     public function up(): void
     {
-        Schema::create('webhook_endpoints', function (Blueprint $table): void {
-            $table->id();
-            $table->string('owner_ref')->nullable()->index();
-            $table->foreignId('team_id')->nullable();
-            $table->text('url');
-            $table->text('signing_secret')->nullable();
-            $table->text('secret')->nullable();
-            $table->json('events')->nullable();
-            $table->boolean('active')->default(true);
-            $table->boolean('is_active')->default(true);
-            $table->text('description')->nullable();
-            $table->unsignedInteger('max_retries')->default(3);
-            $table->unsignedInteger('retry_interval')->default(60);
-            $table->timestamp('last_triggered_at')->nullable();
-            $table->timestamp('rotated_at')->nullable();
-            $table->timestamps();
+        Schema::create('webhook_endpoints', function (Blueprint $t): void {
+            $t->id();
+            $t->string('owner_ref')->index();
+            $t->text('url');
+            $t->text('signing_secret');
+            $t->json('events');
+            $t->boolean('active')->default(true);
+            $t->timestamp('rotated_at')->nullable();
+            $t->timestamps();
         });
-
-        Schema::create('webhook_deliveries', function (Blueprint $table): void {
-            $table->uuid('id')->primary();
-            $table->foreignId('endpoint_id')->constrained('webhook_endpoints')->cascadeOnDelete();
-            $table->uuid('event_id')->index();
-            $table->string('event');
-            $table->json('payload');
-            $table->string('status')->default('pending')->index();
-            $table->unsignedInteger('attempts')->default(0);
-            $table->unsignedSmallInteger('response_status')->nullable();
-            $table->text('response_excerpt')->nullable();
-            $table->timestamp('next_attempt_at')->nullable()->index();
-            $table->timestamps();
-            $table->unique(['endpoint_id', 'event_id']);
+        Schema::create('webhook_deliveries', function (Blueprint $t): void {
+            $t->uuid('id')->primary();
+            $t->foreignId('endpoint_id')->constrained('webhook_endpoints')->cascadeOnDelete();
+            $t->uuid('event_id')->index();
+            $t->string('event');
+            $t->json('payload');
+            $t->string('status')->default('pending')->index();
+            $t->unsignedInteger('attempts')->default(0);
+            $t->unsignedSmallInteger('response_status')->nullable();
+            $t->text('response_excerpt')->nullable();
+            $t->timestamp('next_attempt_at')->nullable()->index();
+            $t->timestamps();
+            $t->unique(['endpoint_id', 'event_id']);
         });
     }
 

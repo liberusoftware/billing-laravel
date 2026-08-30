@@ -7,6 +7,7 @@ namespace Liberu\Billing\Provisioning\Actions;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Liberu\Billing\Provisioning\Enums\ProvisioningState;
+use Liberu\Billing\Provisioning\Events\ProvisionedServiceCreated;
 use Liberu\Billing\Provisioning\Models\ProvisionedService;
 use Liberu\Billing\Provisioning\Support\CustomerReference;
 
@@ -33,15 +34,20 @@ final class CreateProvisionedService
             throw new \InvalidArgumentException('Provisioning subscription reference is invalid.');
         }
 
-        return DB::transaction(fn (): ProvisionedService => ProvisionedService::query()->create([
-            'team_id' => $teamId,
-            'customer_id' => $customerId,
-            'subscription_id' => $subscriptionId,
-            'provider' => $provider,
-            'external_id' => $attributes['external_id'] ?? null,
-            'state' => $attributes['state'] ?? ProvisioningState::Pending,
-            'last_error' => null,
-            'metadata' => $attributes['metadata'] ?? [],
-        ]));
+        return DB::transaction(function () use ($teamId, $customerId, $subscriptionId, $provider, $attributes): ProvisionedService {
+            $service = ProvisionedService::query()->create([
+                'team_id' => $teamId,
+                'customer_id' => $customerId,
+                'subscription_id' => $subscriptionId,
+                'provider' => $provider,
+                'external_id' => $attributes['external_id'] ?? null,
+                'state' => $attributes['state'] ?? ProvisioningState::Pending,
+                'last_error' => null,
+                'metadata' => $attributes['metadata'] ?? [],
+            ]);
+            ProvisionedServiceCreated::dispatch($service);
+
+            return $service;
+        });
     }
 }

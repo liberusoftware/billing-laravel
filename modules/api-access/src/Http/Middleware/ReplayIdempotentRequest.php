@@ -6,44 +6,35 @@ namespace Liberu\Foundation\ApiAccess\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Liberu\Foundation\ApiAccess\Support\IdempotencyStore;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 final class ReplayIdempotentRequest
 {
-    public function __construct(private readonly IdempotencyStore $store) {}
+    public function __construct(private IdempotencyStore $store) {}
 
     public function handle(Request $request, Closure $next): SymfonyResponse
     {
         $key = trim((string) $request->header('Idempotency-Key', ''));
-
-        if ($key === '' || in_array($request->method(), ['GET', 'HEAD', 'OPTIONS'], true)) {
+        if ($key === '') {
             return $next($request);
         }
 
-        $identity = sprintf('%s:%s', (string) ($request->user()?->getAuthIdentifier() ?? 'guest'), (string) ($request->user()?->current_team_id ?? 'none'));
-        $existing = $this->store->begin($identity, $key, $request->getContent());
-
-        if ($existing !== null && $existing->response_body !== null) {
-            return new Response((string) $existing->response_body, (int) $existing->response_status, [
-                'Content-Type' => 'application/json',
-                'Idempotent-Replayed' => 'true',
-            ]);
-        }
-
+        $identity = (string) ($request->user()?->getAuthIdentifier() ?? 'guest:none');
+        $existing = $this->store->begin($identity, $key, (string) $request->getContent());
         if ($existing !== null) {
-            return new Response('The idempotent request is already being processed.', 409, [
-                'Content-Type' => 'application/problem+json',
-                'Retry-After' => '1',
-            ]);
+            if ($existing->response_body === null) {
+                return response()->json(['message' => 'A request with this idempotency key is in progress.'], 409)->header('Retry-After', '1');
+            }
+
+            return response($existing->response_body, (int) $existing->response_status)
+                ->header('Content-Type', 'application/json')
+                ->header('Idempotent-Replayed', 'true');
         }
 
         $response = $next($request);
-        $body = $response->getContent();
-
-        if ($body !== false) {
-            $this->store->complete($identity, $key, $response->getStatusCode(), $body);
+        if ($response instanceof SymfonyResponse && $response->isSuccessful()) {
+            $this->store->complete($identity, $key, $response->getStatusCode(), $response->getContent());
         }
 
         return $response;

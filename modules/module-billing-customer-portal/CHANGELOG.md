@@ -1,5 +1,6 @@
 # Changelog
 
+- Emit after-commit events for portal item and request creation and lifecycle transitions.
 - Added guarded portal item and request lifecycle transitions.
 
 ## 0.1.0

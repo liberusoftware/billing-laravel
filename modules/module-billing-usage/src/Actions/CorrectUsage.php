@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Liberu\Billing\Usage\Actions;
 
 use Illuminate\Database\DatabaseManager;
+use Liberu\Billing\Usage\Events\UsageCorrected;
 use Liberu\Billing\Usage\Models\UsageRecord;
 
 final readonly class CorrectUsage
@@ -25,7 +26,10 @@ final readonly class CorrectUsage
                 return $existing;
             }
 
-            return UsageRecord::query()->create(['team_id' => $source->team_id, 'customer_id' => $source->customer_id, 'meter_id' => $source->meter_id, 'event_key' => $eventKey, 'quantity' => $quantity, 'unit_price_minor' => $source->unit_price_minor, 'amount_minor' => (int) round($quantity * (int) $source->unit_price_minor), 'currency' => $source->currency, 'occurred_at' => now(), 'corrects_id' => $source->getKey(), 'metadata' => ['correction' => true]]);
+            $correction = UsageRecord::query()->create(['team_id' => $source->team_id, 'customer_id' => $source->customer_id, 'meter_id' => $source->meter_id, 'event_key' => $eventKey, 'quantity' => $quantity, 'unit_price_minor' => $source->unit_price_minor, 'amount_minor' => (int) round($quantity * (int) $source->unit_price_minor), 'currency' => $source->currency, 'occurred_at' => now(), 'corrects_id' => $source->getKey(), 'metadata' => ['correction' => true]]);
+            UsageCorrected::dispatch($correction);
+
+            return $correction;
         });
     }
 }

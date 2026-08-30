@@ -6,6 +6,7 @@ namespace Liberu\Billing\Communications\Actions;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Liberu\Billing\Communications\Events\CommunicationNumberProvisioned;
 use Liberu\Billing\Communications\Models\CommunicationNumber;
 use Liberu\Billing\Communications\Models\CommunicationService;
 
@@ -24,6 +25,11 @@ final class ProvisionCommunicationNumber
             CommunicationService::query()->forTeam($teamId)->findOrFail((int) $serviceId);
         }
 
-        return DB::transaction(fn (): CommunicationNumber => CommunicationNumber::query()->create(['team_id' => $teamId, 'service_id' => $serviceId, 'number' => $number, 'type' => $attributes['type'] ?? 'phone', 'status' => 'active', 'metadata' => $attributes['metadata'] ?? []]));
+        return DB::transaction(function () use ($teamId, $serviceId, $number, $attributes): CommunicationNumber {
+            $record = CommunicationNumber::query()->create(['team_id' => $teamId, 'service_id' => $serviceId, 'number' => $number, 'type' => $attributes['type'] ?? 'phone', 'status' => 'active', 'metadata' => $attributes['metadata'] ?? []]);
+            CommunicationNumberProvisioned::dispatch($record);
+
+            return $record;
+        });
     }
 }

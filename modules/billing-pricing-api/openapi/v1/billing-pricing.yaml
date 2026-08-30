@@ -25,6 +25,12 @@ paths:
       security: [{sanctum: []}]
       parameters: [{$ref: '#/components/parameters/PageSize'}]
       responses: {'200': {$ref: '#/components/responses/Collection'}, '401': {$ref: '#/components/responses/Unauthorized'}}
+    post:
+      operationId: billing.pricing.contracts.create
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/ContractRequest'}}}}
+      responses: {'201': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '403': {$ref: '#/components/responses/Forbidden'}, '422': {$ref: '#/components/responses/ValidationError'}}
   /api/v1/billing/pricing/discounts:
     get:
       operationId: billing.pricing.discounts.list
@@ -85,6 +91,10 @@ components:
       type: object
       required: [name, pricing_model, currency, unit_amount_minor]
       properties: {name: {type: string, maxLength: 255}, pricing_model: {type: string, enum: [recurring, one_time, usage, tiered]}, currency: {type: string, pattern: '^[A-Za-z]{3}$'}, unit_amount_minor: {type: integer, minimum: 0}, billing_interval: {type: string}, usage_unit: {type: string}, tiers: {type: array}, metadata: {type: object, additionalProperties: true}}
+    ContractRequest:
+      type: object
+      required: [pricing_plan_id]
+      properties: {pricing_plan_id: {type: integer, minimum: 1}, customer_id: {type: integer, minimum: 1}, starts_at: {type: string, format: date-time}, ends_at: {type: string, format: date-time}, terms: {type: object, additionalProperties: true}, status: {type: string, enum: [active, ended, cancelled]}}
     ProrationRequest:
       type: object
       required: [amount_minor, remaining_days, period_days]

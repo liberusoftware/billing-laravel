@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 use Liberu\Billing\Usage\Actions\DefineMeter;
 use Liberu\Billing\Usage\Actions\IngestUsage;
+use Liberu\Billing\Usage\Actions\TransitionMeter;
 use Liberu\Billing\Usage\Models\Meter;
 use Liberu\Billing\Usage\Queries\ListMeters;
 use Livewire\Component;
@@ -52,6 +53,15 @@ final class MeterList extends Component
         $ingest->execute($meter, ['event_key' => $this->eventKey, 'quantity' => $this->quantity]);
         $this->reset(['eventKey', 'quantity']);
         session()->flash('module-billing-usage-message', __('Usage recorded.'));
+    }
+
+    public function transition(int $meterId, TransitionMeter $transition): void
+    {
+        $teamId = data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id');
+        $meter = Meter::query()->whereKey($meterId)->when($teamId !== null, fn ($query) => $query->where(fn ($query) => $query->whereNull('team_id')->orWhere('team_id', (int) $teamId)))->firstOrFail();
+        Gate::authorize('update', $meter);
+        $transition->execute($meter, ! (bool) $meter->active);
+        session()->flash('module-billing-usage-message', __('Usage meter status updated.'));
     }
 
     public function render(ListMeters $query): View

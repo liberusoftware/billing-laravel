@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Liberu\Billing\Isp\Actions;
 
 use Illuminate\Database\DatabaseManager;
+use Liberu\Billing\Isp\Events\AccessServiceSynchronized;
 use Liberu\Billing\Isp\Models\AccessService;
 use Liberu\Billing\Isp\Services\NetworkAdapterRegistry;
 
@@ -21,7 +22,10 @@ final readonly class SynchronizeAccessService
             $locked = AccessService::query()->lockForUpdate()->findOrFail($service->getKey());
             $locked->update(['radius_synced_at' => now(), 'metadata' => array_merge($locked->metadata ?? [], ['network_adapter' => $result['adapter'] ?? null, 'external_reference' => $result['reference'] ?? null])]);
 
-            return $locked->refresh();
+            $updated = $locked->refresh();
+            AccessServiceSynchronized::dispatch($updated);
+
+            return $updated;
         });
     }
 }

@@ -7,6 +7,7 @@ namespace Liberu\Billing\Reporting\Actions;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 use Liberu\Billing\Reporting\Enums\ReportingMetricType;
+use Liberu\Billing\Reporting\Events\ReportingMetricRecorded;
 use Liberu\Billing\Reporting\Models\ReportingMetric;
 
 final class RecordReportingMetric
@@ -33,9 +34,14 @@ final class RecordReportingMetric
             throw new \InvalidArgumentException('Reporting metric currency is invalid.');
         }
 
-        return DB::transaction(fn (): ReportingMetric => ReportingMetric::query()->updateOrCreate(
-            ['team_id' => $teamId, 'metric' => $metric, 'period_start' => $periodStart, 'period_end' => $periodEnd, 'source' => $attributes['source'] ?? null],
-            ['value' => $attributes['value'], 'currency' => $currency === null ? null : strtoupper((string) $currency), 'dimensions' => $attributes['dimensions'] ?? []],
-        ));
+        return DB::transaction(function () use ($teamId, $metric, $periodStart, $periodEnd, $attributes, $currency): ReportingMetric {
+            $record = ReportingMetric::query()->updateOrCreate(
+                ['team_id' => $teamId, 'metric' => $metric, 'period_start' => $periodStart, 'period_end' => $periodEnd, 'source' => $attributes['source'] ?? null],
+                ['value' => $attributes['value'], 'currency' => $currency === null ? null : strtoupper((string) $currency), 'dimensions' => $attributes['dimensions'] ?? []],
+            );
+            ReportingMetricRecorded::dispatch($record);
+
+            return $record;
+        });
     }
 }

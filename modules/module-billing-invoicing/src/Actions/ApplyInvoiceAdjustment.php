@@ -6,6 +6,7 @@ namespace Liberu\Billing\Invoicing\Actions;
 
 use Illuminate\Database\DatabaseManager;
 use Liberu\Billing\Invoicing\Enums\InvoiceStatus;
+use Liberu\Billing\Invoicing\Events\InvoiceAdjusted;
 use Liberu\Billing\Invoicing\Models\Invoice;
 use Liberu\Billing\Invoicing\Models\InvoiceSupport;
 
@@ -27,7 +28,8 @@ final readonly class ApplyInvoiceAdjustment
             $metadata = is_array($locked->metadata) ? $locked->metadata : [];
             $metadata['adjustments'][] = ['amount_minor' => $amountMinor, 'reason' => trim($reason), 'type' => $type, 'applied_at' => now()->toIso8601String()];
             $locked->update(['total_minor' => (int) $locked->total_minor + $amountMinor, 'metadata' => $metadata]);
-            InvoiceSupport::query()->create(['team_id' => $locked->team_id, 'invoice_id' => $locked->getKey(), 'type' => $type, 'status' => 'applied', 'amount_minor' => abs($amountMinor), 'currency' => $locked->currency, 'payload' => ['amount_minor' => $amountMinor, 'reason' => trim($reason)]]);
+            $adjustment = InvoiceSupport::query()->create(['team_id' => $locked->team_id, 'invoice_id' => $locked->getKey(), 'type' => $type, 'status' => 'applied', 'amount_minor' => abs($amountMinor), 'currency' => $locked->currency, 'payload' => ['amount_minor' => $amountMinor, 'reason' => trim($reason)]]);
+            InvoiceAdjusted::dispatch($adjustment);
 
             return $locked->refresh();
         });

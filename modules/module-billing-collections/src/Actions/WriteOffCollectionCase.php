@@ -6,6 +6,7 @@ namespace Liberu\Billing\Collections\Actions;
 
 use Illuminate\Database\DatabaseManager;
 use Liberu\Billing\Collections\Enums\CollectionStatus;
+use Liberu\Billing\Collections\Events\CollectionCaseWrittenOff;
 use Liberu\Billing\Collections\Models\CollectionCase;
 
 final readonly class WriteOffCollectionCase
@@ -26,8 +27,10 @@ final readonly class WriteOffCollectionCase
             }
 
             $locked->update(['status' => CollectionStatus::WrittenOff, 'reason' => $reason]);
+            $updated = $locked->refresh();
+            CollectionCaseWrittenOff::dispatch($updated);
 
-            return $locked->refresh();
+            return $updated;
         });
     }
 }

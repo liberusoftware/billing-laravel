@@ -6,6 +6,7 @@ namespace Liberu\Billing\Payments\Actions;
 
 use Illuminate\Database\DatabaseManager;
 use Liberu\Billing\Payments\Enums\ReconciliationStatus;
+use Liberu\Billing\Payments\Events\PaymentReconciled;
 use Liberu\Billing\Payments\Models\Payment;
 use Liberu\Billing\Payments\Models\PaymentReconciliation;
 
@@ -32,10 +33,13 @@ final readonly class ReconcilePayment
                 return $existing;
             }
 
-            return PaymentReconciliation::query()->create([
+            $reconciliation = PaymentReconciliation::query()->create([
                 'payment_id' => $locked->getKey(), 'status' => $matched ? ReconciliationStatus::Matched : ReconciliationStatus::Mismatch,
                 'provider_reference' => $providerReference, 'notes' => $notes,
             ]);
+            PaymentReconciled::dispatch($reconciliation);
+
+            return $reconciliation;
         });
     }
 }

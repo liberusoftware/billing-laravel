@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Added post-commit events for recorded metrics and created snapshots.
+
 ## 0.1.0
 
 - Initial independently installable Reporting domain module.

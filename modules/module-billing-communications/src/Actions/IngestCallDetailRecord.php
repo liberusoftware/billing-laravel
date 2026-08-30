@@ -6,6 +6,7 @@ namespace Liberu\Billing\Communications\Actions;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Liberu\Billing\Communications\Events\CallDetailRecordIngested;
 use Liberu\Billing\Communications\Models\CallDetailRecord;
 use Liberu\Billing\Communications\Models\CallRateRule;
 use Liberu\Billing\Communications\Models\VoipAccount;
@@ -45,7 +46,10 @@ final class IngestCallDetailRecord
             $locked->increment('current_usage_cost', $cost);
             $this->alerts($locked->refresh(), $cdr);
 
-            return $cdr->refresh();
+            $record = $cdr->refresh();
+            CallDetailRecordIngested::dispatch($record);
+
+            return $record;
         });
     }
 

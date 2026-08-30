@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Liberu\Billing\Domains\Actions;
 
 use Illuminate\Support\Facades\DB;
+use Liberu\Billing\Domains\Events\DomainUpdated;
 use Liberu\Billing\Domains\Models\Domain;
 
 final class UpdateDomain
@@ -25,7 +26,10 @@ final class UpdateDomain
             ], static fn (mixed $value): bool => $value !== null));
             $locked->save();
 
-            return $locked->refresh();
+            $updated = $locked->refresh();
+            DomainUpdated::dispatch($updated);
+
+            return $updated;
         });
     }
 

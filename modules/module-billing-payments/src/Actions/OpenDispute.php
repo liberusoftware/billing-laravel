@@ -7,6 +7,7 @@ namespace Liberu\Billing\Payments\Actions;
 use Illuminate\Database\DatabaseManager;
 use Liberu\Billing\Payments\Enums\DisputeStatus;
 use Liberu\Billing\Payments\Enums\PaymentStatus;
+use Liberu\Billing\Payments\Events\PaymentDisputed;
 use Liberu\Billing\Payments\Models\Payment;
 use Liberu\Billing\Payments\Models\PaymentDispute;
 
@@ -28,7 +29,10 @@ final readonly class OpenDispute
 
             $locked->update(['status' => PaymentStatus::Disputed]);
 
-            return PaymentDispute::query()->create(['payment_id' => $locked->getKey(), 'amount_minor' => $amountMinor, 'status' => DisputeStatus::Open, 'reason' => trim($reason)]);
+            $dispute = PaymentDispute::query()->create(['payment_id' => $locked->getKey(), 'amount_minor' => $amountMinor, 'status' => DisputeStatus::Open, 'reason' => trim($reason)]);
+            PaymentDisputed::dispatch($dispute);
+
+            return $dispute;
         });
     }
 }

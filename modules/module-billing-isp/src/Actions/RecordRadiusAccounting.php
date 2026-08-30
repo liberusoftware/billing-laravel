@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Liberu\Billing\Isp\Actions;
 
 use Illuminate\Database\DatabaseManager;
+use Liberu\Billing\Isp\Events\RadiusAccountingRecorded;
 use Liberu\Billing\Isp\Models\AccessService;
 use Liberu\Billing\Isp\Models\RadiusSession;
 
@@ -35,7 +36,10 @@ final readonly class RecordRadiusAccounting
                 $locked->update(['status' => 'suspended', 'suspended_at' => now(), 'suspension_reason' => 'Monthly data allowance exceeded.']);
             }
 
-            return $session->refresh();
+            $recorded = $session->refresh();
+            RadiusAccountingRecorded::dispatch($recorded);
+
+            return $recorded;
         });
     }
 }

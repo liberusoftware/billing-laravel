@@ -6,6 +6,7 @@ namespace Liberu\Billing\Hosting\Actions;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Liberu\Billing\Hosting\Events\HostingCapabilityCreated;
 use Liberu\Billing\Hosting\Models\HostingAccount;
 use Liberu\Billing\Hosting\Models\HostingCapability;
 
@@ -25,6 +26,11 @@ final class CreateHostingCapability
             HostingAccount::query()->forTeam($teamId)->findOrFail((int) $accountId);
         }
 
-        return DB::transaction(fn (): HostingCapability => HostingCapability::query()->create(['team_id' => $teamId, 'hosting_account_id' => $accountId, 'type' => $type, 'name' => $name, 'status' => 'pending', 'provider' => $attributes['provider'] ?? null, 'configuration' => $attributes['configuration'] ?? []]));
+        return DB::transaction(function () use ($teamId, $accountId, $type, $name, $attributes): HostingCapability {
+            $capability = HostingCapability::query()->create(['team_id' => $teamId, 'hosting_account_id' => $accountId, 'type' => $type, 'name' => $name, 'status' => 'pending', 'provider' => $attributes['provider'] ?? null, 'configuration' => $attributes['configuration'] ?? []]);
+            HostingCapabilityCreated::dispatch($capability);
+
+            return $capability;
+        });
     }
 }

@@ -10,6 +10,9 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\Payments\Actions\CreatePaymentMandate;
 use Liberu\Billing\Payments\Actions\CreatePaymentMethod;
+use Liberu\Billing\Payments\Actions\TransitionPaymentMandate;
+use Liberu\Billing\Payments\Actions\TransitionPaymentMethod;
+use Liberu\Billing\Payments\Enums\PaymentMethodStatus;
 use Liberu\Billing\Payments\Models\PaymentMandate;
 use Liberu\Billing\Payments\Models\PaymentMethod;
 
@@ -48,6 +51,24 @@ final class PaymentMethodController extends Controller
         $data['team_id'] = $this->teamId($request);
 
         return response()->json(['data' => $create->execute($data)], 201);
+    }
+
+    public function transitionMethod(Request $request, PaymentMethod $method, TransitionPaymentMethod $transition): JsonResponse
+    {
+        $method = PaymentMethod::query()->whereKey($method->getKey())->where('team_id', $this->teamId($request))->firstOrFail();
+        Gate::authorize('update', $method);
+        $data = $request->validate(['status' => ['required', 'in:active,inactive']]);
+
+        return response()->json(['data' => $transition->execute($method, PaymentMethodStatus::from($data['status']))]);
+    }
+
+    public function transitionMandate(Request $request, PaymentMandate $mandate, TransitionPaymentMandate $transition): JsonResponse
+    {
+        $mandate = PaymentMandate::query()->whereKey($mandate->getKey())->where('team_id', $this->teamId($request))->firstOrFail();
+        Gate::authorize('update', $mandate);
+        $data = $request->validate(['status' => ['required', 'in:pending,active,revoked,expired']]);
+
+        return response()->json(['data' => $transition->execute($mandate, $data['status'])]);
     }
 
     private function teamId(Request $request): int

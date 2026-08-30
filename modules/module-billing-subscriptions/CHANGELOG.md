@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Dispatch subscription lifecycle events only after the surrounding database transaction commits.
 - Preserve configurable subscription period lengths during activation and renewal.
 - Add customer and status filters to subscription listings.
 - Add an idempotent expiry action for due non-renewing subscriptions and expose it through API, Filament, and Livewire.

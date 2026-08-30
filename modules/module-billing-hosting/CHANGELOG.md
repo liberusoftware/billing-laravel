@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Emit after-commit events for hosting account, capability, and provider-operation mutations.
+
 ## 0.1.0
 
 - Initial independently installable Hosting domain module.

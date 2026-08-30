@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "606b839a91c90d729cae625d32172117",
+    "content-hash": "8d3779670042a2da08ec5fccd99e58be",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -6308,6 +6308,142 @@
             }
         },
         {
+            "name": "liberusoftware/billing-cpanel",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-cpanel",
+                "reference": "834aa3f023d952cf965f67e5a4c8a85a6be5872a"
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^7.8",
+                "liberusoftware/module-billing-hosting": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-cpanel"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Cpanel\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "cPanel/WHM hosting account driver for Liberu Billing Hosting.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/billing-directadmin",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-directadmin",
+                "reference": "db1c64da190ea96e87daf00bb8dea17d1d27b92d"
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^7.8",
+                "liberusoftware/module-billing-hosting": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-directadmin"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\DirectAdmin\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "DirectAdmin hosting account driver for Liberu Billing Hosting.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/billing-enom",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-enom",
+                "reference": "e51781e543d8fcff684eea9aa1ecf8df9d363ca1"
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "liberusoftware/module-billing-domains": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-enom"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Enom\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Enom registrar adapter for Billing Domains.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/billing-liberu-control-panel",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-liberu-control-panel",
+                "reference": "6e944488f9c5a5d23a28ad4d01abb60748f47ff1"
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^7.8",
+                "liberusoftware/module-billing-hosting": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-liberu-control-panel"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\LiberuControlPanel\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Liberu Control Panel hosting account driver for Liberu Billing Hosting.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
             "name": "liberusoftware/billing-orders",
             "version": "0.1.0",
             "dist": {
@@ -6481,6 +6617,40 @@
             }
         },
         {
+            "name": "liberusoftware/billing-plesk",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-plesk",
+                "reference": "67839fadc3364fe32f2ca85bf2ec3beb857fa30f"
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^7.8",
+                "liberusoftware/module-billing-hosting": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-plesk"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Plesk\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Plesk hosting account driver for Liberu Billing Hosting.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
             "name": "liberusoftware/billing-pricing",
             "version": "0.1.2",
             "dist": {
@@ -6619,6 +6789,40 @@
             }
         },
         {
+            "name": "liberusoftware/billing-resellerclub",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-resellerclub",
+                "reference": "a97833409f2923aca57b4d15ea02d75c254507dc"
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "liberusoftware/module-billing-domains": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-resellerclub"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\ResellerClub\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "ResellerClub registrar adapter for Billing Domains.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
             "name": "liberusoftware/billing-stripe",
             "version": "0.1.0",
             "dist": {
@@ -6647,6 +6851,40 @@
                 "MIT"
             ],
             "description": "Stripe gateway adapter for Liberu Billing Payments.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/billing-virtualmin",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-virtualmin",
+                "reference": "d5fbcc8f4e369816e754e2b95feed197b2b15bc7"
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^7.8",
+                "liberusoftware/module-billing-hosting": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-virtualmin"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Virtualmin\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Virtualmin hosting account driver for Liberu Billing Hosting.",
             "transport-options": {
                 "symlink": false,
                 "relative": true

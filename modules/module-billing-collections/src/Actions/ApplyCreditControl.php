@@ -6,6 +6,7 @@ namespace Liberu\Billing\Collections\Actions;
 
 use Illuminate\Database\DatabaseManager;
 use Liberu\Billing\Collections\Enums\CollectionStatus;
+use Liberu\Billing\Collections\Events\CreditControlApplied;
 use Liberu\Billing\Collections\Models\CollectionCase;
 
 final readonly class ApplyCreditControl
@@ -31,8 +32,10 @@ final readonly class ApplyCreditControl
             $metadata = $locked->metadata ?? [];
             $metadata['credit_control_level'] = $level;
             $locked->update(['type' => 'credit_control', 'reason' => $reason ?: $locked->reason, 'metadata' => $metadata]);
+            $updated = $locked->refresh();
+            CreditControlApplied::dispatch($updated);
 
-            return $locked->refresh();
+            return $updated;
         });
     }
 }

@@ -6,6 +6,7 @@ namespace Liberu\Billing\Collections\Actions;
 
 use Illuminate\Database\DatabaseManager;
 use Liberu\Billing\Collections\Enums\CollectionStatus;
+use Liberu\Billing\Collections\Events\DunningScheduled;
 use Liberu\Billing\Collections\Models\CollectionCase;
 
 final readonly class ScheduleDunning
@@ -27,8 +28,10 @@ final readonly class ScheduleDunning
             $metadata = $locked->metadata ?? [];
             $metadata['dunning_scheduled_at'] = now()->toIso8601String();
             $locked->update(['type' => 'dunning', 'status' => CollectionStatus::Open, 'next_action_at' => $nextActionAt, 'metadata' => $metadata]);
+            $updated = $locked->refresh();
+            DunningScheduled::dispatch($updated);
 
-            return $locked->refresh();
+            return $updated;
         });
     }
 }

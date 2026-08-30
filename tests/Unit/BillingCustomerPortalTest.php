@@ -5,9 +5,12 @@ use App\Models\Team;
 use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 use Liberu\Billing\CustomerPortal\Actions\CreatePortalItem;
 use Liberu\Billing\CustomerPortal\Actions\TransitionPortalItem;
 use Liberu\Billing\CustomerPortal\Actions\TransitionPortalRequest;
+use Liberu\Billing\CustomerPortal\Events\PortalItemStatusChanged;
+use Liberu\Billing\CustomerPortal\Events\PortalRequestStatusChanged;
 use Liberu\Billing\CustomerPortal\Models\PortalItem;
 use Liberu\Billing\CustomerPortal\Models\PortalRequest;
 use Liberu\Billing\CustomerPortal\Queries\GetCustomerBillingSummary;
@@ -15,11 +18,15 @@ use Liberu\Billing\CustomerPortal\Queries\GetCustomerBillingSummary;
 uses(RefreshDatabase::class);
 
 it('transitions portal items and requests through supported states', function () {
+    Event::fake([PortalItemStatusChanged::class, PortalRequestStatusChanged::class]);
     $item = PortalItem::query()->create(['team_id' => 10, 'type' => 'cancellation', 'status' => 'open', 'subject' => 'Cancel service']);
     $request = PortalRequest::query()->create(['team_id' => 10, 'name' => 'Customer request', 'status' => 'active']);
 
     expect(app(TransitionPortalItem::class)->handle($item, 'cancelled')->status)->toBe('cancelled')
         ->and(app(TransitionPortalRequest::class)->handle($request, 'closed')->status)->toBe('closed');
+
+    Event::assertDispatched(PortalItemStatusChanged::class);
+    Event::assertDispatched(PortalRequestStatusChanged::class);
 });
 
 it('rejects unsupported portal lifecycle states', function () {

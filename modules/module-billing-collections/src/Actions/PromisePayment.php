@@ -6,6 +6,7 @@ namespace Liberu\Billing\Collections\Actions;
 
 use Illuminate\Database\DatabaseManager;
 use Liberu\Billing\Collections\Enums\CollectionStatus;
+use Liberu\Billing\Collections\Events\PaymentPromised;
 use Liberu\Billing\Collections\Models\CollectionCase;
 
 final readonly class PromisePayment
@@ -25,8 +26,10 @@ final readonly class PromisePayment
             }
 
             $locked->update(['status' => CollectionStatus::Promised, 'promise_due_at' => $dueAt]);
+            $updated = $locked->refresh();
+            PaymentPromised::dispatch($updated);
 
-            return $locked->refresh();
+            return $updated;
         });
     }
 }

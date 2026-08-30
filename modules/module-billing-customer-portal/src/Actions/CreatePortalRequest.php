@@ -6,6 +6,7 @@ namespace Liberu\Billing\CustomerPortal\Actions;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Liberu\Billing\CustomerPortal\Events\PortalRequestCreated;
 use Liberu\Billing\CustomerPortal\Models\PortalRequest;
 
 final class CreatePortalRequest
@@ -18,8 +19,13 @@ final class CreatePortalRequest
             throw new InvalidArgumentException('A team and name are required.');
         }
 
-        return DB::transaction(fn (): PortalRequest => PortalRequest::query()->create([
-            'team_id' => $teamId, 'name' => $name, 'status' => $attributes['status'] ?? 'active', 'metadata' => $attributes['metadata'] ?? null,
-        ]));
+        return DB::transaction(function () use ($teamId, $name, $attributes): PortalRequest {
+            $request = PortalRequest::query()->create([
+                'team_id' => $teamId, 'name' => $name, 'status' => $attributes['status'] ?? 'active', 'metadata' => $attributes['metadata'] ?? null,
+            ]);
+            PortalRequestCreated::dispatch($request);
+
+            return $request;
+        });
     }
 }

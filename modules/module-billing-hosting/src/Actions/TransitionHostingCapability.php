@@ -6,6 +6,7 @@ namespace Liberu\Billing\Hosting\Actions;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Liberu\Billing\Hosting\Events\HostingCapabilityStatusChanged;
 use Liberu\Billing\Hosting\Models\HostingCapability;
 
 final class TransitionHostingCapability
@@ -23,8 +24,10 @@ final class TransitionHostingCapability
             }
 
             $locked->update(['status' => $status]);
+            $updated = $locked->refresh();
+            HostingCapabilityStatusChanged::dispatch($updated);
 
-            return $locked->refresh();
+            return $updated;
         });
     }
 }

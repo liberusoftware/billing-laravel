@@ -8,6 +8,8 @@ paths:
   /api/v1/billing/usage/meters:
     get: {operationId: billing.usage.meters.list, summary: List usage meters, security: [{sanctum: []}], responses: {'200': {description: Meter collection}, '401': {description: Authentication is required.}}}
     post: {operationId: billing.usage.meters.create, security: [{sanctum: []}], parameters: [{'$ref': '#/components/parameters/IdempotencyKey'}], requestBody: {required: true, content: {application/json: {schema: {'$ref': '#/components/schemas/MeterRequest'}}}}, responses: {'201': {description: Meter created}, '422': {description: Validation error}}}
+  /api/v1/billing/usage/meters/{meter}/status:
+    patch: {operationId: billing.usage.meters.status, security: [{sanctum: []}], parameters: [{name: meter, in: path, required: true, schema: {type: string}}, {'$ref': '#/components/parameters/IdempotencyKey'}], requestBody: {required: true, content: {application/json: {schema: {type: object, required: [active], properties: {active: {type: boolean}}}}}}, responses: {'200': {description: Meter status updated}, '422': {description: Validation error}}}
   /api/v1/billing/usage/meters/{meter}/records:
     post: {operationId: billing.usage.records.create, security: [{sanctum: []}], parameters: [{name: meter, in: path, required: true, schema: {type: string}}, {'$ref': '#/components/parameters/IdempotencyKey'}], requestBody: {required: true, content: {application/json: {schema: {'$ref': '#/components/schemas/UsageRequest'}}}}, responses: {'201': {description: Usage recorded}}}
   /api/v1/billing/usage/meters/{meter}/aggregate:

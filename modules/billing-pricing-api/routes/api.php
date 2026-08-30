@@ -14,6 +14,7 @@ Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.prici
 });
 
 Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.pricing.write', 'idempotency'])->prefix('api/v1/billing/pricing')->name('billing.pricing.')->group(function (): void {
+    Route::post('/contracts', [PricingSupportController::class, 'createContract'])->name('contracts.store');
     Route::post('/discounts/{discount}/redeem', [PricingSupportController::class, 'redeem'])->name('discounts.redeem');
     Route::post('/plans/{plan}/snapshot', [PricingSupportController::class, 'snapshot'])->name('plans.snapshot');
 });

@@ -27,6 +27,7 @@ Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.invoi
     Route::post('/{invoice}/lines', [InvoiceController::class, 'line'])->name('line');
     Route::post('/{invoice}/finalize', [InvoiceController::class, 'finalize'])->name('finalize');
     Route::post('/{invoice}/adjustments', [InvoiceController::class, 'adjust'])->name('adjust');
+    Route::post('/{invoice}/late-fees', [InvoiceController::class, 'lateFee'])->name('late-fee');
     Route::post('/{invoice}/document', [InvoiceController::class, 'document'])->name('document');
     Route::post('/{invoice}/deliver', [InvoiceController::class, 'deliver'])->name('deliver');
 });

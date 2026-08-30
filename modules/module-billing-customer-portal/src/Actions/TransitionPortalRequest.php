@@ -6,6 +6,7 @@ namespace Liberu\Billing\CustomerPortal\Actions;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Liberu\Billing\CustomerPortal\Events\PortalRequestStatusChanged;
 use Liberu\Billing\CustomerPortal\Models\PortalRequest;
 
 final class TransitionPortalRequest
@@ -23,8 +24,10 @@ final class TransitionPortalRequest
             }
 
             $locked->update(['status' => $status]);
+            $updated = $locked->refresh();
+            PortalRequestStatusChanged::dispatch($updated);
 
-            return $locked->refresh();
+            return $updated;
         });
     }
 }

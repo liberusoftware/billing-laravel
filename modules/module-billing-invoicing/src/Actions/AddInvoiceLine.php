@@ -6,6 +6,7 @@ namespace Liberu\Billing\Invoicing\Actions;
 
 use Illuminate\Database\DatabaseManager;
 use Liberu\Billing\Invoicing\Enums\InvoiceStatus;
+use Liberu\Billing\Invoicing\Events\InvoiceLineAdded;
 use Liberu\Billing\Invoicing\Models\Invoice;
 use Liberu\Billing\Invoicing\Models\InvoiceLine;
 
@@ -29,6 +30,7 @@ final readonly class AddInvoiceLine
             $subtotal = (int) $invoice->lines()->sum('amount_minor');
             $tax = (int) $invoice->lines()->get()->sum(fn (InvoiceLine $invoiceLine): int => (int) round($invoiceLine->amount_minor * (float) $invoiceLine->tax_rate / 100));
             $invoice->update(['subtotal_minor' => $subtotal, 'tax_minor' => $tax, 'total_minor' => $subtotal + $tax]);
+            InvoiceLineAdded::dispatch($line);
 
             return $line;
         });

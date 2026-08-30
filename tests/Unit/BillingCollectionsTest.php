@@ -3,6 +3,7 @@
 use App\Models\Customer;
 use App\Models\Team;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
 use Liberu\Billing\Collections\Actions\ApplyCreditControl;
 use Liberu\Billing\Collections\Actions\OpenCollectionCase;
 use Liberu\Billing\Collections\Actions\PromisePayment;
@@ -12,18 +13,34 @@ use Liberu\Billing\Collections\Actions\ScheduleReminder;
 use Liberu\Billing\Collections\Actions\SuspendCollectionCase;
 use Liberu\Billing\Collections\Actions\WriteOffCollectionCase;
 use Liberu\Billing\Collections\Enums\CollectionStatus;
+use Liberu\Billing\Collections\Events\CollectionCaseOpened;
+use Liberu\Billing\Collections\Events\CollectionCaseRecovered;
+use Liberu\Billing\Collections\Events\CollectionCaseSuspended;
+use Liberu\Billing\Collections\Events\PaymentPromised;
 use Liberu\Billing\Collections\Models\CollectionCase;
 use Liberu\Billing\Invoicing\Models\Invoice;
 
 uses(RefreshDatabase::class);
 
 it('supports collection promises, suspension, and recovery', function () {
+    Event::fake([
+        CollectionCaseOpened::class,
+        PaymentPromised::class,
+        CollectionCaseSuspended::class,
+        CollectionCaseRecovered::class,
+    ]);
+
     $case = app(OpenCollectionCase::class)->execute(['team_id' => 10, 'amount_minor' => 1200, 'currency' => 'usd']);
     $case = app(PromisePayment::class)->execute($case, now()->addDays(7));
     expect($case->status)->toBe(CollectionStatus::Promised);
     $case = app(SuspendCollectionCase::class)->execute($case, 'promise missed');
     $case = app(RecoverCollectionCase::class)->execute($case);
     expect($case->status)->toBe(CollectionStatus::Recovered);
+
+    Event::assertDispatched(CollectionCaseOpened::class);
+    Event::assertDispatched(PaymentPromised::class);
+    Event::assertDispatched(CollectionCaseSuspended::class);
+    Event::assertDispatched(CollectionCaseRecovered::class);
 });
 
 it('rejects invalid collection amounts', function () {

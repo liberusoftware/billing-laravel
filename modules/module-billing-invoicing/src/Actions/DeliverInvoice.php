@@ -6,6 +6,7 @@ namespace Liberu\Billing\Invoicing\Actions;
 
 use Illuminate\Database\DatabaseManager;
 use Liberu\Billing\Invoicing\Enums\InvoiceStatus;
+use Liberu\Billing\Invoicing\Events\InvoiceDelivered;
 use Liberu\Billing\Invoicing\Models\Invoice;
 use Liberu\Billing\Invoicing\Models\InvoiceSupport;
 
@@ -25,7 +26,10 @@ final readonly class DeliverInvoice
                 throw new \LogicException('Only finalized invoices can be delivered.');
             }
 
-            return InvoiceSupport::query()->create(['team_id' => $locked->team_id, 'invoice_id' => $locked->getKey(), 'type' => 'delivery', 'status' => 'delivered', 'amount_minor' => 0, 'currency' => $locked->currency, 'destination' => strtolower(trim($destination)), 'payload' => ['document_id' => $documentId]]);
+            $delivery = InvoiceSupport::query()->create(['team_id' => $locked->team_id, 'invoice_id' => $locked->getKey(), 'type' => 'delivery', 'status' => 'delivered', 'amount_minor' => 0, 'currency' => $locked->currency, 'destination' => strtolower(trim($destination)), 'payload' => ['document_id' => $documentId]]);
+            InvoiceDelivered::dispatch($delivery);
+
+            return $delivery;
         });
     }
 }

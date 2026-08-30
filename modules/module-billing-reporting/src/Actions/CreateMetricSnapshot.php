@@ -6,6 +6,7 @@ namespace Liberu\Billing\Reporting\Actions;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Liberu\Billing\Reporting\Events\MetricSnapshotCreated;
 use Liberu\Billing\Reporting\Models\MetricSnapshot;
 
 final class CreateMetricSnapshot
@@ -18,8 +19,13 @@ final class CreateMetricSnapshot
             throw new InvalidArgumentException('A team and name are required.');
         }
 
-        return DB::transaction(fn (): MetricSnapshot => MetricSnapshot::query()->create([
-            'team_id' => $teamId, 'name' => $name, 'status' => $attributes['status'] ?? 'active', 'metadata' => $attributes['metadata'] ?? null,
-        ]));
+        return DB::transaction(function () use ($teamId, $name, $attributes): MetricSnapshot {
+            $snapshot = MetricSnapshot::query()->create([
+                'team_id' => $teamId, 'name' => $name, 'status' => $attributes['status'] ?? 'active', 'metadata' => $attributes['metadata'] ?? null,
+            ]);
+            MetricSnapshotCreated::dispatch($snapshot);
+
+            return $snapshot;
+        });
     }
 }

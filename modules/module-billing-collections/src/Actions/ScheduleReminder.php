@@ -6,6 +6,7 @@ namespace Liberu\Billing\Collections\Actions;
 
 use Illuminate\Database\DatabaseManager;
 use Liberu\Billing\Collections\Enums\CollectionStatus;
+use Liberu\Billing\Collections\Events\ReminderScheduled;
 use Liberu\Billing\Collections\Models\CollectionCase;
 
 final readonly class ScheduleReminder
@@ -27,8 +28,10 @@ final readonly class ScheduleReminder
             $metadata = $locked->metadata ?? [];
             $metadata['reminder_scheduled_at'] = now()->toIso8601String();
             $locked->update(['type' => 'reminder', 'next_action_at' => $nextActionAt, 'metadata' => $metadata]);
+            $updated = $locked->refresh();
+            ReminderScheduled::dispatch($updated);
 
-            return $locked->refresh();
+            return $updated;
         });
     }
 }

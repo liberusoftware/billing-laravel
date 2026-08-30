@@ -22,6 +22,8 @@ Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.payme
         Route::post('/', [PaymentController::class, 'store'])->name('store');
         Route::post('/methods', [PaymentMethodController::class, 'storeMethod'])->name('methods.store');
         Route::post('/mandates', [PaymentMethodController::class, 'storeMandate'])->name('mandates.store');
+        Route::patch('/methods/{method}/status', [PaymentMethodController::class, 'transitionMethod'])->whereNumber('method')->name('methods.status');
+        Route::patch('/mandates/{mandate}/status', [PaymentMethodController::class, 'transitionMandate'])->whereNumber('mandate')->name('mandates.status');
         Route::post('/{payment}/capture', [PaymentController::class, 'capture'])->name('capture');
         Route::post('/{payment}/refund', [PaymentController::class, 'refund'])->name('refund');
         Route::post('/{payment}/dispute', [PaymentController::class, 'dispute'])->name('dispute');

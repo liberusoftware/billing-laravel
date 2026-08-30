@@ -6,6 +6,7 @@ namespace Liberu\Billing\Collections\Actions;
 
 use Illuminate\Database\DatabaseManager;
 use Liberu\Billing\Collections\Enums\CollectionStatus;
+use Liberu\Billing\Collections\Events\CollectionCaseRecovered;
 use Liberu\Billing\Collections\Models\CollectionCase;
 
 final readonly class RecoverCollectionCase
@@ -25,8 +26,10 @@ final readonly class RecoverCollectionCase
             }
 
             $locked->update(['status' => CollectionStatus::Recovered]);
+            $updated = $locked->refresh();
+            CollectionCaseRecovered::dispatch($updated);
 
-            return $locked->refresh();
+            return $updated;
         });
     }
 }

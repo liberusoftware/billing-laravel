@@ -3,6 +3,8 @@
 use App\Models\Customer;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
+use Liberu\Billing\Communications\Actions\CreateCallRateRule;
 use Liberu\Billing\Communications\Actions\CreateCommunicationService;
 use Liberu\Billing\Communications\Actions\CreateVoipAccount;
 use Liberu\Billing\Communications\Actions\IngestCallDetailRecord;
@@ -10,7 +12,7 @@ use Liberu\Billing\Communications\Actions\ProvisionVoipAccount;
 use Liberu\Billing\Communications\Actions\TransitionCommunicationNumber;
 use Liberu\Billing\Communications\Actions\TransitionCommunicationService;
 use Liberu\Billing\Communications\Contracts\VoiceProvider;
-use Liberu\Billing\Communications\Models\CallRateRule;
+use Liberu\Billing\Communications\Events\CommunicationNumberStatusChanged;
 use Liberu\Billing\Communications\Models\CommunicationNumber;
 use Liberu\Billing\Communications\Models\CommunicationService;
 use Liberu\Billing\Communications\Services\VoiceProviderRegistry;
@@ -18,11 +20,13 @@ use Liberu\Billing\Communications\Services\VoiceProviderRegistry;
 uses(RefreshDatabase::class);
 
 it('transitions communication numbers through validated lifecycle states', function () {
+    Event::fake([CommunicationNumberStatusChanged::class]);
     $number = CommunicationNumber::query()->create(['team_id' => 10, 'number' => '+12025550100', 'type' => 'phone', 'status' => 'available']);
 
     $updated = app(TransitionCommunicationNumber::class)->handle($number, 'suspended');
 
     expect($updated->status)->toBe('suspended');
+    Event::assertDispatched(CommunicationNumberStatusChanged::class);
 });
 
 it('rejects unknown communication number states', function () {
@@ -78,8 +82,8 @@ it('rates voice calls by longest prefix and remains idempotent', function (): vo
     $team = $user->currentTeam;
     $customer = Customer::factory()->create(['team_id' => $team->id]);
     $account = app(CreateVoipAccount::class)->handle($team->id, ['customer_id' => $customer->id, 'platform' => 'asterisk', 'sip_username' => 'sip-101', 'sip_secret' => 'secret']);
-    CallRateRule::query()->create(['team_id' => $team->id, 'name' => 'Generic', 'destination_prefix' => '+44', 'rate_per_minute' => 1, 'billing_increment_seconds' => 60]);
-    CallRateRule::query()->create(['team_id' => $team->id, 'name' => 'London', 'destination_prefix' => '+4420', 'connection_fee' => 0.10, 'rate_per_minute' => 0.20, 'billing_increment_seconds' => 30, 'currency' => 'GBP']);
+    app(CreateCallRateRule::class)->handle($team->id, ['name' => 'Generic', 'destination_prefix' => '+44', 'rate_per_minute' => 1, 'billing_increment_seconds' => 60]);
+    app(CreateCallRateRule::class)->handle($team->id, ['name' => 'London', 'destination_prefix' => '+4420', 'connection_fee' => 0.10, 'rate_per_minute' => 0.20, 'billing_increment_seconds' => 30, 'currency' => 'GBP']);
     $data = ['external_id' => 'call-1', 'source' => '+15551234567', 'destination' => '+442071234567', 'started_at' => now()->subMinute()->toISOString(), 'duration_seconds' => 61];
 
     $cdr = app(IngestCallDetailRecord::class)->handle($account, $data);

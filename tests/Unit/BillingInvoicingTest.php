@@ -4,6 +4,7 @@ use App\Models\Customer;
 use App\Models\Team;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
 use Liberu\Billing\Invoicing\Actions\AddInvoiceLine;
 use Liberu\Billing\Invoicing\Actions\ApplyInvoiceAdjustment;
 use Liberu\Billing\Invoicing\Actions\ApplyInvoiceLateFee;
@@ -17,11 +18,16 @@ use Liberu\Billing\Invoicing\Actions\GenerateInvoiceDocument;
 use Liberu\Billing\Invoicing\Actions\RunInvoiceSchedule;
 use Liberu\Billing\Invoicing\Actions\RunPaymentPlan;
 use Liberu\Billing\Invoicing\Enums\InvoiceStatus;
+use Liberu\Billing\Invoicing\Events\InvoiceCreated;
+use Liberu\Billing\Invoicing\Events\InvoiceFinalized;
+use Liberu\Billing\Invoicing\Events\InvoiceLineAdded;
 use Liberu\Billing\Invoicing\Policies\InvoicePolicy;
 
 uses(RefreshDatabase::class);
 
 it('generates and finalizes an invoice with tax', function () {
+    Event::fake([InvoiceCreated::class, InvoiceLineAdded::class, InvoiceFinalized::class]);
+
     $invoice = app(CreateInvoice::class)->execute(['team_id' => 10, 'currency' => 'eur']);
     app(AddInvoiceLine::class)->execute($invoice, 'Service', 2, 500, 20);
     $invoice = app(FinalizeInvoice::class)->execute($invoice->refresh());
@@ -30,6 +36,10 @@ it('generates and finalizes an invoice with tax', function () {
         ->and($invoice->subtotal_minor)->toBe(1000)
         ->and($invoice->tax_minor)->toBe(200)
         ->and($invoice->total_minor)->toBe(1200);
+
+    Event::assertDispatchedTimes(InvoiceCreated::class, 1);
+    Event::assertDispatchedTimes(InvoiceLineAdded::class, 1);
+    Event::assertDispatchedTimes(InvoiceFinalized::class, 1);
 });
 
 it('recalculates tax across all invoice lines', function () {

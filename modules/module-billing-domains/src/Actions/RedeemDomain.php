@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Liberu\Billing\Domains\Actions;
 
 use Illuminate\Support\Facades\DB;
+use Liberu\Billing\Domains\Events\DomainRedeemed;
 use Liberu\Billing\Domains\Models\Domain;
 
 final class RedeemDomain
@@ -17,7 +18,10 @@ final class RedeemDomain
             $domain->update(['status' => 'redemption_pending', 'metadata' => $metadata]);
             app(RecordEppOperation::class)->execute($domain, 'redeem', 'pending', ['requested_at' => $metadata['redemption_requested_at']]);
 
-            return $domain->refresh();
+            $updated = $domain->refresh();
+            DomainRedeemed::dispatch($updated);
+
+            return $updated;
         });
     }
 }

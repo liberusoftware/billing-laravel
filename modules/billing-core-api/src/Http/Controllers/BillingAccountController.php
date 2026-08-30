@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
 use Liberu\Billing\Core\Actions\CreateBillingAccount;
+use Liberu\Billing\Core\Actions\DeleteBillingAccount;
 use Liberu\Billing\Core\Actions\TransitionBillingAccount;
 use Liberu\Billing\Core\Actions\UpdateBillingAccount;
 use Liberu\Billing\Core\Enums\BillingAccountStatus;
@@ -68,11 +69,11 @@ final class BillingAccountController extends Controller
         return response()->json(['data' => $this->resource($transition->execute($instance, BillingAccountStatus::from($data['status'])))]);
     }
 
-    public function destroy(Request $request, int $account): JsonResponse
+    public function destroy(Request $request, int $account, DeleteBillingAccount $delete): JsonResponse
     {
         $instance = $this->forCurrentTeam($request, $account);
         Gate::authorize('delete', $instance);
-        $instance->delete();
+        $delete->execute($instance);
 
         return response()->json(status: 204);
     }

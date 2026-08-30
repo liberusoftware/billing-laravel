@@ -2,7 +2,7 @@
   "$schema": "https://schemas.liberu.dev/module/v1.json",
   "name": "module-billing-payments",
   "display_name": "Billing Payments",
-  "description": "Provider-neutral payment methods, mandates, capture, allocation, refunds, disputes, and reconciliation.",
+  "description": "Provider-neutral payment methods, mandates, capture, partial invoice payments, allocation, refunds, disputes, and reconciliation.",
   "version": "0.1.0",
   "category": "capability",
   "provider": "Liberu\\Billing\\Payments\\PaymentsServiceProvider",
@@ -14,5 +14,5 @@
   "suggests": [],
   "capabilities": ["billing.payments"],
   "default_enabled": true,
-  "features": ["Methods", "Mandates", "Gateway drivers", "Capture", "Allocation", "Refunds", "Disputes", "Reconciliation"]
+  "features": ["Methods", "Mandates", "Method and mandate lifecycle", "Gateway drivers", "Capture", "Partial invoice payments", "Allocation", "Refunds", "Disputes", "Reconciliation"]
 }

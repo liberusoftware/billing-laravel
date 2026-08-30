@@ -63,7 +63,11 @@ final class HostingCapabilityController extends Controller
     {
         $model = HostingAccount::query()->forTeam($this->team($request))->findOrFail($account);
         Gate::authorize('update', $model);
-        $data = $request->validate(['operation' => ['required', 'in:provision,suspend,terminate']]);
+        $data = $request->validate(['operation' => ['required', 'in:provision,suspend,unsuspend,change_package,terminate,add_addon,remove_addon'], 'account' => ['sometimes', 'array'], 'server' => ['sometimes', 'array']]);
+
+        if (isset($data['account']) || isset($data['server'])) {
+            $model->update(['metadata' => array_merge((array) $model->metadata, array_filter(['account' => $data['account'] ?? null, 'server' => $data['server'] ?? null]))]);
+        }
 
         return response()->json(['data' => $perform->handle($model, $data['operation'])]);
     }

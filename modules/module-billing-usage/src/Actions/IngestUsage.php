@@ -6,6 +6,7 @@ namespace Liberu\Billing\Usage\Actions;
 
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\QueryException;
+use Liberu\Billing\Usage\Events\UsageIngested;
 use Liberu\Billing\Usage\Models\Meter;
 use Liberu\Billing\Usage\Models\UsageRecord;
 use Liberu\Billing\Usage\Support\CustomerReference;
@@ -36,7 +37,10 @@ final readonly class IngestUsage
                     return $existing;
                 }
 
-                return UsageRecord::query()->create(['team_id' => $locked->team_id, 'customer_id' => $customerId, 'meter_id' => $locked->getKey(), 'event_key' => $key, 'quantity' => $quantity, 'unit_price_minor' => $locked->unit_price_minor, 'amount_minor' => (int) round($quantity * (int) $locked->unit_price_minor), 'currency' => $locked->currency, 'occurred_at' => $attributes['occurred_at'] ?? now(), 'metadata' => $attributes['metadata'] ?? []]);
+                $record = UsageRecord::query()->create(['team_id' => $locked->team_id, 'customer_id' => $customerId, 'meter_id' => $locked->getKey(), 'event_key' => $key, 'quantity' => $quantity, 'unit_price_minor' => $locked->unit_price_minor, 'amount_minor' => (int) round($quantity * (int) $locked->unit_price_minor), 'currency' => $locked->currency, 'occurred_at' => $attributes['occurred_at'] ?? now(), 'metadata' => $attributes['metadata'] ?? []]);
+                UsageIngested::dispatch($record);
+
+                return $record;
             });
         } catch (QueryException $exception) {
             if (! str_contains(strtolower($exception->getMessage()), 'unique')) {

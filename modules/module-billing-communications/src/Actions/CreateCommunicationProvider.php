@@ -6,6 +6,7 @@ namespace Liberu\Billing\Communications\Actions;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Liberu\Billing\Communications\Events\CommunicationProviderCreated;
 use Liberu\Billing\Communications\Models\CommunicationProvider;
 
 final class CreateCommunicationProvider
@@ -19,12 +20,17 @@ final class CreateCommunicationProvider
             throw new InvalidArgumentException('A team, provider name, and driver are required.');
         }
 
-        return DB::transaction(fn (): CommunicationProvider => CommunicationProvider::query()->create([
-            'team_id' => $teamId,
-            'name' => $name,
-            'driver' => $driver,
-            'status' => $attributes['status'] ?? 'active',
-            'configuration' => $attributes['configuration'] ?? [],
-        ]));
+        return DB::transaction(function () use ($teamId, $name, $driver, $attributes): CommunicationProvider {
+            $provider = CommunicationProvider::query()->create([
+                'team_id' => $teamId,
+                'name' => $name,
+                'driver' => $driver,
+                'status' => $attributes['status'] ?? 'active',
+                'configuration' => $attributes['configuration'] ?? [],
+            ]);
+            CommunicationProviderCreated::dispatch($provider);
+
+            return $provider;
+        });
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Liberu\Billing\Isp\Actions;
 
 use Illuminate\Database\DatabaseManager;
+use Liberu\Billing\Isp\Events\UsagePeriodReset;
 use Liberu\Billing\Isp\Models\AccessService;
 
 final readonly class ResetUsagePeriod
@@ -17,7 +18,10 @@ final readonly class ResetUsagePeriod
             $locked = AccessService::query()->lockForUpdate()->findOrFail($service->getKey());
             $locked->update(['current_period_usage_bytes' => 0]);
 
-            return $locked->refresh();
+            $updated = $locked->refresh();
+            UsagePeriodReset::dispatch($updated);
+
+            return $updated;
         });
     }
 }

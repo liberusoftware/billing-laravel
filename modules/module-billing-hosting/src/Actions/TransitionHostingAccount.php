@@ -6,6 +6,7 @@ namespace Liberu\Billing\Hosting\Actions;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Liberu\Billing\Hosting\Events\HostingAccountStatusChanged;
 use Liberu\Billing\Hosting\Models\HostingAccount;
 
 final class TransitionHostingAccount
@@ -24,8 +25,10 @@ final class TransitionHostingAccount
             }
 
             $lockedAccount->update(['status' => $status]);
+            $updated = $lockedAccount->refresh();
+            HostingAccountStatusChanged::dispatch($updated);
 
-            return $lockedAccount->refresh();
+            return $updated;
         });
     }
 }

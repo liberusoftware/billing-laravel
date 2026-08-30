@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Liberu\Billing\Domains\Actions;
 
 use Illuminate\Database\DatabaseManager;
+use Liberu\Billing\Domains\Events\DomainTransferred;
 use Liberu\Billing\Domains\Models\Domain;
 use Liberu\Billing\Domains\Services\RegistrarManager;
 use Liberu\Billing\Domains\Support\CustomerReference;
@@ -29,7 +30,10 @@ final readonly class TransferDomain
             $domain->update(['registrar' => $targetRegistrar, 'status' => 'transfer_pending', 'transfer_status' => 'pending', 'expires_at' => $result['expiration_date'] ?? $domain->expires_at]);
             app(RecordEppOperation::class)->execute($domain, 'transfer', 'pending', $result, $result['epp_code'] ?? null);
 
-            return $domain->refresh();
+            $updated = $domain->refresh();
+            DomainTransferred::dispatch($updated);
+
+            return $updated;
         });
     }
 }

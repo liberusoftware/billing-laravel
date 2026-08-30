@@ -6,6 +6,7 @@ namespace Liberu\Billing\Isp\Actions;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Liberu\Billing\Isp\Events\AccessServiceCreated;
 use Liberu\Billing\Isp\Models\AccessService;
 
 final class CreateAccessService
@@ -18,8 +19,13 @@ final class CreateAccessService
             throw new InvalidArgumentException('A team and name are required.');
         }
 
-        return DB::transaction(fn (): AccessService => AccessService::query()->create([
-            'team_id' => $teamId, 'name' => $name, 'status' => $attributes['status'] ?? 'active', 'monthly_data_limit_bytes' => isset($attributes['monthly_data_limit_bytes']) ? max(0, (int) $attributes['monthly_data_limit_bytes']) : null, 'current_period_usage_bytes' => 0, 'metadata' => $attributes['metadata'] ?? null,
-        ]));
+        return DB::transaction(function () use ($teamId, $name, $attributes): AccessService {
+            $service = AccessService::query()->create([
+                'team_id' => $teamId, 'name' => $name, 'status' => $attributes['status'] ?? 'active', 'monthly_data_limit_bytes' => isset($attributes['monthly_data_limit_bytes']) ? max(0, (int) $attributes['monthly_data_limit_bytes']) : null, 'current_period_usage_bytes' => 0, 'metadata' => $attributes['metadata'] ?? null,
+            ]);
+            AccessServiceCreated::dispatch($service);
+
+            return $service;
+        });
     }
 }

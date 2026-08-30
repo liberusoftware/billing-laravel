@@ -6,6 +6,7 @@ namespace Liberu\Billing\Domains\Actions;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Liberu\Billing\Domains\Events\DomainCreated;
 use Liberu\Billing\Domains\Models\Domain;
 
 final class CreateDomain
@@ -18,15 +19,20 @@ final class CreateDomain
             throw new InvalidArgumentException('A team and name are required.');
         }
 
-        return DB::transaction(fn (): Domain => Domain::query()->create([
-            'team_id' => $teamId,
-            'name' => $name,
-            'status' => $attributes['status'] ?? 'active',
-            'registrar' => $attributes['registrar'] ?? null,
-            'transfer_status' => $attributes['transfer_status'] ?? null,
-            'expires_at' => $attributes['expires_at'] ?? null,
-            'registered_at' => $attributes['registered_at'] ?? null,
-            'metadata' => $attributes['metadata'] ?? null,
-        ]));
+        return DB::transaction(function () use ($teamId, $name, $attributes): Domain {
+            $domain = Domain::query()->create([
+                'team_id' => $teamId,
+                'name' => $name,
+                'status' => $attributes['status'] ?? 'active',
+                'registrar' => $attributes['registrar'] ?? null,
+                'transfer_status' => $attributes['transfer_status'] ?? null,
+                'expires_at' => $attributes['expires_at'] ?? null,
+                'registered_at' => $attributes['registered_at'] ?? null,
+                'metadata' => $attributes['metadata'] ?? null,
+            ]);
+            DomainCreated::dispatch($domain);
+
+            return $domain;
+        });
     }
 }

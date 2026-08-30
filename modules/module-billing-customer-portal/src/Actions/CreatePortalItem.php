@@ -6,6 +6,7 @@ namespace Liberu\Billing\CustomerPortal\Actions;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Liberu\Billing\CustomerPortal\Events\PortalItemCreated;
 use Liberu\Billing\CustomerPortal\Models\PortalItem;
 use Liberu\Billing\CustomerPortal\Support\CustomerReference;
 
@@ -22,6 +23,11 @@ final class CreatePortalItem
 
         $customerId = CustomerReference::assertBelongsToTeam(app('db'), $attributes['customer_id'] ?? null, $teamId);
 
-        return DB::transaction(fn (): PortalItem => PortalItem::query()->create(['team_id' => $teamId, 'customer_id' => $customerId, 'type' => $type, 'status' => 'open', 'subject' => $subject, 'payload' => $attributes['payload'] ?? []]));
+        return DB::transaction(function () use ($teamId, $customerId, $type, $subject, $attributes): PortalItem {
+            $item = PortalItem::query()->create(['team_id' => $teamId, 'customer_id' => $customerId, 'type' => $type, 'status' => 'open', 'subject' => $subject, 'payload' => $attributes['payload'] ?? []]);
+            PortalItemCreated::dispatch($item);
+
+            return $item;
+        });
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Liberu\Billing\Provisioning\Actions;
 
 use Illuminate\Database\DatabaseManager;
+use Liberu\Billing\Provisioning\Events\ProvisionedServiceReconciled;
 use Liberu\Billing\Provisioning\Models\ProvisionedService;
 
 final readonly class ReconcileProvisionedService
@@ -17,7 +18,10 @@ final readonly class ReconcileProvisionedService
             $locked = ProvisionedService::query()->lockForUpdate()->findOrFail($service->getKey());
             $locked->update(['last_reconciled_at' => now()]);
 
-            return $locked->refresh();
+            $updated = $locked->refresh();
+            ProvisionedServiceReconciled::dispatch($updated);
+
+            return $updated;
         });
     }
 }

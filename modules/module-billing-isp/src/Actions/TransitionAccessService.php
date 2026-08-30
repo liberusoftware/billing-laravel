@@ -6,6 +6,7 @@ namespace Liberu\Billing\Isp\Actions;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Liberu\Billing\Isp\Events\AccessServiceStatusChanged;
 use Liberu\Billing\Isp\Models\AccessService;
 
 final class TransitionAccessService
@@ -25,8 +26,10 @@ final class TransitionAccessService
                 throw new \LogicException('A cancelled ISP access service cannot be reactivated.');
             }
             $locked->update(['status' => $status]);
+            $updated = $locked->refresh();
+            AccessServiceStatusChanged::dispatch($updated);
 
-            return $locked->refresh();
+            return $updated;
         });
     }
 }

@@ -3,8 +3,13 @@
 use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 use Liberu\Billing\Reporting\Actions\CalculateReportingMetric;
+use Liberu\Billing\Reporting\Actions\CreateMetricSnapshot;
 use Liberu\Billing\Reporting\Actions\ExportReportingMetrics;
+use Liberu\Billing\Reporting\Actions\RecordReportingMetric;
+use Liberu\Billing\Reporting\Events\MetricSnapshotCreated;
+use Liberu\Billing\Reporting\Events\ReportingMetricRecorded;
 
 uses(RefreshDatabase::class);
 
@@ -66,4 +71,20 @@ it('exports only the current team reporting metrics as CSV', function (): void {
         ->toContain('revenue,2026-08-01,2026-08-31,1250,USD,test')
         ->not->toContain('tax,2026-08-01')
         ->not->toContain('9999');
+});
+
+it('dispatches reporting mutation events after commit', function (): void {
+    Event::fake([MetricSnapshotCreated::class, ReportingMetricRecorded::class]);
+
+    app(RecordReportingMetric::class)->execute(10, [
+        'metric' => 'revenue',
+        'period_start' => '2026-08-01',
+        'period_end' => '2026-08-31',
+        'value' => 1250,
+        'currency' => 'USD',
+    ]);
+    app(CreateMetricSnapshot::class)->handle(10, ['name' => 'August revenue']);
+
+    Event::assertDispatchedTimes(ReportingMetricRecorded::class, 1);
+    Event::assertDispatchedTimes(MetricSnapshotCreated::class, 1);
 });

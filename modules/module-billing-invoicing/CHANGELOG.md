@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Emit after-commit events for invoice creation, line changes, finalization, delivery, adjustments, and late fees.
+- Add the `partially_paid` invoice lifecycle state used by modular payment allocation.
+
 ## 0.1.0
 
 - Add the provider-neutral invoicing boundary and lifecycle actions.

@@ -16,6 +16,7 @@ return new class() extends Migration
             $table->unsignedBigInteger('customer_id')->nullable()->index();
             $table->string('type');
             $table->string('provider');
+            $table->string('status')->default('active')->index();
             $table->string('provider_reference')->nullable()->index();
             $table->string('display_name')->nullable();
             $table->string('last_four', 4)->nullable();

@@ -7,6 +7,7 @@ namespace Liberu\Billing\Invoicing\Livewire\Components;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 use Liberu\Billing\Invoicing\Actions\ApplyInvoiceAdjustment;
+use Liberu\Billing\Invoicing\Actions\ApplyInvoiceLateFee;
 use Liberu\Billing\Invoicing\Actions\CreateInvoice;
 use Liberu\Billing\Invoicing\Actions\DeliverInvoice;
 use Liberu\Billing\Invoicing\Actions\FinalizeInvoice;
@@ -24,6 +25,8 @@ final class InvoiceList extends Component
     public ?int $selectedInvoiceId = null;
 
     public int $adjustmentMinor = 0;
+
+    public int $lateFeeMinor = 0;
 
     public string $adjustmentReason = '';
 
@@ -56,6 +59,14 @@ final class InvoiceList extends Component
         $adjust->execute($invoice, $this->adjustmentMinor, $this->adjustmentReason);
         $this->reset(['selectedInvoiceId', 'adjustmentMinor', 'adjustmentReason']);
         session()->flash('module-billing-invoicing-message', __('Invoice adjustment applied.'));
+    }
+
+    public function applyLateFee(ApplyInvoiceLateFee $lateFee): void
+    {
+        $this->validate(['selectedInvoiceId' => ['required', 'integer', 'min:1'], 'lateFeeMinor' => ['required', 'integer', 'min:1']]);
+        $lateFee->execute($this->authorizedInvoice($this->selectedInvoiceId), $this->lateFeeMinor);
+        $this->reset(['selectedInvoiceId', 'lateFeeMinor']);
+        session()->flash('module-billing-invoicing-message', __('Invoice late fee applied.'));
     }
 
     public function create(CreateInvoice $create): void

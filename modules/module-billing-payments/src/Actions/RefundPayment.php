@@ -7,6 +7,8 @@ namespace Liberu\Billing\Payments\Actions;
 use Illuminate\Database\DatabaseManager;
 use Liberu\Billing\Payments\Enums\PaymentStatus;
 use Liberu\Billing\Payments\Enums\RefundStatus;
+use Liberu\Billing\Payments\Events\PaymentRefunded;
+use Liberu\Billing\Payments\Events\PaymentRefundFailed;
 use Liberu\Billing\Payments\Models\Payment;
 use Liberu\Billing\Payments\Models\PaymentRefund;
 use Liberu\Billing\Payments\Services\GatewayManager;
@@ -21,7 +23,21 @@ final readonly class RefundPayment
         if ($payment->status !== PaymentStatus::Captured || trim((string) $payment->gateway) === '' || $amountMinor < 1 || $refunded + $amountMinor > (int) $payment->amount_minor) {
             throw new \InvalidArgumentException('Refund amount or payment state is invalid.');
         }
-        $result = $this->gateways->driver((string) $payment->gateway)->refund($payment, $amountMinor);
+        try {
+            $result = $this->gateways->driver((string) $payment->gateway)->refund($payment, $amountMinor);
+        } catch (\Throwable $exception) {
+            $this->database->transaction(function () use ($payment, $amountMinor, $reason): void {
+                $locked = Payment::query()->lockForUpdate()->findOrFail($payment->getKey());
+                if ($locked->status !== PaymentStatus::Captured || (int) $locked->refunded_minor + $amountMinor > (int) $locked->amount_minor) {
+                    return;
+                }
+
+                $refund = PaymentRefund::query()->create(['payment_id' => $locked->getKey(), 'amount_minor' => $amountMinor, 'status' => RefundStatus::Failed, 'provider_reference' => null, 'reason' => $reason, 'metadata' => ['failure' => true]]);
+                PaymentRefundFailed::dispatch($refund);
+            });
+
+            throw $exception;
+        }
 
         return $this->database->transaction(function () use ($payment, $amountMinor, $reason, $result): PaymentRefund {
             $locked = Payment::query()->lockForUpdate()->findOrFail($payment->getKey());
@@ -31,6 +47,7 @@ final readonly class RefundPayment
             }
             $refund = PaymentRefund::query()->create(['payment_id' => $locked->getKey(), 'amount_minor' => $amountMinor, 'status' => RefundStatus::Completed, 'provider_reference' => $result['reference'], 'reason' => $reason]);
             $locked->update(['refunded_minor' => $total, 'status' => $total === (int) $locked->amount_minor ? PaymentStatus::Refunded : PaymentStatus::Captured]);
+            PaymentRefunded::dispatch($refund);
 
             return $refund;
         });

@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
+use Liberu\Billing\Communications\Actions\CreateCallRateRule;
 use Liberu\Billing\Communications\Actions\CreateCommunicationProvider;
 use Liberu\Billing\Communications\Actions\CreateCommunicationService;
 use Liberu\Billing\Communications\Actions\CreateVoipAccount;
@@ -127,12 +128,12 @@ final class CommunicationsController extends Controller
         return response()->json(CallRateRule::query()->forTeam($this->team($request))->latest()->paginate($request->integer('per_page', 25)));
     }
 
-    public function createRate(Request $request): JsonResponse
+    public function createRate(Request $request, CreateCallRateRule $create): JsonResponse
     {
         Gate::authorize('create', CallRateRule::class);
         $data = $request->validate(['name' => ['required', 'string', 'max:255'], 'destination_prefix' => ['required', 'string', 'max:64'], 'connection_fee' => ['sometimes', 'numeric', 'min:0'], 'rate_per_minute' => ['required', 'numeric', 'min:0'], 'billing_increment_seconds' => ['sometimes', 'integer', 'min:1'], 'currency' => ['sometimes', 'string', 'size:3', 'alpha'], 'is_active' => ['sometimes', 'boolean']]);
 
-        return response()->json(['data' => CallRateRule::query()->create([...$data, 'team_id' => $this->team($request), 'currency' => strtoupper((string) ($data['currency'] ?? 'USD'))])], 201);
+        return response()->json(['data' => $create->handle($this->team($request), $data)], 201);
     }
 
     public function callRecords(Request $request, int $account): JsonResponse
