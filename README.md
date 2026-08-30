@@ -1,25 +1,25 @@
-# Liberu Billing Laravel
+# Liberu Billing
 
-> Modular Laravel billing application for subscriptions, invoices, payments, provisioning, and revenue operations.
+> Modular Laravel billing platform for subscriptions, invoicing, payments, provisioning, and revenue operations.
 
 [Software](https://liberusoftware.com) · [Hosting](https://liberuhosting.com) · [Services](https://liberuservices.com) · [Liberu Group](https://liberugroup.com)
 
-[![PHP](https://img.shields.io/badge/PHP-8.5-777BB4?logo=php&logoColor=white)](https://www.php.net/) [![Laravel](https://img.shields.io/badge/Laravel-13-FF2D20?logo=laravel&logoColor=white)](https://laravel.com/) [![Filament](https://img.shields.io/badge/Filament-5-FDAE4B)](https://filamentphp.com/) [![Livewire](https://img.shields.io/badge/Livewire-4-FB70A9)](https://livewire.laravel.com/)
+[![Release](https://img.shields.io/badge/release-v3.16.0-2563EB)](https://github.com/liberusoftware/billing-laravel/releases/tag/v3.16.0) [![PHP](https://img.shields.io/badge/PHP-8.5-777BB4?logo=php&logoColor=white)](https://www.php.net/) [![Laravel](https://img.shields.io/badge/Laravel-13-FF2D20?logo=laravel&logoColor=white)](https://laravel.com/) [![Filament](https://img.shields.io/badge/Filament-5-FDAE4B)](https://filamentphp.com/) [![Livewire](https://img.shields.io/badge/Livewire-4-FB70A9)](https://livewire.laravel.com/)
 
 [![Install](https://github.com/liberusoftware/billing-laravel/actions/workflows/install.yml/badge.svg?branch=main)](https://github.com/liberusoftware/billing-laravel/actions/workflows/install.yml) [![Tests](https://github.com/liberusoftware/billing-laravel/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/liberusoftware/billing-laravel/actions/workflows/tests.yml) [![Docker](https://github.com/liberusoftware/billing-laravel/actions/workflows/docker.yml/badge.svg?branch=main)](https://github.com/liberusoftware/billing-laravel/actions/workflows/docker.yml) [![Codecov](https://codecov.io/gh/liberusoftware/billing-laravel/branch/main/graph/badge.svg)](https://codecov.io/gh/liberusoftware/billing-laravel) [![Latest release](https://img.shields.io/github/v/release/liberusoftware/billing-laravel?sort=semver)](https://github.com/liberusoftware/billing-laravel/releases/latest) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
 
 Liberu Billing Laravel is the deployable Billing host for the Liberu Composer ecosystem. It combines independently released billing capabilities, presentation adapters, and foundation packages while keeping application bootstrapping, environment configuration, panel composition, and cross-package tests in one place.
 
-## Key features
+## Billing features
 
-- Jetstream authentication, profiles, sessions, two-factor authentication, passkeys, and social login
-- Filament admin and account panels assembled from optional presentation modules
-- Organisations, teams, roles, permissions, audit trails, settings, and feature flags
-- Messaging, notifications, localisation, search, files, webhooks, integrations, analytics, and import/export foundations
-- Queue, scheduler, Horizon, Pulse, Telescope, Octane, Reverb, backup, and observability support
-- Independently versioned modules installed into tracked `/modules` directories
-- Independently versioned themes installed into tracked `/themes` directories with inheritance and safe fallback
-- Architecture tests for manifests, dependency direction, package ownership, and presentation boundaries
+- Product catalogues, pricing plans, quotes, carts, checkout, agreements, and order workflows
+- Subscription lifecycle management, usage metering, recurring billing, and plan changes
+- Invoices, payment collection, payment methods, mandates, capture, allocation, refunds, disputes, and reconciliation
+- Tax profiles, exemptions, threshold rates, currency conversion, billing terms, and account settings
+- Customer portal, communications, domains, hosting, service provisioning, and ISP workflows
+- Stripe and Paddle payment adapters plus Sanctum-protected API resources for billing capabilities
+- Reporting, exports, notifications, audit trails, feature flags, and operational observability
+- Filament and Livewire presentation adapters assembled from independently versioned modules
 
 ## Requirements
 
