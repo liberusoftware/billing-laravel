@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Liberu\Billing\Orders\Actions;
 
 use Illuminate\Database\DatabaseManager;
+use Liberu\Billing\Orders\Events\OrderChangeAdded;
 use Liberu\Billing\Orders\Models\Order;
 
 final readonly class AddChangeOrder
@@ -23,6 +24,7 @@ final readonly class AddChangeOrder
             $changes = $locked->change_orders ?? [];
             $changes[] = [...$change, 'created_at' => now()->toIso8601String()];
             $locked->update(['change_orders' => $changes]);
+            OrderChangeAdded::dispatch($locked, $change);
 
             return $locked->refresh();
         });

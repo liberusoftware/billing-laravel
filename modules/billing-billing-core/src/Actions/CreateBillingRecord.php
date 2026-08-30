@@ -7,6 +7,7 @@ namespace Liberu\Billing\Core\Actions;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
+use Liberu\Billing\Core\Events\BillingRecordCreated;
 
 final readonly class CreateBillingRecord
 {
@@ -19,6 +20,11 @@ final readonly class CreateBillingRecord
             throw new InvalidArgumentException('A team is required.');
         }
 
-        return $this->database->transaction(fn (): Model => $modelClass::query()->create($attributes));
+        return $this->database->transaction(function () use ($modelClass, $attributes): Model {
+            $record = $modelClass::query()->create($attributes);
+            BillingRecordCreated::dispatch($record);
+
+            return $record;
+        });
     }
 }

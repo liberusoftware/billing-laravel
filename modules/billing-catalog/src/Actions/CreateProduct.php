@@ -6,6 +6,7 @@ namespace Liberu\Billing\Catalog\Actions;
 
 use Illuminate\Database\DatabaseManager;
 use Liberu\Billing\Catalog\Enums\ProductStatus;
+use Liberu\Billing\Catalog\Events\ProductCreated;
 use Liberu\Billing\Catalog\Models\Product;
 
 final readonly class CreateProduct
@@ -15,7 +16,8 @@ final readonly class CreateProduct
     /** @param array{team_id?: int|null, name: string, sku: string, description?: string|null, base_price_minor: int, currency: string, metadata?: array<string, mixed>} $attributes */
     public function execute(array $attributes): Product
     {
-        return $this->database->transaction(fn (): Product => Product::query()->create([
+        return $this->database->transaction(function () use ($attributes): Product {
+            $product = Product::query()->create([
             'team_id' => $attributes['team_id'] ?? null,
             'name' => trim($attributes['name']),
             'sku' => strtoupper(trim($attributes['sku'])),
@@ -24,6 +26,10 @@ final readonly class CreateProduct
             'currency' => strtoupper($attributes['currency']),
             'status' => ProductStatus::Draft,
             'metadata' => $attributes['metadata'] ?? [],
-        ]));
+            ]);
+            ProductCreated::dispatch($product);
+
+            return $product;
+        });
     }
 }

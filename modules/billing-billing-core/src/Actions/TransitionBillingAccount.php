@@ -7,6 +7,7 @@ namespace Liberu\Billing\Core\Actions;
 use Illuminate\Database\DatabaseManager;
 use InvalidArgumentException;
 use Liberu\Billing\Core\Enums\BillingAccountStatus;
+use Liberu\Billing\Core\Events\BillingAccountStatusChanged;
 use Liberu\Billing\Core\Models\BillingAccount;
 
 final readonly class TransitionBillingAccount
@@ -25,7 +26,9 @@ final readonly class TransitionBillingAccount
                 throw new InvalidArgumentException('A closed billing account cannot be reopened.');
             }
 
+            $from = $locked->status;
             $locked->update(['status' => $status]);
+            BillingAccountStatusChanged::dispatch($locked, $from->value, $status->value);
 
             return $locked->refresh();
         });

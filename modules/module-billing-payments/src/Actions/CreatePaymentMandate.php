@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Liberu\Billing\Payments\Actions;
 
 use Illuminate\Database\DatabaseManager;
+use Liberu\Billing\Payments\Events\PaymentMandateCreated;
 use Liberu\Billing\Payments\Models\PaymentMandate;
 use Liberu\Billing\Payments\Models\PaymentMethod;
 use Liberu\Billing\Payments\Support\CustomerReference;
@@ -29,14 +30,19 @@ final readonly class CreatePaymentMandate
             throw new \InvalidArgumentException('Payment method customer reference is invalid.');
         }
 
-        return $this->database->transaction(fn (): PaymentMandate => PaymentMandate::query()->create([
-            'team_id' => $teamId,
-            'customer_id' => $customerId,
-            'payment_method_id' => $attributes['payment_method_id'],
-            'provider' => strtolower((string) $attributes['provider']),
-            'provider_reference' => $attributes['provider_reference'] ?? null,
-            'status' => $attributes['status'] ?? 'pending',
-            'metadata' => $attributes['metadata'] ?? [],
-        ]));
+        return $this->database->transaction(function () use ($teamId, $customerId, $attributes): PaymentMandate {
+            $mandate = PaymentMandate::query()->create([
+                'team_id' => $teamId,
+                'customer_id' => $customerId,
+                'payment_method_id' => $attributes['payment_method_id'],
+                'provider' => strtolower((string) $attributes['provider']),
+                'provider_reference' => $attributes['provider_reference'] ?? null,
+                'status' => $attributes['status'] ?? 'pending',
+                'metadata' => $attributes['metadata'] ?? [],
+            ]);
+            PaymentMandateCreated::dispatch($mandate);
+
+            return $mandate;
+        });
     }
 }

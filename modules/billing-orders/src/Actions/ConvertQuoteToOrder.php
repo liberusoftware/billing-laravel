@@ -7,6 +7,7 @@ namespace Liberu\Billing\Orders\Actions;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Support\Str;
 use Liberu\Billing\Orders\Enums\FraudReviewStatus;
+use Liberu\Billing\Orders\Events\OrderCreated;
 use Liberu\Billing\Orders\Models\Order;
 use Liberu\Billing\Orders\Models\Quote;
 
@@ -26,7 +27,10 @@ final readonly class ConvertQuoteToOrder
                 return $existing;
             }
 
-            return Order::query()->create(['team_id' => $locked->team_id, 'customer_id' => $locked->customer_id, 'quote_id' => $locked->getKey(), 'order_number' => 'ORD-'.strtoupper(Str::random(10)), 'currency' => $locked->currency, 'subtotal_minor' => $locked->total_minor, 'discount_minor' => 0, 'tax_minor' => 0, 'total_minor' => $locked->total_minor, 'status' => 'draft', 'fraud_status' => FraudReviewStatus::NotRequired, 'metadata' => ['quote_id' => $locked->getKey(), 'items' => $locked->items ?? []]]);
+            $order = Order::query()->create(['team_id' => $locked->team_id, 'customer_id' => $locked->customer_id, 'quote_id' => $locked->getKey(), 'order_number' => 'ORD-'.strtoupper(Str::random(10)), 'currency' => $locked->currency, 'subtotal_minor' => $locked->total_minor, 'discount_minor' => 0, 'tax_minor' => 0, 'total_minor' => $locked->total_minor, 'status' => 'draft', 'fraud_status' => FraudReviewStatus::NotRequired, 'metadata' => ['quote_id' => $locked->getKey(), 'items' => $locked->items ?? []]]);
+            OrderCreated::dispatch($order);
+
+            return $order;
         });
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Liberu\Billing\Core\Actions;
 
 use Illuminate\Database\DatabaseManager;
+use Liberu\Billing\Core\Events\BillingAccountUpdated;
 use Liberu\Billing\Core\Models\BillingAccount;
 
 final readonly class UpdateBillingAccount
@@ -23,6 +24,7 @@ final readonly class UpdateBillingAccount
                 $attributes['currency'] = strtoupper((string) $attributes['currency']);
             }
             $locked->fill($attributes)->save();
+            BillingAccountUpdated::dispatch($locked);
 
             return $locked->refresh();
         });

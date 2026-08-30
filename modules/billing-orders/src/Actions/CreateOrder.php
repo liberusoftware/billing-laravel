@@ -7,6 +7,7 @@ namespace Liberu\Billing\Orders\Actions;
 use Illuminate\Database\DatabaseManager;
 use Liberu\Billing\Orders\Enums\FraudReviewStatus;
 use Liberu\Billing\Orders\Enums\OrderStatus;
+use Liberu\Billing\Orders\Events\OrderCreated;
 use Liberu\Billing\Orders\Models\Order;
 use Liberu\Billing\Orders\Models\Quote;
 use Liberu\Billing\Orders\Support\CustomerReference;
@@ -32,6 +33,11 @@ final readonly class CreateOrder
         }
         $review = (bool) ($attributes['fraud_review_required'] ?? false);
 
-        return $this->database->transaction(fn (): Order => Order::query()->create(['team_id' => $teamId, 'customer_id' => $customerId, 'quote_id' => $quoteId, 'order_number' => $attributes['order_number'] ?? ('ORD-'.strtoupper(bin2hex(random_bytes(5)))), 'currency' => strtoupper((string) $attributes['currency']), 'subtotal_minor' => $subtotal, 'discount_minor' => $discount, 'tax_minor' => $tax, 'total_minor' => $subtotal - $discount + $tax, 'status' => $review ? OrderStatus::PendingReview : OrderStatus::Approved, 'fraud_status' => $review ? FraudReviewStatus::Pending : FraudReviewStatus::NotRequired, 'agreement' => $attributes['agreement'] ?? null, 'change_orders' => [], 'metadata' => $attributes['metadata'] ?? []]));
+        return $this->database->transaction(function () use ($attributes, $teamId, $customerId, $quoteId, $subtotal, $discount, $tax, $review): Order {
+            $order = Order::query()->create(['team_id' => $teamId, 'customer_id' => $customerId, 'quote_id' => $quoteId, 'order_number' => $attributes['order_number'] ?? ('ORD-'.strtoupper(bin2hex(random_bytes(5)))), 'currency' => strtoupper((string) $attributes['currency']), 'subtotal_minor' => $subtotal, 'discount_minor' => $discount, 'tax_minor' => $tax, 'total_minor' => $subtotal - $discount + $tax, 'status' => $review ? OrderStatus::PendingReview : OrderStatus::Approved, 'fraud_status' => $review ? FraudReviewStatus::Pending : FraudReviewStatus::NotRequired, 'agreement' => $attributes['agreement'] ?? null, 'change_orders' => [], 'metadata' => $attributes['metadata'] ?? []]);
+            OrderCreated::dispatch($order);
+
+            return $order;
+        });
     }
 }

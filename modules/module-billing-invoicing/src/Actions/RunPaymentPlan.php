@@ -6,6 +6,7 @@ namespace Liberu\Billing\Invoicing\Actions;
 
 use Carbon\CarbonInterface;
 use Illuminate\Database\DatabaseManager;
+use Liberu\Billing\Invoicing\Events\PaymentPlanInstallmentGenerated;
 use Liberu\Billing\Invoicing\Models\Invoice;
 use Liberu\Billing\Invoicing\Models\PaymentPlan;
 
@@ -55,6 +56,7 @@ final readonly class RunPaymentPlan
                 'next_due_at' => $this->nextDueAt($plan->next_due_at, $plan->frequency),
                 'status' => $generated >= $plan->total_installments ? 'completed' : 'active',
             ]);
+            PaymentPlanInstallmentGenerated::dispatch($invoice->refresh(), (int) $plan->getKey());
 
             return $invoice->refresh();
         });

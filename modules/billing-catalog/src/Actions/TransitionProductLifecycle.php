@@ -7,6 +7,7 @@ namespace Liberu\Billing\Catalog\Actions;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use Liberu\Billing\Catalog\Enums\ProductStatus;
+use Liberu\Billing\Catalog\Events\ProductStatusChanged;
 use Liberu\Billing\Catalog\Models\Product;
 
 final class TransitionProductLifecycle
@@ -23,7 +24,9 @@ final class TransitionProductLifecycle
                 throw new InvalidArgumentException('An archived product cannot be reopened.');
             }
 
+            $from = $locked->status;
             $locked->update(['status' => $status]);
+            ProductStatusChanged::dispatch($locked, $from->value, $status->value);
 
             return $locked->refresh();
         });

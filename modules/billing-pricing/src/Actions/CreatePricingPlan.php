@@ -8,6 +8,7 @@ use Illuminate\Database\DatabaseManager;
 use Illuminate\Support\Facades\Schema;
 use Liberu\Billing\Pricing\Enums\PricingModel;
 use Liberu\Billing\Pricing\Enums\PricingPlanStatus;
+use Liberu\Billing\Pricing\Events\PricingPlanCreated;
 use Liberu\Billing\Pricing\Models\PricingPlan;
 
 final readonly class CreatePricingPlan
@@ -49,7 +50,8 @@ final readonly class CreatePricingPlan
             throw new \InvalidArgumentException('Pricing product reference is invalid.');
         }
 
-        return $this->database->transaction(fn (): PricingPlan => PricingPlan::query()->create([
+        return $this->database->transaction(function () use ($attributes, $name, $model, $currency, $amount, $productId): PricingPlan {
+            $plan = PricingPlan::query()->create([
             'team_id' => $attributes['team_id'] ?? null,
             'product_id' => $productId,
             'name' => $name,
@@ -61,6 +63,10 @@ final readonly class CreatePricingPlan
             'tiers' => $attributes['tiers'] ?? [],
             'metadata' => $attributes['metadata'] ?? [],
             'status' => PricingPlanStatus::Draft,
-        ]));
+            ]);
+            PricingPlanCreated::dispatch($plan);
+
+            return $plan;
+        });
     }
 }

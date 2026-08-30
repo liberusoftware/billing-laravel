@@ -6,6 +6,7 @@ namespace Liberu\Billing\Invoicing\Actions;
 
 use Dompdf\Dompdf;
 use Illuminate\Database\DatabaseManager;
+use Liberu\Billing\Invoicing\Events\InvoiceDocumentGenerated;
 use Liberu\Billing\Invoicing\Models\Invoice;
 use Liberu\Billing\Invoicing\Models\InvoiceSupport;
 
@@ -31,6 +32,11 @@ final readonly class GenerateInvoiceDocument
             $payload['content_base64'] = base64_encode($renderer->output());
         }
 
-        return $this->database->transaction(fn (): InvoiceSupport => InvoiceSupport::query()->create(['team_id' => $invoice->team_id, 'invoice_id' => $invoice->getKey(), 'type' => $format, 'status' => 'generated', 'amount_minor' => 0, 'currency' => $invoice->currency, 'payload' => $payload]));
+        return $this->database->transaction(function () use ($invoice, $format, $payload): InvoiceSupport {
+            $document = InvoiceSupport::query()->create(['team_id' => $invoice->team_id, 'invoice_id' => $invoice->getKey(), 'type' => $format, 'status' => 'generated', 'amount_minor' => 0, 'currency' => $invoice->currency, 'payload' => $payload]);
+            InvoiceDocumentGenerated::dispatch($document);
+
+            return $document;
+        });
     }
 }

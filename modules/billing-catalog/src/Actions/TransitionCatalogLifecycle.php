@@ -7,6 +7,7 @@ namespace Liberu\Billing\Catalog\Actions;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Validation\ValidationException;
 use Liberu\Billing\Catalog\Enums\CatalogStatus;
+use Liberu\Billing\Catalog\Events\CatalogRecordStatusChanged;
 use Liberu\Billing\Catalog\Models\CatalogRecord;
 
 final readonly class TransitionCatalogLifecycle
@@ -26,6 +27,7 @@ final readonly class TransitionCatalogLifecycle
             }
 
             $locked->update(['status' => $status]);
+            CatalogRecordStatusChanged::dispatch($locked, $current->value, $status->value);
 
             return $locked->refresh();
         });

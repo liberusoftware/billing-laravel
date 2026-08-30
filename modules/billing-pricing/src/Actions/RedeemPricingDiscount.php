@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Liberu\Billing\Pricing\Actions;
 
 use Illuminate\Database\DatabaseManager;
+use Liberu\Billing\Pricing\Events\PricingDiscountRedeemed;
 use Liberu\Billing\Pricing\Models\PricingDiscount;
 
 final readonly class RedeemPricingDiscount
@@ -23,6 +24,7 @@ final readonly class RedeemPricingDiscount
                 throw new \LogicException('This discount is not redeemable.');
             }
             $locked->increment('redemptions');
+            PricingDiscountRedeemed::dispatch($locked->refresh());
 
             return $locked->refresh();
         });

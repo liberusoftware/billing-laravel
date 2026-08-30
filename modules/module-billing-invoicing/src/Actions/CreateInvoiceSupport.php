@@ -6,6 +6,7 @@ namespace Liberu\Billing\Invoicing\Actions;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Liberu\Billing\Invoicing\Events\InvoiceSupportCreated;
 use Liberu\Billing\Invoicing\Models\Invoice;
 use Liberu\Billing\Invoicing\Models\InvoiceSupport;
 
@@ -21,6 +22,11 @@ final class CreateInvoiceSupport
             throw new InvalidArgumentException('Invoice support details are invalid.');
         }
 
-        return DB::transaction(fn (): InvoiceSupport => InvoiceSupport::query()->create(['team_id' => $teamId ?: null, 'invoice_id' => $invoiceId, 'type' => $type, 'status' => $type === 'tax' || $type === 'adjustment' || $type === 'credit' ? 'applied' : 'pending', 'amount_minor' => max(0, (int) ($attributes['amount_minor'] ?? 0)), 'currency' => $attributes['currency'] ?? null, 'destination' => $attributes['destination'] ?? null, 'payload' => $attributes['payload'] ?? []]));
+        return DB::transaction(function () use ($teamId, $invoiceId, $type, $attributes): InvoiceSupport {
+            $support = InvoiceSupport::query()->create(['team_id' => $teamId ?: null, 'invoice_id' => $invoiceId, 'type' => $type, 'status' => $type === 'tax' || $type === 'adjustment' || $type === 'credit' ? 'applied' : 'pending', 'amount_minor' => max(0, (int) ($attributes['amount_minor'] ?? 0)), 'currency' => $attributes['currency'] ?? null, 'destination' => $attributes['destination'] ?? null, 'payload' => $attributes['payload'] ?? []]);
+            InvoiceSupportCreated::dispatch($support);
+
+            return $support;
+        });
     }
 }

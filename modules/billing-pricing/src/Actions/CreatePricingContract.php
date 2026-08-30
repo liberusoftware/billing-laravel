@@ -6,6 +6,7 @@ namespace Liberu\Billing\Pricing\Actions;
 
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Support\Facades\Schema;
+use Liberu\Billing\Pricing\Events\PricingContractCreated;
 use Liberu\Billing\Pricing\Models\PricingContract;
 use Liberu\Billing\Pricing\Support\CustomerReference;
 
@@ -29,7 +30,8 @@ final readonly class CreatePricingContract
             throw new \InvalidArgumentException('Pricing plan reference is invalid.');
         }
 
-        return $this->database->transaction(fn (): PricingContract => PricingContract::query()->create([
+        return $this->database->transaction(function () use ($attributes, $teamId, $customerId, $planId): PricingContract {
+            $contract = PricingContract::query()->create([
             'team_id' => $teamId,
             'pricing_plan_id' => (int) $planId,
             'customer_id' => $customerId,
@@ -37,6 +39,10 @@ final readonly class CreatePricingContract
             'ends_at' => $attributes['ends_at'] ?? null,
             'terms' => $attributes['terms'] ?? [],
             'status' => $attributes['status'] ?? 'active',
-        ]));
+            ]);
+            PricingContractCreated::dispatch($contract);
+
+            return $contract;
+        });
     }
 }

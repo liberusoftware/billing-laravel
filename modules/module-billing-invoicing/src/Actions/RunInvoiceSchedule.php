@@ -7,6 +7,7 @@ namespace Liberu\Billing\Invoicing\Actions;
 use Carbon\CarbonInterface;
 use Illuminate\Database\DatabaseManager;
 use Liberu\Billing\Invoicing\Enums\InvoiceStatus;
+use Liberu\Billing\Invoicing\Events\InvoiceScheduleRun;
 use Liberu\Billing\Invoicing\Models\Invoice;
 use Liberu\Billing\Invoicing\Models\InvoiceSchedule;
 
@@ -70,6 +71,7 @@ final readonly class RunInvoiceSchedule
                 default => throw new \LogicException('Invoice schedule frequency is invalid.'),
             };
             $schedule->update(['next_run_at' => $nextRun]);
+            InvoiceScheduleRun::dispatch($invoice->refresh(), (int) $schedule->getKey());
 
             return $invoice->refresh();
         });

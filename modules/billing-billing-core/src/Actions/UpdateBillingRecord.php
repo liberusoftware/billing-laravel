@@ -6,6 +6,7 @@ namespace Liberu\Billing\Core\Actions;
 
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Eloquent\Model;
+use Liberu\Billing\Core\Events\BillingRecordUpdated;
 
 final readonly class UpdateBillingRecord
 {
@@ -18,6 +19,7 @@ final readonly class UpdateBillingRecord
             $locked = $record->newQuery()->lockForUpdate()->findOrFail($record->getKey());
             $locked->fill($attributes);
             $locked->save();
+            BillingRecordUpdated::dispatch($locked);
 
             return $locked->refresh();
         });

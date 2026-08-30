@@ -6,6 +6,7 @@ namespace Liberu\Billing\Hosting\Actions;
 
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Liberu\Billing\Hosting\Events\HostingServerCreated;
 use Liberu\Billing\Hosting\Models\HostingServer;
 
 final class CreateHostingServer
@@ -20,19 +21,24 @@ final class CreateHostingServer
             throw new InvalidArgumentException('A valid hosting server name, hostname, and control panel are required.');
         }
 
-        return DB::transaction(fn (): HostingServer => HostingServer::query()->create([
-            'team_id' => $teamId,
-            'name' => $name,
-            'hostname' => $hostname,
-            'username' => $attributes['username'] ?? null,
-            'ip_address' => $attributes['ip_address'] ?? null,
-            'control_panel' => $panel,
-            'api_url' => $attributes['api_url'] ?? null,
-            'api_token' => $attributes['api_token'] ?? null,
-            'is_active' => $attributes['is_active'] ?? true,
-            'max_accounts' => $attributes['max_accounts'] ?? null,
-            'active_accounts' => 0,
-            'metadata' => $attributes['metadata'] ?? null,
-        ]));
+        return DB::transaction(function () use ($teamId, $name, $hostname, $panel, $attributes): HostingServer {
+            $server = HostingServer::query()->create([
+                'team_id' => $teamId,
+                'name' => $name,
+                'hostname' => $hostname,
+                'username' => $attributes['username'] ?? null,
+                'ip_address' => $attributes['ip_address'] ?? null,
+                'control_panel' => $panel,
+                'api_url' => $attributes['api_url'] ?? null,
+                'api_token' => $attributes['api_token'] ?? null,
+                'is_active' => $attributes['is_active'] ?? true,
+                'max_accounts' => $attributes['max_accounts'] ?? null,
+                'active_accounts' => 0,
+                'metadata' => $attributes['metadata'] ?? null,
+            ]);
+            HostingServerCreated::dispatch($server);
+
+            return $server;
+        });
     }
 }

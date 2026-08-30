@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Liberu\Billing\Payments\Actions;
 
 use Illuminate\Database\DatabaseManager;
+use Liberu\Billing\Payments\Events\PaymentMandateStatusChanged;
 use Liberu\Billing\Payments\Models\PaymentMandate;
 
 final readonly class TransitionPaymentMandate
@@ -26,6 +27,7 @@ final readonly class TransitionPaymentMandate
                 throw new \LogicException('A terminal payment mandate cannot be reactivated.');
             }
             $locked->update(['status' => $status]);
+            PaymentMandateStatusChanged::dispatch($locked, (string) $locked->getOriginal('status'), $status);
 
             return $locked->refresh();
         });

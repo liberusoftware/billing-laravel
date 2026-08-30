@@ -7,6 +7,7 @@ namespace Liberu\Billing\Invoicing\Actions;
 use Carbon\CarbonInterface;
 use Illuminate\Database\DatabaseManager;
 use Liberu\Billing\Invoicing\Enums\InvoiceStatus;
+use Liberu\Billing\Invoicing\Events\PaymentPlanCreated;
 use Liberu\Billing\Invoicing\Models\Invoice;
 use Liberu\Billing\Invoicing\Models\PaymentPlan;
 
@@ -27,7 +28,8 @@ final readonly class CreatePaymentPlan
             throw new \InvalidArgumentException('Payment plan installment amount is invalid.');
         }
 
-        return $this->database->transaction(fn (): PaymentPlan => PaymentPlan::query()->create([
+        return $this->database->transaction(function () use ($invoice, $totalInstallments, $installmentAmount, $frequency, $startAt): PaymentPlan {
+            $plan = PaymentPlan::query()->create([
             'team_id' => $invoice->team_id,
             'invoice_id' => $invoice->getKey(),
             'customer_id' => $invoice->customer_id,
@@ -38,7 +40,11 @@ final readonly class CreatePaymentPlan
             'next_due_at' => $this->nextDueAt($startAt, $frequency),
             'status' => 'active',
             'metadata' => ['remainder_minor' => (int) $invoice->total_minor % $totalInstallments],
-        ]));
+            ]);
+            PaymentPlanCreated::dispatch($plan);
+
+            return $plan;
+        });
     }
 
     private function nextDueAt(CarbonInterface $date, string $frequency): CarbonInterface

@@ -6,6 +6,7 @@ namespace Liberu\Billing\Payments\Actions;
 
 use Illuminate\Database\DatabaseManager;
 use Liberu\Billing\Payments\Enums\PaymentMethodStatus;
+use Liberu\Billing\Payments\Events\PaymentMethodStatusChanged;
 use Liberu\Billing\Payments\Models\PaymentMethod;
 
 final readonly class TransitionPaymentMethod
@@ -16,7 +17,9 @@ final readonly class TransitionPaymentMethod
     {
         return $this->database->transaction(function () use ($method, $status): PaymentMethod {
             $locked = PaymentMethod::query()->lockForUpdate()->findOrFail($method->getKey());
+            $from = $locked->status;
             $locked->update(['status' => $status]);
+            PaymentMethodStatusChanged::dispatch($locked, $from->value, $status->value);
 
             return $locked->refresh();
         });

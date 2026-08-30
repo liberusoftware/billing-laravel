@@ -7,6 +7,7 @@ namespace Liberu\Billing\Orders\Actions;
 use Illuminate\Database\DatabaseManager;
 use Liberu\Billing\Orders\Enums\FraudReviewStatus;
 use Liberu\Billing\Orders\Enums\OrderStatus;
+use Liberu\Billing\Orders\Events\OrderFraudReviewed;
 use Liberu\Billing\Orders\Models\Order;
 
 final readonly class ReviewFraud
@@ -22,6 +23,7 @@ final readonly class ReviewFraud
             }
 
             $locked->update(['fraud_status' => $status]);
+            OrderFraudReviewed::dispatch($locked, $status->value);
 
             return $locked->refresh();
         });

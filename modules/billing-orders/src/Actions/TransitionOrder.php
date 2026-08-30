@@ -7,6 +7,7 @@ namespace Liberu\Billing\Orders\Actions;
 use Illuminate\Database\DatabaseManager;
 use Liberu\Billing\Orders\Enums\FraudReviewStatus;
 use Liberu\Billing\Orders\Enums\OrderStatus;
+use Liberu\Billing\Orders\Events\OrderStatusChanged;
 use Liberu\Billing\Orders\Models\Order;
 
 final readonly class TransitionOrder
@@ -31,7 +32,9 @@ final readonly class TransitionOrder
                 throw new \LogicException('Blocked orders cannot be approved.');
             }
 
+            $from = $locked->status;
             $locked->update(['status' => $status, 'fraud_status' => $fraudStatus ?? $locked->fraud_status]);
+            OrderStatusChanged::dispatch($locked, $from->value, $status->value);
 
             return $locked->refresh();
         });

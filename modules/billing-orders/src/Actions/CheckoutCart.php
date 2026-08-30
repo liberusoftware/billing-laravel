@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Liberu\Billing\Orders\Actions;
 
 use Illuminate\Database\DatabaseManager;
+use Liberu\Billing\Orders\Events\CartCheckedOut;
 use Liberu\Billing\Orders\Models\Cart;
 use Liberu\Billing\Orders\Models\Order;
 
@@ -26,6 +27,7 @@ final readonly class CheckoutCart
 
             $order = $this->createOrder->execute([...$attributes, 'team_id' => $locked->team_id, 'customer_id' => $locked->customer_id, 'currency' => $locked->currency]);
             $locked->update(['status' => 'checked_out']);
+            CartCheckedOut::dispatch($locked, $order);
 
             return $order;
         });
