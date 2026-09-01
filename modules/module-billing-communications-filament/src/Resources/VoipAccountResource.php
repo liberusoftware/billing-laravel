@@ -19,6 +19,8 @@ use Liberu\Billing\Communications\Models\VoipAccount;
 
 final class VoipAccountResource extends Resource
 {
+    protected static string|\UnitEnum|null $navigationGroup = 'Service Delivery';
+
     use ScopesCurrentTeam;
 
     protected static ?string $model = VoipAccount::class;

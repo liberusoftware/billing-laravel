@@ -60,7 +60,7 @@
     "src": "_inter-700-normal-Yt3aPRUw.woff2"
   },
   "resources/css/app.css": {
-    "file": "assets/app-CQeB3tAV.css",
+    "file": "assets/app-CFkSm25W.css",
     "name": "app",
     "names": [
       "app.css"
@@ -87,6 +87,21 @@
     "file": "assets/app-DdrdLe8N.js",
     "name": "app",
     "src": "themes/base/resources/js/app.js",
+    "isEntry": true
+  },
+  "themes/billing/resources/css/app.css": {
+    "file": "assets/app-BeixVoCo.css",
+    "name": "app",
+    "names": [
+      "app.css"
+    ],
+    "src": "themes/billing/resources/css/app.css",
+    "isEntry": true
+  },
+  "themes/billing/resources/js/app.js": {
+    "file": "assets/app-CxVDod9X.js",
+    "name": "app",
+    "src": "themes/billing/resources/js/app.js",
     "isEntry": true
   },
   "themes/clear-signal/resources/css/app.css": {

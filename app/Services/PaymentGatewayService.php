@@ -305,7 +305,7 @@ class PaymentGatewayService
     {
         $details = is_array($payment->payment_method_details) ? $payment->payment_method_details : [];
         $priceId = $details['paddle_price_id'] ?? null;
-        if (! is_string($priceId) || ! preg_match('/^pri_[a-z0-9]+$/', $priceId)) {
+        if (! preg_match('/^pri_[a-z0-9]+$/', $priceId)) {
             throw new Exception('A Paddle price ID is required for payment processing');
         }
 

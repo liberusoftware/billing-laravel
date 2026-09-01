@@ -1,0 +1,15 @@
+{
+  "name": "liberusoftware/theme-billing",
+  "description": "Responsive billing workspace theme for Liberu applications.",
+  "type": "liberu-theme",
+  "license": "MIT",
+  "require": {
+    "php": "^8.5",
+    "liberusoftware/theme-support": "^1.0",
+    "liberusoftware/theme-base": "^2.0"
+  },
+  "autoload": {"psr-4": {"Liberu\\Themes\\Billing\\": "src/"}},
+  "extra": {"liberu": {"name": "billing"}},
+  "version": "1.0.0",
+  "config": {"allow-plugins": {"pestphp/pest-plugin": true}}
+}

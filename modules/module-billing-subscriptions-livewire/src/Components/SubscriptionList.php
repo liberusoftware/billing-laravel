@@ -104,6 +104,7 @@ final class SubscriptionList extends Component
 
     public function render(ListSubscriptions $query): View
     {
+        Gate::authorize('viewAny', Subscription::class);
         $teamId = data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id');
 
         return view('module-billing-subscriptions-livewire::subscription-list', [

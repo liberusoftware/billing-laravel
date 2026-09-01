@@ -15,6 +15,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
 use Override;
+use UnitEnum;
 
 class UserResource extends Resource
 {
@@ -27,6 +28,9 @@ class UserResource extends Resource
 
     #[Override]
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    #[Override]
+    protected static string|UnitEnum|null $navigationGroup = 'Account';
 
     #[Override]
     public static function form(Schema $schema): Schema

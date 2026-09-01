@@ -18,6 +18,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Override;
+use UnitEnum;
 
 class PartialPaymentResource extends Resource
 {
@@ -26,6 +27,9 @@ class PartialPaymentResource extends Resource
 
     #[Override]
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-circle-stack';
+
+    #[Override]
+    protected static string|UnitEnum|null $navigationGroup = 'Billing Operations';
 
     #[Override]
     public static function form(Schema $schema): Schema

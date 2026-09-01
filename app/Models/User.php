@@ -114,6 +114,31 @@ class User extends Authenticatable implements ConnectedAccountOwner, FilamentUse
     ];
 
     /**
+     * Return safe defaults while optional preference migrations are being
+     * applied. This also gives newly registered users deterministic settings.
+     */
+    protected function locale(): Attribute
+    {
+        return Attribute::make(
+            get: fn (?string $value): string => $value ?: (string) config('app.locale', 'en'),
+        );
+    }
+
+    protected function themePreference(): Attribute
+    {
+        return Attribute::make(
+            get: fn (?string $value): string => $value ?: 'default',
+        );
+    }
+
+    protected function timezone(): Attribute
+    {
+        return Attribute::make(
+            get: fn (?string $value): string => $value ?: (string) config('app.timezone', 'UTC'),
+        );
+    }
+
+    /**
      * The accessors to append to the model's array form.
      *
      * @var list<string>

@@ -20,6 +20,8 @@ use Liberu\Billing\CustomerPortal\Models\PortalRequest;
 
 final class PortalRequestResource extends Resource
 {
+    protected static string|\UnitEnum|null $navigationGroup = 'Customers & Sales';
+
     use ScopesCurrentTeam;
 
     protected static ?string $model = PortalRequest::class;

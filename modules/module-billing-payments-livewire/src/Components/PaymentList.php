@@ -34,6 +34,7 @@ final class PaymentList extends Component
 
     public function render(ListPayments $query): View
     {
+        Gate::authorize('viewAny', Payment::class);
         $teamId = data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id');
 
         return view('module-billing-payments-livewire::payment-list', ['payments' => $query->execute($teamId === null ? null : (int) $teamId)]);

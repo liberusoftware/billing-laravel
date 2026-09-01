@@ -12,6 +12,8 @@ use Liberu\Billing\Invoicing\Models\InvoiceLine;
 
 final class InvoiceLineResource extends Resource
 {
+    protected static string|\UnitEnum|null $navigationGroup = 'Billing Operations';
+
     use ScopesCurrentTeam;
 
     protected static ?string $model = InvoiceLine::class;

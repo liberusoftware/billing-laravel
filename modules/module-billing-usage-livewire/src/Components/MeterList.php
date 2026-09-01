@@ -66,6 +66,7 @@ final class MeterList extends Component
 
     public function render(ListMeters $query): View
     {
+        Gate::authorize('viewAny', Meter::class);
         $teamId = data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id');
 
         return view('module-billing-usage-livewire::meter-list', ['meters' => $query->execute($teamId === null ? null : (int) $teamId)]);

@@ -16,6 +16,8 @@ use Liberu\Billing\Communications\Models\CommunicationUsageImport;
 
 final class CommunicationUsageImportResource extends Resource
 {
+    protected static string|\UnitEnum|null $navigationGroup = 'Service Delivery';
+
     use ScopesCurrentTeam;
 
     protected static ?string $model = CommunicationUsageImport::class;

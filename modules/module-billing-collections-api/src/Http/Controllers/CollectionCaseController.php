@@ -26,9 +26,14 @@ final class CollectionCaseController extends Controller
     {
         Gate::authorize('viewAny', CollectionCase::class);
         $teamId = data_get($request->user(), 'current_team_id') ?? data_get($request->user(), 'currentTeam.id');
-        $cases = $query->execute($teamId === null ? null : (int) $teamId, $request->integer('per_page', 25));
+        $cases = $query->execute($teamId === null ? null : (int) $teamId, $this->pageSize($request));
 
         return response()->json(['data' => $cases->getCollection()->map(fn (CollectionCase $case): array => $this->resource($case))->values(), 'meta' => ['current_page' => $cases->currentPage(), 'last_page' => $cases->lastPage()]]);
+    }
+
+    private function pageSize(Request $request): int
+    {
+        return min(max((int) $request->input('page.size', $request->integer('per_page', 25)), 1), 100);
     }
 
     public function store(Request $request, OpenCollectionCase $open): JsonResponse

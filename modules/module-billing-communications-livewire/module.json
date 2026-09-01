@@ -21,6 +21,6 @@
   "default_enabled": true,
   "features": [
     "Communications Livewire integration"
-  ]
+  ],
+  "presentation": {"livewire": {"components": ["module-billing-communications::inventory", "module-billing-communications::providers", "module-billing-communications::services", "module-billing-communications::voice-accounts"]}}
 }
-

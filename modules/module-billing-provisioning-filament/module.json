@@ -21,6 +21,6 @@
   "default_enabled": true,
   "features": [
     "Provisioning Filament resources"
-  ]
+  ],
+  "presentation": {"filament": {"admin": ["Liberu\\Billing\\Provisioning\\Filament\\ProvisioningFilamentPlugin"]}}
 }
-

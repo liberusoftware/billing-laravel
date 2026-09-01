@@ -20,6 +20,8 @@ use Liberu\Billing\Isp\Models\IspCapability;
 
 final class IspCapabilityResource extends Resource
 {
+    protected static string|\UnitEnum|null $navigationGroup = 'Service Delivery';
+
     use ScopesCurrentTeam;
 
     protected static ?string $model = IspCapability::class;

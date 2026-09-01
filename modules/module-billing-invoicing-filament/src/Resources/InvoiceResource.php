@@ -30,6 +30,8 @@ final class InvoiceResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
+    protected static string|\UnitEnum|null $navigationGroup = 'Billing Operations';
+
     public static function form(Schema $schema): Schema
     {
         return $schema->components([TextInput::make('currency')->required()->length(3), TextInput::make('customer_id')->integer()->minValue(1), TextInput::make('due_at')->type('datetime-local')]);

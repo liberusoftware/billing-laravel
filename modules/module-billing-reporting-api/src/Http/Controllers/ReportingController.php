@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Liberu\Billing\Reporting\Api\Http\Controllers;
 
 use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -25,7 +26,7 @@ final class ReportingController extends Controller
     public function metrics(Request $request, ListReportingMetrics $metrics): JsonResponse
     {
         Gate::authorize('viewAny', ReportingMetric::class);
-        $results = $metrics->execute($this->team($request), $request->string('metric')->toString() ?: null, $request->integer('per_page', 25));
+        $results = $metrics->execute($this->team($request), $request->string('metric')->toString() ?: null, $this->pageSize($request));
 
         return response()->json($this->collection($results));
     }
@@ -59,7 +60,7 @@ final class ReportingController extends Controller
     {
         Gate::authorize('viewAny', MetricSnapshot::class);
 
-        return response()->json($this->collection($snapshots->execute($this->team($request), $request->integer('per_page', 25))));
+        return response()->json($this->collection($snapshots->execute($this->team($request), $this->pageSize($request))));
     }
 
     public function customerSummary(Request $request, GenerateCustomerBillingSummary $summary, int $customer): JsonResponse
@@ -75,7 +76,7 @@ final class ReportingController extends Controller
         Gate::authorize('create', MetricSnapshot::class);
         $data = $request->validate(['name' => ['required', 'string', 'max:255'], 'status' => ['sometimes', 'string', 'in:active,ready,failed'], 'metadata' => ['sometimes', 'array']]);
 
-        return response()->json(['data' => $create->handle($this->team($request), $data)], 201);
+        return response()->json(['data' => $this->snapshotResource($create->handle($this->team($request), $data))], 201);
     }
 
     public function snapshot(Request $request, int $record): JsonResponse
@@ -84,7 +85,7 @@ final class ReportingController extends Controller
         $snapshot = MetricSnapshot::query()->forTeam($this->team($request))->findOrFail($record);
         Gate::authorize('view', $snapshot);
 
-        return response()->json(['data' => $snapshot]);
+        return response()->json(['data' => $this->snapshotResource($snapshot)]);
     }
 
     private function team(Request $request): int
@@ -104,12 +105,22 @@ final class ReportingController extends Controller
     /** @return array<string, mixed> */
     private function collection($results): array
     {
-        return ['data' => $results->getCollection()->values(), 'links' => ['next' => $results->nextPageUrl(), 'prev' => $results->previousPageUrl()], 'meta' => ['current_page' => $results->currentPage(), 'last_page' => $results->lastPage(), 'per_page' => $results->perPage(), 'total' => $results->total()]];
+        return ['data' => $results->getCollection()->map(fn (Model $model): array => $model instanceof ReportingMetric ? $this->metric($model) : $this->snapshotResource($model))->values(), 'links' => ['next' => $results->nextPageUrl(), 'prev' => $results->previousPageUrl()], 'meta' => ['current_page' => $results->currentPage(), 'last_page' => $results->lastPage(), 'per_page' => $results->perPage(), 'total' => $results->total()]];
+    }
+
+    private function pageSize(Request $request): int
+    {
+        return min(max((int) $request->input('page.size', $request->integer('per_page', 25)), 1), 100);
     }
 
     /** @return array<string, mixed> */
     private function metric(ReportingMetric $metric): array
     {
         return ['id' => (string) $metric->getKey(), 'type' => 'billing-reporting-metric', 'attributes' => ['metric' => $metric->metric->value, 'period_start' => $metric->period_start?->toDateString(), 'period_end' => $metric->period_end?->toDateString(), 'value' => $metric->value, 'currency' => $metric->currency, 'dimensions' => $metric->dimensions ?? [], 'source' => $metric->source]];
+    }
+
+    private function snapshotResource(MetricSnapshot $snapshot): array
+    {
+        return ['id' => (string) $snapshot->getKey(), 'type' => 'billing-reporting-snapshot', 'attributes' => $snapshot->only(['team_id', 'name', 'status', 'metadata', 'created_at', 'updated_at'])];
     }
 }

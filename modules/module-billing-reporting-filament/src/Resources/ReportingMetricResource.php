@@ -23,6 +23,8 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 final class ReportingMetricResource extends Resource
 {
+    protected static string|\UnitEnum|null $navigationGroup = 'Billing Operations';
+
     use ScopesCurrentTeam;
 
     protected static ?string $model = ReportingMetric::class;

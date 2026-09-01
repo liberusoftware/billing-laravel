@@ -13,6 +13,8 @@ use Liberu\Billing\Payments\Models\PaymentRefund;
 
 final class PaymentRefundResource extends Resource
 {
+    protected static string|\UnitEnum|null $navigationGroup = 'Billing Operations';
+
     use ScopesCurrentTeam;
 
     protected static ?string $model = PaymentRefund::class;

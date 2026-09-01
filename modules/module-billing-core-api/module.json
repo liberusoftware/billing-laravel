@@ -1,0 +1,14 @@
+{
+  "$schema": "https://schemas.liberu.dev/module/v1.json",
+  "name": "module-billing-core-api",
+  "display_name": "Billing Core API",
+  "description": "Sanctum-protected transport adapter for Billing Core.",
+  "version": "0.1.3",
+  "category": "presentation",
+  "provider": "Liberu\\Billing\\Core\\Api\\BillingCoreApiServiceProvider",
+  "requires": {"php": "^8.5", "laravel": "^13.0", "packages": {"liberusoftware/api-access": "^1.0", "liberusoftware/module-billing-billing-core": "^0.1", "liberusoftware/module-manager": "^1.0"}},
+  "suggests": [],
+  "capabilities": ["billing.core.api"],
+  "default_enabled": true,
+  "features": ["Account lifecycle endpoints", "Contacts", "Currencies", "Currency conversion", "Tax profiles", "Tax exemptions", "Threshold tax rates", "Tax calculation", "Sequences", "Terms", "Billing settings", "Sanctum authorization", "Explicit resource envelope"]
+}

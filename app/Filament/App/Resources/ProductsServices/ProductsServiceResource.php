@@ -21,6 +21,7 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Override;
+use UnitEnum;
 
 class ProductsServiceResource extends Resource
 {
@@ -38,6 +39,9 @@ class ProductsServiceResource extends Resource
 
     #[Override]
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    #[Override]
+    protected static string|UnitEnum|null $navigationGroup = 'Catalog & Pricing';
 
     #[Override]
     public static function form(Schema $schema): Schema

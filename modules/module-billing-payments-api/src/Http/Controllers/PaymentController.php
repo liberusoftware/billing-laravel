@@ -15,6 +15,8 @@ use Liberu\Billing\Payments\Actions\OpenDispute;
 use Liberu\Billing\Payments\Actions\ReconcilePayment;
 use Liberu\Billing\Payments\Actions\RefundPayment;
 use Liberu\Billing\Payments\Models\Payment;
+use Liberu\Billing\Payments\Models\PaymentAllocation;
+use Liberu\Billing\Payments\Models\PaymentReconciliation;
 use Liberu\Billing\Payments\Queries\ListPayments;
 
 final class PaymentController extends Controller
@@ -23,9 +25,17 @@ final class PaymentController extends Controller
     {
         Gate::authorize('viewAny', Payment::class);
         $teamId = data_get($request->user(), 'current_team_id') ?? data_get($request->user(), 'currentTeam.id');
-        $payments = $query->execute($teamId === null ? null : (int) $teamId, $request->integer('per_page', 25));
+        $payments = $query->execute($teamId === null ? null : (int) $teamId, $this->pageSize($request));
 
         return response()->json(['data' => $payments->getCollection()->map(fn (Payment $payment): array => $this->resource($payment))->values(), 'meta' => ['current_page' => $payments->currentPage(), 'last_page' => $payments->lastPage()]]);
+    }
+
+    public function show(Request $request, Payment $payment): JsonResponse
+    {
+        $payment = $this->forCurrentTeam($request, $payment);
+        Gate::authorize('view', $payment);
+
+        return response()->json(['data' => $this->resource($payment)]);
     }
 
     public function store(Request $request, CreatePayment $create): JsonResponse
@@ -80,7 +90,7 @@ final class PaymentController extends Controller
         $data = $request->validate(['amount_minor' => ['required', 'integer', 'min:1'], 'invoice_id' => ['nullable', 'integer', 'min:1']]);
         $allocation = $allocate->execute($payment, (int) $data['amount_minor'], isset($data['invoice_id']) ? (int) $data['invoice_id'] : null);
 
-        return response()->json(['data' => $allocation], 201);
+        return response()->json(['data' => $this->allocationResource($allocation)], 201);
     }
 
     public function reconcile(Request $request, Payment $payment, ReconcilePayment $reconcile): JsonResponse
@@ -90,7 +100,7 @@ final class PaymentController extends Controller
         $data = $request->validate(['provider_reference' => ['required', 'string', 'max:255'], 'matched' => ['sometimes', 'boolean'], 'notes' => ['nullable', 'string', 'max:2000']]);
         $record = $reconcile->execute($payment, $data['provider_reference'], (bool) ($data['matched'] ?? true), $data['notes'] ?? null);
 
-        return response()->json(['data' => $record], 201);
+        return response()->json(['data' => $this->reconciliationResource($record)], 201);
     }
 
     private function resource(Payment $payment): array
@@ -107,10 +117,37 @@ final class PaymentController extends Controller
         ]];
     }
 
+    private function allocationResource(PaymentAllocation $allocation): array
+    {
+        return ['id' => (string) $allocation->getKey(), 'type' => 'billing-payment-allocations', 'attributes' => [
+            'payment_id' => $allocation->payment_id,
+            'invoice_id' => $allocation->invoice_id,
+            'amount_minor' => $allocation->amount_minor,
+            'currency' => $allocation->currency,
+        ]];
+    }
+
+    private function reconciliationResource(PaymentReconciliation $reconciliation): array
+    {
+        return ['id' => (string) $reconciliation->getKey(), 'type' => 'billing-payment-reconciliations', 'attributes' => [
+            'payment_id' => $reconciliation->payment_id,
+            'status' => $reconciliation->status->value,
+            'provider_reference' => $reconciliation->provider_reference,
+            'notes' => $reconciliation->notes,
+        ]];
+    }
+
     private function forCurrentTeam(Request $request, Payment $payment): Payment
     {
         $teamId = data_get($request->user(), 'current_team_id') ?? data_get($request->user(), 'currentTeam.id');
 
         return Payment::query()->whereKey($payment->getKey())->where('team_id', $teamId)->firstOrFail();
+    }
+
+    private function pageSize(Request $request): int
+    {
+        $requested = $request->input('page.size', $request->integer('per_page', 25));
+
+        return min(max((int) $requested, 1), 100);
     }
 }

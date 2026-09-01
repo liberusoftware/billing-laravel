@@ -16,6 +16,8 @@ use Liberu\Billing\Usage\Models\UsageRecord;
 
 final class UsageRecordResource extends Resource
 {
+    protected static string|\UnitEnum|null $navigationGroup = 'Billing Operations';
+
     use ScopesCurrentTeam;
 
     protected static ?string $model = UsageRecord::class;

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://schemas.liberu.dev/module/v1.json",
+  "name": "module-billing-core-filament",
+  "display_name": "Billing Core Filament",
+  "description": "Filament 5 resources for authorized Billing Core accounts and configuration records.",
+  "version": "0.1.3",
+  "category": "presentation",
+  "provider": "Liberu\\Billing\\Core\\Filament\\BillingCoreFilamentServiceProvider",
+  "requires": {"php": "^8.5", "laravel": "^13.0", "packages": {"liberusoftware/module-billing-billing-core": "^0.1", "liberusoftware/module-manager": "^1.0"}},
+  "suggests": [],
+  "presentation": {"filament": {"admin": ["Liberu\\Billing\\Core\\Filament\\BillingCoreFilamentPlugin"]}},
+  "capabilities": ["billing.core.filament"],
+  "default_enabled": true,
+  "features": ["Billing account resource", "Contacts resource", "Currencies resource", "Currency conversion", "Tax profiles resource", "Tax exemptions resource", "Threshold tax rates", "Tax calculation", "Sequences resource", "Terms resource", "Settings resource", "Scoped forms", "Lifecycle display"]
+}

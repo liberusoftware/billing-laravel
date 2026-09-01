@@ -5,6 +5,9 @@
   "license": "MIT",
   "require": {
     "php": "^8.5",
+    "illuminate/http": "^13.0",
+    "illuminate/routing": "^13.0",
+    "laravel/sanctum": "^4.0",
     "liberusoftware/module-billing-customer-portal": "^0.1",
     "liberusoftware/module-manager": "^1.0",
     "liberusoftware/api-access": "^1.0"

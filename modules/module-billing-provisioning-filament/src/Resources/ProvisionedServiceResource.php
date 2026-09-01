@@ -19,6 +19,8 @@ use Liberu\Billing\Provisioning\Models\ProvisionedService;
 
 final class ProvisionedServiceResource extends Resource
 {
+    protected static string|\UnitEnum|null $navigationGroup = 'Service Delivery';
+
     use ScopesCurrentTeam;
 
     protected static ?string $model = ProvisionedService::class;

@@ -23,6 +23,8 @@ use Liberu\Billing\Domains\Models\Domain;
 
 final class DomainResource extends Resource
 {
+    protected static string|\UnitEnum|null $navigationGroup = 'Service Delivery';
+
     use ScopesCurrentTeam;
 
     protected static ?string $model = Domain::class;

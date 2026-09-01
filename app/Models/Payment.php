@@ -22,7 +22,7 @@ use Override;
  * @property float $amount
  * @property string $currency
  * @property string $payment_method
- * @property string $transaction_id
+ * @property string|null $transaction_id
  * @property string $refund_status
  * @property string|null $status
  * @property float|null $refunded_amount

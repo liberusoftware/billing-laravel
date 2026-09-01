@@ -31,6 +31,8 @@ final class SubscriptionResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-arrow-path';
 
+    protected static string|\UnitEnum|null $navigationGroup = 'Billing Operations';
+
     public static function form(Schema $schema): Schema
     {
         return $schema->components([

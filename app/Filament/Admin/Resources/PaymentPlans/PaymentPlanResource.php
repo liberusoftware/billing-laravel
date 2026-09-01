@@ -17,6 +17,7 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Override;
+use UnitEnum;
 
 class PaymentPlanResource extends Resource
 {
@@ -25,6 +26,9 @@ class PaymentPlanResource extends Resource
 
     #[Override]
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-calendar';
+
+    #[Override]
+    protected static string|UnitEnum|null $navigationGroup = 'Billing Operations';
 
     #[Override]
     public static function form(Schema $schema): Schema

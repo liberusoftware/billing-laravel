@@ -1,0 +1,28 @@
+{
+  "$schema": "https://schemas.liberu.dev/module/v1.json",
+  "name": "module-billing-orders-filament",
+  "display_name": "Billing Orders Filament",
+  "description": "Filament 5 adapter for Billing Orders.",
+  "version": "0.1.0",
+  "category": "presentation",
+  "provider": "Liberu\\Billing\\Orders\\Filament\\OrdersFilamentServiceProvider",
+  "requires": {
+    "php": "^8.5",
+    "laravel": "^13.0",
+    "packages": {
+      "liberusoftware/module-billing-orders": "^0.1",
+      "liberusoftware/module-manager": "^1.0"
+    }
+  },
+  "suggests": [],
+  "presentation": {
+    "filament": {
+      "admin": [
+        "Liberu\\Billing\\Orders\\Filament\\OrdersFilamentPlugin"
+      ]
+    }
+  },
+  "capabilities": ["billing.orders.filament"],
+  "default_enabled": true,
+  "features": ["Order resource", "Checkout entry", "Order state and fraud review display"]
+}

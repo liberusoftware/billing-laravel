@@ -36,7 +36,7 @@ class RecurringBillingResource extends Resource
     protected static ?string $navigationLabel = 'Recurring Billing';
 
     #[Override]
-    protected static string|UnitEnum|null $navigationGroup = 'Billing';
+    protected static string|UnitEnum|null $navigationGroup = 'Billing Operations';
 
     #[Override]
     public static function form(Schema $schema): Schema

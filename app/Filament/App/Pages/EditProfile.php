@@ -10,6 +10,7 @@ use Filament\Pages\Page;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Auth;
 use Override;
+use UnitEnum;
 
 /**
  * @property Schema $form
@@ -21,6 +22,15 @@ class EditProfile extends Page
 
     #[Override]
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-chart-bar';
+
+    #[Override]
+    protected static string|UnitEnum|null $navigationGroup = 'Account';
+
+    #[Override]
+    protected static ?string $navigationLabel = 'Profile';
+
+    #[Override]
+    protected static ?int $navigationSort = 10;
 
     public User $user;
 

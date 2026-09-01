@@ -1,5 +1,5 @@
 openapi: 3.1.0
-info: {title: Billing Domains API, version: 1.0.0, description: Team-scoped domain search, registration, transfer, renewal, DNS, EPP, and registrar operations.}
+info: {title: Billing Domains API, version: 1.0.0, description: 'Team-scoped domain search, registration, transfer, renewal, DNS, EPP, and registrar operations.'}
 servers: [{url: /}]
 paths:
   /api/v1/billing/domains/search:
@@ -19,6 +19,35 @@ paths:
       security: [{sanctum: []}]
       parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
       requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/DomainRequest'}}}}
+      responses: {'201': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/domains/tlds:
+    get:
+      operationId: billing.domains.tlds.list
+      security: [{sanctum: []}]
+      responses: {'200': {$ref: '#/components/responses/Collection'}, '401': {$ref: '#/components/responses/Unauthorized'}}
+    post:
+      operationId: billing.domains.tlds.create
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object, required: [tld], properties: {tld: {type: string}}}}}}
+      responses: {'201': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/domains/tlds/sync:
+    post:
+      operationId: billing.domains.tlds.sync
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      responses: {'202': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}}
+  /api/v1/billing/domains/contacts:
+    get:
+      operationId: billing.domains.contacts.list
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/PageSize'}]
+      responses: {'200': {$ref: '#/components/responses/Collection'}, '401': {$ref: '#/components/responses/Unauthorized'}}
+    post:
+      operationId: billing.domains.contacts.create
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object, additionalProperties: true}}}}
       responses: {'201': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
   /api/v1/billing/domains/epp-operations:
     get:
@@ -45,12 +74,35 @@ paths:
       parameters: [{$ref: '#/components/parameters/Domain'}, {$ref: '#/components/parameters/IdempotencyKey'}]
       requestBody: {required: true, content: {application/json: {schema: {type: object, required: [auth_code], properties: {auth_code: {type: string, writeOnly: true}}}}}}
       responses: {'202': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/domains/{domain}:
+    get:
+      operationId: billing.domains.show
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/Domain'}]
+      responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '404': {description: Resource not found.}}
+    patch:
+      operationId: billing.domains.update
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/Domain'}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/DomainRequest'}}}}
+      responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
+    delete:
+      operationId: billing.domains.delete
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/Domain'}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      responses: {'204': {description: Domain deleted.}, '401': {$ref: '#/components/responses/Unauthorized'}}
+  /api/v1/billing/domains/{domain}/redeem:
+    post:
+      operationId: billing.domains.redeem
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/Domain'}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      responses: {'202': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}}
   /api/v1/billing/domains/{domain}/dns:
     get: {operationId: billing.domains.dns.list, security: [{sanctum: []}], parameters: [{$ref: '#/components/parameters/Domain'}], responses: {'200': {$ref: '#/components/responses/Collection'}}}
     post: {operationId: billing.domains.dns.create, security: [{sanctum: []}], parameters: [{$ref: '#/components/parameters/Domain'}, {$ref: '#/components/parameters/IdempotencyKey'}], requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/DnsRequest'}}}}, responses: {'201': {$ref: '#/components/responses/Document'}, '422': {$ref: '#/components/responses/ValidationError'}}}
 components:
   parameters:
-    PageSize: {name: per_page, in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 25}}
+    PageSize: {name: page[size], in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 25}}
     IdempotencyKey: {name: Idempotency-Key, in: header, schema: {type: string, maxLength: 255}}
     Domain: {name: domain, in: path, required: true, schema: {type: integer, minimum: 1}}
   responses:

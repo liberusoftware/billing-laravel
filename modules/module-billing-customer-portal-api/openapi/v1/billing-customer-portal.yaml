@@ -26,6 +26,12 @@ paths:
       parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
       requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/PortalItemRequest'}}}}
       responses: {'201': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/customer-portal/billing/{customer}:
+    get:
+      operationId: billing.customerPortal.billing.summary
+      security: [{sanctum: []}]
+      parameters: [{name: customer, in: path, required: true, schema: {type: integer}}]
+      responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '404': {description: Resource not found.}}
   /api/v1/billing/customer-portal/items/{item}/status:
     patch:
       operationId: billing.customerPortal.items.status
@@ -40,9 +46,15 @@ paths:
       parameters: [{name: record, in: path, required: true, schema: {type: integer}}, {$ref: '#/components/parameters/IdempotencyKey'}]
       requestBody: {required: true, content: {application/json: {schema: {type: object, required: [status], properties: {status: {type: string, enum: [active, closed, failed]}}}}}}
       responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/customer-portal/{record}:
+    get:
+      operationId: billing.customerPortal.requests.show
+      security: [{sanctum: []}]
+      parameters: [{name: record, in: path, required: true, schema: {type: integer}}]
+      responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '404': {description: Resource not found.}}
 components:
   parameters:
-    PageSize: {name: per_page, in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 25}}
+    PageSize: {name: page[size], in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 25}}
     IdempotencyKey: {name: Idempotency-Key, in: header, schema: {type: string, maxLength: 255}}
   responses:
     Collection: {description: Paginated team-scoped collection, content: {application/json: {schema: {type: object, required: [data, meta], properties: {data: {type: array, items: {type: object}}, meta: {type: object}}}}}}

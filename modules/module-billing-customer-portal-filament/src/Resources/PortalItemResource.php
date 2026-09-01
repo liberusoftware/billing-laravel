@@ -21,6 +21,8 @@ use Liberu\Billing\CustomerPortal\Models\PortalItem;
 
 final class PortalItemResource extends Resource
 {
+    protected static string|\UnitEnum|null $navigationGroup = 'Customers & Sales';
+
     use ScopesCurrentTeam;
 
     protected static ?string $model = PortalItem::class;

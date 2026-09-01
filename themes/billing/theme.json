@@ -1,0 +1,20 @@
+{
+    "$schema": "https://schemas.liberu.dev/theme/v1.json",
+    "name": "billing",
+    "display_name": "Billing Workspace",
+    "version": "1.0.0",
+    "provider": "Liberu\\Themes\\Billing\\BillingThemeServiceProvider",
+    "type": "portal",
+    "parent": "base",
+    "optimized_for": ["liberusoftware/boilerplate-laravel:^1.0"],
+    "tested_with": ["liberusoftware/boilerplate-laravel:^1.0"],
+    "required_capabilities": [],
+    "optional_capabilities": ["foundation.localization", "foundation.theme-support"],
+    "supports": ["application.shell", "identity.auth", "billing.portal", "foundation.account"],
+    "assets": {
+        "css": ["resources/css/app.css"],
+        "js": ["resources/js/app.js"]
+    },
+    "colors": {"primary": "indigo", "secondary": "slate"},
+    "description": "A calm, data-forward billing workspace for managing revenue, customers, invoices, and services."
+}

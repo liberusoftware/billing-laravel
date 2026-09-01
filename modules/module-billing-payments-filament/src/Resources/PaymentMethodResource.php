@@ -21,6 +21,8 @@ use Liberu\Billing\Payments\Models\PaymentMethod;
 
 final class PaymentMethodResource extends Resource
 {
+    protected static string|\UnitEnum|null $navigationGroup = 'Billing Operations';
+
     use ScopesCurrentTeam;
 
     protected static ?string $model = PaymentMethod::class;

@@ -24,6 +24,8 @@ use Liberu\Billing\Usage\Models\Meter;
 
 final class MeterResource extends Resource
 {
+    protected static string|\UnitEnum|null $navigationGroup = 'Billing Operations';
+
     use ScopesCurrentTeam;
 
     protected static ?string $model = Meter::class;

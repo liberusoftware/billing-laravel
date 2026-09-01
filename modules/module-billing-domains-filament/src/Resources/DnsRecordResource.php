@@ -12,6 +12,8 @@ use Liberu\Billing\Domains\Models\DnsRecord;
 
 final class DnsRecordResource extends Resource
 {
+    protected static string|\UnitEnum|null $navigationGroup = 'Service Delivery';
+
     use ScopesCurrentTeam;
 
     protected static ?string $model = DnsRecord::class;

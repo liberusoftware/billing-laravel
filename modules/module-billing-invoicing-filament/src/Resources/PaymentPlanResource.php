@@ -14,6 +14,8 @@ use Liberu\Billing\Invoicing\Models\PaymentPlan;
 
 final class PaymentPlanResource extends Resource
 {
+    protected static string|\UnitEnum|null $navigationGroup = 'Billing Operations';
+
     use ScopesCurrentTeam;
 
     protected static ?string $model = PaymentPlan::class;

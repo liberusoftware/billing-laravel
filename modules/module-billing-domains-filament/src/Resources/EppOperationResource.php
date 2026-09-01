@@ -12,6 +12,8 @@ use Liberu\Billing\Domains\Models\EppOperation;
 
 final class EppOperationResource extends Resource
 {
+    protected static string|\UnitEnum|null $navigationGroup = 'Service Delivery';
+
     protected static ?string $model = EppOperation::class;
 
     public static function table(Table $table): Table

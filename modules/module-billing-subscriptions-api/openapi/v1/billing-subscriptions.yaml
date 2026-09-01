@@ -39,6 +39,16 @@ paths:
                 required: [data]
                 properties: {data: {$ref: '#/components/schemas/Resource'}}
         '422': {$ref: '#/components/responses/ValidationError'}
+  /api/v1/billing/subscriptions/{subscription}:
+    get:
+      operationId: billing.subscriptions.get
+      summary: Retrieve one authorized subscription
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/SubscriptionId'}]
+      responses:
+        '200': {$ref: '#/components/responses/ResourceDocument'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '404': {description: Subscription not found}
   /api/v1/billing/subscriptions/{subscription}/renew:
     post:
       operationId: billing.subscriptions.renew
@@ -97,11 +107,27 @@ paths:
           content: {application/json: {schema: {type: object, properties: {data: {type: object, properties: {expired: {type: integer, minimum: 0}}}}}}}
         '401': {$ref: '#/components/responses/Unauthorized'}
         '422': {$ref: '#/components/responses/ValidationError'}
+  /api/v1/billing/subscriptions/{subscription}/plan:
+    patch:
+      operationId: billing.subscriptions.changePlan
+      summary: Change a subscription plan
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/SubscriptionId'}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object, required: [plan], properties: {plan: {type: string}}}}}}
+      responses: {'200': {$ref: '#/components/responses/ResourceDocument'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/subscriptions/{subscription}/entitlements:
+    patch:
+      operationId: billing.subscriptions.entitlements
+      summary: Update subscription entitlements
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/SubscriptionId'}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object, additionalProperties: true}}}}
+      responses: {'200': {$ref: '#/components/responses/ResourceDocument'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
 components:
   parameters:
     IdempotencyKey: {name: Idempotency-Key, in: header, required: false, schema: {type: string, maxLength: 255}}
     PageSize:
-      name: per_page
+      name: page[size]
       in: query
       schema: {type: integer, minimum: 1, maximum: 100, default: 25}
     SubscriptionId:

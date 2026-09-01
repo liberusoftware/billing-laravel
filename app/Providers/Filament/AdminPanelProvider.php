@@ -33,6 +33,20 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->navigationGroups([
+                'Overview',
+                'Billing Operations',
+                'Catalog & Pricing',
+                'Service Delivery',
+                'Projects',
+                'Support',
+                'Content',
+                'Licensing',
+                'Administration',
+                'Settings',
+            ])
+            ->sidebarCollapsibleOnDesktop()
+            ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
             ->colors(app(ThemeColors::class)->forSite())
             ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\Filament\Admin\Resources')
             ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\Filament\Admin\Pages')

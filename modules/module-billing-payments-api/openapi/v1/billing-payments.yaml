@@ -35,7 +35,7 @@ paths:
       operationId: billing.payments.list
       summary: List authorized payments
       security: [{sanctum: []}]
-      parameters: [{name: per_page, in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 25}}]
+      parameters: [{name: page[size], in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 25}}]
       responses:
         '200': {$ref: '#/components/responses/Collection'}
         '401': {$ref: '#/components/responses/Unauthorized'}
@@ -50,9 +50,45 @@ paths:
           application/json:
             schema: {$ref: '#/components/schemas/CreatePaymentRequest'}
       responses:
-        '201': {$ref: '#/components/responses/Document'}
+        '201': {$ref: '#/components/responses/PaymentAllocationDocument'}
         '401': {$ref: '#/components/responses/Unauthorized'}
         '422': {$ref: '#/components/responses/ValidationError'}
+  /api/v1/billing/payments/{payment}:
+    get:
+      operationId: billing.payments.get
+      summary: Retrieve one authorized payment
+      security: [{sanctum: []}]
+      parameters: [{name: payment, in: path, required: true, schema: {type: string}}]
+      responses:
+        '200': {$ref: '#/components/responses/Document'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '404': {description: Payment not found}
+  /api/v1/billing/payments/methods:
+    get:
+      operationId: billing.payments.methods.list
+      summary: List payment methods
+      security: [{sanctum: []}]
+      responses: {'200': {$ref: '#/components/responses/PaymentMethodCollection'}, '401': {$ref: '#/components/responses/Unauthorized'}}
+    post:
+      operationId: billing.payments.methods.create
+      summary: Store a payment method
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object, additionalProperties: true}}}}
+      responses: {'201': {$ref: '#/components/responses/PaymentMethodDocument'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/payments/mandates:
+    get:
+      operationId: billing.payments.mandates.list
+      summary: List payment mandates
+      security: [{sanctum: []}]
+      responses: {'200': {$ref: '#/components/responses/PaymentMandateCollection'}, '401': {$ref: '#/components/responses/Unauthorized'}}
+    post:
+      operationId: billing.payments.mandates.create
+      summary: Store a payment mandate
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object, additionalProperties: true}}}}
+      responses: {'201': {$ref: '#/components/responses/PaymentMandateDocument'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
   /api/v1/billing/payments/{payment}/capture:
     post:
       operationId: billing.payments.capture
@@ -118,6 +154,13 @@ paths:
         '201': {$ref: '#/components/responses/Document'}
         '401': {$ref: '#/components/responses/Unauthorized'}
         '422': {$ref: '#/components/responses/ValidationError'}
+  /api/v1/billing/payments/{payment}/reconcile:
+    post:
+      operationId: billing.payments.reconcile
+      summary: Reconcile a payment
+      security: [{sanctum: []}]
+      parameters: [{name: payment, in: path, required: true, schema: {type: string}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      responses: {'201': {$ref: '#/components/responses/PaymentReconciliationDocument'}, '401': {$ref: '#/components/responses/Unauthorized'}}
 components:
   parameters:
     IdempotencyKey: {name: Idempotency-Key, in: header, required: false, schema: {type: string, maxLength: 255}}
@@ -140,6 +183,46 @@ components:
             type: object
             required: [data]
             properties: {data: {$ref: '#/components/schemas/Resource'}}
+    PaymentMethodCollection:
+      description: Paginated payment methods.
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [data, meta]
+            properties:
+              data: {type: array, items: {$ref: '#/components/schemas/PaymentMethodResource'}}
+              meta: {$ref: '#/components/schemas/PaginationMeta'}
+    PaymentMethodDocument:
+      description: Payment method resource.
+      content:
+        application/json:
+          schema: {type: object, required: [data], properties: {data: {$ref: '#/components/schemas/PaymentMethodResource'}}}
+    PaymentMandateCollection:
+      description: Paginated payment mandates.
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [data, meta]
+            properties:
+              data: {type: array, items: {$ref: '#/components/schemas/PaymentMandateResource'}}
+              meta: {$ref: '#/components/schemas/PaginationMeta'}
+    PaymentMandateDocument:
+      description: Payment mandate resource.
+      content:
+        application/json:
+          schema: {type: object, required: [data], properties: {data: {$ref: '#/components/schemas/PaymentMandateResource'}}}
+    PaymentAllocationDocument:
+      description: Payment allocation resource.
+      content:
+        application/json:
+          schema: {type: object, required: [data], properties: {data: {$ref: '#/components/schemas/PaymentAllocationResource'}}}
+    PaymentReconciliationDocument:
+      description: Payment reconciliation resource.
+      content:
+        application/json:
+          schema: {type: object, required: [data], properties: {data: {$ref: '#/components/schemas/PaymentReconciliationResource'}}}
     Unauthorized: {description: Authentication is required.}
     ValidationError: {description: Validation failed.}
   schemas:
@@ -162,6 +245,56 @@ components:
         provider_reference: {type: string}
         captured_at: {type: string, format: date-time}
         refunded_minor: {type: integer, minimum: 0}
+    PaymentMethodResource:
+      type: object
+      required: [id, type, attributes]
+      properties:
+        id: {type: string}
+        type: {type: string, const: billing-payment-methods}
+        attributes: {type: object, additionalProperties: true}
+    PaymentMandateResource:
+      type: object
+      required: [id, type, attributes]
+      properties:
+        id: {type: string}
+        type: {type: string, const: billing-payment-mandates}
+        attributes: {type: object, additionalProperties: true}
+    PaymentAllocationResource:
+      type: object
+      required: [id, type, attributes]
+      properties:
+        id: {type: string}
+        type: {type: string, const: billing-payment-allocations}
+        attributes:
+          type: object
+          required: [payment_id, amount_minor, currency]
+          properties:
+            payment_id: {type: integer, minimum: 1}
+            invoice_id: {type: integer, minimum: 1, nullable: true}
+            amount_minor: {type: integer, minimum: 1}
+            currency: {type: string, pattern: '^[A-Z]{3}$'}
+    PaymentReconciliationResource:
+      type: object
+      required: [id, type, attributes]
+      properties:
+        id: {type: string}
+        type: {type: string, const: billing-payment-reconciliations}
+        attributes:
+          type: object
+          required: [payment_id, status, provider_reference]
+          properties:
+            payment_id: {type: integer, minimum: 1}
+            status: {type: string, enum: [matched, mismatch, pending]}
+            provider_reference: {type: string}
+            notes: {type: string, nullable: true}
+    PaginationMeta:
+      type: object
+      required: [current_page, last_page, per_page, total]
+      properties:
+        current_page: {type: integer, minimum: 1}
+        last_page: {type: integer, minimum: 1}
+        per_page: {type: integer, minimum: 1, maximum: 100}
+        total: {type: integer, minimum: 0}
     CreatePaymentRequest:
       type: object
       required: [amount_minor, currency]

@@ -1,5 +1,5 @@
 openapi: 3.1.0
-info: {title: Billing ISP API, version: 1.0.0, description: Team-scoped access services, coverage, installation, RADIUS, usage, equipment, and network adapters.}
+info: {title: Billing ISP API, version: 1.0.0, description: 'Team-scoped access services, coverage, installation, RADIUS, usage, equipment, and network adapters.'}
 servers: [{url: /}]
 paths:
   /api/v1/billing/isp/{service}/synchronize:
@@ -48,6 +48,12 @@ paths:
       parameters: [{name: service, in: path, required: true, schema: {type: integer, minimum: 1}}, {$ref: '#/components/parameters/IdempotencyKey'}]
       requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/LifecycleRequest'}}}}
       responses: {'200': {$ref: '#/components/responses/Document'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/isp/{record}:
+    get:
+      operationId: billing.isp.accessServices.show
+      security: [{sanctum: []}]
+      parameters: [{name: record, in: path, required: true, schema: {type: integer, minimum: 1}}]
+      responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '404': {description: Resource not found.}}
   /api/v1/billing/isp/capabilities:
     get: {operationId: billing.isp.capabilities.list, security: [{sanctum: []}], responses: {'200': {$ref: '#/components/responses/Collection'}}}
     post:
@@ -58,7 +64,7 @@ paths:
       responses: {'201': {$ref: '#/components/responses/Document'}, '422': {$ref: '#/components/responses/ValidationError'}}
 components:
   parameters:
-    PageSize: {name: per_page, in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 25}}
+    PageSize: {name: page[size], in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 25}}
     IdempotencyKey: {name: Idempotency-Key, in: header, schema: {type: string, maxLength: 255}}
   responses:
     Collection: {description: Paginated team-scoped collection, content: {application/json: {schema: {type: object, required: [data, meta], properties: {data: {type: array, items: {type: object}}, meta: {type: object}}}}}}

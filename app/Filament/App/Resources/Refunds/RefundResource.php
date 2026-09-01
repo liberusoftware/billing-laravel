@@ -23,6 +23,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Override;
+use UnitEnum;
 
 class RefundResource extends Resource
 {
@@ -31,6 +32,9 @@ class RefundResource extends Resource
 
     #[Override]
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-arrow-path';
+
+    #[Override]
+    protected static string|UnitEnum|null $navigationGroup = 'Billing Operations';
 
     #[Override]
     protected static ?string $navigationLabel = 'Refunds';
