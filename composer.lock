@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "eb162e816b9a36889654c459f4dbaca0",
+    "content-hash": "13f06685a18979443791c21f0ef7dd50",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -8121,7 +8121,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/module-billing-invoicing",
-            "reference": "279667b1d7a498d4d4820b1297b010d9225c1b4b"
+                "reference": "279667b1d7a498d4d4820b1297b010d9225c1b4b"
             },
             "require": {
                 "barryvdh/laravel-dompdf": "^3.1",
@@ -17301,16 +17301,16 @@
         },
         {
             "name": "square/square",
-            "version": "45.1.0.20260520",
+            "version": "46.1.0.20260819",
             "source": {
                 "type": "git",
                 "url": "https://github.com/square/square-php-sdk.git",
-                "reference": "64305ef7fbb445ea3961ab3f38379f3323c608c4"
+                "reference": "fef70265315351c2e0317576dea5d0dd4547d6cb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/square/square-php-sdk/zipball/64305ef7fbb445ea3961ab3f38379f3323c608c4",
-                "reference": "64305ef7fbb445ea3961ab3f38379f3323c608c4",
+                "url": "https://api.github.com/repos/square/square-php-sdk/zipball/fef70265315351c2e0317576dea5d0dd4547d6cb",
+                "reference": "fef70265315351c2e0317576dea5d0dd4547d6cb",
                 "shasum": ""
             },
             "require": {
@@ -17352,9 +17352,9 @@
             ],
             "support": {
                 "issues": "https://github.com/square/square-php-sdk/issues",
-                "source": "https://github.com/square/square-php-sdk/tree/45.1.0.20260520"
+                "source": "https://github.com/square/square-php-sdk/tree/46.1.0.20260819"
             },
-            "time": "2026-05-20T16:20:59+00:00"
+            "time": "2026-08-18T21:18:29+00:00"
         },
         {
             "name": "stripe/stripe-php",
