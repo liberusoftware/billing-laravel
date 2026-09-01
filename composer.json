@@ -524,7 +524,7 @@
         "spatie/laravel-permission": "^7.0",
         "spiral/roadrunner-cli": "^2.6.0",
         "spiral/roadrunner-http": "^3.3.0",
-        "square/square": "^45.1",
+        "square/square": "^46.1",
         "stripe/stripe-php": "^20.3"
     },
     "require-dev": {
