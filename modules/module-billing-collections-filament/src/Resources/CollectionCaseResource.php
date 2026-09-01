@@ -28,6 +28,8 @@ use Liberu\Billing\Collections\Models\CollectionCase;
 
 final class CollectionCaseResource extends Resource
 {
+    protected static string|\UnitEnum|null $navigationGroup = 'Billing Operations';
+
     use ScopesCurrentTeam;
 
     protected static ?string $model = CollectionCase::class;

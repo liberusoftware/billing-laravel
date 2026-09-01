@@ -1,0 +1,133 @@
+openapi: 3.1.0
+info:
+  title: Billing Core API
+  version: 1.0.0
+  description: Team-scoped accounts and billing configuration resources.
+servers: [{url: /}]
+paths:
+  /api/v1/billing/billing-core/currencies/convert:
+    post:
+      operationId: billing.core.currencies.convert
+      security: [{sanctum: []}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object, required: [amount, from, to], properties: {amount: {type: number}, from: {type: string, pattern: '^[A-Za-z]{3}$'}, to: {type: string, pattern: '^[A-Za-z]{3}$'}}}}}}
+      responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/billing-core/tax/calculate:
+    post:
+      operationId: billing.core.tax.calculate
+      security: [{sanctum: []}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object, required: [amount], properties: {amount: {type: number, minimum: 0}, jurisdiction: {type: [string, 'null'], maxLength: 100}, customer_id: {type: [integer, 'null'], minimum: 1}}}}}}
+      responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/billing-core:
+    get:
+      operationId: billing.core.accounts.list
+      summary: List billing accounts
+      security: [{ sanctum: [] }]
+      parameters: [{$ref: '#/components/parameters/PageSize'}]
+      responses:
+        '200': {$ref: '#/components/responses/Collection'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+    post:
+      operationId: billing.core.accounts.create
+      summary: Create a billing account
+      security: [{ sanctum: [] }]
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody:
+        required: true
+        content: {application/json: {schema: {$ref: '#/components/schemas/AccountRequest'}}}
+      responses:
+        '201': {$ref: '#/components/responses/Document'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+        '422': {$ref: '#/components/responses/ValidationError'}
+  /api/v1/billing/billing-core/{account}:
+    patch:
+      operationId: billing.core.accounts.update
+      summary: Update a billing account
+      security: [{ sanctum: [] }]
+      parameters: [{name: account, in: path, required: true, schema: {type: integer}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/AccountUpdateRequest'}}}}
+      responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '403': {$ref: '#/components/responses/Forbidden'}, '422': {$ref: '#/components/responses/ValidationError'}}
+    delete:
+      operationId: billing.core.accounts.delete
+      summary: Delete a billing account
+      security: [{ sanctum: [] }]
+      parameters: [{name: account, in: path, required: true, schema: {type: integer}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      responses: {'204': {description: Account deleted}, '401': {$ref: '#/components/responses/Unauthorized'}, '403': {$ref: '#/components/responses/Forbidden'}}
+  /api/v1/billing/billing-core/{account}/status:
+    patch:
+      operationId: billing.core.accounts.status
+      summary: Transition a billing account
+      security: [{ sanctum: [] }]
+      parameters: [{name: account, in: path, required: true, schema: {type: integer}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object, required: [status], properties: {status: {type: string, enum: [active, suspended, closed]}}}}}}
+      responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '403': {$ref: '#/components/responses/Forbidden'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/billing-core/{type}:
+    get:
+      operationId: billing.core.records.list
+      summary: List a billing-core resource collection
+      security: [{ sanctum: [] }]
+      parameters:
+        - {$ref: '#/components/parameters/ResourceType'}
+        - {$ref: '#/components/parameters/PageSize'}
+      responses: {'200': {$ref: '#/components/responses/Collection'}, '401': {$ref: '#/components/responses/Unauthorized'}, '403': {$ref: '#/components/responses/Forbidden'}}
+    post:
+      operationId: billing.core.records.create
+      summary: Create a billing-core resource
+      security: [{ sanctum: [] }]
+      parameters: [{$ref: '#/components/parameters/ResourceType'}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object, additionalProperties: true}}}}
+      responses: {'201': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '403': {$ref: '#/components/responses/Forbidden'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/billing-core/{type}/{record}:
+    patch:
+      operationId: billing.core.records.update
+      summary: Update a billing-core resource
+      security: [{ sanctum: [] }]
+      parameters: [{$ref: '#/components/parameters/ResourceType'}, {name: record, in: path, required: true, schema: {type: integer}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object, additionalProperties: true}}}}
+      responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '403': {$ref: '#/components/responses/Forbidden'}, '422': {$ref: '#/components/responses/ValidationError'}}
+    delete:
+      operationId: billing.core.records.delete
+      summary: Delete a billing-core resource
+      security: [{ sanctum: [] }]
+      parameters: [{$ref: '#/components/parameters/ResourceType'}, {name: record, in: path, required: true, schema: {type: integer}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      responses: {'204': {description: Resource deleted}, '401': {$ref: '#/components/responses/Unauthorized'}, '403': {$ref: '#/components/responses/Forbidden'}}
+components:
+  parameters:
+    PageSize: {name: page[size], in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 25}}
+    ResourceType: {name: type, in: path, required: true, schema: {type: string, enum: [contacts, currencies, tax-profiles, tax-exemptions, sequences, terms, settings]}}
+    IdempotencyKey: {name: Idempotency-Key, in: header, required: false, schema: {type: string, maxLength: 255}}
+  responses:
+    Collection:
+      description: Team-scoped paginated collection.
+      content: {application/json: {schema: {type: object, required: [data, links, meta], properties: {data: {type: array, items: {$ref: '#/components/schemas/Resource'}}, links: {type: object}, meta: {type: object}}}}}
+    Document:
+      description: Resource document.
+      content: {application/json: {schema: {type: object, required: [data], properties: {data: {$ref: '#/components/schemas/Resource'}}}}}
+    Unauthorized: {description: Authentication is required.}
+    Forbidden: {description: The authenticated token lacks the required module ability.}
+    ValidationError:
+      description: RFC 9457-compatible validation failure.
+      content: {application/json: {schema: {$ref: '#/components/schemas/ProblemDetails'}}}
+  schemas:
+    Resource:
+      type: object
+      required: [id, type, attributes]
+      properties: {id: {type: string}, type: {type: string}, attributes: {type: object, additionalProperties: true}}
+    AccountRequest:
+      type: object
+      required: [name, currency]
+      properties: {name: {type: string, maxLength: 255}, currency: {type: string, pattern: '^[A-Za-z]{3}$'}, settings: {type: object, additionalProperties: true}}
+    AccountUpdateRequest:
+      type: object
+      minProperties: 1
+      properties: {name: {type: string, maxLength: 255}, currency: {type: string, pattern: '^[A-Za-z]{3}$'}, settings: {type: object, additionalProperties: true}}
+    ProblemDetails:
+      type: object
+      required: [type, title, status]
+      properties: {type: {type: string, format: uri-reference}, title: {type: string}, status: {type: integer}, detail: {type: string}, errors: {type: object, additionalProperties: {type: array, items: {type: string}}}}
+  securitySchemes:
+    sanctum:
+      type: http
+      scheme: bearer
+      bearerFormat: Sanctum

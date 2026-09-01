@@ -21,6 +21,8 @@ use Liberu\Billing\Hosting\Models\HostingCapability;
 
 final class HostingCapabilityResource extends Resource
 {
+    protected static string|\UnitEnum|null $navigationGroup = 'Service Delivery';
+
     use ScopesCurrentTeam;
 
     protected static ?string $model = HostingCapability::class;

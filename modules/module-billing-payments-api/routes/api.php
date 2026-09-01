@@ -11,6 +11,7 @@ Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.payme
     ->name('billing.payments.')
     ->group(function (): void {
         Route::get('/', [PaymentController::class, 'index'])->name('index');
+        Route::get('/{payment}', [PaymentController::class, 'show'])->whereNumber('payment')->name('show');
         Route::get('/methods', [PaymentMethodController::class, 'methods'])->name('methods.index');
         Route::get('/mandates', [PaymentMethodController::class, 'mandates'])->name('mandates.index');
     });

@@ -21,6 +21,6 @@
   "default_enabled": true,
   "features": [
     "ISP Filament integration"
-  ]
+  ],
+  "presentation": {"filament": {"admin": ["Liberu\\Billing\\Isp\\Filament\\IspFilamentPlugin"]}}
 }
-

@@ -20,6 +20,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Override;
+use UnitEnum;
 
 class HostingAccountResource extends Resource
 {
@@ -28,6 +29,9 @@ class HostingAccountResource extends Resource
 
     #[Override]
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-server';
+
+    #[Override]
+    protected static string|UnitEnum|null $navigationGroup = 'Service Delivery';
 
     public static function getEloquentQuery(): Builder
     {

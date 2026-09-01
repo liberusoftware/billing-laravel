@@ -21,6 +21,6 @@
   "default_enabled": true,
   "features": [
     "Hosting Filament integration"
-  ]
+  ],
+  "presentation": {"filament": {"admin": ["Liberu\\Billing\\Hosting\\Filament\\HostingFilamentPlugin"]}}
 }
-

@@ -81,6 +81,7 @@ final class InvoiceList extends Component
 
     public function render(ListInvoices $query): View
     {
+        Gate::authorize('viewAny', Invoice::class);
         $teamId = data_get(auth()->user(), 'current_team_id') ?? data_get(auth()->user(), 'currentTeam.id');
 
         return view('module-billing-invoicing-livewire::invoice-list', ['invoices' => $query->execute($teamId === null ? null : (int) $teamId)]);

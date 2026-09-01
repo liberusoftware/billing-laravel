@@ -31,9 +31,14 @@ final class InvoiceController extends Controller
     {
         Gate::authorize('viewAny', Invoice::class);
         $teamId = data_get($request->user(), 'current_team_id') ?? data_get($request->user(), 'currentTeam.id');
-        $invoices = $query->execute($teamId === null ? null : (int) $teamId, $request->integer('per_page', 25));
+        $invoices = $query->execute($teamId === null ? null : (int) $teamId, $this->pageSize($request));
 
         return response()->json(['data' => $invoices->getCollection()->map(fn (Invoice $invoice): array => $this->resource($invoice))->values(), 'meta' => ['current_page' => $invoices->currentPage(), 'last_page' => $invoices->lastPage()]]);
+    }
+
+    private function pageSize(Request $request): int
+    {
+        return min(max((int) $request->input('page.size', $request->integer('per_page', 25)), 1), 100);
     }
 
     public function store(Request $request, CreateInvoice $create): JsonResponse

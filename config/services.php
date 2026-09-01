@@ -47,6 +47,14 @@ return [
         'redirect' => env('GOOGLE_REDIRECT_URI', '/oauth/google/callback'),
     ],
 
+    'stripe' => [
+        'secret' => env('STRIPE_SECRET'),
+    ],
+
+    'tax_api' => [
+        'api_key' => env('TAX_API_KEY'),
+    ],
+
     'enom' => [
         'api_url' => env('ENOM_API_URL', 'https://reseller.enom.com/interface.asp'),
         'username' => env('ENOM_USERNAME'),

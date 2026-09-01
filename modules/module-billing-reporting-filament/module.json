@@ -21,6 +21,6 @@
   "default_enabled": true,
   "features": [
     "Reporting Filament integration"
-  ]
+  ],
+  "presentation": {"filament": {"admin": ["Liberu\\Billing\\Reporting\\Filament\\ReportingFilamentPlugin"]}}
 }
-

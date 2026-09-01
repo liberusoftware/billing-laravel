@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8d3779670042a2da08ec5fccd99e58be",
+    "content-hash": "eb162e816b9a36889654c459f4dbaca0",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -3343,16 +3343,16 @@
         },
         {
             "name": "guzzlehttp/uri-template",
-            "version": "v2.0.0",
+            "version": "v2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/uri-template.git",
-                "reference": "516c3bf2af176c532d5b59b3430292f7e9ecccb1"
+                "reference": "7a466ad606491eb6528c717482f7cca77f1851f3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/uri-template/zipball/516c3bf2af176c532d5b59b3430292f7e9ecccb1",
-                "reference": "516c3bf2af176c532d5b59b3430292f7e9ecccb1",
+                "url": "https://api.github.com/repos/guzzle/uri-template/zipball/7a466ad606491eb6528c717482f7cca77f1851f3",
+                "reference": "7a466ad606491eb6528c717482f7cca77f1851f3",
                 "shasum": ""
             },
             "require": {
@@ -3409,7 +3409,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/uri-template/issues",
-                "source": "https://github.com/guzzle/uri-template/tree/v2.0.0"
+                "source": "https://github.com/guzzle/uri-template/tree/v2.0.1"
             },
             "funding": [
                 {
@@ -3425,7 +3425,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-07-20T13:40:43+00:00"
+            "time": "2026-08-24T17:13:02+00:00"
         },
         {
             "name": "kirschbaum-development/eloquent-power-joins",
@@ -3644,16 +3644,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v13.26.1",
+            "version": "v13.29.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "e4a1bc52ef551d52e60244bb004256d6861da7ab"
+                "reference": "6e2c363716964d8238cee7097b258119a984f0cf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/e4a1bc52ef551d52e60244bb004256d6861da7ab",
-                "reference": "e4a1bc52ef551d52e60244bb004256d6861da7ab",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/6e2c363716964d8238cee7097b258119a984f0cf",
+                "reference": "6e2c363716964d8238cee7097b258119a984f0cf",
                 "shasum": ""
             },
             "require": {
@@ -3775,7 +3775,7 @@
                 "phpstan/phpstan": "^2.0",
                 "phpunit/phpunit": "^11.5.50 || ^12.5.8 || ^13.0.3",
                 "predis/predis": "^2.3 || ^3.0",
-                "rector/rector": "^2.3",
+                "rector/rector": "2.6.3",
                 "resend/resend-php": "^1.0",
                 "symfony/cache": "^7.4.0 || ^8.0.0",
                 "symfony/http-client": "^7.4.0 || ^8.0.0",
@@ -3867,7 +3867,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2026-08-18T20:31:28+00:00"
+            "time": "2026-08-25T20:57:16+00:00"
         },
         {
             "name": "laravel/horizon",
@@ -4174,16 +4174,16 @@
         },
         {
             "name": "laravel/prompts",
-            "version": "v0.3.23",
+            "version": "v0.3.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/prompts.git",
-                "reference": "b7b4c35e5bc47450f6b6238c6cc9c47ba19b2221"
+                "reference": "5d3cdef29e93ca3b62b1871359db3078cd99908b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/prompts/zipball/b7b4c35e5bc47450f6b6238c6cc9c47ba19b2221",
-                "reference": "b7b4c35e5bc47450f6b6238c6cc9c47ba19b2221",
+                "url": "https://api.github.com/repos/laravel/prompts/zipball/5d3cdef29e93ca3b62b1871359db3078cd99908b",
+                "reference": "5d3cdef29e93ca3b62b1871359db3078cd99908b",
                 "shasum": ""
             },
             "require": {
@@ -4227,9 +4227,9 @@
             "description": "Add beautiful and user-friendly forms to your command-line applications.",
             "support": {
                 "issues": "https://github.com/laravel/prompts/issues",
-                "source": "https://github.com/laravel/prompts/tree/v0.3.23"
+                "source": "https://github.com/laravel/prompts/tree/v0.3.24"
             },
-            "time": "2026-08-11T18:58:24+00:00"
+            "time": "2026-08-20T12:55:36+00:00"
         },
         {
             "name": "laravel/pulse",
@@ -4520,16 +4520,16 @@
         },
         {
             "name": "laravel/serializable-closure",
-            "version": "v2.0.15",
+            "version": "v2.0.16",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/serializable-closure.git",
-                "reference": "dccd8bcb851bb03fcc005df650b708b57cc52661"
+                "reference": "7cfc24e4fa2cca045fb8dd2a797a2b2b13b655ed"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/serializable-closure/zipball/dccd8bcb851bb03fcc005df650b708b57cc52661",
-                "reference": "dccd8bcb851bb03fcc005df650b708b57cc52661",
+                "url": "https://api.github.com/repos/laravel/serializable-closure/zipball/7cfc24e4fa2cca045fb8dd2a797a2b2b13b655ed",
+                "reference": "7cfc24e4fa2cca045fb8dd2a797a2b2b13b655ed",
                 "shasum": ""
             },
             "require": {
@@ -4577,7 +4577,7 @@
                 "issues": "https://github.com/laravel/serializable-closure/issues",
                 "source": "https://github.com/laravel/serializable-closure"
             },
-            "time": "2026-07-21T16:49:22+00:00"
+            "time": "2026-08-18T20:28:54+00:00"
         },
         {
             "name": "laravel/socialite",
@@ -5604,7 +5604,7 @@
             "version": "1.4.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-activity-comments.git",
+                "url": "git@github.com:liberusoftware/module-activity-comments.git",
                 "reference": "416a1fdfb51bf5dbe331326709b44fdd7b9d3f32"
             },
             "dist": {
@@ -5659,7 +5659,7 @@
             "version": "1.0.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/analytics-contracts.git",
+                "url": "git@github.com:liberusoftware/analytics-contracts.git",
                 "reference": "c950ae334da15762f9b8e55777c844a3c902ab74"
             },
             "dist": {
@@ -5692,7 +5692,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-analytics-core.git",
+                "url": "git@github.com:liberusoftware/module-analytics-core.git",
                 "reference": "b302f2e18910c3589fc3497a241bd56db809da93"
             },
             "dist": {
@@ -5748,7 +5748,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-analytics-google.git",
+                "url": "git@github.com:liberusoftware/module-analytics-google.git",
                 "reference": "60d4b39b689e13557829dd5b1fbb62ebb1d589c6"
             },
             "dist": {
@@ -5803,7 +5803,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-analytics-meta.git",
+                "url": "git@github.com:liberusoftware/module-analytics-meta.git",
                 "reference": "e087a4499ec299462ebdacd574ee12e52d36cc4c"
             },
             "dist": {
@@ -5856,16 +5856,10 @@
         {
             "name": "liberusoftware/api-access",
             "version": "1.4.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/liberusoftware/module-api-access.git",
-                "reference": "5c79a794e1e64e84efde7305bde23a1dca459168"
-            },
             "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/liberusoftware/module-api-access/zipball/5c79a794e1e64e84efde7305bde23a1dca459168",
-                "reference": "5c79a794e1e64e84efde7305bde23a1dca459168",
-                "shasum": ""
+                "type": "path",
+                "url": "modules/api-access",
+                "reference": "bee7f860a07ab6db54bd8fe62ff204aa7b728cf0"
             },
             "require": {
                 "illuminate/database": "^13.0",
@@ -5903,18 +5897,17 @@
                 "MIT"
             ],
             "description": "API token, scope, version, rate-limit, idempotency, and revocation policy.",
-            "support": {
-                "source": "https://github.com/liberusoftware/module-api-access/tree/1.4.1",
-                "issues": "https://github.com/liberusoftware/module-api-access/issues"
-            },
-            "time": "2026-08-07T14:25:08+00:00"
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
         },
         {
             "name": "liberusoftware/application",
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-application.git",
+                "url": "git@github.com:liberusoftware/module-application.git",
                 "reference": "f4fe1f694a693308398e50c3894ca266bece75ac"
             },
             "dist": {
@@ -5969,7 +5962,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-audit.git",
+                "url": "git@github.com:liberusoftware/module-audit.git",
                 "reference": "78c4f3b0f59484fd928cff4cc1c63a0e32f75857"
             },
             "dist": {
@@ -6018,294 +6011,6 @@
                 "issues": "https://github.com/liberusoftware/module-audit/issues"
             },
             "time": "2026-08-07T14:25:10+00:00"
-        },
-        {
-            "name": "liberusoftware/billing-billing-core",
-            "version": "0.1.3",
-            "dist": {
-                "type": "path",
-                "url": "modules/billing-billing-core",
-                "reference": "252d1a6f98cafcb78649de32994e53372871e69e"
-            },
-            "require": {
-                "illuminate/support": "^13.0",
-                "liberusoftware/module-manager": "^1.0",
-                "php": "^8.5"
-            },
-            "require-dev": {
-                "pestphp/pest": "^5.0"
-            },
-            "type": "liberu-module",
-            "extra": {
-                "liberu": {
-                    "name": "billing-billing-core"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Liberu\\Billing\\Core\\": "src/"
-                }
-            },
-            "autoload-dev": {
-                "psr-4": {
-                    "Liberu\\Billing\\Core\\Tests\\": "tests/"
-                }
-            },
-            "scripts": {
-                "test": [
-                    "pest"
-                ]
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "Framework-neutral billing account and period primitives.",
-            "transport-options": {
-                "symlink": false,
-                "relative": true
-            }
-        },
-        {
-            "name": "liberusoftware/billing-catalog",
-            "version": "0.1.1",
-            "dist": {
-                "type": "path",
-                "url": "modules/billing-catalog",
-                "reference": "2801ce6c2938092fb335d857107e8d6f7cf04cf7"
-            },
-            "require": {
-                "illuminate/database": "^13.0",
-                "illuminate/support": "^13.0",
-                "liberusoftware/module-manager": "^1.0",
-                "php": "^8.5"
-            },
-            "type": "liberu-module",
-            "extra": {
-                "liberu": {
-                    "name": "billing-catalog"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Liberu\\Billing\\Catalog\\": "src/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "Provider-neutral catalog products and lifecycle for Liberu Billing.",
-            "transport-options": {
-                "symlink": false,
-                "relative": true
-            }
-        },
-        {
-            "name": "liberusoftware/billing-catalog-api",
-            "version": "0.1.0",
-            "dist": {
-                "type": "path",
-                "url": "modules/billing-catalog-api",
-                "reference": "67a487804eb42d284d5b6397581c7b22e85a72ae"
-            },
-            "require": {
-                "illuminate/http": "^13.0",
-                "illuminate/routing": "^13.0",
-                "laravel/sanctum": "^4.0",
-                "liberusoftware/billing-catalog": "^0.1",
-                "liberusoftware/module-manager": "^1.0",
-                "php": "^8.5"
-            },
-            "type": "liberu-module",
-            "extra": {
-                "liberu": {
-                    "name": "billing-catalog-api"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Liberu\\Billing\\Catalog\\Api\\": "src/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "HTTP API adapter for the Liberu Billing Catalog module.",
-            "transport-options": {
-                "symlink": false,
-                "relative": true
-            }
-        },
-        {
-            "name": "liberusoftware/billing-catalog-filament",
-            "version": "0.1.0",
-            "dist": {
-                "type": "path",
-                "url": "modules/billing-catalog-filament",
-                "reference": "410e6c8b8038b1fdc88a5e2926476a5cec2b2940"
-            },
-            "require": {
-                "filament/filament": "~5.1",
-                "liberusoftware/billing-catalog": "^0.1",
-                "liberusoftware/module-manager": "^1.0",
-                "php": "^8.5"
-            },
-            "type": "liberu-module",
-            "extra": {
-                "liberu": {
-                    "name": "billing-catalog-filament"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Liberu\\Billing\\Catalog\\Filament\\": "src/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "Filament 5 adapter for the Liberu Billing Catalog module.",
-            "transport-options": {
-                "symlink": false,
-                "relative": true
-            }
-        },
-        {
-            "name": "liberusoftware/billing-catalog-livewire",
-            "version": "0.1.0",
-            "dist": {
-                "type": "path",
-                "url": "modules/billing-catalog-livewire",
-                "reference": "4a34a565a9360c75b4774fa05b928aca0943df8d"
-            },
-            "require": {
-                "liberusoftware/billing-catalog": "^0.1",
-                "liberusoftware/module-manager": "^1.0",
-                "livewire/livewire": "^4.0",
-                "php": "^8.5"
-            },
-            "type": "liberu-module",
-            "extra": {
-                "liberu": {
-                    "name": "billing-catalog-livewire"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Liberu\\Billing\\Catalog\\Livewire\\": "src/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "Livewire 4 adapter for the Liberu Billing Catalog module.",
-            "transport-options": {
-                "symlink": false,
-                "relative": true
-            }
-        },
-        {
-            "name": "liberusoftware/billing-core-api",
-            "version": "0.1.3",
-            "dist": {
-                "type": "path",
-                "url": "modules/billing-core-api",
-                "reference": "55a6cabeea4258e75c5afd5229171b5a1934d507"
-            },
-            "require": {
-                "illuminate/http": "^13.0",
-                "illuminate/routing": "^13.0",
-                "laravel/sanctum": "^4.0",
-                "liberusoftware/billing-billing-core": "^0.1",
-                "liberusoftware/module-manager": "^1.0",
-                "php": "^8.5"
-            },
-            "type": "liberu-module",
-            "extra": {
-                "liberu": {
-                    "name": "billing-core-api"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Liberu\\Billing\\Core\\Api\\": "src/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "HTTP API adapter for the Liberu Billing Core module.",
-            "transport-options": {
-                "symlink": false,
-                "relative": true
-            }
-        },
-        {
-            "name": "liberusoftware/billing-core-filament",
-            "version": "0.1.3",
-            "dist": {
-                "type": "path",
-                "url": "modules/billing-core-filament",
-                "reference": "2d9be1e95ddb85816128e7361e0c312035c99fdd"
-            },
-            "require": {
-                "filament/filament": "~5.1",
-                "liberusoftware/billing-billing-core": "^0.1",
-                "liberusoftware/module-manager": "^1.0",
-                "php": "^8.5"
-            },
-            "type": "liberu-module",
-            "extra": {
-                "liberu": {
-                    "name": "billing-core-filament"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Liberu\\Billing\\Core\\Filament\\": "src/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "Filament 5 adapter for the Liberu Billing Core module.",
-            "transport-options": {
-                "symlink": false,
-                "relative": true
-            }
-        },
-        {
-            "name": "liberusoftware/billing-core-livewire",
-            "version": "0.1.3",
-            "dist": {
-                "type": "path",
-                "url": "modules/billing-core-livewire",
-                "reference": "cb6512b41ec5f7c9e30c3cb3cf008aed02e67ee9"
-            },
-            "require": {
-                "liberusoftware/billing-billing-core": "^0.1",
-                "liberusoftware/module-manager": "^1.0",
-                "livewire/livewire": "^4.0",
-                "php": "^8.5"
-            },
-            "type": "liberu-module",
-            "extra": {
-                "liberu": {
-                    "name": "billing-core-livewire"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Liberu\\Billing\\Core\\Livewire\\": "src/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "Livewire 4 adapter for the Liberu Billing Core module.",
-            "transport-options": {
-                "symlink": false,
-                "relative": true
-            }
         },
         {
             "name": "liberusoftware/billing-cpanel",
@@ -6381,7 +6086,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/module-billing-enom",
-                "reference": "e51781e543d8fcff684eea9aa1ecf8df9d363ca1"
+                "reference": "c3264787c39528822067e70a34260592ebf2f7bf"
             },
             "require": {
                 "illuminate/http": "^13.0",
@@ -6438,144 +6143,6 @@
                 "MIT"
             ],
             "description": "Liberu Control Panel hosting account driver for Liberu Billing Hosting.",
-            "transport-options": {
-                "symlink": false,
-                "relative": true
-            }
-        },
-        {
-            "name": "liberusoftware/billing-orders",
-            "version": "0.1.0",
-            "dist": {
-                "type": "path",
-                "url": "modules/billing-orders",
-                "reference": "c6f5dedf94653a7b001f2678c7e1645ae8031d4c"
-            },
-            "require": {
-                "illuminate/database": "^13.0",
-                "illuminate/support": "^13.0",
-                "liberusoftware/module-manager": "^1.0",
-                "php": "^8.5"
-            },
-            "type": "liberu-module",
-            "extra": {
-                "liberu": {
-                    "name": "billing-orders"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Liberu\\Billing\\Orders\\": "src/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "Provider-neutral quotes, carts, checkout, fraud review, agreements, and orders for Liberu Billing.",
-            "transport-options": {
-                "symlink": false,
-                "relative": true
-            }
-        },
-        {
-            "name": "liberusoftware/billing-orders-api",
-            "version": "0.1.0",
-            "dist": {
-                "type": "path",
-                "url": "modules/billing-orders-api",
-                "reference": "06be20aeef2586827217b8b1468c9876a0b466fd"
-            },
-            "require": {
-                "illuminate/http": "^13.0",
-                "illuminate/routing": "^13.0",
-                "laravel/sanctum": "^4.0",
-                "liberusoftware/billing-orders": "^0.1",
-                "liberusoftware/module-manager": "^1.0",
-                "php": "^8.5"
-            },
-            "type": "liberu-module",
-            "extra": {
-                "liberu": {
-                    "name": "billing-orders-api"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Liberu\\Billing\\Orders\\Api\\": "src/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "HTTP API adapter for Liberu Billing Orders.",
-            "transport-options": {
-                "symlink": false,
-                "relative": true
-            }
-        },
-        {
-            "name": "liberusoftware/billing-orders-filament",
-            "version": "0.1.0",
-            "dist": {
-                "type": "path",
-                "url": "modules/billing-orders-filament",
-                "reference": "3c658c9b47614d8f5cb239df20434fb041b31302"
-            },
-            "require": {
-                "filament/filament": "~5.1",
-                "liberusoftware/billing-orders": "^0.1",
-                "liberusoftware/module-manager": "^1.0",
-                "php": "^8.5"
-            },
-            "type": "liberu-module",
-            "extra": {
-                "liberu": {
-                    "name": "billing-orders-filament"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Liberu\\Billing\\Orders\\Filament\\": "src/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "Filament adapter for Liberu Billing Orders.",
-            "transport-options": {
-                "symlink": false,
-                "relative": true
-            }
-        },
-        {
-            "name": "liberusoftware/billing-orders-livewire",
-            "version": "0.1.0",
-            "dist": {
-                "type": "path",
-                "url": "modules/billing-orders-livewire",
-                "reference": "9196faf0c433e36f5849a1fcb49896929d9ed952"
-            },
-            "require": {
-                "liberusoftware/billing-orders": "^0.1",
-                "liberusoftware/module-manager": "^1.0",
-                "livewire/livewire": "^4.0",
-                "php": "^8.5"
-            },
-            "type": "liberu-module",
-            "extra": {
-                "liberu": {
-                    "name": "billing-orders-livewire"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Liberu\\Billing\\Orders\\Livewire\\": "src/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "Livewire adapter for Liberu Billing Orders.",
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -6651,150 +6218,12 @@
             }
         },
         {
-            "name": "liberusoftware/billing-pricing",
-            "version": "0.1.2",
-            "dist": {
-                "type": "path",
-                "url": "modules/billing-pricing",
-                "reference": "2a91664e8d9a970fc5bf9392b133987d5ff887fa"
-            },
-            "require": {
-                "illuminate/database": "^13.0",
-                "illuminate/support": "^13.0",
-                "liberusoftware/module-manager": "^1.0",
-                "php": "^8.5"
-            },
-            "type": "liberu-module",
-            "extra": {
-                "liberu": {
-                    "name": "billing-pricing"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Liberu\\Billing\\Pricing\\": "src/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "Provider-neutral pricing, contracts, discounts, proration, and snapshots for Liberu Billing.",
-            "transport-options": {
-                "symlink": false,
-                "relative": true
-            }
-        },
-        {
-            "name": "liberusoftware/billing-pricing-api",
-            "version": "0.1.2",
-            "dist": {
-                "type": "path",
-                "url": "modules/billing-pricing-api",
-                "reference": "1e9a996519c9a12d5cdb202c30053beb17773b95"
-            },
-            "require": {
-                "illuminate/http": "^13.0",
-                "illuminate/routing": "^13.0",
-                "laravel/sanctum": "^4.0",
-                "liberusoftware/billing-pricing": "^0.1",
-                "liberusoftware/module-manager": "^1.0",
-                "php": "^8.5"
-            },
-            "type": "liberu-module",
-            "extra": {
-                "liberu": {
-                    "name": "billing-pricing-api"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Liberu\\Billing\\Pricing\\Api\\": "src/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "HTTP API adapter for Liberu Billing Pricing.",
-            "transport-options": {
-                "symlink": false,
-                "relative": true
-            }
-        },
-        {
-            "name": "liberusoftware/billing-pricing-filament",
-            "version": "0.1.2",
-            "dist": {
-                "type": "path",
-                "url": "modules/billing-pricing-filament",
-                "reference": "623813f5321fcdf920b7e576bfdb73ce4c9a9cb5"
-            },
-            "require": {
-                "filament/filament": "~5.1",
-                "liberusoftware/billing-pricing": "^0.1",
-                "liberusoftware/module-manager": "^1.0",
-                "php": "^8.5"
-            },
-            "type": "liberu-module",
-            "extra": {
-                "liberu": {
-                    "name": "billing-pricing-filament"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Liberu\\Billing\\Pricing\\Filament\\": "src/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "Filament adapter for Liberu Billing Pricing.",
-            "transport-options": {
-                "symlink": false,
-                "relative": true
-            }
-        },
-        {
-            "name": "liberusoftware/billing-pricing-livewire",
-            "version": "0.1.2",
-            "dist": {
-                "type": "path",
-                "url": "modules/billing-pricing-livewire",
-                "reference": "3e368f6285192c97af20f8ca335bce65c50f89ee"
-            },
-            "require": {
-                "liberusoftware/billing-pricing": "^0.1",
-                "liberusoftware/module-manager": "^1.0",
-                "livewire/livewire": "^4.0",
-                "php": "^8.5"
-            },
-            "type": "liberu-module",
-            "extra": {
-                "liberu": {
-                    "name": "billing-pricing-livewire"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Liberu\\Billing\\Pricing\\Livewire\\": "src/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "Livewire adapter for Liberu Billing Pricing.",
-            "transport-options": {
-                "symlink": false,
-                "relative": true
-            }
-        },
-        {
             "name": "liberusoftware/billing-resellerclub",
             "version": "0.1.0",
             "dist": {
                 "type": "path",
                 "url": "modules/module-billing-resellerclub",
-                "reference": "a97833409f2923aca57b4d15ea02d75c254507dc"
+                "reference": "be0c568bd8b2f7d2e87750e3016e6b4b01a97296"
             },
             "require": {
                 "illuminate/http": "^13.0",
@@ -6895,7 +6324,7 @@
             "version": "1.1.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/composer-installer.git",
+                "url": "git@github.com:liberusoftware/composer-installer.git",
                 "reference": "470e3b95f6232424c69d67e4f7dad6f3619c37c4"
             },
             "dist": {
@@ -6943,7 +6372,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-currency-context.git",
+                "url": "git@github.com:liberusoftware/module-currency-context.git",
                 "reference": "10f4df26157d7c5fee683d75f0a542c689afdd57"
             },
             "dist": {
@@ -6998,7 +6427,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-developer-experience.git",
+                "url": "git@github.com:liberusoftware/module-developer-experience.git",
                 "reference": "2a2f574430611175af6ff430d65156a56be7b657"
             },
             "dist": {
@@ -7053,7 +6482,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-feature-flags.git",
+                "url": "git@github.com:liberusoftware/module-feature-flags.git",
                 "reference": "f0701fbb929b8d5f330204b3b53c1901cec0749e"
             },
             "dist": {
@@ -7108,7 +6537,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-files-media.git",
+                "url": "git@github.com:liberusoftware/module-files-media.git",
                 "reference": "214f00cd168620fe6fa209c6669a206534129ff5"
             },
             "dist": {
@@ -7163,7 +6592,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-identity-core.git",
+                "url": "git@github.com:liberusoftware/module-identity-core.git",
                 "reference": "46d9b48899910a511285761f990a1d7f96531189"
             },
             "dist": {
@@ -7217,7 +6646,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-identity-core-filament.git",
+                "url": "git@github.com:liberusoftware/module-identity-core-filament.git",
                 "reference": "34519fdd11c96b7db55def83ef50321265b81ba8"
             },
             "dist": {
@@ -7271,7 +6700,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-identity-socialstream.git",
+                "url": "git@github.com:liberusoftware/module-identity-socialstream.git",
                 "reference": "faea00423bd97e3de696e37cb5d7cc6bafc0edf2"
             },
             "dist": {
@@ -7329,7 +6758,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-import-export.git",
+                "url": "git@github.com:liberusoftware/module-import-export.git",
                 "reference": "075032d5033056c3b4a10a010673de3d4a57159c"
             },
             "dist": {
@@ -7384,7 +6813,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-integrations.git",
+                "url": "git@github.com:liberusoftware/module-integrations.git",
                 "reference": "9569c7b2e48633fc47131a0a3533dfb7a4d516fc"
             },
             "dist": {
@@ -7439,7 +6868,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-jetstream-bridge.git",
+                "url": "git@github.com:liberusoftware/module-jetstream-bridge.git",
                 "reference": "7ba43cc22d76d231d74b3987bbb7d40dd2a0f445"
             },
             "dist": {
@@ -7530,7 +6959,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-localization-core.git",
+                "url": "git@github.com:liberusoftware/module-localization-core.git",
                 "reference": "c77a5aed99bd101eeff7a7a94dde0a969a0f38ab"
             },
             "dist": {
@@ -7588,7 +7017,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-localization-core-livewire.git",
+                "url": "git@github.com:liberusoftware/module-localization-core-livewire.git",
                 "reference": "31553cab97641e83fc702974c3159de78afdcec7"
             },
             "dist": {
@@ -7643,7 +7072,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-localization-mymemory.git",
+                "url": "git@github.com:liberusoftware/module-localization-mymemory.git",
                 "reference": "bf11fef28492b3a311cb252f484205b5875c5d9e"
             },
             "dist": {
@@ -7695,6 +7124,192 @@
             "time": "2026-08-07T14:25:31+00:00"
         },
         {
+            "name": "liberusoftware/module-billing-billing-core",
+            "version": "0.1.3",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-billing-core",
+                "reference": "73f3dabcf32093847284a708130844b5bf2f6d0a"
+            },
+            "require": {
+                "illuminate/database": "^13.0",
+                "illuminate/support": "^13.0",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "pestphp/pest": "^5.0"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-billing-core"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Core\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Liberu\\Billing\\Core\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Framework-neutral billing accounts, contacts, currencies, tax profiles, sequences, terms, settings, and period primitives.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-catalog",
+            "version": "0.1.1",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-catalog",
+                "reference": "89ae800d54e004ac237b2a0853fa54d58384903d"
+            },
+            "require": {
+                "illuminate/database": "^13.0",
+                "illuminate/support": "^13.0",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-catalog"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Catalog\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Provider-neutral catalog products and lifecycle for Liberu Billing.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-catalog-api",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-catalog-api",
+                "reference": "279667b1d7a498d4d4820b1297b010d9225c1b4b"
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "laravel/sanctum": "^4.0",
+                "liberusoftware/api-access": "^1.0",
+                "liberusoftware/module-billing-catalog": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-catalog-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Catalog\\Api\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "HTTP API adapter for the Liberu Billing Catalog module.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-catalog-filament",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-catalog-filament",
+                "reference": "391421111566afeec8b9f43747b3580bd18b1fae"
+            },
+            "require": {
+                "filament/filament": "~5.1",
+                "liberusoftware/module-billing-catalog": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-catalog-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Catalog\\Filament\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament 5 adapter for the Liberu Billing Catalog module.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-catalog-livewire",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-catalog-livewire",
+                "reference": "63041125405a9709ddb04e86ed7a7524a96ca4a2"
+            },
+            "require": {
+                "liberusoftware/module-billing-catalog": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-catalog-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Catalog\\Livewire\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire 4 adapter for the Liberu Billing Catalog module.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
             "name": "liberusoftware/module-billing-collections",
             "version": "0.1.0",
             "dist": {
@@ -7735,12 +7350,13 @@
             "dist": {
                 "type": "path",
                 "url": "modules/module-billing-collections-api",
-                "reference": "833505e1c24b9f4115e7ec32ee0b7776a868485e"
+                "reference": "8ee6b368a8595925f49be401e8c0bbca403f1322"
             },
             "require": {
                 "illuminate/http": "^13.0",
                 "illuminate/routing": "^13.0",
                 "laravel/sanctum": "^4.0",
+                "liberusoftware/api-access": "^1.0",
                 "liberusoftware/module-billing-collections": "^0.1",
                 "liberusoftware/module-manager": "^1.0",
                 "php": "^8.5"
@@ -7839,7 +7455,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/module-billing-communications",
-                "reference": "efe53a2e8d90702f6f98cdc49637dba979d24e79"
+                "reference": "632db6ee3cb3311f09d5b3265c26e079971ec8ef"
             },
             "require": {
                 "illuminate/database": "^13.0",
@@ -7874,9 +7490,13 @@
             "dist": {
                 "type": "path",
                 "url": "modules/module-billing-communications-api",
-                "reference": "91a0fbf400d78c2a3061b6ecd6786ef8403dbebe"
+                "reference": "7a934d16293daacb3faceb100052c4cc7d764a4f"
             },
             "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "laravel/sanctum": "^4.0",
+                "liberusoftware/api-access": "^1.0",
                 "liberusoftware/module-billing-communications": "^0.1",
                 "liberusoftware/module-manager": "^1.0",
                 "php": "^8.5"
@@ -7907,9 +7527,10 @@
             "dist": {
                 "type": "path",
                 "url": "modules/module-billing-communications-filament",
-                "reference": "09054ea99e51dcf1ed209f7a4d1d126ed58794f0"
+                "reference": "138240105c713fe2fe36cc1e011add0c4ba88338"
             },
             "require": {
+                "filament/filament": "~5.1",
                 "liberusoftware/module-billing-communications": "^0.1",
                 "liberusoftware/module-manager": "^1.0",
                 "php": "^8.5"
@@ -7940,11 +7561,12 @@
             "dist": {
                 "type": "path",
                 "url": "modules/module-billing-communications-livewire",
-                "reference": "784e61c156df3fe29438b19f4d0b25fc91e42edc"
+                "reference": "045d4aab759c033feac94ceccb4ca9f49ecd5dbb"
             },
             "require": {
                 "liberusoftware/module-billing-communications": "^0.1",
                 "liberusoftware/module-manager": "^1.0",
+                "livewire/livewire": "^4.0",
                 "php": "^8.5"
             },
             "type": "liberu-module",
@@ -7968,12 +7590,117 @@
             }
         },
         {
+            "name": "liberusoftware/module-billing-core-api",
+            "version": "0.1.3",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-core-api",
+                "reference": "279667b1d7a498d4d4820b1297b010d9225c1b4b"
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "laravel/sanctum": "^4.0",
+                "liberusoftware/api-access": "^1.0",
+                "liberusoftware/module-billing-billing-core": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-core-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Core\\Api\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "HTTP API adapter for the Liberu Billing Core module.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-core-filament",
+            "version": "0.1.3",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-core-filament",
+                "reference": "d6fbfb646e3f11a086622f56853279f9d14c149e"
+            },
+            "require": {
+                "filament/filament": "~5.1",
+                "liberusoftware/module-billing-billing-core": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-core-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Core\\Filament\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament 5 adapter for the Liberu Billing Core module.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-core-livewire",
+            "version": "0.1.3",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-core-livewire",
+                "reference": "8d320d1d2d29cc2afdd93a2b0bbacdf05d3a2f35"
+            },
+            "require": {
+                "liberusoftware/module-billing-billing-core": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-core-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Core\\Livewire\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire 4 adapter for the Liberu Billing Core module.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
             "name": "liberusoftware/module-billing-customer-portal",
             "version": "0.1.0",
             "dist": {
                 "type": "path",
                 "url": "modules/module-billing-customer-portal",
-                "reference": "481b4798124698d68fe680591d04d0255b140fa7"
+                "reference": "2494c4161932ff2cff92d7ae4ba7daec1a2cae60"
             },
             "require": {
                 "illuminate/database": "^13.0",
@@ -8008,9 +7735,13 @@
             "dist": {
                 "type": "path",
                 "url": "modules/module-billing-customer-portal-api",
-                "reference": "d0d10b4845e8b1038321a1ccad798a1f6d35e582"
+                "reference": "d575c5c6470a3dd787ec3b5e08ddecf32af6953e"
             },
             "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "laravel/sanctum": "^4.0",
+                "liberusoftware/api-access": "^1.0",
                 "liberusoftware/module-billing-customer-portal": "^0.1",
                 "liberusoftware/module-manager": "^1.0",
                 "php": "^8.5"
@@ -8041,9 +7772,10 @@
             "dist": {
                 "type": "path",
                 "url": "modules/module-billing-customer-portal-filament",
-                "reference": "28f6a55339c3a71915872efdee784a8c3a581f88"
+                "reference": "c9cef42891de6dcc4d0ce1ae4e3b696b2d8a66f9"
             },
             "require": {
+                "filament/filament": "~5.1",
                 "liberusoftware/module-billing-customer-portal": "^0.1",
                 "liberusoftware/module-manager": "^1.0",
                 "php": "^8.5"
@@ -8074,11 +7806,12 @@
             "dist": {
                 "type": "path",
                 "url": "modules/module-billing-customer-portal-livewire",
-                "reference": "ede404c70a608c1c88ef48644d190dd241329b01"
+                "reference": "e48f40418c251bce2c81fd7d5325136df78e0369"
             },
             "require": {
                 "liberusoftware/module-billing-customer-portal": "^0.1",
                 "liberusoftware/module-manager": "^1.0",
+                "livewire/livewire": "^4.0",
                 "php": "^8.5"
             },
             "type": "liberu-module",
@@ -8107,7 +7840,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/module-billing-domains",
-                "reference": "131ae74c2bcfbd341722c870a037dd660774a09b"
+                "reference": "c07c93391112452474347a4192783c5ab99a97cb"
             },
             "require": {
                 "illuminate/database": "^13.0",
@@ -8142,9 +7875,13 @@
             "dist": {
                 "type": "path",
                 "url": "modules/module-billing-domains-api",
-                "reference": "779a90d97aa2b0e77a5917d555d8f1c4396c0f01"
+                "reference": "1b7262baf7636902f7c7507054bc59504822be62"
             },
             "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "laravel/sanctum": "^4.0",
+                "liberusoftware/api-access": "^1.0",
                 "liberusoftware/module-billing-domains": "^0.1",
                 "liberusoftware/module-manager": "^1.0",
                 "php": "^8.5"
@@ -8175,9 +7912,10 @@
             "dist": {
                 "type": "path",
                 "url": "modules/module-billing-domains-filament",
-                "reference": "2f71ffac76b13d19e31d18348f68b6769b1a7e72"
+                "reference": "d9473381996a1cf5068b27e5420decc3e60cbbcb"
             },
             "require": {
+                "filament/filament": "~5.1",
                 "liberusoftware/module-billing-domains": "^0.1",
                 "liberusoftware/module-manager": "^1.0",
                 "php": "^8.5"
@@ -8208,11 +7946,12 @@
             "dist": {
                 "type": "path",
                 "url": "modules/module-billing-domains-livewire",
-                "reference": "211c934b5aca0c1784bbe0f82cdf612d633af861"
+                "reference": "f800e0ced1caa83929f5b12312cf134e2db1fc56"
             },
             "require": {
                 "liberusoftware/module-billing-domains": "^0.1",
                 "liberusoftware/module-manager": "^1.0",
+                "livewire/livewire": "^4.0",
                 "php": "^8.5"
             },
             "type": "liberu-module",
@@ -8241,9 +7980,10 @@
             "dist": {
                 "type": "path",
                 "url": "modules/module-billing-hosting",
-                "reference": "9b9aabda5fd5d46c506360f094c205e8fd4f80d6"
+                "reference": "947bff1005a841f1bcb731183e77263dc2cbc844"
             },
             "require": {
+                "guzzlehttp/guzzle": "^7.8",
                 "illuminate/database": "^13.0",
                 "illuminate/events": "^13.0",
                 "illuminate/support": "^13.0",
@@ -8276,9 +8016,13 @@
             "dist": {
                 "type": "path",
                 "url": "modules/module-billing-hosting-api",
-                "reference": "9d67a5a269eb4143ef13270d206bdbb254240f9b"
+                "reference": "5a5c40087273d5bcb17d7a3f3b65186958698b0b"
             },
             "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "laravel/sanctum": "^4.0",
+                "liberusoftware/api-access": "^1.0",
                 "liberusoftware/module-billing-hosting": "^0.1",
                 "liberusoftware/module-manager": "^1.0",
                 "php": "^8.5"
@@ -8309,9 +8053,10 @@
             "dist": {
                 "type": "path",
                 "url": "modules/module-billing-hosting-filament",
-                "reference": "b5f47ec9f787438cd45d1f65d26c2ec813ddee10"
+                "reference": "b7bde10c21c48d5778026e0e5af878c6062c84b5"
             },
             "require": {
+                "filament/filament": "~5.1",
                 "liberusoftware/module-billing-hosting": "^0.1",
                 "liberusoftware/module-manager": "^1.0",
                 "php": "^8.5"
@@ -8342,11 +8087,12 @@
             "dist": {
                 "type": "path",
                 "url": "modules/module-billing-hosting-livewire",
-                "reference": "f3fd019c833dbf7cce7b297cc84295965aef4a6d"
+                "reference": "f549158b517e1d041eaa7cfa3c4d9404eb486346"
             },
             "require": {
                 "liberusoftware/module-billing-hosting": "^0.1",
                 "liberusoftware/module-manager": "^1.0",
+                "livewire/livewire": "^4.0",
                 "php": "^8.5"
             },
             "type": "liberu-module",
@@ -8375,9 +8121,10 @@
             "dist": {
                 "type": "path",
                 "url": "modules/module-billing-invoicing",
-                "reference": "d30ccb3bcc46f65bb85746258e7407e5cfb77075"
+            "reference": "279667b1d7a498d4d4820b1297b010d9225c1b4b"
             },
             "require": {
+                "barryvdh/laravel-dompdf": "^3.1",
                 "illuminate/database": "^13.0",
                 "illuminate/events": "^13.0",
                 "illuminate/support": "^13.0",
@@ -8410,12 +8157,13 @@
             "dist": {
                 "type": "path",
                 "url": "modules/module-billing-invoicing-api",
-                "reference": "40b748693e923cd91b55be344f67e676936ae1ee"
+                "reference": "a0f47d8ae1290a0f8051b6cfdb31905b06022dfa"
             },
             "require": {
                 "illuminate/http": "^13.0",
                 "illuminate/routing": "^13.0",
                 "laravel/sanctum": "^4.0",
+                "liberusoftware/api-access": "^1.0",
                 "liberusoftware/module-billing-invoicing": "^0.1",
                 "liberusoftware/module-manager": "^1.0",
                 "php": "^8.5"
@@ -8514,7 +8262,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/module-billing-isp",
-                "reference": "80925740d75cd9dfde751e0c9605fda9cf1b5cd8"
+                "reference": "bdcdb726f8abce28723cc70d26b2ab3bb659cc62"
             },
             "require": {
                 "illuminate/database": "^13.0",
@@ -8549,9 +8297,13 @@
             "dist": {
                 "type": "path",
                 "url": "modules/module-billing-isp-api",
-                "reference": "26e93d0deb3ea8f5411fa7e8931646ff53a756a2"
+                "reference": "0f36a78f02f01e3d2d6d9c25fd1b1d2c29b40116"
             },
             "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "laravel/sanctum": "^4.0",
+                "liberusoftware/api-access": "^1.0",
                 "liberusoftware/module-billing-isp": "^0.1",
                 "liberusoftware/module-manager": "^1.0",
                 "php": "^8.5"
@@ -8582,9 +8334,10 @@
             "dist": {
                 "type": "path",
                 "url": "modules/module-billing-isp-filament",
-                "reference": "9567b4dc7bc97e73a0bd0c5e7f33f1aaac58c1a7"
+                "reference": "42a7b35717bc073adbccd93cce26db0f8ebfe6df"
             },
             "require": {
+                "filament/filament": "~5.1",
                 "liberusoftware/module-billing-isp": "^0.1",
                 "liberusoftware/module-manager": "^1.0",
                 "php": "^8.5"
@@ -8615,11 +8368,12 @@
             "dist": {
                 "type": "path",
                 "url": "modules/module-billing-isp-livewire",
-                "reference": "c965d54e74d7d5670b5b1f3b20eb1ac11bd0a2ed"
+                "reference": "dd27ef1c6a16dee06f139de4e92189cd31c60bba"
             },
             "require": {
                 "liberusoftware/module-billing-isp": "^0.1",
                 "liberusoftware/module-manager": "^1.0",
+                "livewire/livewire": "^4.0",
                 "php": "^8.5"
             },
             "type": "liberu-module",
@@ -8637,6 +8391,145 @@
                 "MIT"
             ],
             "description": "Livewire adapter for Billing ISP.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-orders",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-orders",
+                "reference": "0b2c33557459512f5ad19fb278b417b2a6533982"
+            },
+            "require": {
+                "illuminate/database": "^13.0",
+                "illuminate/support": "^13.0",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-orders"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Orders\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Provider-neutral quotes, carts, checkout, fraud review, agreements, and orders for Liberu Billing.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-orders-api",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-orders-api",
+                "reference": "279667b1d7a498d4d4820b1297b010d9225c1b4b"
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "laravel/sanctum": "^4.0",
+                "liberusoftware/api-access": "^1.0",
+                "liberusoftware/module-billing-orders": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-orders-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Orders\\Api\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "HTTP API adapter for Liberu Billing Orders.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-orders-filament",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-orders-filament",
+                "reference": "b69a89c6e94bbb469b75085c85e518f4b87ea6ba"
+            },
+            "require": {
+                "filament/filament": "~5.1",
+                "liberusoftware/module-billing-orders": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-orders-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Orders\\Filament\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament adapter for Liberu Billing Orders.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-orders-livewire",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-orders-livewire",
+                "reference": "5a9a07089aa70e58f23699db86051fae0107a667"
+            },
+            "require": {
+                "liberusoftware/module-billing-orders": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-orders-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Orders\\Livewire\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire adapter for Liberu Billing Orders.",
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -8683,12 +8576,13 @@
             "dist": {
                 "type": "path",
                 "url": "modules/module-billing-payments-api",
-                "reference": "956af3c6b1e31719683af9a9d7da071a1356a755"
+                "reference": "279667b1d7a498d4d4820b1297b010d9225c1b4b"
             },
             "require": {
                 "illuminate/http": "^13.0",
                 "illuminate/routing": "^13.0",
                 "laravel/sanctum": "^4.0",
+                "liberusoftware/api-access": "^1.0",
                 "liberusoftware/module-billing-payments": "^0.1",
                 "liberusoftware/module-manager": "^1.0",
                 "php": "^8.5"
@@ -8782,6 +8676,145 @@
             }
         },
         {
+            "name": "liberusoftware/module-billing-pricing",
+            "version": "0.1.2",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-pricing",
+                "reference": "c8990625f1ff3bd5be75c45b977b9555d3589592"
+            },
+            "require": {
+                "illuminate/database": "^13.0",
+                "illuminate/support": "^13.0",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-pricing"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Pricing\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Provider-neutral pricing, contracts, discounts, proration, and snapshots for Liberu Billing.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-pricing-api",
+            "version": "0.1.2",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-pricing-api",
+                "reference": "279667b1d7a498d4d4820b1297b010d9225c1b4b"
+            },
+            "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "laravel/sanctum": "^4.0",
+                "liberusoftware/api-access": "^1.0",
+                "liberusoftware/module-billing-pricing": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-pricing-api"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Pricing\\Api\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "HTTP API adapter for Liberu Billing Pricing.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-pricing-filament",
+            "version": "0.1.2",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-pricing-filament",
+                "reference": "19674adb12589ea323ddab8189c045cf8b928b2e"
+            },
+            "require": {
+                "filament/filament": "~5.1",
+                "liberusoftware/module-billing-pricing": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-pricing-filament"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Pricing\\Filament\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament adapter for Liberu Billing Pricing.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/module-billing-pricing-livewire",
+            "version": "0.1.2",
+            "dist": {
+                "type": "path",
+                "url": "modules/module-billing-pricing-livewire",
+                "reference": "f48bdbe2b85c2181d99716faba2ad6ceed6dc979"
+            },
+            "require": {
+                "liberusoftware/module-billing-pricing": "^0.1",
+                "liberusoftware/module-manager": "^1.0",
+                "livewire/livewire": "^4.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-module",
+            "extra": {
+                "liberu": {
+                    "name": "module-billing-pricing-livewire"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Billing\\Pricing\\Livewire\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Livewire adapter for Liberu Billing Pricing.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
             "name": "liberusoftware/module-billing-provisioning",
             "version": "0.1.0",
             "dist": {
@@ -8822,7 +8855,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/module-billing-provisioning-api",
-                "reference": "2655bdccd31de420f250f873159007eac0614d28"
+                "reference": "afc39a859788db4479be17c4b6b89d1e986547da"
             },
             "require": {
                 "illuminate/http": "^13.0",
@@ -8858,7 +8891,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/module-billing-provisioning-filament",
-                "reference": "f97638d44e930483127b132fea3f37879601903b"
+                "reference": "a8393fa073de61f0cca2c4a591ef2cae3cc3ed46"
             },
             "require": {
                 "filament/filament": "~5.1",
@@ -8892,7 +8925,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/module-billing-provisioning-livewire",
-                "reference": "cea20897d7707d6a44113c1d7f71040a1bc6c59c"
+                "reference": "1cfe0bd1d5c4ccce93f7db1d4b1dbc9cc6f885b7"
             },
             "require": {
                 "liberusoftware/module-billing-provisioning": "^0.1",
@@ -8926,7 +8959,7 @@
             "dist": {
                 "type": "path",
                 "url": "modules/module-billing-reporting",
-                "reference": "27656d238697064676de01e5d91535caf2160a28"
+                "reference": "c7ac3e696c4869e62b9ea849af7c938824560dae"
             },
             "require": {
                 "illuminate/database": "^13.0",
@@ -8961,9 +8994,13 @@
             "dist": {
                 "type": "path",
                 "url": "modules/module-billing-reporting-api",
-                "reference": "3feca0e43c86f32f3eeedf811158bcb5c4fde00a"
+                "reference": "d00ea2634dacf97409cf9fa96e37aceabae3bd76"
             },
             "require": {
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "laravel/sanctum": "^4.0",
+                "liberusoftware/api-access": "^1.0",
                 "liberusoftware/module-billing-reporting": "^0.1",
                 "liberusoftware/module-manager": "^1.0",
                 "php": "^8.5"
@@ -8994,9 +9031,10 @@
             "dist": {
                 "type": "path",
                 "url": "modules/module-billing-reporting-filament",
-                "reference": "26058d15ed5ff2535ea7992b99f2d6f5186bd61c"
+                "reference": "2538a934a527ad45bdf5f31c32533f38ac68b96a"
             },
             "require": {
+                "filament/filament": "~5.1",
                 "liberusoftware/module-billing-reporting": "^0.1",
                 "liberusoftware/module-manager": "^1.0",
                 "php": "^8.5"
@@ -9027,11 +9065,12 @@
             "dist": {
                 "type": "path",
                 "url": "modules/module-billing-reporting-livewire",
-                "reference": "84beb6e766d2d3a14da1b8b888f930328b23dbd6"
+                "reference": "b36bf47aaea22273a7c542992d701c3259582b1b"
             },
             "require": {
                 "liberusoftware/module-billing-reporting": "^0.1",
                 "liberusoftware/module-manager": "^1.0",
+                "livewire/livewire": "^4.0",
                 "php": "^8.5"
             },
             "type": "liberu-module",
@@ -9095,12 +9134,13 @@
             "dist": {
                 "type": "path",
                 "url": "modules/module-billing-subscriptions-api",
-                "reference": "d83047a3d837e1e93fe1c4f22ccf3599fd52c787"
+                "reference": "279667b1d7a498d4d4820b1297b010d9225c1b4b"
             },
             "require": {
                 "illuminate/http": "^13.0",
                 "illuminate/routing": "^13.0",
                 "laravel/sanctum": "^4.0",
+                "liberusoftware/api-access": "^1.0",
                 "liberusoftware/module-billing-subscriptions": "^0.1",
                 "liberusoftware/module-manager": "^1.0",
                 "php": "^8.5"
@@ -9234,12 +9274,13 @@
             "dist": {
                 "type": "path",
                 "url": "modules/module-billing-usage-api",
-                "reference": "0520dc7fbb6dcceb74abb690c91cb670ac7ad96d"
+                "reference": "4361c16d4a5faa02c478add5aa2a17f1d1a40550"
             },
             "require": {
                 "illuminate/http": "^13.0",
                 "illuminate/routing": "^13.0",
                 "laravel/sanctum": "^4.0",
+                "liberusoftware/api-access": "^1.0",
                 "liberusoftware/module-billing-usage": "^0.1",
                 "liberusoftware/module-manager": "^1.0",
                 "php": "^8.5"
@@ -10113,7 +10154,7 @@
             "version": "1.4.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-module-manager.git",
+                "url": "git@github.com:liberusoftware/module-module-manager.git",
                 "reference": "688fc9c01008bfd5258afa2a78587c48804ec2e7"
             },
             "dist": {
@@ -10168,7 +10209,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-module-manager-filament.git",
+                "url": "git@github.com:liberusoftware/module-module-manager-filament.git",
                 "reference": "44378fb5b6b5ea3239639f09ad51b1a8b8696026"
             },
             "dist": {
@@ -10223,7 +10264,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-notifications.git",
+                "url": "git@github.com:liberusoftware/module-notifications.git",
                 "reference": "c218aa80a8773b7feadd0a884172a88135446ef9"
             },
             "dist": {
@@ -10278,7 +10319,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-observability.git",
+                "url": "git@github.com:liberusoftware/module-observability.git",
                 "reference": "6adfdab5abf83d6f39473345822fda97f3f05ecb"
             },
             "dist": {
@@ -10334,7 +10375,7 @@
             "version": "1.5.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-organizations-teams.git",
+                "url": "git@github.com:liberusoftware/module-organizations-teams.git",
                 "reference": "12f20e83088659fe9194823d090e44358eed3a56"
             },
             "dist": {
@@ -10390,7 +10431,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-organizations-teams-filament.git",
+                "url": "git@github.com:liberusoftware/module-organizations-teams-filament.git",
                 "reference": "ce57c44ef89eb852c9c1737d65de7a9e5ffa4b76"
             },
             "dist": {
@@ -10444,7 +10485,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-profiles.git",
+                "url": "git@github.com:liberusoftware/module-profiles.git",
                 "reference": "bdf7c4cb01bf602735df5ecf01d02cbb88b659fe"
             },
             "dist": {
@@ -10499,7 +10540,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-roles-permissions.git",
+                "url": "git@github.com:liberusoftware/module-roles-permissions.git",
                 "reference": "d061b98bbe185ae966e8fe6ea4761bddf48aed9d"
             },
             "dist": {
@@ -10554,7 +10595,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-roles-permissions-filament.git",
+                "url": "git@github.com:liberusoftware/module-roles-permissions-filament.git",
                 "reference": "788117df5f64d16103ce595a42fc3506d97a16d2"
             },
             "dist": {
@@ -10609,7 +10650,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-scheduler-queues.git",
+                "url": "git@github.com:liberusoftware/module-scheduler-queues.git",
                 "reference": "fdfb3b1b3d8b9c3142fa670063da5ae116fa5c76"
             },
             "dist": {
@@ -10664,7 +10705,7 @@
             "version": "1.5.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-search.git",
+                "url": "git@github.com:liberusoftware/module-search.git",
                 "reference": "d2617f80de4c267adf4593b357b545c9ec762188"
             },
             "dist": {
@@ -10720,7 +10761,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-search-api.git",
+                "url": "git@github.com:liberusoftware/module-search-api.git",
                 "reference": "73a5e71c61c7199896ea9a8d01012fa832140f5d"
             },
             "dist": {
@@ -10775,7 +10816,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-sessions-devices.git",
+                "url": "git@github.com:liberusoftware/module-sessions-devices.git",
                 "reference": "164817b59449f6930af4ff08d93c21b93368c738"
             },
             "dist": {
@@ -10830,7 +10871,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-sessions-devices-filament.git",
+                "url": "git@github.com:liberusoftware/module-sessions-devices-filament.git",
                 "reference": "91eb6d30430ad82b21dc57c68ffbaa804299d41f"
             },
             "dist": {
@@ -10884,7 +10925,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-settings.git",
+                "url": "git@github.com:liberusoftware/module-settings.git",
                 "reference": "37c18cd0aaa4d026b7adcfba859516dd7abc39aa"
             },
             "dist": {
@@ -10938,7 +10979,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-settings-filament.git",
+                "url": "git@github.com:liberusoftware/module-settings-filament.git",
                 "reference": "86ee7e6377624baca845121981e6bb8cec092ca2"
             },
             "dist": {
@@ -11032,6 +11073,39 @@
                 "MIT"
             ],
             "description": "Shared semantic tokens and accessible presentation primitives for Liberu themes.",
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
+            "name": "liberusoftware/theme-billing",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "themes/billing",
+                "reference": "a437cdbd3ffdf6a38cd7fd7d9906cfa6147612ef"
+            },
+            "require": {
+                "liberusoftware/theme-base": "^2.0",
+                "liberusoftware/theme-support": "^1.0",
+                "php": "^8.5"
+            },
+            "type": "liberu-theme",
+            "extra": {
+                "liberu": {
+                    "name": "billing"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Liberu\\Themes\\Billing\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Responsive billing workspace theme for Liberu applications.",
             "transport-options": {
                 "symlink": true,
                 "relative": true
@@ -11183,7 +11257,7 @@
             "version": "1.4.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-theme-support.git",
+                "url": "git@github.com:liberusoftware/module-theme-support.git",
                 "reference": "22c3d18d23d802265d68f03e58f8dda8b88b48fa"
             },
             "dist": {
@@ -11245,7 +11319,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-theme-support-livewire.git",
+                "url": "git@github.com:liberusoftware/module-theme-support-livewire.git",
                 "reference": "8db221e424ebd0a1d9bbb61265b41878da59caeb"
             },
             "dist": {
@@ -11301,7 +11375,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-two-factor-authentication.git",
+                "url": "git@github.com:liberusoftware/module-two-factor-authentication.git",
                 "reference": "60e4cb036f76375e9814cf57ca4a32fc343301e5"
             },
             "dist": {
@@ -11356,7 +11430,7 @@
             "version": "1.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/module-webhooks.git",
+                "url": "git@github.com:liberusoftware/module-webhooks.git",
                 "reference": "308f905ee503c708dce8ffbb78a08c7c5b9d72bb"
             },
             "dist": {
@@ -15532,16 +15606,16 @@
         },
         {
             "name": "spatie/laravel-package-tools",
-            "version": "1.93.1",
+            "version": "1.93.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-package-tools.git",
-                "reference": "d5552849801f2642aea710557463234b59ef65eb"
+                "reference": "e927d5b5b05e9fecae098e559e51918aa608ad02"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-package-tools/zipball/d5552849801f2642aea710557463234b59ef65eb",
-                "reference": "d5552849801f2642aea710557463234b59ef65eb",
+                "url": "https://api.github.com/repos/spatie/laravel-package-tools/zipball/e927d5b5b05e9fecae098e559e51918aa608ad02",
+                "reference": "e927d5b5b05e9fecae098e559e51918aa608ad02",
                 "shasum": ""
             },
             "require": {
@@ -15581,7 +15655,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/laravel-package-tools/issues",
-                "source": "https://github.com/spatie/laravel-package-tools/tree/1.93.1"
+                "source": "https://github.com/spatie/laravel-package-tools/tree/1.93.2"
             },
             "funding": [
                 {
@@ -15589,7 +15663,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-05-19T14:06:37+00:00"
+            "time": "2026-08-26T09:13:25+00:00"
         },
         {
             "name": "spatie/laravel-passkeys",
@@ -17423,16 +17497,16 @@
         },
         {
             "name": "symfony/console",
-            "version": "v8.1.5",
+            "version": "v8.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "d07c06839e33047e2c894a6793248f3fb66c8129"
+                "reference": "eb7d9957d66739649e931ce7a9d05dab69f8abac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/d07c06839e33047e2c894a6793248f3fb66c8129",
-                "reference": "d07c06839e33047e2c894a6793248f3fb66c8129",
+                "url": "https://api.github.com/repos/symfony/console/zipball/eb7d9957d66739649e931ce7a9d05dab69f8abac",
+                "reference": "eb7d9957d66739649e931ce7a9d05dab69f8abac",
                 "shasum": ""
             },
             "require": {
@@ -17499,7 +17573,7 @@
                 "terminal"
             ],
             "support": {
-                "source": "https://github.com/symfony/console/tree/v8.1.5"
+                "source": "https://github.com/symfony/console/tree/v8.1.6"
             },
             "funding": [
                 {
@@ -17519,20 +17593,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-08-21T14:29:57+00:00"
+            "time": "2026-08-25T14:18:42+00:00"
         },
         {
             "name": "symfony/css-selector",
-            "version": "v8.1.5",
+            "version": "v8.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/css-selector.git",
-                "reference": "a291fb5adb65f52a4bb315db2d803698315dc64d"
+                "reference": "08e2905152a39cf3fd1745d83f8c483e258887d9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/css-selector/zipball/a291fb5adb65f52a4bb315db2d803698315dc64d",
-                "reference": "a291fb5adb65f52a4bb315db2d803698315dc64d",
+                "url": "https://api.github.com/repos/symfony/css-selector/zipball/08e2905152a39cf3fd1745d83f8c483e258887d9",
+                "reference": "08e2905152a39cf3fd1745d83f8c483e258887d9",
                 "shasum": ""
             },
             "require": {
@@ -17568,7 +17642,7 @@
             "description": "Converts CSS selectors to XPath expressions",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/css-selector/tree/v8.1.5"
+                "source": "https://github.com/symfony/css-selector/tree/v8.1.6"
             },
             "funding": [
                 {
@@ -17588,7 +17662,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-08-21T17:47:34+00:00"
+            "time": "2026-08-23T10:06:25+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -17978,16 +18052,16 @@
         },
         {
             "name": "symfony/html-sanitizer",
-            "version": "v8.1.1",
+            "version": "v8.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/html-sanitizer.git",
-                "reference": "09e1f2f9a3c8dcdca072587dc71999c1921c07cb"
+                "reference": "f8bbdb0704e6b6e9a3412481c1a87886a0633199"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/html-sanitizer/zipball/09e1f2f9a3c8dcdca072587dc71999c1921c07cb",
-                "reference": "09e1f2f9a3c8dcdca072587dc71999c1921c07cb",
+                "url": "https://api.github.com/repos/symfony/html-sanitizer/zipball/f8bbdb0704e6b6e9a3412481c1a87886a0633199",
+                "reference": "f8bbdb0704e6b6e9a3412481c1a87886a0633199",
                 "shasum": ""
             },
             "require": {
@@ -18026,7 +18100,7 @@
                 "sanitizer"
             ],
             "support": {
-                "source": "https://github.com/symfony/html-sanitizer/tree/v8.1.1"
+                "source": "https://github.com/symfony/html-sanitizer/tree/v8.1.6"
             },
             "funding": [
                 {
@@ -18046,7 +18120,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-06-06T11:11:44+00:00"
+            "time": "2026-08-30T01:03:44+00:00"
         },
         {
             "name": "symfony/http-client",
@@ -18147,16 +18221,16 @@
         },
         {
             "name": "symfony/http-client-contracts",
-            "version": "v3.7.1",
+            "version": "v3.7.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-client-contracts.git",
-                "reference": "41fc42d276aeff21192465331ebbab7d83a743c0"
+                "reference": "35be0019e2c2c9fba80f9dc033290a5240f7b44f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-client-contracts/zipball/41fc42d276aeff21192465331ebbab7d83a743c0",
-                "reference": "41fc42d276aeff21192465331ebbab7d83a743c0",
+                "url": "https://api.github.com/repos/symfony/http-client-contracts/zipball/35be0019e2c2c9fba80f9dc033290a5240f7b44f",
+                "reference": "35be0019e2c2c9fba80f9dc033290a5240f7b44f",
                 "shasum": ""
             },
             "require": {
@@ -18205,7 +18279,7 @@
                 "standards"
             ],
             "support": {
-                "source": "https://github.com/symfony/http-client-contracts/tree/v3.7.1"
+                "source": "https://github.com/symfony/http-client-contracts/tree/v3.7.3"
             },
             "funding": [
                 {
@@ -18225,20 +18299,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-06-05T06:23:12+00:00"
+            "time": "2026-08-04T08:41:16+00:00"
         },
         {
             "name": "symfony/http-foundation",
-            "version": "v8.1.5",
+            "version": "v8.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-foundation.git",
-                "reference": "ee16f97e95cfa011a742714d7c8c8f70fe7423f4"
+                "reference": "093b78326f649c3a9db922b9f17123b6aeb3b8fb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/ee16f97e95cfa011a742714d7c8c8f70fe7423f4",
-                "reference": "ee16f97e95cfa011a742714d7c8c8f70fe7423f4",
+                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/093b78326f649c3a9db922b9f17123b6aeb3b8fb",
+                "reference": "093b78326f649c3a9db922b9f17123b6aeb3b8fb",
                 "shasum": ""
             },
             "require": {
@@ -18286,7 +18360,7 @@
             "description": "Defines an object-oriented layer for the HTTP specification",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/http-foundation/tree/v8.1.5"
+                "source": "https://github.com/symfony/http-foundation/tree/v8.1.6"
             },
             "funding": [
                 {
@@ -18306,20 +18380,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-08-20T09:59:12+00:00"
+            "time": "2026-08-30T20:10:55+00:00"
         },
         {
             "name": "symfony/http-kernel",
-            "version": "v8.1.5",
+            "version": "v8.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-kernel.git",
-                "reference": "0306e1e65b90023fe40de6c6be95d06396bcb2e6"
+                "reference": "2f73beb7c6f1a97d2c17bbf4dbd59da8cc18b355"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-kernel/zipball/0306e1e65b90023fe40de6c6be95d06396bcb2e6",
-                "reference": "0306e1e65b90023fe40de6c6be95d06396bcb2e6",
+                "url": "https://api.github.com/repos/symfony/http-kernel/zipball/2f73beb7c6f1a97d2c17bbf4dbd59da8cc18b355",
+                "reference": "2f73beb7c6f1a97d2c17bbf4dbd59da8cc18b355",
                 "shasum": ""
             },
             "require": {
@@ -18396,7 +18470,7 @@
             "description": "Provides a structured process for converting a Request into a Response",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/http-kernel/tree/v8.1.5"
+                "source": "https://github.com/symfony/http-kernel/tree/v8.1.6"
             },
             "funding": [
                 {
@@ -18416,7 +18490,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-08-22T13:45:00+00:00"
+            "time": "2026-08-30T21:40:49+00:00"
         },
         {
             "name": "symfony/mailer",
@@ -18500,7 +18574,7 @@
         },
         {
             "name": "symfony/mime",
-            "version": "v8.1.5",
+            "version": "v8.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/mime.git",
@@ -18562,7 +18636,7 @@
                 "mime-type"
             ],
             "support": {
-                "source": "https://github.com/symfony/mime/tree/v8.1.5"
+                "source": "https://github.com/symfony/mime/tree/v8.1.6"
             },
             "funding": [
                 {
@@ -19495,7 +19569,7 @@
         },
         {
             "name": "symfony/process",
-            "version": "v8.1.5",
+            "version": "v8.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
@@ -19536,7 +19610,7 @@
             "description": "Executes commands in sub-processes",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/process/tree/v8.1.5"
+                "source": "https://github.com/symfony/process/tree/v8.1.6"
             },
             "funding": [
                 {
@@ -19641,16 +19715,16 @@
         },
         {
             "name": "symfony/property-info",
-            "version": "v8.1.5",
+            "version": "v8.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/property-info.git",
-                "reference": "b335f8e7fb1440ed3448fb33340efc6127678e53"
+                "reference": "d25e1dabbaff3f91bb15ba68328cf4fbd1c43c42"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/property-info/zipball/b335f8e7fb1440ed3448fb33340efc6127678e53",
-                "reference": "b335f8e7fb1440ed3448fb33340efc6127678e53",
+                "url": "https://api.github.com/repos/symfony/property-info/zipball/d25e1dabbaff3f91bb15ba68328cf4fbd1c43c42",
+                "reference": "d25e1dabbaff3f91bb15ba68328cf4fbd1c43c42",
                 "shasum": ""
             },
             "require": {
@@ -19703,7 +19777,7 @@
                 "validator"
             ],
             "support": {
-                "source": "https://github.com/symfony/property-info/tree/v8.1.5"
+                "source": "https://github.com/symfony/property-info/tree/v8.1.6"
             },
             "funding": [
                 {
@@ -19723,7 +19797,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-08-21T17:47:34+00:00"
+            "time": "2026-08-30T08:48:43+00:00"
         },
         {
             "name": "symfony/psr-http-message-bridge",
@@ -19814,7 +19888,7 @@
         },
         {
             "name": "symfony/routing",
-            "version": "v8.1.5",
+            "version": "v8.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/routing.git",
@@ -19870,7 +19944,7 @@
                 "url"
             ],
             "support": {
-                "source": "https://github.com/symfony/routing/tree/v8.1.5"
+                "source": "https://github.com/symfony/routing/tree/v8.1.6"
             },
             "funding": [
                 {
@@ -19894,16 +19968,16 @@
         },
         {
             "name": "symfony/serializer",
-            "version": "v8.1.5",
+            "version": "v8.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/serializer.git",
-                "reference": "9c064d505c661e3e17aa8999870f4fb0ed05e024"
+                "reference": "931151b12d6e2d4996ce2ce8e7b180d35455f37a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/serializer/zipball/9c064d505c661e3e17aa8999870f4fb0ed05e024",
-                "reference": "9c064d505c661e3e17aa8999870f4fb0ed05e024",
+                "url": "https://api.github.com/repos/symfony/serializer/zipball/931151b12d6e2d4996ce2ce8e7b180d35455f37a",
+                "reference": "931151b12d6e2d4996ce2ce8e7b180d35455f37a",
                 "shasum": ""
             },
             "require": {
@@ -19969,7 +20043,7 @@
             "description": "Handles serializing and deserializing data structures, including object graphs, into array structures or other formats like XML and JSON.",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/serializer/tree/v8.1.5"
+                "source": "https://github.com/symfony/serializer/tree/v8.1.6"
             },
             "funding": [
                 {
@@ -19989,20 +20063,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-08-22T09:06:25+00:00"
+            "time": "2026-08-30T08:48:47+00:00"
         },
         {
             "name": "symfony/service-contracts",
-            "version": "v3.7.1",
+            "version": "v3.7.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/service-contracts.git",
-                "reference": "c0a284bab1ed8aa0417e3d69250ab437739563a0"
+                "reference": "15e6a07ec2a2c75ceb1b21dd98105ee8456d2257"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/service-contracts/zipball/c0a284bab1ed8aa0417e3d69250ab437739563a0",
-                "reference": "c0a284bab1ed8aa0417e3d69250ab437739563a0",
+                "url": "https://api.github.com/repos/symfony/service-contracts/zipball/15e6a07ec2a2c75ceb1b21dd98105ee8456d2257",
+                "reference": "15e6a07ec2a2c75ceb1b21dd98105ee8456d2257",
                 "shasum": ""
             },
             "require": {
@@ -20056,7 +20130,7 @@
                 "standards"
             ],
             "support": {
-                "source": "https://github.com/symfony/service-contracts/tree/v3.7.1"
+                "source": "https://github.com/symfony/service-contracts/tree/v3.7.3"
             },
             "funding": [
                 {
@@ -20076,7 +20150,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-06-16T09:55:08+00:00"
+            "time": "2026-07-27T15:39:01+00:00"
         },
         {
             "name": "symfony/string",
@@ -20505,16 +20579,16 @@
         },
         {
             "name": "symfony/var-dumper",
-            "version": "v8.1.5",
+            "version": "v8.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-dumper.git",
-                "reference": "61743d9bc7ab23b194527ca1be2fafd7dc93b74a"
+                "reference": "3783365b58972f4779254d98372af80fbf15e170"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/61743d9bc7ab23b194527ca1be2fafd7dc93b74a",
-                "reference": "61743d9bc7ab23b194527ca1be2fafd7dc93b74a",
+                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/3783365b58972f4779254d98372af80fbf15e170",
+                "reference": "3783365b58972f4779254d98372af80fbf15e170",
                 "shasum": ""
             },
             "require": {
@@ -20568,7 +20642,7 @@
                 "dump"
             ],
             "support": {
-                "source": "https://github.com/symfony/var-dumper/tree/v8.1.5"
+                "source": "https://github.com/symfony/var-dumper/tree/v8.1.6"
             },
             "funding": [
                 {
@@ -20588,7 +20662,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-08-21T12:16:08+00:00"
+            "time": "2026-08-30T20:10:55+00:00"
         },
         {
             "name": "symfony/yaml",
@@ -20935,23 +21009,23 @@
         },
         {
             "name": "vlucas/phpdotenv",
-            "version": "v5.6.4",
+            "version": "v5.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vlucas/phpdotenv.git",
-                "reference": "416df702837983f8d5ff48c9c3fee4f5f57b980b"
+                "reference": "301c07936b16d88628b126b01d082ba153cf4c40"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vlucas/phpdotenv/zipball/416df702837983f8d5ff48c9c3fee4f5f57b980b",
-                "reference": "416df702837983f8d5ff48c9c3fee4f5f57b980b",
+                "url": "https://api.github.com/repos/vlucas/phpdotenv/zipball/301c07936b16d88628b126b01d082ba153cf4c40",
+                "reference": "301c07936b16d88628b126b01d082ba153cf4c40",
                 "shasum": ""
             },
             "require": {
                 "ext-pcre": "*",
-                "graham-campbell/result-type": "^1.1.4",
+                "graham-campbell/result-type": "^1.2",
                 "php": "^7.2.5 || ^8.0",
-                "phpoption/phpoption": "^1.9.5",
+                "phpoption/phpoption": "^1.10",
                 "symfony/polyfill-ctype": "^1.26",
                 "symfony/polyfill-mbstring": "^1.26",
                 "symfony/polyfill-php80": "^1.26"
@@ -20995,7 +21069,7 @@
                     "homepage": "https://github.com/vlucas"
                 }
             ],
-            "description": "Loads environment variables from `.env` to `getenv()`, `$_ENV` and `$_SERVER` automagically.",
+            "description": "Loads environment variables from `.env` to `$_ENV` and `$_SERVER` automagically, and optionally to `getenv()`.",
             "keywords": [
                 "dotenv",
                 "env",
@@ -21003,7 +21077,7 @@
             ],
             "support": {
                 "issues": "https://github.com/vlucas/phpdotenv/issues",
-                "source": "https://github.com/vlucas/phpdotenv/tree/v5.6.4"
+                "source": "https://github.com/vlucas/phpdotenv/tree/v5.7.0"
             },
             "funding": [
                 {
@@ -21015,7 +21089,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-07-06T19:11:50+00:00"
+            "time": "2026-08-24T18:07:49+00:00"
         },
         {
             "name": "voku/portable-ascii",
@@ -22333,7 +22407,7 @@
             "version": "1.2.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/liberusoftware/boilerplate-scripts.git",
+                "url": "git@github.com:liberusoftware/boilerplate-scripts.git",
                 "reference": "a7461a447049879ef30202cc0a12dfe0919fa9e2"
             },
             "dist": {

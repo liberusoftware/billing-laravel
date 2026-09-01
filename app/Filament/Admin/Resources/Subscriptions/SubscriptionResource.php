@@ -19,6 +19,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Override;
+use UnitEnum;
 
 class SubscriptionResource extends Resource
 {
@@ -27,6 +28,9 @@ class SubscriptionResource extends Resource
 
     #[Override]
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-collection';
+
+    #[Override]
+    protected static string|UnitEnum|null $navigationGroup = 'Billing Operations';
 
     #[Override]
     public static function form(Schema $schema): Schema

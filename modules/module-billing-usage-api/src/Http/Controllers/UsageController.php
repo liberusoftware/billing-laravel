@@ -32,9 +32,14 @@ final class UsageController extends Controller
                 ? $query->whereNull('team_id')
                 : $query->whereNull('team_id')->orWhere('team_id', $team))
             ->latest('id')
-            ->paginate($request->integer('per_page', 25));
+            ->paginate($this->pageSize($request));
 
         return response()->json(['data' => $result->getCollection()->map(fn (Meter $meter): array => $this->meter($meter))->values(), 'meta' => ['current_page' => $result->currentPage(), 'last_page' => $result->lastPage()]]);
+    }
+
+    private function pageSize(Request $request): int
+    {
+        return min(max((int) $request->input('page.size', $request->integer('per_page', 25)), 1), 100);
     }
 
     public function storeMeter(Request $request, DefineMeter $define): JsonResponse

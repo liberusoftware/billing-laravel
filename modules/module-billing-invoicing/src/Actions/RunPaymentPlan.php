@@ -67,7 +67,7 @@ final readonly class RunPaymentPlan
         return match ($frequency) {
             'weekly' => $date->copy()->addWeek(),
             'quarterly' => $date->copy()->addMonths(3),
-            default => $date->copy()->addMonth(),
+            default => $date->copy()->addMonthNoOverflow(),
         };
     }
 }

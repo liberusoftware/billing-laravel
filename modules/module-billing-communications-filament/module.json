@@ -21,6 +21,6 @@
   "default_enabled": true,
   "features": [
     "Communications Filament integration"
-  ]
+  ],
+  "presentation": {"filament": {"admin": ["Liberu\\Billing\\Communications\\Filament\\CommunicationsFilamentPlugin"]}}
 }
-

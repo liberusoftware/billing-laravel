@@ -64,6 +64,12 @@ paths:
       parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
       requestBody: {required: true, content: {application/json: {schema: {type: object, required: [name], properties: {name: {type: string, maxLength: 255}, status: {type: string}, metadata: {type: object, additionalProperties: true}}}}}}
       responses: {'201': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/communications/{record}:
+    get:
+      operationId: billing.communications.services.show
+      security: [{sanctum: []}]
+      parameters: [{name: record, in: path, required: true, schema: {type: integer, minimum: 1}}]
+      responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '404': {description: Resource not found.}}
   /api/v1/billing/communications/{service}/lifecycle:
     patch:
       operationId: billing.communications.services.lifecycle
@@ -106,7 +112,7 @@ paths:
       responses: {'201': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
 components:
   parameters:
-    PageSize: {name: per_page, in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 25}}
+    PageSize: {name: page[size], in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 25}}
     IdempotencyKey: {name: Idempotency-Key, in: header, required: false, schema: {type: string, maxLength: 255}}
   responses:
     Collection: {description: Paginated team-scoped collection, content: {application/json: {schema: {type: object, required: [data, meta], properties: {data: {type: array, items: {type: object}}, meta: {type: object}}}}}}

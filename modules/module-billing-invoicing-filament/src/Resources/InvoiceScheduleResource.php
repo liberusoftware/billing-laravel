@@ -17,6 +17,8 @@ use Liberu\Billing\Invoicing\Models\InvoiceSchedule;
 
 final class InvoiceScheduleResource extends Resource
 {
+    protected static string|\UnitEnum|null $navigationGroup = 'Billing Operations';
+
     use ScopesCurrentTeam;
 
     protected static ?string $model = InvoiceSchedule::class;

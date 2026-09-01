@@ -34,4 +34,23 @@ class BillingSubscriptionsTenantScopingTest extends TestCase
             'id' => $subscription->getKey(), 'team_id' => $otherTeam->id, 'status' => 'active',
         ]);
     }
+
+    public function test_subscription_show_is_team_scoped(): void
+    {
+        $user = User::factory()->withPersonalTeam()->create();
+        $subscription = Subscription::query()->create([
+            'team_id' => $user->currentTeam->id,
+            'status' => 'active',
+            'starts_at' => now(),
+            'auto_renew' => true,
+            'entitlement_state' => [],
+        ]);
+        $user->update(['current_team_id' => $user->currentTeam->id]);
+        Sanctum::actingAs($user, ['billing.subscriptions.read']);
+
+        $this->getJson('/api/v1/billing/subscriptions/'.$subscription->getKey())
+            ->assertOk()
+            ->assertJsonPath('data.id', (string) $subscription->getKey())
+            ->assertJsonPath('data.type', 'billing-subscriptions');
+    }
 }

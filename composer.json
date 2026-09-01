@@ -40,50 +40,64 @@
         },
         {
             "type": "path",
-            "url": "modules/billing-billing-core",
+            "url": "themes/billing",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-billing-core",
             "options": {
                 "symlink": false
             }
         },
         {
             "type": "path",
-            "url": "modules/billing-core-api",
+            "url": "modules/api-access",
             "options": {
                 "symlink": false
             }
         },
         {
             "type": "path",
-            "url": "modules/billing-core-filament",
+            "url": "modules/module-billing-core-api",
             "options": {
                 "symlink": false
             }
         },
         {
             "type": "path",
-            "url": "modules/billing-core-livewire",
+            "url": "modules/module-billing-core-filament",
             "options": {
                 "symlink": false
             }
         },
         {
             "type": "path",
-            "url": "modules/billing-catalog",
+            "url": "modules/module-billing-core-livewire",
             "options": {
                 "symlink": false
             }
         },
-        {"type": "path", "url": "modules/billing-catalog-api", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/billing-catalog-filament", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/billing-catalog-livewire", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/billing-pricing", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/billing-pricing-api", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/billing-pricing-filament", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/billing-pricing-livewire", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/billing-orders", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/billing-orders-api", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/billing-orders-filament", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/billing-orders-livewire", "options": {"symlink": false}},
+        {
+            "type": "path",
+            "url": "modules/module-billing-catalog",
+            "options": {
+                "symlink": false
+            }
+        },
+        {"type": "path", "url": "modules/module-billing-catalog-api", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-catalog-filament", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-catalog-livewire", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-pricing", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-pricing-api", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-pricing-filament", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-pricing-livewire", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-orders", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-orders-api", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-orders-filament", "options": {"symlink": false}},
+        {"type": "path", "url": "modules/module-billing-orders-livewire", "options": {"symlink": false}},
         {"type": "path", "url": "modules/module-billing-subscriptions", "options": {"symlink": false}},
         {"type": "path", "url": "modules/module-billing-subscriptions-api", "options": {"symlink": false}},
         {"type": "path", "url": "modules/module-billing-subscriptions-filament", "options": {"symlink": false}},
@@ -349,22 +363,22 @@
     "require": {
         "php": "^8.5",
         "barryvdh/laravel-dompdf": "^3.1",
-        "liberusoftware/billing-billing-core": "0.1.3",
-        "liberusoftware/billing-core-api": "0.1.3",
-        "liberusoftware/billing-core-filament": "0.1.3",
-        "liberusoftware/billing-core-livewire": "0.1.3",
-        "liberusoftware/billing-catalog": "0.1.1",
-        "liberusoftware/billing-catalog-api": "0.1.0",
-        "liberusoftware/billing-catalog-filament": "0.1.0",
-        "liberusoftware/billing-catalog-livewire": "0.1.0",
-        "liberusoftware/billing-pricing": "0.1.2",
-        "liberusoftware/billing-pricing-api": "0.1.2",
-        "liberusoftware/billing-pricing-filament": "0.1.2",
-        "liberusoftware/billing-pricing-livewire": "0.1.2",
-        "liberusoftware/billing-orders": "0.1.0",
-        "liberusoftware/billing-orders-api": "0.1.0",
-        "liberusoftware/billing-orders-filament": "0.1.0",
-        "liberusoftware/billing-orders-livewire": "0.1.0",
+        "liberusoftware/module-billing-billing-core": "0.1.3",
+        "liberusoftware/module-billing-core-api": "0.1.3",
+        "liberusoftware/module-billing-core-filament": "0.1.3",
+        "liberusoftware/module-billing-core-livewire": "0.1.3",
+        "liberusoftware/module-billing-catalog": "0.1.1",
+        "liberusoftware/module-billing-catalog-api": "0.1.0",
+        "liberusoftware/module-billing-catalog-filament": "0.1.0",
+        "liberusoftware/module-billing-catalog-livewire": "0.1.0",
+        "liberusoftware/module-billing-pricing": "0.1.2",
+        "liberusoftware/module-billing-pricing-api": "0.1.2",
+        "liberusoftware/module-billing-pricing-filament": "0.1.2",
+        "liberusoftware/module-billing-pricing-livewire": "0.1.2",
+        "liberusoftware/module-billing-orders": "0.1.0",
+        "liberusoftware/module-billing-orders-api": "0.1.0",
+        "liberusoftware/module-billing-orders-filament": "0.1.0",
+        "liberusoftware/module-billing-orders-livewire": "0.1.0",
         "liberusoftware/module-billing-subscriptions": "0.1.0",
         "liberusoftware/module-billing-subscriptions-api": "0.1.0",
         "liberusoftware/module-billing-subscriptions-filament": "0.1.0",
@@ -492,6 +506,7 @@
         "liberusoftware/settings": "^1.0",
         "liberusoftware/settings-filament": "^1.0",
         "liberusoftware/theme-base": "^2.0",
+        "liberusoftware/theme-billing": "^1.0",
         "liberusoftware/theme-clear-signal": "^1.0",
         "liberusoftware/theme-dark": "^1.0",
         "liberusoftware/theme-default": "^1.0",

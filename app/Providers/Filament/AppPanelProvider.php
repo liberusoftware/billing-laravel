@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\ModulePlugins;
+use App\Http\Middleware\EnsureWorkspaceSetup;
 use App\Support\ThemeColors;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -29,6 +30,16 @@ class AppPanelProvider extends PanelProvider
         return $panel
             ->id('app')
             ->path('app')
+            ->navigationGroups([
+                'Workspace',
+                'Customers & Sales',
+                'Catalog & Pricing',
+                'Billing Operations',
+                'Service Delivery',
+                'Account',
+            ])
+            ->sidebarCollapsibleOnDesktop()
+            ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
             ->colors(app(ThemeColors::class)->forSite())
             ->discoverResources(in: app_path('Filament/App/Resources'), for: 'App\Filament\App\Resources')
             ->discoverPages(in: app_path('Filament/App/Pages'), for: 'App\Filament\App\Pages')
@@ -56,6 +67,7 @@ class AppPanelProvider extends PanelProvider
             ->plugins(app(ModulePlugins::class)->forPanel('app'))
             ->authMiddleware([
                 Authenticate::class,
+                EnsureWorkspaceSetup::class,
             ]);
     }
 }

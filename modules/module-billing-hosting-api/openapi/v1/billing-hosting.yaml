@@ -1,5 +1,5 @@
 openapi: 3.1.0
-info: {title: Billing Hosting API, version: 1.0.0, description: Team-scoped hosting accounts, plans, adapters, SSL, resources, and lifecycle operations.}
+info: {title: Billing Hosting API, version: 1.0.0, description: 'Team-scoped hosting accounts, plans, adapters, SSL, resources, and lifecycle operations.'}
 servers: [{url: /}]
 paths:
   /api/v1/billing/hosting:
@@ -28,6 +28,12 @@ paths:
       parameters: [{name: account, in: path, required: true, schema: {type: integer, minimum: 1}}, {$ref: '#/components/parameters/IdempotencyKey'}]
       requestBody: {required: true, content: {application/json: {schema: {type: object, required: [operation], properties: {operation: {type: string, enum: [provision, suspend, unsuspend, change_package, terminate, add_addon, remove_addon]}, account: {type: object}, server: {type: object}}}}}}
       responses: {'200': {$ref: '#/components/responses/Document'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/hosting/{record}:
+    get:
+      operationId: billing.hosting.accounts.show
+      security: [{sanctum: []}]
+      parameters: [{name: record, in: path, required: true, schema: {type: integer, minimum: 1}}]
+      responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '404': {description: Resource not found.}}
   /api/v1/billing/hosting/capabilities:
     get: {operationId: billing.hosting.capabilities.list, security: [{sanctum: []}], responses: {'200': {$ref: '#/components/responses/Collection'}}}
     post:
@@ -45,7 +51,7 @@ paths:
       responses: {'200': {$ref: '#/components/responses/Document'}, '409': {description: Invalid lifecycle transition}, '422': {$ref: '#/components/responses/ValidationError'}}
 components:
   parameters:
-    PageSize: {name: per_page, in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 25}}
+    PageSize: {name: page[size], in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 25}}
     IdempotencyKey: {name: Idempotency-Key, in: header, schema: {type: string, maxLength: 255}}
   responses:
     Collection: {description: Paginated team-scoped collection, content: {application/json: {schema: {type: object, required: [data, meta], properties: {data: {type: array, items: {type: object}}, meta: {type: object}}}}}}

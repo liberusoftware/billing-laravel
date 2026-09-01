@@ -10,5 +10,6 @@
   "suggests": [],
   "capabilities": ["billing.payments.livewire"],
   "default_enabled": true,
-  "features": ["Payment list", "Payment creation"]
+  "features": ["Payment list", "Payment creation"],
+  "presentation": {"livewire": {"components": ["module-billing-payments::payment-list", "module-billing-payments::methods", "module-billing-payments::operations"]}}
 }

@@ -18,6 +18,8 @@ use Liberu\Billing\Reporting\Models\MetricSnapshot;
 
 final class MetricSnapshotResource extends Resource
 {
+    protected static string|\UnitEnum|null $navigationGroup = 'Billing Operations';
+
     use ScopesCurrentTeam;
 
     protected static ?string $model = MetricSnapshot::class;

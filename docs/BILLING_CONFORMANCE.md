@@ -17,10 +17,10 @@ allows a global catalog/configuration record.
 
 | Capability | Domain | API | Filament | Livewire | Default route prefix |
 | --- | --- | --- | --- | --- | --- |
-| Billing Core | `billing-billing-core` | `billing-core-api` | `billing-core-filament` | `billing-core-livewire` | `/api/v1/billing/billing-core` |
-| Catalog | `billing-catalog` | `billing-catalog-api` | `billing-catalog-filament` | `billing-catalog-livewire` | `/api/v1/billing/catalog` |
-| Pricing | `billing-pricing` | `billing-pricing-api` | `billing-pricing-filament` | `billing-pricing-livewire` | `/api/v1/billing/pricing` |
-| Orders | `billing-orders` | `billing-orders-api` | `billing-orders-filament` | `billing-orders-livewire` | `/api/v1/billing/orders` |
+| Billing Core | `module-billing-billing-core` | `module-billing-core-api` | `module-billing-core-filament` | `module-billing-core-livewire` | `/api/v1/billing/billing-core` |
+| Catalog | `module-billing-catalog` | `module-billing-catalog-api` | `module-billing-catalog-filament` | `module-billing-catalog-livewire` | `/api/v1/billing/catalog` |
+| Pricing | `module-billing-pricing` | `module-billing-pricing-api` | `module-billing-pricing-filament` | `module-billing-pricing-livewire` | `/api/v1/billing/pricing` |
+| Orders | `module-billing-orders` | `module-billing-orders-api` | `module-billing-orders-filament` | `module-billing-orders-livewire` | `/api/v1/billing/orders` |
 | Subscriptions | `module-billing-subscriptions` | `module-billing-subscriptions-api` | `module-billing-subscriptions-filament` | `module-billing-subscriptions-livewire` | `/api/v1/billing/subscriptions` |
 | Invoicing | `module-billing-invoicing` | `module-billing-invoicing-api` | `module-billing-invoicing-filament` | `module-billing-invoicing-livewire` | `/api/v1/billing/invoicing` |
 | Payments | `module-billing-payments` | `module-billing-payments-api` | `module-billing-payments-filament` | `module-billing-payments-livewire` | `/api/v1/billing/payments` |

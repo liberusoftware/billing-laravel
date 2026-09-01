@@ -10,6 +10,7 @@ Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.subsc
     ->name('billing.subscriptions.')
     ->group(function (): void {
         Route::get('/', [SubscriptionController::class, 'index'])->name('index');
+        Route::get('/{subscription}', [SubscriptionController::class, 'show'])->whereNumber('subscription')->name('show');
     });
 
 Route::middleware(['api', 'throttle:api', 'auth:sanctum', 'ability:billing.subscriptions.write', 'idempotency'])

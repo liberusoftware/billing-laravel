@@ -86,6 +86,7 @@ final class DomainList extends Component
 
     public function render(ListDomainsRecords $query): View
     {
+        Gate::authorize('viewAny', Domain::class);
         $teamId = $this->teamId();
 
         return view('module-billing-domains-livewire::domain-list', ['domains' => $query->handle($teamId)]);

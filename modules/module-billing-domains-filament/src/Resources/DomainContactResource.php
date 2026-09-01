@@ -14,6 +14,8 @@ use Liberu\Billing\Domains\Models\DomainContact;
 
 final class DomainContactResource extends Resource
 {
+    protected static string|\UnitEnum|null $navigationGroup = 'Service Delivery';
+
     use ScopesCurrentTeam;
 
     protected static ?string $model = DomainContact::class;

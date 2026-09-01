@@ -21,6 +21,6 @@
   "default_enabled": true,
   "features": [
     "Provisioning Livewire components"
-  ]
+  ],
+  "presentation": {"livewire": {"components": ["module-billing-provisioning::operations"]}}
 }
-

@@ -21,6 +21,6 @@
   "default_enabled": true,
   "features": [
     "ISP Livewire integration"
-  ]
+  ],
+  "presentation": {"livewire": {"components": ["module-billing-isp::capabilities", "module-billing-isp::access-services"]}}
 }
-

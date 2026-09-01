@@ -1,5 +1,5 @@
 openapi: 3.1.0
-info: {title: Billing Reporting API, version: 1.0.0, description: Team-scoped MRR, ARR, churn, aging, revenue, tax, usage, provisioning, collection, and provider metrics.}
+info: {title: Billing Reporting API, version: 1.0.0, description: 'Team-scoped MRR, ARR, churn, aging, revenue, tax, usage, provisioning, collection, and provider metrics.'}
 servers: [{url: /}]
 paths:
   /api/v1/billing/reporting/customers/{customer}/summary:
@@ -16,6 +16,19 @@ paths:
       security: [{sanctum: []}]
       parameters: [{$ref: '#/components/parameters/PageSize'}, {name: metric, in: query, schema: {type: string}}]
       responses: {'200': {$ref: '#/components/responses/Collection'}, '401': {$ref: '#/components/responses/Unauthorized'}}
+  /api/v1/billing/reporting/{record}:
+    get:
+      operationId: billing.reporting.snapshots.show
+      security: [{sanctum: []}]
+      parameters: [{name: record, in: path, required: true, schema: {type: integer}}]
+      responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '404': {description: Resource not found.}}
+  /api/v1/billing/reporting/snapshots:
+    post:
+      operationId: billing.reporting.snapshots.create
+      security: [{sanctum: []}]
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object, additionalProperties: true}}}}
+      responses: {'201': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}, '422': {$ref: '#/components/responses/ValidationError'}}
   /api/v1/billing/reporting/metrics:
     get:
       operationId: billing.reporting.metrics.list
@@ -43,7 +56,7 @@ paths:
       responses: {'200': {description: CSV export, content: {text/csv: {schema: {type: string}}}}}
 components:
   parameters:
-    PageSize: {name: per_page, in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 25}}
+    PageSize: {name: page[size], in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 25}}
     IdempotencyKey: {name: Idempotency-Key, in: header, schema: {type: string, maxLength: 255}}
   responses:
     Collection: {description: Paginated team-scoped reporting collection, content: {application/json: {schema: {type: object, required: [data, meta], properties: {data: {type: array, items: {type: object}}, meta: {type: object}}}}}}

@@ -26,6 +26,8 @@ use Override;
  * @property string|null $custom_domain
  * @property string $database_mode
  * @property array<string, mixed>|null $branding
+ * @property array<string, mixed>|null $setup_configuration
+ * @property Carbon|null $setup_completed_at
  * @property Carbon|null $archived_at
  */
 #[Fillable([
@@ -39,6 +41,8 @@ use Override;
     'custom_domain',
     'database_mode',
     'branding',
+    'setup_configuration',
+    'setup_completed_at',
     'archived_at',
 ])]
 class Team extends FoundationTeam
@@ -65,6 +69,8 @@ class Team extends FoundationTeam
         'custom_domain',
         'database_mode',
         'branding',
+        'setup_configuration',
+        'setup_completed_at',
         'archived_at',
     ];
 
@@ -93,6 +99,8 @@ class Team extends FoundationTeam
             'is_default_for_registration' => 'boolean',
             'organisation_type' => OrganisationType::class,
             'branding' => 'array',
+            'setup_configuration' => 'encrypted:array',
+            'setup_completed_at' => 'datetime',
             'archived_at' => 'datetime',
         ];
     }

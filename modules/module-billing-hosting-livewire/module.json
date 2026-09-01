@@ -21,6 +21,6 @@
   "default_enabled": true,
   "features": [
     "Hosting Livewire integration"
-  ]
+  ],
+  "presentation": {"livewire": {"components": ["module-billing-hosting::accounts", "module-billing-hosting::capabilities"]}}
 }
-

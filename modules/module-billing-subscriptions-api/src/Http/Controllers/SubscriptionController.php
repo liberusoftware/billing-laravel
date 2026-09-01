@@ -28,12 +28,25 @@ final class SubscriptionController extends Controller
         Gate::authorize('viewAny', Subscription::class);
         $teamId = data_get($request->user(), 'current_team_id') ?? data_get($request->user(), 'currentTeam.id');
         $data = $request->validate(['customer_id' => ['nullable', 'integer', 'min:1'], 'status' => ['nullable', 'string', 'in:trialing,active,paused,cancelled,expired']]);
-        $subscriptions = $query->execute($teamId === null ? null : (int) $teamId, $request->integer('per_page', 25), $data['customer_id'] ?? null, isset($data['status']) ? SubscriptionStatus::from($data['status']) : null);
+        $subscriptions = $query->execute($teamId === null ? null : (int) $teamId, $this->pageSize($request), $data['customer_id'] ?? null, isset($data['status']) ? SubscriptionStatus::from($data['status']) : null);
 
         return response()->json([
             'data' => $subscriptions->getCollection()->map(fn (Subscription $subscription): array => $this->resource($subscription))->values(),
             'meta' => ['current_page' => $subscriptions->currentPage(), 'last_page' => $subscriptions->lastPage()],
         ]);
+    }
+
+    public function show(Request $request, Subscription $subscription): JsonResponse
+    {
+        $subscription = $this->forCurrentTeam($request, $subscription);
+        Gate::authorize('view', $subscription);
+
+        return response()->json(['data' => $this->resource($subscription)]);
+    }
+
+    private function pageSize(Request $request): int
+    {
+        return min(max((int) $request->input('page.size', $request->integer('per_page', 25)), 1), 100);
     }
 
     public function store(Request $request, ActivateSubscription $activate): JsonResponse

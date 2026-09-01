@@ -61,6 +61,20 @@ paths:
       parameters: [{name: case, in: path, required: true, schema: {type: string}}, {$ref: '#/components/parameters/IdempotencyKey'}]
       requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/CreditControlRequest'}}}}
       responses: {'200': {$ref: '#/components/responses/Document'}, '422': {$ref: '#/components/responses/ValidationError'}}
+  /api/v1/billing/collections/{case}/retry:
+    post:
+      operationId: billing.collections.retry
+      summary: Retry collection processing
+      security: [{sanctum: []}]
+      parameters: [{name: case, in: path, required: true, schema: {type: string}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}}
+  /api/v1/billing/collections/{case}/write-off:
+    post:
+      operationId: billing.collections.writeOff
+      summary: Write off a collection case
+      security: [{sanctum: []}]
+      parameters: [{name: case, in: path, required: true, schema: {type: string}}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      responses: {'200': {$ref: '#/components/responses/Document'}, '401': {$ref: '#/components/responses/Unauthorized'}}
 components:
   parameters:
     IdempotencyKey: {name: Idempotency-Key, in: header, required: false, schema: {type: string, maxLength: 255}}

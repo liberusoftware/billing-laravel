@@ -20,6 +20,8 @@ use Liberu\Billing\Communications\Models\CommunicationNumber;
 
 final class CommunicationNumberResource extends Resource
 {
+    protected static string|\UnitEnum|null $navigationGroup = 'Service Delivery';
+
     use ScopesCurrentTeam;
 
     protected static ?string $model = CommunicationNumber::class;

@@ -17,5 +17,6 @@
   "suggests": [],
   "capabilities": ["billing.subscriptions.livewire"],
   "default_enabled": true,
-  "features": ["Subscription list", "Activation and lifecycle controls"]
+  "features": ["Subscription list", "Activation and lifecycle controls"],
+  "presentation": {"livewire": {"components": ["module-billing-subscriptions::subscription-list", "module-billing-subscriptions::entitlements"]}}
 }

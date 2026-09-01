@@ -5,6 +5,7 @@
   "license": "MIT",
   "require": {
     "php": "^8.5",
+    "filament/filament": "~5.1",
     "liberusoftware/module-billing-communications": "^0.1",
     "liberusoftware/module-manager": "^1.0"
   },

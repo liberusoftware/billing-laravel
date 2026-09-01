@@ -18,6 +18,7 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Override;
+use UnitEnum;
 
 class AffiliateResource extends Resource
 {
@@ -26,6 +27,9 @@ class AffiliateResource extends Resource
 
     #[Override]
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-user-group';
+
+    #[Override]
+    protected static string|UnitEnum|null $navigationGroup = 'Customers & Sales';
 
     #[Override]
     public static function form(Schema $schema): Schema
