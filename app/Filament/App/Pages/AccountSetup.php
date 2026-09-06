@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\App\Pages;
 
 use App\Models\Team;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
@@ -48,10 +49,17 @@ class AccountSetup extends Page
             'paddle_token' => null,
             'tax_api_key' => null,
             'resellerclub_api_key' => null,
+            'resellerclub_auth_userid' => null,
+            'enom_username' => null,
+            'enom_password' => null,
             'github_client_id' => null,
             'github_client_secret' => null,
             'google_client_id' => null,
             'google_client_secret' => null,
+            'facebook_client_id' => null,
+            'facebook_client_secret' => null,
+            'twitter_client_id' => null,
+            'twitter_client_secret' => null,
         ]);
     }
 
@@ -113,8 +121,20 @@ class AccountSetup extends Page
                                 ])
                                 ->columns(2),
                         ]),
-                    Wizard\Step::make('Connections')
-                        ->description('Add optional provider credentials')
+                    Wizard\Step::make('Team access')
+                        ->description('Keep your workspace secure')
+                        ->icon('heroicon-o-user-group')
+                        ->schema([
+                            Section::make('Team administration')
+                                ->description('Invite teammates and manage roles later from Team members. Only workspace owners can change provider credentials.')
+                                ->schema([
+                                    Placeholder::make('team_access_note')
+                                        ->label('Recommended next step')
+                                        ->content('Invite your billing, support, and operations teammates after setup. Start with the least access they need.'),
+                                ]),
+                        ]),
+                    Wizard\Step::make('Integrations')
+                        ->description('Connect services when you are ready')
                         ->icon('heroicon-o-key')
                         ->schema([
                             Section::make('Billing and tax providers')
@@ -137,6 +157,15 @@ class AccountSetup extends Page
                                         ->label('ResellerClub API key')
                                         ->password()
                                         ->revealable(),
+                                    TextInput::make('resellerclub_auth_userid')
+                                        ->label('ResellerClub user ID')
+                                        ->numeric(),
+                                    TextInput::make('enom_username')
+                                        ->label('eNom username'),
+                                    TextInput::make('enom_password')
+                                        ->label('eNom password')
+                                        ->password()
+                                        ->revealable(),
                                 ])
                                 ->columns(2),
                             Section::make('OAuth applications')
@@ -156,21 +185,33 @@ class AccountSetup extends Page
                                         ->label('Google client secret')
                                         ->password()
                                         ->revealable(),
+                                    TextInput::make('facebook_client_id')
+                                        ->label('Facebook app ID')
+                                        ->helperText('Callback: '.url('/oauth/facebook/callback')),
+                                    TextInput::make('facebook_client_secret')
+                                        ->label('Facebook app secret')
+                                        ->password()
+                                        ->revealable(),
+                                    TextInput::make('twitter_client_id')
+                                        ->label('X/Twitter client ID')
+                                        ->helperText('Callback: '.url('/oauth/twitter-oauth-2/callback')),
+                                    TextInput::make('twitter_client_secret')
+                                        ->label('X/Twitter client secret')
+                                        ->password()
+                                        ->revealable(),
                                 ])
                                 ->columns(2),
                         ]),
                     Wizard\Step::make('Review')
-                        ->description('Confirm your defaults')
+                        ->description('Confirm and launch your workspace')
                         ->icon('heroicon-o-check-circle')
                         ->schema([
                             Section::make('Ready to go')
                                 ->description('You can return to Account setup at any time to update workspace defaults or add a provider.')
                                 ->schema([
-                                    TextInput::make('setup_summary')
-                                        ->label('Next step')
-                                        ->default('Create your first customer, product, or invoice.')
-                                        ->disabled()
-                                        ->dehydrated(false),
+                                    Placeholder::make('setup_summary')
+                                        ->label('You are ready to go')
+                                        ->content('Create your first customer, product, or invoice. You can return here any time to update defaults or connect another service.'),
                                 ]),
                         ]),
                 ])
@@ -189,10 +230,17 @@ class AccountSetup extends Page
             'paddle_token' => $state['paddle_token'] ?? null,
             'tax_api_key' => $state['tax_api_key'] ?? null,
             'resellerclub_api_key' => $state['resellerclub_api_key'] ?? null,
+            'resellerclub_auth_userid' => $state['resellerclub_auth_userid'] ?? null,
+            'enom_username' => $state['enom_username'] ?? null,
+            'enom_password' => $state['enom_password'] ?? null,
             'github_client_id' => $state['github_client_id'] ?? null,
             'github_client_secret' => $state['github_client_secret'] ?? null,
             'google_client_id' => $state['google_client_id'] ?? null,
             'google_client_secret' => $state['google_client_secret'] ?? null,
+            'facebook_client_id' => $state['facebook_client_id'] ?? null,
+            'facebook_client_secret' => $state['facebook_client_secret'] ?? null,
+            'twitter_client_id' => $state['twitter_client_id'] ?? null,
+            'twitter_client_secret' => $state['twitter_client_secret'] ?? null,
         ], static fn (mixed $value): bool => $value !== null && $value !== '');
 
         $team->forceFill([
