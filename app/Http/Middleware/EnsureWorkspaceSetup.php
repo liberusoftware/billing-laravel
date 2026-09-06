@@ -32,10 +32,17 @@ final class EnsureWorkspaceSetup
             'services.paddle.token' => $configuration['paddle_token'] ?? null,
             'services.tax_api.api_key' => $configuration['tax_api_key'] ?? null,
             'services.resellerclub.api_key' => $configuration['resellerclub_api_key'] ?? null,
+            'services.resellerclub.auth_userid' => $configuration['resellerclub_auth_userid'] ?? null,
+            'services.enom.username' => $configuration['enom_username'] ?? null,
+            'services.enom.password' => $configuration['enom_password'] ?? null,
             'services.github.client_id' => $configuration['github_client_id'] ?? null,
             'services.github.client_secret' => $configuration['github_client_secret'] ?? null,
             'services.google.client_id' => $configuration['google_client_id'] ?? null,
             'services.google.client_secret' => $configuration['google_client_secret'] ?? null,
+            'services.facebook.client_id' => $configuration['facebook_client_id'] ?? null,
+            'services.facebook.client_secret' => $configuration['facebook_client_secret'] ?? null,
+            'services.twitter-oauth-2.client_id' => $configuration['twitter_client_id'] ?? null,
+            'services.twitter-oauth-2.client_secret' => $configuration['twitter_client_secret'] ?? null,
         ], static fn (mixed $value): bool => is_string($value) && $value !== '');
 
         $original = [];

@@ -34,12 +34,12 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->navigationGroups([
-                'Overview',
                 'Billing Operations',
                 'Catalog & Pricing',
+                'Customers & Sales',
+                'Support',
                 'Service Delivery',
                 'Projects',
-                'Support',
                 'Content',
                 'Licensing',
                 'Administration',
