@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 use Override;
 
@@ -15,6 +16,8 @@ use Override;
  * @property int $customer_id
  * @property int|null $subscription_id
  * @property int|null $invoice_id
+ * @property string|null $checkout_key
+ * @property string|null $checkout_fingerprint
  * @property string $status
  * @property array|null $submitted_data
  * @property Carbon|null $created_at
@@ -22,6 +25,7 @@ use Override;
  * @property-read OrderFormTemplate|null $template
  * @property-read Customer|null $customer
  * @property-read Subscription|null $subscription
+ * @property-read HostingFulfillment|null $fulfillment
  * @property-read Invoice|null $invoice
  */
 #[Fillable([
@@ -31,6 +35,8 @@ use Override;
     'invoice_id',
     'status',
     'submitted_data',
+    'checkout_key',
+    'checkout_fingerprint',
 ])]
 class Order extends Model
 {
@@ -42,6 +48,11 @@ class Order extends Model
         return [
             'submitted_data' => 'array',
         ];
+    }
+
+    public function fulfillment(): HasOne
+    {
+        return $this->hasOne(HostingFulfillment::class);
     }
 
     public function template(): BelongsTo

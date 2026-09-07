@@ -17,7 +17,7 @@ class DnsPortalScopeTest extends TestCase
     {
         $user = User::factory()->create(['email' => 'owner@example.com']);
 
-        $ownCustomer = Customer::factory()->create(['email' => 'owner@example.com']);
+        $ownCustomer = Customer::factory()->create(['email' => 'owner@example.com', 'user_id' => $user->id]);
         $own = Subscription::factory()->create([
             'customer_id' => $ownCustomer->id,
             'domain_name' => 'mine.com',
@@ -42,7 +42,7 @@ class DnsPortalScopeTest extends TestCase
     public function test_owned_domains_query_ignores_subscriptions_without_a_domain(): void
     {
         $user = User::factory()->create(['email' => 'owner@example.com']);
-        $customer = Customer::factory()->create(['email' => 'owner@example.com']);
+        $customer = Customer::factory()->create(['email' => 'owner@example.com', 'user_id' => $user->id]);
 
         $noDomain = Subscription::factory()->create([
             'customer_id' => $customer->id,

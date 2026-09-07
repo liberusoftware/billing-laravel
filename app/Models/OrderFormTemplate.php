@@ -56,6 +56,17 @@ class OrderFormTemplate extends Model
         return array_map('intval', $this->config['plan_ids'] ?? []);
     }
 
+    public function hostingProductIdForPlan(int $planId): ?int
+    {
+        foreach ($this->config['hosting_packages'] ?? [] as $mapping) {
+            if ((int) ($mapping['plan_id'] ?? 0) === $planId) {
+                return (int) ($mapping['product_service_id'] ?? 0);
+            }
+        }
+
+        return null;
+    }
+
     public function offersPlan(int $planId): bool
     {
         return in_array($planId, $this->offeredPlanIds(), true);

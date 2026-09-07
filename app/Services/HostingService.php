@@ -20,7 +20,7 @@ class HostingService
     public function provisionAccount(HostingAccount $account, Products_Service $product, array $options = [])
     {
         // Select least loaded server of the specified type
-        $server = $this->selectServer($product->hosting_server_id);
+        $server = $this->selectServer($account->hosting_server_id ?? $product->hosting_server_id);
 
         if (! $server) {
             throw new Exception('No available servers found');
@@ -34,6 +34,12 @@ class HostingService
 
         // Configure client with server details
         $client->setServer($server);
+
+        // Preserve the remote target even if the response is lost or creation fails.
+        // Reconciliation must inspect this server before any retry is attempted.
+        $account->hosting_server_id = $server->id;
+        $account->control_panel = $server->control_panel;
+        $account->save();
 
         $result = $client->createAccount(
             $account->username,
@@ -260,17 +266,10 @@ class HostingService
 
     protected function selectServer($serverId = null)
     {
-        if ($serverId) {
-            return HostingServer::find($serverId);
-        }
-
-        return HostingServer::where(
-            'is_active',
-            true
-        )
-            ->whereRaw('active_accounts < max_accounts')
-            ->orderBy('active_accounts')
-            ->first();
+        return HostingServer::query()->where('is_active', true)
+            ->when($serverId, fn ($query) => $query->whereKey($serverId))
+            ->where(fn ($query) => $query->where('max_accounts', 0)->orWhereColumn('active_accounts', '<', 'max_accounts'))
+            ->orderBy('active_accounts')->orderBy('id')->first();
     }
 
     protected function getClientForControlPanel($controlPanel): CpanelClient|PleskClient|DirectAdminClient|VirtualminClient|LiberuControlPanelClient

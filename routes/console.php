@@ -80,3 +80,8 @@ if (! function_exists('shouldGenerateReport')) {
         };
     }
 }
+
+Schedule::command('hosting:dispatch-fulfillments')->everyMinute()->withoutOverlapping();
+
+Schedule::command('domains:process-renewals')->everyMinute()->withoutOverlapping();
+Schedule::command('subscriptions:process-changes')->hourly()->withoutOverlapping();

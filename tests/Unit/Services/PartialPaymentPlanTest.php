@@ -84,6 +84,7 @@ class PartialPaymentPlanTest extends TestCase
             'currency' => $invoice->currency,
             'payment_method' => 'credit card',
             'transaction_id' => 'txn-a',
+            'status' => 'completed',
             'payment_date' => now(),
         ]);
         $this->assertEquals(70.00, (float) $invoice->fresh()->remaining_amount);
@@ -95,6 +96,7 @@ class PartialPaymentPlanTest extends TestCase
             'currency' => $invoice->currency,
             'payment_method' => 'credit card',
             'transaction_id' => 'txn-b',
+            'status' => 'completed',
             'payment_date' => now(),
         ]);
         $this->assertEquals(45.00, (float) $invoice->fresh()->remaining_amount);

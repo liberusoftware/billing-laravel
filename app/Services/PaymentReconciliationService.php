@@ -87,56 +87,34 @@ class PaymentReconciliationService
 
     protected function processReconciliation(Payment $payment, Invoice $invoice): bool
     {
-        // Check for discrepancies
-        $discrepancy = $this->checkForDiscrepancies(
-            $payment,
-            $invoice
-        );
-
-        if ($discrepancy) {
-            $payment->update(
-                [
+        return DB::transaction(function () use ($payment, $invoice): bool {
+            $invoice = Invoice::query()->lockForUpdate()->findOrFail($invoice->id);
+            $payment = Payment::query()->lockForUpdate()->findOrFail($payment->id);
+            $discrepancy = $this->checkForDiscrepancies($payment, $invoice);
+            if ($discrepancy !== null) {
+                $payment->update([
                     'reconciliation_status' => 'discrepancy',
                     'reconciliation_notes' => $discrepancy,
-                ]
-            );
+                ]);
+                $this->logReconciliationHistory($payment, $invoice, 'discrepancy');
 
-            $this->logReconciliationHistory(
-                $payment,
-                $invoice,
-                'discrepancy'
-            );
+                return false;
+            }
 
-            return false;
-        }
+            $payment->update([
+                'invoice_id' => $invoice->id,
+                'reconciliation_status' => 'reconciled',
+                'reconciliation_notes' => null,
+            ]);
+            $invoice->updateStatus();
+            if ($invoice->status === 'paid' && $invoice->paid_at === null) {
+                $invoice->update(['paid_at' => now()]);
+            }
+            app(HostingFulfillmentService::class)->prepare($invoice);
+            $this->logReconciliationHistory($payment, $invoice, 'reconciled');
 
-        // Process successful reconciliation. Pair the payment and invoice writes in
-        // one transaction so we never mark a payment reconciled against an unpaid
-        // invoice (or vice versa) if a write fails midway.
-        DB::transaction(function () use ($payment, $invoice): void {
-            $payment->update(
-                [
-                    'invoice_id' => $invoice->id,
-                    'reconciliation_status' => 'reconciled',
-                    'reconciliation_notes' => null,
-                ]
-            );
-
-            $invoice->update(
-                [
-                    'status' => 'paid',
-                    'paid_at' => now(),
-                ]
-            );
+            return true;
         });
-
-        $this->logReconciliationHistory(
-            $payment,
-            $invoice,
-            'reconciled'
-        );
-
-        return true;
     }
 
     protected function checkForDiscrepancies(Payment $payment, Invoice $invoice): ?string
@@ -147,6 +125,18 @@ class PaymentReconciliationService
 
         if ($payment->currency != $invoice->currency) {
             return "Payment currency ({$payment->currency}) does not match invoice currency ({$invoice->currency})";
+        }
+
+        if ($payment->status !== 'completed' || blank($payment->transaction_id)) {
+            return 'Payment has not been confirmed as completed.';
+        }
+
+        if ((float) $payment->refunded_amount > 0 || in_array($payment->refund_status, ['full', 'completed'], true)) {
+            return 'Payment has been refunded.';
+        }
+
+        if ($payment->customer_id !== null && $payment->customer_id !== $invoice->customer_id) {
+            return 'Payment and invoice belong to different customers.';
         }
 
         return null;

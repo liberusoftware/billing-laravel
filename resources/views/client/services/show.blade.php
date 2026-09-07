@@ -28,7 +28,7 @@
                         @foreach($availableUpgrades as $upgrade)
                             <div class="border p-4 mb-2">
                                 <h5>{{ $upgrade->name }}</h5>
-                                <p>Price: {{ $upgrade->price }} {{ $upgrade->currency }}</p>
+                                <p>Price: {{ $upgrade->price }} {{ $subscription->currency ?? 'USD' }}</p>
                                 <form action="{{ route('client.services.upgrade', $subscription) }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="new_service_id" value="{{ $upgrade->id }}">
@@ -46,7 +46,7 @@
                         @foreach($availableDowngrades as $downgrade)
                             <div class="border p-4 mb-2">
                                 <h5>{{ $downgrade->name }}</h5>
-                                <p>Price: {{ $downgrade->price }} {{ $downgrade->currency }}</p>
+                                <p>Price: {{ $downgrade->price }} {{ $subscription->currency ?? 'USD' }}</p>
                                 <form action="{{ route('client.services.downgrade', $subscription) }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="new_service_id" value="{{ $downgrade->id }}">

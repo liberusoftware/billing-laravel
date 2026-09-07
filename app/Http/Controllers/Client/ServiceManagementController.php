@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Client;
 use App\Http\Controllers\Controller;
 use App\Models\Products_Service;
 use App\Models\Subscription;
+use App\Models\SubscriptionChange;
 use App\Services\BillingService;
 use App\Services\DomainService;
 use App\Services\HostingService;
@@ -12,6 +13,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ServiceManagementController extends Controller
 {
@@ -19,7 +21,7 @@ class ServiceManagementController extends Controller
 
     public function index(): Factory|View
     {
-        $subscriptions = auth()->user()->customer->subscriptions;
+        $subscriptions = auth()->user()->customer?->subscriptions()->with('productService')->latest()->get() ?? collect();
 
         return view(
             'client.services.index',
@@ -29,6 +31,8 @@ class ServiceManagementController extends Controller
 
     public function show(Subscription $subscription): Factory|View
     {
+        $this->ensureOwnership($subscription);
+
         $availableUpgrades = Products_Service::where(
             'type',
             $subscription->productService->type
@@ -63,6 +67,7 @@ class ServiceManagementController extends Controller
 
     public function upgrade(Request $request, Subscription $subscription): RedirectResponse
     {
+        $this->ensureOwnership($subscription);
         $request->validate(
             [
                 'new_service_id' => 'required|exists:products_services,id',
@@ -70,6 +75,7 @@ class ServiceManagementController extends Controller
         );
 
         $newService = Products_Service::findOrFail($request->new_service_id);
+        abort_unless($newService->type === $subscription->productService->type, 422);
 
         // Calculate prorated amount
         $proratedAmount = $this->calculateProration(
@@ -77,21 +83,18 @@ class ServiceManagementController extends Controller
             $newService
         );
 
-        // Generate invoice for upgrade
+        // Generate a pending invoice; provider changes are applied only after payment.
         $invoice = $this->billingService->generateInvoice($subscription);
         $invoice->total_amount = $proratedAmount;
         $invoice->save();
-
-        // Update service
-        if ($subscription->productService->type === 'hosting') {
-            $this->hostingService->upgradeAccount(
-                $subscription->hostingAccount,
-                $newService
-            );
-        }
-
-        $subscription->product_service_id = $newService->id;
-        $subscription->save();
+        SubscriptionChange::query()->create([
+            'subscription_id' => $subscription->id,
+            'customer_id' => $subscription->customer_id,
+            'invoice_id' => $invoice->id,
+            'target_product_service_id' => $newService->id,
+            'type' => 'upgrade',
+            'status' => 'pending',
+        ]);
 
         return redirect()->route(
             'client.services.show',
@@ -105,6 +108,7 @@ class ServiceManagementController extends Controller
 
     public function downgrade(Request $request, Subscription $subscription): RedirectResponse
     {
+        $this->ensureOwnership($subscription);
         $request->validate(
             [
                 'new_service_id' => 'required|exists:products_services,id',
@@ -112,6 +116,7 @@ class ServiceManagementController extends Controller
         );
 
         $newService = Products_Service::findOrFail($request->new_service_id);
+        abort_unless($newService->type === $subscription->productService->type, 422);
 
         // Schedule downgrade for end of billing period
         $subscription->scheduled_change = [
@@ -133,6 +138,8 @@ class ServiceManagementController extends Controller
 
     public function cancel(Subscription $subscription): RedirectResponse
     {
+        $this->ensureOwnership($subscription);
+
         // Schedule cancellation for end of billing period
         $subscription->scheduled_change = [
             'type' => 'cancel',
@@ -159,5 +166,14 @@ class ServiceManagementController extends Controller
         $proratedCharge = ((float) $newAmount / $totalDays) * $daysRemaining;
 
         return $proratedCharge - $proratedRefund;
+    }
+
+    private function ensureOwnership(Subscription $subscription): void
+    {
+        $customer = auth()->user()?->customer;
+
+        if ($customer === null || $subscription->customer_id !== $customer->id) {
+            throw new NotFoundHttpException();
+        }
     }
 }

@@ -35,15 +35,15 @@ class DomainManagement extends Page implements HasTable
 
     /**
      * Subscriptions with a registered domain owned by the authenticated client.
-     * Scoped by customer email (the client panel authenticates a User; there is no
-     * client_id column) — mirrors InvoiceResource. This is the ownership guard:
-     * every table record (and therefore every action) is restricted to this set.
+     * Scoped by the authenticated user's explicit customer relationship. This is
+     * the ownership guard: every table record (and therefore every action) is
+     * restricted to this set.
      */
     public static function ownedDomainsQuery(): Builder
     {
         return Subscription::query()
             ->whereNotNull('domain_name')
-            ->whereHas('customer', fn (Builder $query) => $query->where('email', auth()->user()->email));
+            ->whereHas('customer', fn (Builder $query) => $query->where('user_id', auth()->id()));
     }
 
     public function table(Table $table): Table

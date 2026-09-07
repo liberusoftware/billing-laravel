@@ -34,6 +34,15 @@ enum BillingCycle: string
         return $options;
     }
 
+    /** @return array<string, string> */
+    public static function hostingOptions(): array
+    {
+        return array_intersect_key(self::options(), array_flip([
+            self::Monthly->value, self::Quarterly->value, self::SemiAnnually->value,
+            self::Annually->value, self::Biennially->value, self::Triennially->value,
+        ]));
+    }
+
     public function label(): string
     {
         return match ($this) {

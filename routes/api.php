@@ -20,6 +20,7 @@ use App\Http\Controllers\Api\LicenseDownloadController;
 use App\Http\Controllers\Api\LicenseValidationController;
 use App\Http\Controllers\Api\OrganisationController;
 use App\Http\Controllers\Api\PackageGroupController;
+use App\Http\Controllers\Api\PaddleSettlementController;
 use App\Http\Controllers\Api\QuoteController;
 use App\Http\Controllers\Api\ResellerController;
 use App\Http\Controllers\Api\SubscriptionController;
@@ -311,3 +312,5 @@ Route::post('v1/license/validate', [LicenseValidationController::class, 'validat
     ->middleware('throttle:30,1');
 Route::post('v1/license/download', [LicenseDownloadController::class, 'download'])
     ->middleware('throttle:30,1');
+
+Route::post('webhooks/paddle/settlement', PaddleSettlementController::class)->middleware('throttle:120,1');

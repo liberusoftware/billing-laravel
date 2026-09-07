@@ -38,6 +38,7 @@ class PartialPaymentService
 
             if ($paymentResult['success']) {
                 $payment->transaction_id = $paymentResult['transaction_id'];
+                $payment->status = 'completed';
                 $payment->save();
 
                 $invoice->updateStatus();

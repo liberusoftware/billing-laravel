@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\BillingCycle;
+use App\Traits\HasTeam;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -74,6 +75,7 @@ use Override;
 class Subscription extends Model
 {
     use HasFactory;
+    use HasTeam;
 
     #[Override]
     protected $casts = [

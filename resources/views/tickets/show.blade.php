@@ -43,6 +43,9 @@
                 </div>
                 <p class="text-gray-700 whitespace-pre-line">{{ $ticket->description }}</p>
                 <p class="mt-3 text-sm text-gray-400">Opened by {{ $ticket->user?->name }}</p>
+                @if($ticket->subscription || $ticket->domain_name)
+                    <p class="mt-2 text-sm text-gray-500">Context: {{ $ticket->subscription?->productService?->name }}{{ $ticket->domain_name ? ' · '.$ticket->domain_name : ($ticket->subscription?->domain_name ? ' · '.$ticket->subscription->domain_name : '') }}</p>
+                @endif
             </div>
 
             {{-- Update Status (Admin) --}}
@@ -112,11 +115,36 @@
                                 <span class="text-sm font-medium text-gray-900">{{ $response->user?->name }}</span>
                                 <span class="text-xs text-gray-400">{{ $response->created_at->diffForHumans() }}</span>
                             </div>
-                            <p class="text-gray-700 whitespace-pre-line text-sm">{{ $response->content }}</p>
+                            <p class="text-gray-700 whitespace-pre-line text-sm">{{ $response->message }}</p>
                         </div>
                     @endforeach
                 </div>
             @endif
+
+            @can('respond', $ticket)
+                @if($ticket->status !== 'closed')
+                    <div class="bg-white shadow rounded-xl p-6">
+                        <h3 class="text-sm font-semibold text-gray-900 mb-3">Reply</h3>
+                        <form method="POST" action="{{ route('ticket.responses.store', $ticket) }}">
+                            @csrf
+                            @can('update', $ticket)
+                                @if($cannedResponses->isNotEmpty())
+                                    <label for="canned_response_id" class="block text-sm text-gray-700 mb-1">Canned response</label>
+                                    <select id="canned_response_id" name="canned_response_id" class="w-full mb-3 border-gray-300 rounded-lg shadow-sm">
+                                        <option value="">Write a custom reply</option>
+                                        @foreach($cannedResponses as $cannedResponse)
+                                            <option value="{{ $cannedResponse->id }}">{{ $cannedResponse->title }}</option>
+                                        @endforeach
+                                    </select>
+                                @endif
+                            @endcan
+                            <textarea name="message" rows="5" required maxlength="10000" class="w-full border-gray-300 rounded-lg shadow-sm" placeholder="Write a reply..."></textarea>
+                            @error('message')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
+                            <button type="submit" class="mt-3 px-4 py-2 bg-indigo-600 text-white text-sm rounded-lg">Send reply</button>
+                        </form>
+                    </div>
+                @endif
+            @endcan
 
         </div>
     </div>

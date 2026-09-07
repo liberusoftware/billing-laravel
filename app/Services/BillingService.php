@@ -13,6 +13,7 @@ use App\Models\SubscriptionPlan;
 use App\Models\UsageRecord;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 
@@ -223,6 +224,24 @@ class BillingService
         return $invoice;
     }
 
+    /** Create the fixed-price invoice for a subscription reaching its renewal date. */
+    public function generateRenewalInvoice(Subscription $subscription): Invoice
+    {
+        return Invoice::create([
+            'customer_id' => $subscription->customer_id,
+            'subscription_id' => $subscription->id,
+            'invoice_number' => $this->generateInvoiceNumber(),
+            'issue_date' => now(),
+            'total_amount' => max(0, (float) $subscription->price),
+            'currency' => $subscription->currency ?? 'USD',
+            'status' => 'pending',
+            'due_date' => now()->addDays(30),
+            'is_recurring' => true,
+            'renewal_period_start' => $subscription->end_date,
+            'renewal_period_end' => $subscription->end_date,
+        ]);
+    }
+
     // public function convertCurrency($amount, $fromCurrency, $toCurrency)
     // {
     //     return $this->currencyService->convert($amount, $fromCurrency, $toCurrency);
@@ -380,13 +399,29 @@ class BillingService
 
         foreach ($dueSubscriptions as $subscription) {
             try {
-                $invoice = $this->generateInvoice($subscription);
+                $invoice = DB::transaction(function () use ($subscription): ?Invoice {
+                    $locked = Subscription::query()->lockForUpdate()->find($subscription->id);
+                    if ($locked === null || $locked->status !== 'active' || $locked->end_date?->isFuture()) {
+                        return null;
+                    }
+                    if (Invoice::query()->where('subscription_id', $locked->id)
+                        ->where('renewal_period_end', $locked->end_date)->exists()) {
+                        return null;
+                    }
+
+                    return $this->generateRenewalInvoice($locked);
+                });
+                if ($invoice === null) {
+                    continue;
+                }
 
                 // Process automatic payment
                 $paymentResult = $this->processAutomaticPayment($invoice);
 
                 if ($paymentResult['success']) {
-                    $invoice->update(['status' => 'paid']);
+                    // Dispatches InvoiceStatusChanged so durable domain and
+                    // hosting fulfillment handoffs are created after payment.
+                    $invoice->markAsPaid();
                     $subscription->renew();
                     try {
                         $this->serviceProvisioningService->manageService(

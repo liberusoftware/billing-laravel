@@ -45,69 +45,28 @@ class PaymentGatewayService
 
     public function processPayment(Payment $payment)
     {
-        $gateway = $payment->paymentGateway;
-        $retries = 0;
-
         if (! $this->validatePaymentMethod($payment->payment_method)) {
             throw new Exception('Unsupported payment method: '.$payment->payment_method);
         }
 
-        while ($retries < $this->maxRetries) {
-            try {
-                $result = $this->attemptPayment(
-                    $payment,
-                    $gateway
-                );
+        // A timeout or local persistence failure cannot establish that no charge
+        // occurred. Reconcile its remote outcome before another charge is sent.
+        $result = $this->attemptPayment($payment, $payment->paymentGateway);
 
-                // Trigger reconciliation after successful payment
-                if ($result) {
-                    app(PaymentReconciliationService::class)->reconcilePayment($payment);
-                }
-
-                Log::info(
-                    'Payment processed successfully',
-                    [
-                        'payment_id' => $payment->id,
-                        'attempt' => $retries + 1,
-                    ]
-                );
-                Log::info(
-                    'Payment processed successfully',
-                    [
-                        'payment_id' => $payment->id,
-                        'attempt' => $retries + 1,
-                        'method' => $payment->payment_method,
-                    ]
-                );
-
-                return $result;
-            } catch (Exception $e) {
-                $retries++;
-                Log::warning(
-                    'Payment attempt failed',
-                    [
-                        'payment_id' => $payment->id,
-                        'attempt' => $retries,
-                        'method' => $payment->payment_method,
-                        'error' => $e->getMessage(),
-                    ]
-                );
-
-                if ($retries >= $this->maxRetries) {
-                    Log::error(
-                        'Payment processing failed after max retries',
-                        [
-                            'payment_id' => $payment->id,
-                            'error' => $e->getMessage(),
-                            'trace' => $e->getTraceAsString(),
-                        ]
-                    );
-                    throw $e;
-                }
-
-                sleep($this->retryDelay);
-            }
+        // Creating a provider transaction does not necessarily collect payment.
+        // In particular, Paddle returns pending transactions awaiting checkout.
+        if ($payment->paymentGateway->name !== 'Paddle'
+            && $payment->status === 'completed' && filled($payment->transaction_id)) {
+            app(PaymentReconciliationService::class)->reconcilePayment($payment);
         }
+
+        Log::info('Payment gateway request processed', [
+            'payment_id' => $payment->id,
+            'status' => $payment->status,
+            'method' => $payment->payment_method,
+        ]);
+
+        return $result;
     }
 
     private function attemptPayment(Payment $payment, PaymentGateway $gateway)
@@ -303,14 +262,35 @@ class PaymentGatewayService
      */
     private function processPaddlePayment(Payment $payment, PaymentGateway $gateway): array
     {
+        if (! $payment->exists) {
+            throw new Exception('Save the payment before starting Paddle checkout');
+        }
+        $payment->refresh();
+        if ($payment->payment_gateway_id !== $gateway->id) {
+            throw new Exception('Payment gateway changed before checkout');
+        }
         $details = is_array($payment->payment_method_details) ? $payment->payment_method_details : [];
+        if (filled($payment->transaction_id)) {
+            return [
+                'id' => $payment->transaction_id,
+                'status' => $payment->status,
+                'checkout' => ['url' => $details['paddle_checkout_url'] ?? null],
+            ];
+        }
+        if ($payment->status !== 'pending') {
+            throw new Exception('Paddle payment requires review before another checkout');
+        }
+        if ($payment->getConnection()->transactionLevel() !== 0) {
+            throw new Exception('Commit the payment before starting Paddle checkout');
+        }
         $priceId = $details['paddle_price_id'] ?? null;
-        if (! preg_match('/^pri_[a-z0-9]+$/', $priceId)) {
+        if (! is_string($priceId) || ! preg_match('/^pri_[a-z0-9]+$/', $priceId)) {
             throw new Exception('A Paddle price ID is required for payment processing');
         }
 
         $payload = [
             'collection_mode' => 'automatic',
+            'currency_code' => $payment->currency,
             'items' => [['price_id' => $priceId, 'quantity' => max(1, (int) ($details['paddle_quantity'] ?? 1))]],
             'custom_data' => ['billing_payment_id' => (string) $payment->getKey()],
         ];
@@ -318,17 +298,35 @@ class PaymentGatewayService
             $payload['customer_id'] = (string) $details['paddle_customer_id'];
         }
 
+        $claimed = $payment->newQuery()->whereKey($payment->id)
+            ->where('payment_gateway_id', $gateway->id)
+            ->where('status', 'pending')
+            ->where(fn ($query) => $query->whereNull('transaction_id')->orWhere('transaction_id', ''))
+            ->update(['status' => 'processing']);
+        if ($claimed !== 1) {
+            throw new Exception('Paddle checkout has already started');
+        }
+        $payment->refresh();
+
         try {
             $transaction = $this->paddleRequest($gateway, 'post', 'transactions', $payload)['data'] ?? [];
-            $payment->update([
-                'transaction_id' => $transaction['id'] ?? null,
-                'status' => ($transaction['status'] ?? null) === 'completed' ? 'completed' : 'pending',
-            ]);
+            if (! is_array($transaction) || ! is_string($transaction['id'] ?? null)
+                || ! preg_match('/^txn_[a-z0-9]+$/', $transaction['id'])) {
+                throw new Exception('Paddle returned no valid transaction reference');
+            }
+            $details['paddle_checkout_url'] = $transaction['checkout']['url'] ?? null;
+            $payment->forceFill([
+                'transaction_id' => $transaction['id'],
+                // Only the verified webhook checks provider totals before settlement.
+                'status' => 'pending',
+                'payment_method_details' => $details,
+            ])->save();
 
             return $transaction;
-        } catch (Exception $e) {
-            $payment->update(['status' => 'failed']);
-            throw new Exception('Paddle payment failed: '.$e->getMessage(), (int) $e->getCode(), $e);
+        } catch (\Throwable $e) {
+            $payment->newQuery()->whereKey($payment->id)->where('status', 'processing')
+                ->update(['status' => 'review']);
+            throw new Exception('Paddle checkout requires review', 0, $e);
         }
     }
 
@@ -362,8 +360,8 @@ class PaymentGatewayService
         $baseUrl = rtrim((string) config('services.paddle.base_url', 'https://api.paddle.com'), '/');
         $response = Http::acceptJson()
             ->withToken((string) $gateway->secret_key)
+            ->connectTimeout(5)
             ->timeout(30)
-            ->retry(2, 250)
             ->{$method}($baseUrl.'/'.$path, $payload);
 
         if ($response->failed()) {

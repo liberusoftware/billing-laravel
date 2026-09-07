@@ -14,6 +14,8 @@ use Illuminate\Support\Carbon;
 /**
  * @property int $id
  * @property int $user_id
+ * @property int|null $subscription_id
+ * @property string|null $domain_name
  * @property int|null $project_id
  * @property int|null $department_id
  * @property int|null $assigned_to
@@ -21,6 +23,7 @@ use Illuminate\Support\Carbon;
  * @property string $description
  * @property string $status
  * @property string $priority
+ * @property Carbon|null $sla_breached_at
  * @property array|null $custom_fields
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -32,6 +35,8 @@ use Illuminate\Support\Carbon;
  */
 #[Fillable([
     'user_id',
+    'subscription_id',
+    'domain_name',
     'project_id',
     'department_id',
     'assigned_to',
@@ -39,6 +44,7 @@ use Illuminate\Support\Carbon;
     'description',
     'status',
     'priority',
+    'sla_breached_at',
     'custom_fields',
 ])]
 class Ticket extends Model
@@ -52,6 +58,7 @@ class Ticket extends Model
     {
         return [
             'custom_fields' => 'array',
+            'sla_breached_at' => 'datetime',
         ];
     }
 
@@ -63,6 +70,11 @@ class Ticket extends Model
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class, 'project_id');
+    }
+
+    public function subscription(): BelongsTo
+    {
+        return $this->belongsTo(Subscription::class);
     }
 
     public function department(): BelongsTo

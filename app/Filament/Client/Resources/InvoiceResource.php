@@ -32,6 +32,21 @@ class InvoiceResource extends Resource
     #[Override]
     protected static ?string $navigationLabel = 'Invoices';
 
+    public static function canViewAny(): bool
+    {
+        return auth()->check();
+    }
+
+    public static function canView($record): bool
+    {
+        return auth()->check() && $record->customer?->user_id === auth()->id();
+    }
+
+    public static function canCreate(): bool
+    {
+        return false;
+    }
+
     #[Override]
     public static function form(Schema $schema): Schema
     {
@@ -139,37 +154,8 @@ class InvoiceResource extends Resource
                     ViewAction::make(),
                     Action::make('pay')
                         ->icon('heroicon-o-credit-card')
-                        ->visible(fn (Invoice $record): bool => $record->status !== 'paid')
-                        ->action(
-                            function (Invoice $record, array $data): void {
-                                $record->processPayment(
-                                    $data['payment_method'],
-                                    $data['payment_amount']
-                                );
-                            }
-                        )
-                        ->schema(
-                            [
-                                Select::make('payment_method')
-                                    ->options(
-                                        [
-                                            'credit_card' => 'Credit Card',
-                                            'bank_transfer' => 'Bank Transfer',
-                                            'paypal' => 'PayPal',
-                                        ]
-                                    )
-                                    ->required(),
-                                TextInput::make('payment_amount')
-                                    ->numeric()
-                                    ->required()
-                                    ->rules(
-                                        [
-                                            fn (Invoice $record): string => 'max:'.$record->remaining_amount,
-                                            'min:1',
-                                        ]
-                                    ),
-                            ]
-                        ),
+                        ->visible(fn (Invoice $record): bool => in_array($record->getRawOriginal('status'), ['pending', 'overdue'], true))
+                        ->url(fn (Invoice $record): string => static::getUrl('view', ['record' => $record], panel: 'client')),
                     Action::make('download_pdf')
                         ->icon('heroicon-o-arrow-down-tray')
                         ->action(
@@ -198,12 +184,9 @@ class InvoiceResource extends Resource
     #[Override]
     public static function getEloquentQuery(): Builder
     {
-        // Invoices belong to a Customer (no client_id column exists). The client
-        // panel authenticates a User, so scope to invoices of the Customer whose
-        // email matches the logged-in user.
         return parent::getEloquentQuery()->whereHas(
             'customer',
-            fn (Builder $query) => $query->where('email', auth()->user()->email)
+            fn (Builder $query) => $query->where('user_id', auth()->id() ?? 0)
         );
     }
 }

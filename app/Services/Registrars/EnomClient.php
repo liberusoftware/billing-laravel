@@ -210,7 +210,7 @@ class EnomClient implements RegistrarClient
         // Trusted keys are merged LAST so a caller-supplied $params key can never
         // override the command or credentials (M2).
         try {
-            $response = Http::get($this->apiUrl, array_merge($params, [
+            $response = Http::connectTimeout(5)->timeout(30)->get($this->apiUrl, array_merge($params, [
                 'command' => $command,
                 'uid' => $this->username,
                 'pw' => $this->password,
@@ -224,14 +224,28 @@ class EnomClient implements RegistrarClient
             throw new RuntimeException('Unable to reach the eNom registrar API.');
         }
 
-        $xml = simplexml_load_string($response->body() ?: '<interface-response/>');
-
-        if ($xml === false) {
+        if ($response->failed()) {
+            throw new RuntimeException('eNom API request failed.');
+        }
+        $body = trim($response->body());
+        if ($body === '' || stripos($body, '<!DOCTYPE') !== false || stripos($body, '<!ENTITY') !== false) {
             throw new RuntimeException('Invalid eNom API response.');
         }
+        $previous = libxml_use_internal_errors(true);
+        try {
+            $xml = simplexml_load_string($body, SimpleXMLElement::class, LIBXML_NONET | LIBXML_NOCDATA);
+            if ($xml === false || $xml->getName() !== 'interface-response') {
+                throw new RuntimeException('Invalid eNom API response.');
+            }
+        } finally {
+            libxml_clear_errors();
+            libxml_use_internal_errors($previous);
+        }
 
-        if ((int) ($xml->ErrCount ?? 0) > 0) {
-            throw new RuntimeException('eNom API error: '.trim((string) ($xml->errors->Err1 ?? 'unknown error')));
+        $errorCount = (string) ($xml->ErrCount ?? '');
+        if (! ctype_digit($errorCount) || (int) $errorCount > 0
+            || isset($xml->Err1) || isset($xml->errors->Err1)) {
+            throw new RuntimeException('eNom API rejected the request.');
         }
 
         return $xml;

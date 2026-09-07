@@ -42,7 +42,7 @@ final class EnomRegistrar extends AbstractRegistrarClient implements RegistrarCl
         [$sld, $tld] = $this->domainParts($domainName);
         $data = $this->command('Check', compact('sld', 'tld'));
 
-        return strtolower((string) ($data['RRPCode'] ?? $data['Available'] ?? $data['CommandResponse'] ?? '')) === 'available' || (string) ($data['RRPCode'] ?? '') === '200';
+        return (string) ($data['RRPCode'] ?? '') === '210';
     }
 
     public function getAvailableTlds(): array
@@ -109,9 +109,13 @@ final class EnomRegistrar extends AbstractRegistrarClient implements RegistrarCl
 
     private function assertSuccess(array $data): void
     {
-        $code = (string) ($data['RRPCode'] ?? $data['Err1'] ?? '200');
-        if ($code !== '' && $code !== '200' && str_contains(strtolower((string) ($data['CommandResponse'] ?? '')), 'error')) {
-            throw new RuntimeException((string) ($data['Err1'] ?? $data['CommandResponse'] ?? 'Enom rejected the operation.'));
+        $code = (string) ($data['RRPCode'] ?? '');
+        if ((int) ($data['ErrCount'] ?? 0) > 0
+            || ! empty($data['Err1'])
+            || ($code !== '' && $code !== '200')
+            || str_contains(strtolower((string) ($data['CommandResponse'] ?? '')), 'error')
+            || ($code === '' && ! array_key_exists('ErrCount', $data))) {
+            throw new RuntimeException('Enom rejected the operation.');
         }
     }
 

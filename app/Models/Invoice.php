@@ -49,6 +49,8 @@ use Override;
  * @property bool $is_installment
  * @property numeric-string|null $tax_amount
  * @property bool|null $is_recurring
+ * @property Carbon|null $renewal_period_start
+ * @property Carbon|null $renewal_period_end
  * @property int|null $invoice_template_id
  * @property string|null $notes
  * @property int|null $team_id
@@ -91,6 +93,8 @@ use Override;
     'late_fee_amount',
     'last_late_fee_date',
     'is_recurring',
+    'renewal_period_start',
+    'renewal_period_end',
     'tax_amount',
     'viewed_at',
     'sent_at',
@@ -201,6 +205,9 @@ class Invoice extends Model
             'sent_at' => 'datetime',
             'paid_at' => 'datetime',
             'status_history' => 'array',
+            'is_recurring' => 'boolean',
+            'renewal_period_start' => 'datetime',
+            'renewal_period_end' => 'datetime',
         ];
 
     }
@@ -234,6 +241,7 @@ class Invoice extends Model
         return $this->hasOne(PaymentPlan::class);
     }
 
+    /** @return HasMany<Payment, $this> */
     public function payments(): HasMany
     {
         return $this->hasMany(Payment::class);
@@ -268,6 +276,7 @@ class Invoice extends Model
 
         if ($result['success']) {
             $payment->transaction_id = $result['transaction_id'];
+            $payment->status = 'completed';
             $payment->save();
 
             $this->updateStatus();
@@ -280,12 +289,14 @@ class Invoice extends Model
 
     public function updateStatus(): void
     {
-        $totalPaid = $this->payments()->sum('amount');
+        $totalPaid = $this->settledPaymentAmount();
 
         if ($totalPaid >= $this->total_amount) {
             $this->status = 'paid';
         } elseif ($totalPaid > 0) {
             $this->status = 'partially_paid';
+        } elseif (in_array($this->status, ['paid', 'partially_paid'], true)) {
+            $this->status = 'pending';
         }
 
         $this->save();
@@ -293,7 +304,25 @@ class Invoice extends Model
 
     protected function remainingAmount(): Attribute
     {
-        return Attribute::make(get: fn (): int|float => $this->total_amount - $this->payments()->sum('amount'));
+        return Attribute::make(get: fn (): int|float => max(0, round((float) $this->total_amount - $this->settledPaymentAmount(), 2)));
+    }
+
+    private function settledPaymentAmount(): float
+    {
+        $total = $this->payments()
+            ->where('status', 'completed')
+            ->where('currency', $this->currency)
+            ->where(fn ($query) => $query->whereNull('customer_id')->orWhere('customer_id', $this->customer_id))
+            ->whereNotNull('transaction_id')
+            ->whereRaw("TRIM(transaction_id) <> ''")
+            ->selectRaw("COALESCE(SUM(CASE
+                WHEN refund_status IN ('full', 'completed') THEN 0
+                WHEN amount > COALESCE(refunded_amount, 0)
+                    THEN amount - COALESCE(refunded_amount, 0)
+                ELSE 0 END), 0) AS settled_total")
+            ->value('settled_total');
+
+        return round((float) $total, 2);
     }
 
     public function parentInvoice(): BelongsTo
@@ -580,8 +609,10 @@ class Invoice extends Model
     {
         return Attribute::make(
             get: function ($value) {
-                if ($this->paid_at) {
-                    return 'paid';
+                // Sent/viewed timestamps describe delivery, not settlement.
+                // Financial state must remain authoritative after reversals.
+                if ($value !== 'pending') {
+                    return $value;
                 }
                 if ($this->viewed_at) {
                     return 'viewed';

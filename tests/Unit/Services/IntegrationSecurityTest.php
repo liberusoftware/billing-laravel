@@ -52,7 +52,7 @@ class IntegrationSecurityTest extends TestCase
             'services.enom.username' => 'trusted-uid',
             'services.enom.password' => 'trusted-pw',
         ]);
-        Http::fake(['*' => Http::response('<interface-response></interface-response>')]);
+        Http::fake(['*' => Http::response('<interface-response><ErrCount>0</ErrCount></interface-response>')]);
 
         app(EnomClient::class)->addDnsRecord('example.com', [
             'command' => 'DeleteAllDomains',

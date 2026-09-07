@@ -26,13 +26,15 @@ class DomainRenewalOnPaymentTest extends TestCase
         $this->enomFake();
 
         $subscription = Subscription::factory()->create([
+            'status' => 'active',
             'domain_name' => 'example.com',
             'domain_registrar' => 'enom',
         ]);
 
-        $invoice = Invoice::factory()->create(['subscription_id' => $subscription->id]);
+        $invoice = Invoice::factory()->create(['subscription_id' => $subscription->id, 'customer_id' => $subscription->customer_id]);
 
         $invoice->markAsPaid();
+        $this->artisan('domains:process-renewals')->assertSuccessful();
 
         Http::assertSent(fn ($r): bool => str_contains($r->url(), 'command=Extend'));
     }
@@ -42,14 +44,17 @@ class DomainRenewalOnPaymentTest extends TestCase
         $this->enomFake();
 
         $subscription = Subscription::factory()->create([
+            'status' => 'active',
             'domain_name' => 'example.com',
             'domain_registrar' => 'enom',
         ]);
 
-        $invoice = Invoice::factory()->create(['subscription_id' => $subscription->id]);
+        $invoice = Invoice::factory()->create(['subscription_id' => $subscription->id, 'customer_id' => $subscription->customer_id]);
 
         $invoice->markAsPaid();
+        $this->artisan('domains:process-renewals')->assertSuccessful();
         $invoice->markAsPaid();
+        $this->artisan('domains:process-renewals')->assertSuccessful();
 
         Http::assertSentCount(1);
     }
@@ -59,13 +64,15 @@ class DomainRenewalOnPaymentTest extends TestCase
         $this->enomFake();
 
         $subscription = Subscription::factory()->create([
+            'status' => 'active',
             'domain_name' => null,
             'domain_registrar' => null,
         ]);
 
-        $invoice = Invoice::factory()->create(['subscription_id' => $subscription->id]);
+        $invoice = Invoice::factory()->create(['subscription_id' => $subscription->id, 'customer_id' => $subscription->customer_id]);
 
         $invoice->markAsPaid();
+        $this->artisan('domains:process-renewals')->assertSuccessful();
 
         Http::assertNothingSent();
     }

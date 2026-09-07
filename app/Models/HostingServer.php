@@ -41,22 +41,24 @@ use Override;
     'is_active',
     'max_accounts',
     'active_accounts',
+    'team_id',
 ])]
 class HostingServer extends Model
 {
     use HasFactory;
     use HasTeam;
 
+    protected $hidden = ['api_token'];
+
     #[Override]
     protected function casts(): array
     {
-
         return [
             'is_active' => 'boolean',
             'max_accounts' => 'integer',
             'active_accounts' => 'integer',
+            'api_token' => 'encrypted',
         ];
-
     }
 
     public function hostingAccounts(): HasMany

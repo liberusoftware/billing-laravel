@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Events\InvoiceStatusChanged;
+use App\Listeners\QueuePaidSubscriptionChanges;
 use App\Listeners\RenewDomainOnPayment;
 use App\Services\AuditLogService;
 use Illuminate\Auth\Events\Failed;
@@ -27,6 +28,7 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         InvoiceStatusChanged::class => [
             RenewDomainOnPayment::class,
+            QueuePaidSubscriptionChanges::class,
         ],
     ];
 

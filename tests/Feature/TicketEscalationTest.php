@@ -32,6 +32,7 @@ class TicketEscalationTest extends TestCase
         app(TicketEscalationService::class)->escalate();
 
         $this->assertSame('medium', $ticket->fresh()->priority);
+        $this->assertNotNull($ticket->fresh()->sla_breached_at);
     }
 
     public function test_escalation_reassigns_to_target(): void

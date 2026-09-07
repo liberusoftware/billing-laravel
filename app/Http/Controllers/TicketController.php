@@ -8,6 +8,7 @@ use App\Models\Ticket;
 use App\Models\TicketAttachment;
 use App\Models\TicketCustomField;
 use App\Models\User;
+use App\Services\CannedResponseService;
 use App\Notifications\NewTicketNotification;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -35,7 +36,9 @@ class TicketController extends Controller
 
     public function create(): Factory|View
     {
-        return view('tickets.create');
+        $subscriptions = auth()->user()->customer?->subscriptions()->with('productService')->latest()->get() ?? collect();
+
+        return view('tickets.create', compact('subscriptions'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -54,6 +57,8 @@ class TicketController extends Controller
                 'required',
                 'in:low,medium,high',
             ],
+            'subscription_id' => ['nullable', 'integer', 'exists:subscriptions,id'],
+            'domain_name' => ['nullable', 'string', 'max:255'],
         ];
 
         // Add a rule per admin-defined custom field; required ones must be filled.
@@ -64,6 +69,11 @@ class TicketController extends Controller
 
         $validated = $request->validate($rules);
 
+        if (isset($validated['subscription_id'])) {
+            $owned = auth()->user()->customer?->subscriptions()->whereKey($validated['subscription_id'])->exists() ?? false;
+            abort_unless($owned, 404);
+        }
+
         $ticket = Ticket::create(
             [
                 'user_id' => auth()->id(),
@@ -71,6 +81,8 @@ class TicketController extends Controller
                 'description' => $validated['description'],
                 'priority' => $validated['priority'],
                 'custom_fields' => $request->input('custom_fields', []),
+                'subscription_id' => $validated['subscription_id'] ?? null,
+                'domain_name' => $validated['domain_name'] ?? null,
             ]
         );
 
@@ -107,19 +119,16 @@ class TicketController extends Controller
                 'user',
                 'assignee',
                 'department',
+                'subscription',
             ]
         );
 
-        $staff = User::role(
-            [
-                'admin',
-                'super_admin',
-            ]
-        )->get();
+        $staff = User::query()->whereHas('roles', fn ($query) => $query->whereIn('name', ['admin', 'super_admin']))->get();
+        $cannedResponses = app(CannedResponseService::class)->getAll($ticket->user?->currentTeam?->id);
 
         return view(
             'tickets.show',
-            compact('ticket', 'staff')
+            compact('ticket', 'staff', 'cannedResponses')
         );
     }
 

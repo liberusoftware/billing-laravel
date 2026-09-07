@@ -3,6 +3,7 @@
 namespace Tests\Unit\Services;
 
 use App\Models\Customer;
+use App\Models\DomainRenewal;
 use App\Models\Invoice;
 use App\Models\PaymentGateway;
 use App\Models\PaymentMethod;
@@ -64,6 +65,61 @@ class BillingServiceTest extends TestCase
         $this->assertDatabaseHas('invoices', [
             'customer_id' => $subscription->customer_id,
         ]);
+    }
+
+    public function test_recurring_plan_billing_uses_fixed_price_and_dispatches_domain_renewal_intent(): void
+    {
+        $subscription = Subscription::factory()->create([
+            'end_date' => Carbon::yesterday(),
+            'status' => 'active',
+            'auto_renew' => true,
+            'price' => 29.95,
+            'currency' => 'USD',
+            'domain_name' => 'renewal.example',
+            'domain_registrar' => 'enom',
+        ]);
+        $gateway = PaymentGateway::create([
+            'name' => 'Test Gateway',
+            'api_key' => 'key',
+            'secret_key' => 'secret',
+        ]);
+        PaymentMethod::create([
+            'customer_id' => $subscription->customer_id,
+            'payment_gateway_id' => $gateway->id,
+            'type' => 'card',
+            'is_default' => true,
+        ]);
+
+        $this->billingService->processRecurringBilling();
+
+        $invoice = Invoice::query()->where('subscription_id', $subscription->id)->latest('id')->firstOrFail();
+        $this->assertSame(29.95, (float) $invoice->total_amount);
+        $this->assertSame('paid', $invoice->status);
+        $this->assertTrue($invoice->is_recurring);
+        $this->assertDatabaseHas('domain_renewals', [
+            'invoice_id' => $invoice->id,
+            'subscription_id' => $subscription->id,
+            'domain' => 'renewal.example',
+            'registrar' => 'enom',
+            'status' => 'pending',
+        ]);
+        $this->assertInstanceOf(DomainRenewal::class, DomainRenewal::where('invoice_id', $invoice->id)->first());
+    }
+
+    public function test_failed_collection_does_not_create_a_second_invoice_for_the_same_renewal_period(): void
+    {
+        $subscription = Subscription::factory()->create([
+            'end_date' => Carbon::yesterday(),
+            'status' => 'active',
+            'auto_renew' => true,
+            'price' => 29.95,
+        ]);
+
+        $this->billingService->processRecurringBilling();
+        $this->billingService->processRecurringBilling();
+
+        $this->assertSame(1, Invoice::query()->where('subscription_id', $subscription->id)
+            ->whereNotNull('renewal_period_end')->count());
     }
 
     public function test_upgrade_subscription_charges_prorated_difference(): void

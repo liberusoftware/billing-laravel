@@ -10,6 +10,21 @@
                     @csrf
 
                     <div class="mb-4">
+                        <label for="subscription_id" class="block text-sm font-medium text-gray-700 mb-1">Related service (optional)</label>
+                        <select id="subscription_id" name="subscription_id" class="w-full border-gray-300 rounded-lg shadow-sm">
+                            <option value="">No specific service</option>
+                            @foreach($subscriptions as $subscription)
+                                <option value="{{ $subscription->id }}" {{ old('subscription_id') == $subscription->id ? 'selected' : '' }}>{{ $subscription->productService?->name }}{{ $subscription->domain_name ? ' — '.$subscription->domain_name : '' }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="domain_name" class="block text-sm font-medium text-gray-700 mb-1">Related domain (optional)</label>
+                        <input type="text" id="domain_name" name="domain_name" value="{{ old('domain_name') }}" class="w-full border-gray-300 rounded-lg shadow-sm" maxlength="255">
+                    </div>
+
+                    <div class="mb-4">
                         <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
                         <input type="text" id="title" name="title" value="{{ old('title') }}"
                             class="w-full border-gray-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500 @error('title') border-red-500 @enderror"

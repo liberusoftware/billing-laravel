@@ -63,6 +63,7 @@ class PaymentReconciliationTest extends TestCase
             'customer_id' => $customer->id,
             'invoice_id' => $invoice->id,
             'amount' => 75.0,
+            'status' => 'completed',
             'currency' => 'USD',
         ]);
 

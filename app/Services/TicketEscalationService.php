@@ -51,7 +51,14 @@ class TicketEscalationService
             ->filter(function (Ticket $ticket) use ($threshold): bool {
                 $lastActivity = $ticket->responses_max_created_at ?? $ticket->created_at;
 
-                return $lastActivity !== null && $lastActivity < $threshold;
+                if ($lastActivity === null || $lastActivity >= $threshold) {
+                    return false;
+                }
+                if ($ticket->sla_breached_at === null) {
+                    $ticket->update(['sla_breached_at' => now()]);
+                }
+
+                return true;
             });
     }
 

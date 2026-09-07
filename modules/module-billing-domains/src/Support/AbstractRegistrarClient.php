@@ -29,7 +29,7 @@ abstract class AbstractRegistrarClient
     /** @param array<string, mixed> $query @return array<string, mixed> */
     protected function get(string $url, array $query, array $headers = []): array
     {
-        $response = $this->http->withHeaders($headers)->timeout(30)->retry(2, 250)->get($url, $query);
+        $response = $this->http->withHeaders($headers)->connectTimeout(5)->timeout(30)->get($url, $query);
 
         return $this->response($response);
     }
@@ -37,7 +37,7 @@ abstract class AbstractRegistrarClient
     /** @param array<string, mixed> $payload @return array<string, mixed> */
     protected function post(string $url, array $payload, array $headers = []): array
     {
-        $response = $this->http->withHeaders($headers)->timeout(30)->retry(2, 250)->post($url, $payload);
+        $response = $this->http->withHeaders($headers)->connectTimeout(5)->timeout(30)->post($url, $payload);
 
         return $this->response($response);
     }
@@ -52,10 +52,30 @@ abstract class AbstractRegistrarClient
         if (is_array($json)) {
             return $json;
         }
-        parse_str($response->body(), $parsed);
-        if (! is_array($parsed)) {
+        $body = trim($response->body());
+        if (str_starts_with($body, '<')) {
+            $previous = libxml_use_internal_errors(true);
+            try {
+                // Do not resolve entities or load external documents from a provider response.
+                if (stripos($body, '<!DOCTYPE') !== false || stripos($body, '<!ENTITY') !== false) {
+                    throw new RuntimeException('Registrar API returned an invalid response.');
+                }
+                $xml = simplexml_load_string($body, \SimpleXMLElement::class, LIBXML_NONET | LIBXML_NOCDATA);
+                if ($xml === false || $xml->getName() !== 'interface-response') {
+                    throw new RuntimeException('Registrar API returned an invalid response.');
+                }
+
+                return json_decode(json_encode($xml, JSON_THROW_ON_ERROR), true, 512, JSON_THROW_ON_ERROR);
+            } finally {
+                libxml_clear_errors();
+                libxml_use_internal_errors($previous);
+            }
+        }
+
+        if ($body === '' || ! str_contains($body, '=')) {
             throw new RuntimeException('Registrar API returned an invalid response.');
         }
+        parse_str($body, $parsed);
 
         return $parsed;
     }
