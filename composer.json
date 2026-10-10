@@ -87,90 +87,594 @@
                 "symlink": false
             }
         },
-        {"type": "path", "url": "modules/module-billing-catalog-api", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-catalog-filament", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-catalog-livewire", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-pricing", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-pricing-api", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-pricing-filament", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-pricing-livewire", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-orders", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-orders-api", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-orders-filament", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-orders-livewire", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-subscriptions", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-subscriptions-api", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-subscriptions-filament", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-subscriptions-livewire", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-payments", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-payments-api", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-payments-filament", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-payments-livewire", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-stripe", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-paddle", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-invoicing", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-invoicing-api", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-invoicing-filament", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-invoicing-livewire", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-collections", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-collections-api", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-collections-filament", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-collections-livewire", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-usage", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-usage-api", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-usage-filament", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-usage-livewire", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-provisioning", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-provisioning-api", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-provisioning-filament", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-provisioning-livewire", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-hosting", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-hosting-api", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-hosting-filament", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-hosting-livewire", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-cpanel", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-directadmin", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-virtualmin", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-plesk", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-liberu-control-panel", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-domains", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-domains-api", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-domains-filament", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-domains-livewire", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-enom", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-resellerclub", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-isp", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-isp-api", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-isp-filament", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-isp-livewire", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-communications", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-communications-api", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-communications-filament", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-communications-livewire", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-customer-portal", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-customer-portal-api", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-customer-portal-filament", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-customer-portal-livewire", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-reporting", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-reporting-api", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-reporting-filament", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-billing-reporting-livewire", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-liberu-business-workflow-reconciliation", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-liberu-business-workflow-reconciliation-api", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-liberu-business-workflow-reconciliation-filament", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-liberu-business-workflow-reconciliation-livewire", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-liberu-executive-insights", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-liberu-executive-insights-api", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-liberu-executive-insights-filament", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-liberu-executive-insights-livewire", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-liberu-platform-orchestration", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-liberu-platform-orchestration-api", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-liberu-platform-orchestration-filament", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-liberu-platform-orchestration-livewire", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-liberu-revenue-and-care-orchestration", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-liberu-revenue-and-care-orchestration-api", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-liberu-revenue-and-care-orchestration-filament", "options": {"symlink": false}},
-        {"type": "path", "url": "modules/module-liberu-revenue-and-care-orchestration-livewire", "options": {"symlink": false}},
+        {
+            "type": "path",
+            "url": "modules/module-billing-catalog-api",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-catalog-filament",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-catalog-livewire",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-pricing",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-pricing-api",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-pricing-filament",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-pricing-livewire",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-orders",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-orders-api",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-orders-filament",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-orders-livewire",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-subscriptions",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-subscriptions-api",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-subscriptions-filament",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-subscriptions-livewire",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-payments",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-payments-api",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-payments-filament",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-payments-livewire",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-stripe",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-paddle",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-invoicing",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-invoicing-api",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-invoicing-filament",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-invoicing-livewire",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-collections",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-collections-api",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-collections-filament",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-collections-livewire",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-usage",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-usage-api",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-usage-filament",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-usage-livewire",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-provisioning",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-provisioning-api",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-provisioning-filament",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-provisioning-livewire",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-hosting",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-hosting-api",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-hosting-filament",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-hosting-livewire",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-cpanel",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-directadmin",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-virtualmin",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-plesk",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-liberu-control-panel",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-domains",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-domains-api",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-domains-filament",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-domains-livewire",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-enom",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-resellerclub",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-isp",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-isp-api",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-isp-filament",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-isp-livewire",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-communications",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-communications-api",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-communications-filament",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-communications-livewire",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-customer-portal",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-customer-portal-api",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-customer-portal-filament",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-customer-portal-livewire",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-reporting",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-reporting-api",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-reporting-filament",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-billing-reporting-livewire",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-liberu-business-workflow-reconciliation",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-liberu-business-workflow-reconciliation-api",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-liberu-business-workflow-reconciliation-filament",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-liberu-business-workflow-reconciliation-livewire",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-liberu-executive-insights",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-liberu-executive-insights-api",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-liberu-executive-insights-filament",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-liberu-executive-insights-livewire",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-liberu-platform-orchestration",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-liberu-platform-orchestration-api",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-liberu-platform-orchestration-filament",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-liberu-platform-orchestration-livewire",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-liberu-revenue-and-care-orchestration",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-liberu-revenue-and-care-orchestration-api",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-liberu-revenue-and-care-orchestration-filament",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-liberu-revenue-and-care-orchestration-livewire",
+            "options": {
+                "symlink": false
+            }
+        },
         {
             "type": "vcs",
             "url": "https://github.com/liberusoftware/composer-installer.git"
@@ -358,6 +862,503 @@
         {
             "type": "vcs",
             "url": "https://github.com/liberusoftware/theme-base.git"
+        },
+        {
+            "type": "path",
+            "url": "modules/activity-comments",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/analytics-core",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/analytics-google",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/analytics-meta",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/application",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/audit",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/currency-context",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/developer-experience",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/feature-flags",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/files-media",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/identity-core-filament",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/identity-core",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/identity-socialstream",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/import-export",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/integrations",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/jetstream-bridge",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/liberu-business-workflow-reconciliation-api",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/liberu-business-workflow-reconciliation-filament",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/liberu-business-workflow-reconciliation-livewire",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/liberu-business-workflow-reconciliation",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/liberu-executive-insights-api",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/liberu-executive-insights-filament",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/liberu-executive-insights-livewire",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/liberu-executive-insights",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/liberu-platform-orchestration-api",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/liberu-platform-orchestration-filament",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/liberu-platform-orchestration-livewire",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/liberu-platform-orchestration",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/liberu-revenue-and-care-orchestration-api",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/liberu-revenue-and-care-orchestration-filament",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/liberu-revenue-and-care-orchestration-livewire",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/liberu-revenue-and-care-orchestration",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/localization-core-livewire",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/localization-core",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/localization-mymemory",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/liberu-business-workflow-reconciliation-api",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/liberu-business-workflow-reconciliation-filament",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/liberu-business-workflow-reconciliation-livewire",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/liberu-business-workflow-reconciliation",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/liberu-executive-insights-api",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/liberu-executive-insights-filament",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/liberu-executive-insights-livewire",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/liberu-executive-insights",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/liberu-platform-orchestration-api",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/liberu-platform-orchestration-filament",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/liberu-platform-orchestration-livewire",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/liberu-platform-orchestration",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/liberu-revenue-and-care-orchestration-api",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/liberu-revenue-and-care-orchestration-filament",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/liberu-revenue-and-care-orchestration-livewire",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/liberu-revenue-and-care-orchestration",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-manager-filament",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/module-manager",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/notifications",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/observability",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/organizations-teams-filament",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/organizations-teams",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/profiles",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/roles-permissions-filament",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/roles-permissions",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/scheduler-queues",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/search-api",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/search",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/sessions-devices-filament",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/sessions-devices",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/settings-filament",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/settings",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/theme-support-livewire",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/theme-support",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/two-factor-authentication",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "modules/webhooks",
+            "options": {
+                "symlink": true
+            }
         }
     ],
     "require": {
