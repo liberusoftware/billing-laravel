@@ -177,6 +177,7 @@ API failures without printing the configured token.
 
 ## Documentation
 
+- [Billing architecture](docs/BILLING_ARCHITECTURE.md)
 - [Module development](docs/MODULE_DEVELOPMENT.md)
 - [Foundation compliance](docs/FOUNDATION_COMPLIANCE.md)
 - [Foundation module matrix](docs/FOUNDATION_MODULE_MATRIX.md)
