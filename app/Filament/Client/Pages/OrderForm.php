@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Client\Pages;
 
 use App\Enums\BillingCycle;
-use App\Filament\Client\Resources\Orders\OrderResource;
+use App\Filament\Client\Resources\InvoiceResource;
 use App\Models\OrderFormTemplate;
 use App\Models\SubscriptionPlan;
 use App\Models\User;
@@ -170,6 +170,6 @@ class OrderForm extends Page
             ->success()
             ->send();
 
-        return redirect()->to(OrderResource::getUrl(panel: 'client'));
+        return redirect()->to(InvoiceResource::getUrl(panel: 'client'));
     }
 }

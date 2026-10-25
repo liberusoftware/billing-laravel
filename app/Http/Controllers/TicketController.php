@@ -8,8 +8,8 @@ use App\Models\Ticket;
 use App\Models\TicketAttachment;
 use App\Models\TicketCustomField;
 use App\Models\User;
-use App\Services\CannedResponseService;
 use App\Notifications\NewTicketNotification;
+use App\Services\CannedResponseService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -124,7 +124,7 @@ class TicketController extends Controller
         );
 
         $staff = User::query()->whereHas('roles', fn ($query) => $query->whereIn('name', ['admin', 'super_admin']))->get();
-        $cannedResponses = app(CannedResponseService::class)->getAll($ticket->user?->currentTeam?->id);
+        $cannedResponses = app(CannedResponseService::class)->getAll($ticket->user?->currentTeam?->getKey());
 
         return view(
             'tickets.show',

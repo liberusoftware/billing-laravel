@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Liberu\Billing\CustomerPortal\Api\CustomerPortalApiServiceProvider\Models;
 
-use Liberu\Billing\CustomerPortal\Api\CustomerPortalApiServiceProvider\Enums\CustomerStatus;
-use Liberu\Billing\CustomerPortal\Api\CustomerPortalApiServiceProvider\Enums\CustomerType;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,6 +12,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
+use Liberu\Billing\CustomerPortal\Api\CustomerPortalApiServiceProvider\Enums\CustomerStatus;
+use Liberu\Billing\CustomerPortal\Api\CustomerPortalApiServiceProvider\Enums\CustomerType;
 
 /**
  * @property int $id
