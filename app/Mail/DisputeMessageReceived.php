@@ -22,6 +22,6 @@ class DisputeMessageReceived extends Mailable
 
     public function content(): Content
     {
-        return new Content(view: 'emails.disputes.message-received');
+        return new Content(markdown: 'emails.disputes.message-received');
     }
 }

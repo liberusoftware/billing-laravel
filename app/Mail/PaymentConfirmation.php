@@ -32,7 +32,7 @@ class PaymentConfirmation extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.payment-confirmation',
+            markdown: 'emails.payment-confirmation',
         );
     }
 

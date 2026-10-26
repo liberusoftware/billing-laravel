@@ -22,6 +22,6 @@ class DisputeCreated extends Mailable
 
     public function content(): Content
     {
-        return new Content(view: 'emails.disputes.created');
+        return new Content(markdown: 'emails.disputes.created');
     }
 }

@@ -22,6 +22,6 @@ class DisputeStatusUpdated extends Mailable
 
     public function content(): Content
     {
-        return new Content(view: 'emails.disputes.status-updated');
+        return new Content(markdown: 'emails.disputes.status-updated');
     }
 }
