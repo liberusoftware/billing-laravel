@@ -7,6 +7,7 @@ namespace App\Services;
 use Exception;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
+use Symfony\Component\Process\Process;
 
 class InstallationScriptService
 {
@@ -78,9 +79,22 @@ class InstallationScriptService
     {
         $domain = escapeshellarg($this->domain);    // phpcs:ignore -- nosemgrep
         $gitRepo = escapeshellarg($this->gitRepo);   // phpcs:ignore -- nosemgrep
-        $dbName = escapeshellarg($this->dbName);    // phpcs:ignore -- nosemgrep
-        $dbUser = escapeshellarg($this->dbUser);    // phpcs:ignore -- nosemgrep
-        $dbPass = escapeshellarg((string) $this->dbPass);    // phpcs:ignore -- nosemgrep
+        $environment = [];
+        foreach (['DB_DATABASE' => $this->dbName, 'DB_USERNAME' => $this->dbUser, 'DB_PASSWORD' => (string) $this->dbPass] as $key => $value) {
+            $escaped = str_replace(
+                ['\\', '"', '$', "\n", "\r"],
+                ['\\\\', '\\"', '\\$', '\\n', '\\r'],
+                $value,
+            );
+            $environment[$key] = $key.'="'.$escaped.'"';
+        }
+        $updateEnvironment = '$path = ".env"; $content = file_get_contents($path); '
+            .'foreach (json_decode(base64_decode(stream_get_contents(STDIN)), true, 512, JSON_THROW_ON_ERROR) as $key => $line) { '
+            .'$pattern = "/^".preg_quote($key, "/")."=.*$/m"; '
+            .'$content = preg_match($pattern, $content) ? preg_replace_callback($pattern, fn () => $line, $content) : $content."\\n".$line."\\n"; '
+            .'} if (file_put_contents($path, $content, LOCK_EX) === false) { exit(1); } chmod($path, 0600);';
+        $environmentCommand = "printf '%s' ".escapeshellarg(base64_encode(json_encode($environment, JSON_THROW_ON_ERROR)))
+            .' | php -r '.escapeshellarg($updateEnvironment);
 
         $installDir = "~/laravel-apps/{$domain}";
         $publicHtmlPath = $this->getPublicHtmlPath();
@@ -105,9 +119,7 @@ class InstallationScriptService
             '',
             '# Setup Laravel environment',
             'cp .env.example .env',
-            "sed -i \"s/^DB_DATABASE=.*/DB_DATABASE={$dbName}/\" .env",
-            "sed -i \"s/^DB_USERNAME=.*/DB_USERNAME={$dbUser}/\" .env",
-            "sed -i \"s/^DB_PASSWORD=.*/DB_PASSWORD={$dbPass}/\" .env",
+            $environmentCommand,
             '',
             '# Generate application key',
             'php artisan key:generate',
@@ -123,6 +135,7 @@ class InstallationScriptService
             'find . -type f -exec chmod 644 {} \\;',
             'find . -type d -exec chmod 755 {} \\;',
             'chmod -R 775 storage bootstrap/cache',
+            'chmod 600 .env',
             '',
             '# Create symbolic link',
             "ln -sf {$installDir}/public {$publicHtmlPath}",
@@ -162,11 +175,17 @@ class InstallationScriptService
             );
             chmod(
                 $scriptPath,
-                0755
+                0700
             );
 
-            $output = shell_exec($scriptPath.' 2>&1');
-            unlink($scriptPath);
+            try {
+                $process = new Process(['bash', $scriptPath]);
+                $process->setTimeout(null);
+                $process->mustRun();
+                $output = $process->getOutput();
+            } finally {
+                unlink($scriptPath);
+            }
 
             Log::info(
                 'Installation script executed successfully',

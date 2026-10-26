@@ -3,7 +3,7 @@
   "description": "Provider-neutral pricing, contracts, discounts, proration, and snapshots for Liberu Billing.",
   "type": "liberu-module",
   "license": "MIT",
-  "require": {"php": "^8.5", "illuminate/database": "^13.0", "illuminate/support": "^13.0", "liberusoftware/module-manager": "^1.0"},
+  "require": {"php": "^8.5", "illuminate/database": "^13.38.0", "illuminate/support": "^13.38.0", "liberusoftware/module-manager": "^1.0"},
   "autoload": {"psr-4": {"Liberu\\Billing\\Pricing\\": "src/"}},
   "extra": {"liberu": {"name": "module-billing-pricing"}},
   "version": "0.1.2",
