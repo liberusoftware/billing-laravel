@@ -1328,7 +1328,10 @@
                     "liberusoftware/two-factor-authentication": "1.4.1",
                     "liberusoftware/webhooks": "1.4.1"
                 }
-            }
+            },
+            "exclude": [
+                "liberusoftware/tenancy"
+            ]
         },
         {
             "type": "path",
@@ -1501,6 +1504,7 @@
         "liberusoftware/sessions-devices-filament": "^1.1",
         "liberusoftware/settings": "^1.0",
         "liberusoftware/settings-filament": "^1.0",
+        "liberusoftware/tenancy": "^1.0",
         "liberusoftware/theme-base": "^2.0",
         "liberusoftware/theme-billing": "^1.0",
         "liberusoftware/theme-clear-signal": "^1.0",
