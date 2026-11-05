@@ -19,9 +19,15 @@ class PleskClient
 
     protected $apiKey;
 
+    protected ?\SimpleXMLElement $lastResponse = null;
+
     public function __construct()
     {
-        $this->client = new Client();
+        $this->client = new Client([
+            'connect_timeout' => 5,
+            'timeout' => 30,
+            'allow_redirects' => false,
+        ]);
     }
 
     public function setServer(HostingServer $server): void
@@ -35,83 +41,35 @@ class PleskClient
      */
     public function createAccount($username, $domain, $package): bool
     {
-        $xml = $this->buildXmlRequest(
-            'webspace.add',
-            [
-                'gen_setup' => [
-                    'name' => $domain,
-                    'owner-login' => $username,
-                    'owner-password' => $this->generatePassword(),
+        if (! $this->makeApiCall($this->buildXmlRequest('customer.add', [
+            'gen_info' => [
+                'pname' => $username,
+                'login' => $username,
+                'passwd' => $this->generatePassword(),
+                'email' => $username.'@'.$domain,
+            ],
+        ]))) {
+            return false;
+        }
+
+        return $this->makeApiCall($this->buildXmlRequest('webspace.add', [
+            'gen_setup' => [
+                'name' => $domain,
+                'owner-login' => $username,
+                'htype' => 'vrt_hst',
+                'ip_address' => $this->server->ip_address,
+            ],
+            'hosting' => [
+                'vrt_hst' => [
+                    'property' => [
+                        ['name' => 'ftp_login', 'value' => $username],
+                        ['name' => 'ftp_password', 'value' => $this->generatePassword()],
+                    ],
                     'ip_address' => $this->server->ip_address,
                 ],
-                'hosting' => [
-                    'vrt_hst' => [
-                        'property' => [
-                            [
-                                'name' => 'ftp_login',
-                                'value' => $username,
-                            ],
-                            [
-                                'name' => 'ftp_password',
-                                'value' => $this->generatePassword(),
-                            ],
-                            [
-                                'name' => 'php',
-                                'value' => 'true',
-                            ],
-                            [
-                                'name' => 'ssl',
-                                'value' => 'true',
-                            ],
-                            [
-                                'name' => 'webstat',
-                                'value' => 'awstats',
-                            ],
-                            [
-                                'name' => 'www-root',
-                                'value' => "/var/www/vhosts/{$domain}",
-                            ],
-                        ],
-                    ],
-                ],
-                'limits' => [
-                    'overuse' => 'block',
-                    'limit' => [
-                        [
-                            'name' => 'disk_space',
-                            'value' => 'unlimited',
-                        ],
-                        [
-                            'name' => 'max_traffic',
-                            'value' => 'unlimited',
-                        ],
-                        [
-                            'name' => 'max_subdom',
-                            'value' => 'unlimited',
-                        ],
-                        [
-                            'name' => 'max_dom',
-                            'value' => 'unlimited',
-                        ],
-                        [
-                            'name' => 'max_db',
-                            'value' => 'unlimited',
-                        ],
-                        [
-                            'name' => 'max_mail',
-                            'value' => 'unlimited',
-                        ],
-                        [
-                            'name' => 'max_wu',
-                            'value' => 'unlimited',
-                        ],
-                    ],
-                ],
-                'plan-name' => $package,
-            ]
-        );
-
-        return $this->makeApiCall($xml);
+            ],
+            'plan-name' => $package,
+        ]));
     }
 
     /**
@@ -123,9 +81,7 @@ class PleskClient
             'customer.set',
             [
                 'filter' => ['login' => $username],
-                'values' => ['status' => '16'],
-                // 16 is suspended status
-                'general' => ['status' => 'suspended'],
+                'gen_info' => ['status' => '16'],
             ]
         );
 
@@ -141,9 +97,7 @@ class PleskClient
             'customer.set',
             [
                 'filter' => ['login' => $username],
-                'values' => ['status' => '0'],
-                // 0 is active status
-                'general' => ['status' => 'active'],
+                'gen_info' => ['status' => '0'],
             ]
         );
 
@@ -155,15 +109,7 @@ class PleskClient
      */
     public function changePackage($username, $newPackage): bool
     {
-        $xml = $this->buildXmlRequest(
-            'service-plan.set',
-            [
-                'filter' => ['owner-login' => $username],
-                'values' => ['name' => $newPackage],
-            ]
-        );
-
-        return $this->makeApiCall($xml);
+        return $this->changePlan($username, $newPackage, 'service-plan', 'switch-subscription');
     }
 
     /**
@@ -186,31 +132,28 @@ class PleskClient
      */
     public function addAddon($username, $addon): bool
     {
-        $xml = $this->buildXmlRequest(
-            'site-addon.add',
-            [
-                'filter' => ['owner-login' => $username],
-                'addon' => ['name' => $addon],
-            ]
-        );
-
-        return $this->makeApiCall($xml);
+        return $this->changePlan($username, $addon, 'service-plan-addon', 'add-subscription');
     }
 
-    /**
-     * @throws Exception
-     */
     public function removeAddon($username, $addon): bool
     {
-        $xml = $this->buildXmlRequest(
-            'site-addon.del',
-            [
-                'filter' => ['owner-login' => $username],
-                'addon' => ['name' => $addon],
-            ]
-        );
+        return $this->changePlan($username, $addon, 'service-plan-addon', 'remove-subscription');
+    }
 
-        return $this->makeApiCall($xml);
+    private function changePlan(string $username, string $plan, string $operator, string $operation): bool
+    {
+        if (! $this->makeApiCall($this->buildXmlRequest($operator.'.get', ['filter' => ['name' => $plan]]))) {
+            return false;
+        }
+        $guids = $this->lastResponse?->xpath('//result/guid') ?: [];
+        if (count($guids) !== 1 || (string) $guids[0] === '') {
+            return false;
+        }
+
+        return $this->makeApiCall($this->buildXmlRequest('webspace.'.$operation, [
+            'filter' => ['owner-login' => $username],
+            'plan-guid' => (string) $guids[0],
+        ]));
     }
 
     protected function makeApiCall($xml): bool
@@ -219,23 +162,32 @@ class PleskClient
             throw new Exception('Server not configured');
         }
 
+        $this->lastResponse = null;
+
         try {
             $response = $this->client->request(
                 'POST',
-                'https://'.$this->server->hostname.':8443/api/v2/cli/server/',
+                'https://'.$this->server->hostname.':8443/enterprise/control/agent.php',
                 [
                     'headers' => [
                         'Content-Type' => 'text/xml',
                         'HTTP_AUTH_KEY' => $this->apiKey,
-                        'KEY' => $this->apiKey,
                     ],
                     'body' => $xml,
                 ]
             );
 
-            $result = simplexml_load_string($response->getBody()->getContents());
+            $previousErrors = libxml_use_internal_errors(true);
+            try {
+                $result = simplexml_load_string((string) $response->getBody(), \SimpleXMLElement::class, LIBXML_NONET);
+            } finally {
+                libxml_clear_errors();
+                libxml_use_internal_errors($previousErrors);
+            }
+            $statuses = $result === false ? [] : $result->xpath('//result/status');
 
-            if ((string) $result->status === 'ok') {
+            if ($statuses !== [] && collect($statuses)->every(fn ($status): bool => (string) $status === 'ok')) {
+                $this->lastResponse = $result;
                 Log::info(
                     'Plesk API call successful',
                     ['server' => $this->server->hostname]
@@ -248,7 +200,7 @@ class PleskClient
                 'Plesk API call failed',
                 [
                     'server' => $this->server->hostname,
-                    'error' => (string) $result->errtext,
+                    'error' => 'The Plesk operation failed or returned an invalid response.',
                 ]
             );
 
@@ -259,7 +211,7 @@ class PleskClient
                 'Plesk API call error',
                 [
                     'server' => $this->server->hostname,
-                    'error' => $e->getMessage(),
+                    'error' => $e::class,
                 ]
             );
 
@@ -271,9 +223,10 @@ class PleskClient
     {
         $xml = '<?xml version="1.0" encoding="UTF-8"?>';
         $xml .= '<packet version="1.6.9.1">';
-        $xml .= "<{$command}>";
+        [$operator, $operation] = explode('.', $command, 2);
+        $xml .= "<{$operator}><{$operation}>";
         $xml .= $this->arrayToXml($params);
-        $xml .= "</{$command}>";
+        $xml .= "</{$operation}></{$operator}>";
 
         return $xml.'</packet>';
     }
@@ -288,13 +241,13 @@ class PleskClient
                     // (e.g. multiple <property>/<limit> blocks), instead of
                     // collapsing them into invalid <0>/<1> numeric tags.
                     foreach ($value as $item) {
-                        $xml .= "<{$key}>".(is_array($item) ? $this->arrayToXml($item) : $item)."</{$key}>";
+                        $xml .= "<{$key}>".(is_array($item) ? $this->arrayToXml($item) : htmlspecialchars((string) $item, ENT_XML1 | ENT_QUOTES, 'UTF-8'))."</{$key}>";
                     }
                 } else {
                     $xml .= "<{$key}>".$this->arrayToXml($value)."</{$key}>";
                 }
             } else {
-                $xml .= "<{$key}>{$value}</{$key}>";
+                $xml .= "<{$key}>".htmlspecialchars((string) $value, ENT_XML1 | ENT_QUOTES, 'UTF-8')."</{$key}>";
             }
         }
 
@@ -306,6 +259,6 @@ class PleskClient
      */
     protected function generatePassword(): string
     {
-        return bin2hex(random_bytes(12));
+        return bin2hex(random_bytes(7));
     }
 }

@@ -21,7 +21,11 @@ class VirtualminClient
 
     public function __construct()
     {
-        $this->client = new Client();
+        $this->client = new Client([
+            'connect_timeout' => 5,
+            'timeout' => 30,
+            'allow_redirects' => false,
+        ]);
     }
 
     public function setServer(HostingServer $server): void
@@ -185,13 +189,13 @@ class VirtualminClient
 
             return false;
 
-        } catch (GuzzleException $e) {
+        } catch (GuzzleException|\JsonException $e) {
             Log::error(
                 'Virtualmin API call error',
                 [
                     'program' => $params['program'] ?? 'unknown',
                     'server' => $this->server->hostname,
-                    'error' => $e->getMessage(),
+                    'error' => $e::class,
                 ]
             );
 

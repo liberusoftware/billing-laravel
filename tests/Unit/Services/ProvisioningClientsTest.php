@@ -51,10 +51,10 @@ class ProvisioningClientsTest extends TestCase
         ];
         yield 'plesk' => [
             PleskClient::class,
-            '<packet><status>ok</status></packet>',
+            '<packet><webspace><add><result><status>ok</status></result></add></webspace></packet>',
             200,
             '<packet><status>error</status><errtext>bad</errtext></packet>',
-            '/api/v2/cli/server/',
+            '/enterprise/control/agent.php',
             'POST',
         ];
         yield 'directadmin' => [
@@ -127,11 +127,15 @@ class ProvisioningClientsTest extends TestCase
         $client->setServer($server);
 
         $history = [];
-        $this->injectGuzzle($client, [new Response(200, [], $successBody)], $history);
+        $responses = [new Response(200, [], $successBody)];
+        if ($class === PleskClient::class) {
+            $responses[] = new Response(200, [], $successBody);
+        }
+        $this->injectGuzzle($client, $responses, $history);
 
         $this->assertTrue($client->createAccount('testuser', 'example.com', 'basic'));
 
-        $this->assertCount(1, $history);
+        $this->assertCount($class === PleskClient::class ? 2 : 1, $history);
         $request = $history[0]['request'];
         $this->assertSame($method, $request->getMethod());
         $this->assertStringContainsString($urlFragment, (string) $request->getUri());
@@ -172,11 +176,12 @@ class ProvisioningClientsTest extends TestCase
         $client->setServer($server);
 
         $history = [];
-        $this->injectGuzzle($client, [new Response(200, [], '<packet><status>ok</status></packet>')], $history);
+        $body = '<packet><webspace><add><result><status>ok</status></result></add></webspace></packet>';
+        $this->injectGuzzle($client, [new Response(200, [], $body), new Response(200, [], $body)], $history);
 
         $client->createAccount('testuser', 'example.com', 'basic');
 
-        $body = (string) $history[0]['request']->getBody();
+        $body = (string) $history[1]['request']->getBody();
         $this->assertNotFalse(simplexml_load_string($body), 'Plesk request body is not valid XML');
         $this->assertStringContainsString('<property>', $body);
         $this->assertStringNotContainsString('<0', $body);

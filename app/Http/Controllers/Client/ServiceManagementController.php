@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Client;
 
+use App\Enums\BillingCycle;
 use App\Http\Controllers\Controller;
+use App\Models\Invoice;
 use App\Models\Products_Service;
 use App\Models\Subscription;
 use App\Models\SubscriptionChange;
@@ -13,6 +15,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ServiceManagementController extends Controller
@@ -21,7 +24,7 @@ class ServiceManagementController extends Controller
 
     public function index(): Factory|View
     {
-        $subscriptions = auth()->user()->customer?->subscriptions()->with('productService')->latest()->get() ?? collect();
+        $subscriptions = auth()->user()->customer?->subscriptions()->with(['productService', 'subscriptionPlan'])->latest()->get() ?? collect();
 
         return view(
             'client.services.index',
@@ -33,23 +36,27 @@ class ServiceManagementController extends Controller
     {
         $this->ensureOwnership($subscription);
 
-        $availableUpgrades = Products_Service::where(
-            'type',
-            $subscription->productService->type
-        )
+        abort_if($subscription->productService === null, 404);
+
+        $availableUpgrades = Products_Service::where('team_id', $subscription->productService->team_id)
+            ->where('hosting_server_id', $subscription->productService->hosting_server_id)->where(
+                'type',
+                $subscription->productService->type
+            )
             ->where(
-                'price',
+                'base_price',
                 '>',
                 $subscription->productService->price
             )
             ->get();
 
-        $availableDowngrades = Products_Service::where(
-            'type',
-            $subscription->productService->type
-        )
+        $availableDowngrades = Products_Service::where('team_id', $subscription->productService->team_id)
+            ->where('hosting_server_id', $subscription->productService->hosting_server_id)->where(
+                'type',
+                $subscription->productService->type
+            )
             ->where(
-                'price',
+                'base_price',
                 '<',
                 $subscription->productService->price
             )
@@ -75,7 +82,8 @@ class ServiceManagementController extends Controller
         );
 
         $newService = Products_Service::findOrFail($request->new_service_id);
-        abort_unless($newService->type === $subscription->productService->type, 422);
+
+        $this->ensureChangeAllowed($subscription, $newService, 'upgrade');
 
         // Calculate prorated amount
         $proratedAmount = $this->calculateProration(
@@ -83,18 +91,37 @@ class ServiceManagementController extends Controller
             $newService
         );
 
-        // Generate a pending invoice; provider changes are applied only after payment.
-        $invoice = $this->billingService->generateInvoice($subscription);
-        $invoice->total_amount = $proratedAmount;
-        $invoice->save();
-        SubscriptionChange::query()->create([
-            'subscription_id' => $subscription->id,
-            'customer_id' => $subscription->customer_id,
-            'invoice_id' => $invoice->id,
-            'target_product_service_id' => $newService->id,
-            'type' => 'upgrade',
-            'status' => 'pending',
-        ]);
+        DB::transaction(function () use ($subscription, $newService, $proratedAmount): void {
+            $subscription = Subscription::query()->lockForUpdate()->findOrFail($subscription->id);
+            $this->ensureChangeAllowed($subscription, $newService, 'upgrade');
+
+            $invoice = Invoice::query()->create([
+                'subscription_id' => $subscription->id,
+                'customer_id' => $subscription->customer_id,
+                'issue_date' => now(),
+                'due_date' => $subscription->end_date,
+                'currency' => $subscription->currency,
+                'total_amount' => $proratedAmount,
+                'status' => 'pending',
+            ]);
+            $invoice->forceFill(['team_id' => $subscription->team_id])->save();
+            $invoice->items()->create([
+                'description' => 'Prorated upgrade to '.$newService->name,
+                'quantity' => 1,
+                'unit_price' => $proratedAmount,
+                'total_price' => $proratedAmount,
+                'currency' => $subscription->currency,
+                'product_service_id' => $newService->id,
+            ]);
+            SubscriptionChange::query()->create([
+                'subscription_id' => $subscription->id,
+                'customer_id' => $subscription->customer_id,
+                'invoice_id' => $invoice->id,
+                'target_product_service_id' => $newService->id,
+                'type' => 'upgrade',
+                'status' => 'pending',
+            ]);
+        });
 
         return redirect()->route(
             'client.services.show',
@@ -102,7 +129,7 @@ class ServiceManagementController extends Controller
         )
             ->with(
                 'success',
-                'Service upgraded successfully'
+                'Upgrade requested. Pay the invoice to apply your new service.'
             );
     }
 
@@ -116,15 +143,18 @@ class ServiceManagementController extends Controller
         );
 
         $newService = Products_Service::findOrFail($request->new_service_id);
-        abort_unless($newService->type === $subscription->productService->type, 422);
 
-        // Schedule downgrade for end of billing period
-        $subscription->scheduled_change = [
-            'type' => 'downgrade',
-            'product_service_id' => $newService->id,
-            'effective_date' => $subscription->end_date,
-        ];
-        $subscription->save();
+        $this->ensureChangeAllowed($subscription, $newService, 'downgrade');
+
+        DB::transaction(function () use ($subscription, $newService): void {
+            $subscription = Subscription::query()->lockForUpdate()->findOrFail($subscription->id);
+            $this->ensureChangeAllowed($subscription, $newService, 'downgrade');
+            $subscription->update(['scheduled_change' => [
+                'type' => 'downgrade',
+                'product_service_id' => $newService->id,
+                'effective_date' => $subscription->end_date,
+            ]]);
+        });
 
         return redirect()->route(
             'client.services.show',
@@ -140,12 +170,17 @@ class ServiceManagementController extends Controller
     {
         $this->ensureOwnership($subscription);
 
-        // Schedule cancellation for end of billing period
-        $subscription->scheduled_change = [
-            'type' => 'cancel',
-            'effective_date' => $subscription->end_date,
-        ];
-        $subscription->save();
+        abort_unless($subscription->status === 'active' && $subscription->end_date?->isFuture(), 422);
+
+        DB::transaction(function () use ($subscription): void {
+            $subscription = Subscription::query()->lockForUpdate()->findOrFail($subscription->id);
+            abort_unless($subscription->scheduled_change === null, 422);
+            abort_if(SubscriptionChange::query()->where('subscription_id', $subscription->id)->whereIn('status', ['pending', 'queued', 'processing'])->exists(), 422);
+            $subscription->update(['scheduled_change' => [
+                'type' => 'cancel',
+                'effective_date' => $subscription->end_date,
+            ]]);
+        });
 
         return redirect()->route('client.services.index')
             ->with(
@@ -154,18 +189,29 @@ class ServiceManagementController extends Controller
             );
     }
 
-    private function calculateProration(Subscription $subscription, $newService): float
+    private function ensureChangeAllowed(Subscription $subscription, Products_Service $newService, string $direction): void
     {
-        $daysRemaining = now()->diffInDays($subscription->end_date);
-        $totalDays = $subscription->start_date->diffInDays($subscription->end_date);
+        abort_unless($subscription->status === 'active' && $subscription->end_date?->isFuture(), 422);
+        abort_unless($subscription->productService !== null, 422);
+        abort_unless($newService->type === $subscription->productService->type, 422);
+        abort_unless($newService->team_id === $subscription->productService->team_id, 422);
+        abort_unless($newService->hosting_server_id === $subscription->productService->hosting_server_id, 422);
+        abort_unless($subscription->scheduled_change === null, 422);
+        abort_if(SubscriptionChange::query()->where('subscription_id', $subscription->id)->whereIn('status', ['pending', 'queued', 'processing'])->exists(), 422);
 
-        $oldAmount = $subscription->productService->price;
-        $newAmount = $newService->price;
+        $difference = (float) $newService->price - (float) $subscription->productService->price;
+        abort_unless($direction === 'upgrade' ? $difference > 0 : $difference < 0, 422);
+    }
 
-        $proratedRefund = ((float) $oldAmount / $totalDays) * $daysRemaining;
-        $proratedCharge = ((float) $newAmount / $totalDays) * $daysRemaining;
+    private function calculateProration(Subscription $subscription, Products_Service $newService): float
+    {
+        $totalSeconds = $subscription->start_date->diffInSeconds($subscription->end_date, false);
+        abort_unless($totalSeconds > 0, 422);
+        $remainingSeconds = max(0, min($totalSeconds, now()->diffInSeconds($subscription->end_date, false)));
 
-        return $proratedCharge - $proratedRefund;
+        return round(((float) $newService->price - (float) $subscription->productService->price)
+            * (BillingCycle::tryFrom($subscription->renewal_period)?->priceMultiplier() ?? 1)
+            * $remainingSeconds / $totalSeconds, 2);
     }
 
     private function ensureOwnership(Subscription $subscription): void

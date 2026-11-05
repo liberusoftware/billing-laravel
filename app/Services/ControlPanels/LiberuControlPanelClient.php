@@ -21,7 +21,11 @@ class LiberuControlPanelClient
 
     public function __construct()
     {
-        $this->client = new Client();
+        $this->client = new Client([
+            'connect_timeout' => 5,
+            'timeout' => 30,
+            'allow_redirects' => false,
+        ]);
     }
 
     public function setServer(HostingServer $server): void
@@ -64,7 +68,7 @@ class LiberuControlPanelClient
 
         return $this->makeApiCall(
             'POST',
-            '/api/hosting/accounts/'.$username.'/suspend',
+            '/api/hosting/accounts/'.rawurlencode($username).'/suspend',
             $data
         );
     }
@@ -76,7 +80,7 @@ class LiberuControlPanelClient
     {
         return $this->makeApiCall(
             'POST',
-            '/api/hosting/accounts/'.$username.'/unsuspend',
+            '/api/hosting/accounts/'.rawurlencode($username).'/unsuspend',
             [
                 'username' => $username,
             ]
@@ -95,7 +99,7 @@ class LiberuControlPanelClient
 
         return $this->makeApiCall(
             'PUT',
-            '/api/hosting/accounts/'.$username.'/package',
+            '/api/hosting/accounts/'.rawurlencode($username).'/package',
             $data
         );
     }
@@ -107,7 +111,7 @@ class LiberuControlPanelClient
     {
         return $this->makeApiCall(
             'DELETE',
-            '/api/hosting/accounts/'.$username,
+            '/api/hosting/accounts/'.rawurlencode($username),
             [
                 'username' => $username,
             ]
@@ -126,7 +130,7 @@ class LiberuControlPanelClient
 
         return $this->makeApiCall(
             'POST',
-            '/api/hosting/accounts/'.$username.'/addons',
+            '/api/hosting/accounts/'.rawurlencode($username).'/addons',
             $data
         );
     }
@@ -140,7 +144,7 @@ class LiberuControlPanelClient
 
         return $this->makeApiCall(
             'DELETE',
-            '/api/hosting/accounts/'.$username.'/addons/'.$addon,
+            '/api/hosting/accounts/'.rawurlencode($username).'/addons/'.rawurlencode($addon),
             $data
         );
     }
@@ -174,12 +178,16 @@ class LiberuControlPanelClient
                 $options
             );
 
-            $result = json_decode(
-                $response->getBody()->getContents(),
-                true
+            $body = (string) $response->getBody();
+            $result = $body === '' && $response->getStatusCode() === 204 ? [] : json_decode(
+                $body,
+                true,
+                512,
+                JSON_THROW_ON_ERROR
             );
 
-            if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 300) {
+            if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 300
+                && ($response->getStatusCode() === 204 || (is_array($result) && ($result['success'] ?? true) !== false))) {
                 Log::info(
                     'Liberu Control Panel API call successful',
                     [
@@ -204,14 +212,14 @@ class LiberuControlPanelClient
 
             return false;
 
-        } catch (GuzzleException $e) {
+        } catch (GuzzleException|\JsonException $e) {
             Log::error(
                 'Liberu Control Panel API call error',
                 [
                     'method' => $method,
                     'endpoint' => $endpoint,
                     'server' => $this->server->hostname,
-                    'error' => $e->getMessage(),
+                    'error' => $e::class,
                 ]
             );
 

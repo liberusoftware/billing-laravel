@@ -10,29 +10,36 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
-                @foreach($subscriptions as $subscription)
+                @if (session('success'))
+                    <p role="status" class="mb-4 rounded bg-green-100 p-4 text-green-800">{{ session('success') }}</p>
+                @endif
+                @forelse($subscriptions as $subscription)
                     <div class="border-b pb-4 mb-4">
                         <div class="flex justify-between items-center">
                             <div>
                                 <h3 class="text-lg font-semibold">
-                                    {{ $subscription->productService->name }}
+                                    {{ $subscription->productService?->name ?? $subscription->subscriptionPlan?->name ?? 'Service subscription' }}
                                 </h3>
                                 <p class="text-gray-600">
                                     Status: {{ ucfirst($subscription->status) }}
                                 </p>
                                 <p class="text-gray-600">
-                                    Expires: {{ $subscription->end_date->format('M d, Y') }}
+                                    Expires: {{ $subscription->end_date?->format('M d, Y') ?? 'No expiry' }}
                                 </p>
                             </div>
                             <div>
+                                @if ($subscription->productService)
                                 <a href="{{ route('client.services.show', $subscription) }}" 
                                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                                     Manage
                                 </a>
+                                @endif
                             </div>
                         </div>
                     </div>
-                @endforeach
+                @empty
+                    <p class="text-gray-600">You don’t have any services yet. <a href="{{ route('storefront') }}#plans" class="font-semibold text-blue-700 underline">Explore available plans</a>.</p>
+                @endforelse
             </div>
         </div>
     </div>

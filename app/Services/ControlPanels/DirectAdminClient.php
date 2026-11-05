@@ -19,7 +19,11 @@ class DirectAdminClient
 
     public function __construct()
     {
-        $this->client = new Client();
+        $this->client = new Client([
+            'connect_timeout' => 5,
+            'timeout' => 30,
+            'allow_redirects' => false,
+        ]);
     }
 
     public function setServer(HostingServer $server): void
@@ -45,18 +49,6 @@ class DirectAdminClient
             'package' => $package,
             'ip' => $this->server->ip_address,
             'notify' => 'no',
-            'ssl' => 'ON',
-            'cgi' => 'ON',
-            'php' => 'ON',
-            'spam' => 'ON',
-            'quota' => 'unlimited',
-            'bandwidth' => 'unlimited',
-            'nemailf' => 'unlimited',
-            'nemailml' => 'unlimited',
-            'nemailr' => 'unlimited',
-            'mysql' => 'ON',
-            'nsubdomains' => 'unlimited',
-            'dns' => 'ON',
         ];
 
         return $this->makeApiCall(
@@ -219,7 +211,7 @@ class DirectAdminClient
                 [
                     'endpoint' => $endpoint,
                     'server' => $this->server->hostname,
-                    'error' => $e->getMessage(),
+                    'error' => $e::class,
                 ]
             );
 
