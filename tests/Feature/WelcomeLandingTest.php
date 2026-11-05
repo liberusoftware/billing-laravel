@@ -1,21 +1,21 @@
 <?php
 
-it('renders the Clear Signal landing at /', function () {
-    $response = $this->get('/');
+declare(strict_types=1);
 
-    $response->assertOk();
-    $response->assertSee('A foundation you', false); // hero headline
-    $response->assertSee('Get started free', false);       // primary CTA
-    $response->assertSee('Clear Signal', false);            // brand system
-    $response->assertSee('https://github.com/liberusoftware/boilerplate-laravel', false);
-});
-
-it('links the landing CTAs to the real auth routes', function () {
+it('renders the customer hosting storefront at /', function (): void {
     $this->get('/')
-        ->assertSee(route('register'), false)
-        ->assertSee(route('login'), false);
+        ->assertSuccessful()
+        ->assertSee('A home for your website.')
+        ->assertSee('Explore services')
+        ->assertSee('Customer portal');
 });
 
-it('no longer ships the stock Laravel welcome scaffold', function () {
+it('links the landing navigation to plans and the customer portal', function (): void {
+    $this->get('/')
+        ->assertSee('href="#plans"', false)
+        ->assertSee(url('/client'), false);
+});
+
+it('no longer ships the stock Laravel welcome scaffold', function (): void {
     $this->get('/')->assertDontSee("Let's get started", false);
 });
