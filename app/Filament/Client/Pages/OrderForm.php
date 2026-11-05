@@ -86,6 +86,8 @@ class OrderForm extends Page
 
     public function mount(?string $templateSlug = null): void
     {
+        $templateSlug ??= request()->query('template');
+        abort_unless($templateSlug === null || is_string($templateSlug), 404);
         $this->checkoutKey = (string) Str::uuid();
 
         $query = OrderFormTemplate::query()->where('is_active', true);
@@ -98,6 +100,10 @@ class OrderForm extends Page
             ->where('is_active', true)
             ->get();
         $this->refreshQuotes();
+        $requestedPlan = filter_var(request()->query('plan'), FILTER_VALIDATE_INT);
+        if ($requestedPlan !== false && $this->plans->contains('id', $requestedPlan)) {
+            $this->selectedPlan = $requestedPlan;
+        }
     }
 
     public function form(Schema $schema): Schema

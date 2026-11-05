@@ -18,7 +18,11 @@ class CpanelClient
 
     public function __construct()
     {
-        $this->client = new Client();
+        $this->client = new Client([
+            'connect_timeout' => 5,
+            'timeout' => 30,
+            'allow_redirects' => false,
+        ]);
     }
 
     public function setServer(HostingServer $server): void
@@ -37,22 +41,8 @@ class CpanelClient
             'username' => $username,
             'domain' => $domain,
             'plan' => $package,
-            'featurelist' => $package,
             'password' => $this->generatePassword(),
             'contactemail' => $username.'@'.$domain,
-            'quota' => 0,
-            // Unlimited
-            'maxftp' => 'unlimited',
-            'maxsql' => 'unlimited',
-            'maxpop' => 'unlimited',
-            'cpmod' => 'paper_lantern',
-            'maxsub' => 'unlimited',
-            'maxpark' => 'unlimited',
-            'maxaddon' => 'unlimited',
-            'bwlimit' => 0,
-            // Unlimited
-            'customip' => $this->server->ip_address ?? '',
-            'shell' => 'n',
             'owner' => $this->server->username,
         ];
 
@@ -225,7 +215,6 @@ class CpanelClient
                         [
                             'server' => $this->server->hostname,
                             'user' => $username,
-                            'url' => $url,
                         ]
                     );
 
@@ -246,13 +235,13 @@ class CpanelClient
 
             return null;
 
-        } catch (GuzzleException $e) {
+        } catch (GuzzleException|\JsonException $e) {
             Log::error(
                 'cPanel SSO session creation error',
                 [
                     'server' => $this->server->hostname,
                     'user' => $username,
-                    'error' => $e->getMessage(),
+                    'error' => $e::class,
                 ]
             );
 
@@ -279,7 +268,7 @@ class CpanelClient
                     'headers' => [
                         'Authorization' => 'WHM '.$this->server->username.':'.$this->apiToken,
                     ],
-                    'query' => $params,
+                    'query' => ['api.version' => 1] + $params,
                     'verify' => config(
                         'services.cpanel.ssl_verify',
                         true
@@ -321,13 +310,13 @@ class CpanelClient
 
             return false;
 
-        } catch (GuzzleException $e) {
+        } catch (GuzzleException|\JsonException $e) {
             Log::error(
                 'cPanel API call error',
                 [
                     'endpoint' => $endpoint,
                     'server' => $this->server->hostname,
-                    'error' => $e->getMessage(),
+                    'error' => $e::class,
                 ]
             );
 

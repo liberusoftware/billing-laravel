@@ -25,6 +25,11 @@ class ProjectBillingService
         return DB::transaction(function () use ($project, $timeEntryIds): Invoice {
             $entries = TimeEntry::query()
                 ->whereIn('id', $timeEntryIds)
+                ->whereHas('task', fn ($query) => $query->where('project_id', $project->id))
+                ->with('task')
+                ->whereNotNull('ended_at')
+                ->where('duration_seconds', '>', 0)
+                ->lockForUpdate()
                 ->billable()
                 ->uninvoiced()
                 ->get();
@@ -37,7 +42,7 @@ class ProjectBillingService
                 $hours = round($entry->duration_seconds / 3600, 2);
                 // ponytail: no per-project rate column exists; use the entry rate, else 0.
                 $rate = (float) ($entry->rate ?? 0);
-                $lineTotal = round($rate * $hours, 2);
+                $lineTotal = round($rate * $entry->duration_seconds / 3600, 2);
 
                 return [
                     // ponytail: invoice_items.quantity is an integer column, so bill one

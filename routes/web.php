@@ -5,9 +5,9 @@ declare(strict_types=1);
 use App\Http\Controllers\Client\ServiceManagementController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DomainSearchController;
+use App\Http\Controllers\StorefrontController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TicketResponseController;
-use Illuminate\Contracts\View\Factory;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Support\Facades\Route;
 use Laravel\Jetstream\Http\Controllers\TeamInvitationController;
@@ -50,7 +50,7 @@ Route::middleware(['auth'])->group(function (): void {
     // Route::get('/api/shared-searches/{token}', [SavedSearchController::class, 'loadShared']);
 });
 
-Route::get('/', fn (): Factory|\Illuminate\Contracts\View\View => view('welcome'));
+Route::get('/', StorefrontController::class)->name('storefront');
 
 // Public (no-auth) domain availability search.
 // Public + unauthenticated: each hit fans out to paid registrar API calls, so

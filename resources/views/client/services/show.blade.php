@@ -14,6 +14,10 @@
                     {{ $subscription->productService->name }}
                 </h3>
 
+                <p class="mb-4 text-sm text-gray-600">Upgrades take effect after payment. Downgrades and cancellations take effect at the end of your current billing period.</p>
+                @if (session('success'))
+                    <p role="status" class="mb-4 rounded bg-green-100 p-4 text-green-800">{{ session('success') }}</p>
+                @endif
                 @if($subscription->scheduled_change)
                     <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4">
                         Scheduled change: {{ ucfirst($subscription->scheduled_change['type']) }}
@@ -21,7 +25,7 @@
                     </div>
                 @endif
 
-                <div class="grid grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                     <!-- Upgrade Options -->
                     <div>
                         <h4 class="font-semibold mb-2">Upgrade Options</h4>
@@ -33,7 +37,7 @@
                                     @csrf
                                     <input type="hidden" name="new_service_id" value="{{ $upgrade->id }}">
                                     <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded mt-2">
-                                        Upgrade Now
+                                        Request Upgrade
                                     </button>
                                 </form>
                             </div>
@@ -59,13 +63,13 @@
                     </div>
                 </div>
 
-                <!-- Cancel Service -->
+                <!-- Cancel at End of Period -->
                 <div class="mt-8 pt-4 border-t">
                     <form action="{{ route('client.services.cancel', $subscription) }}" method="POST"
                           onsubmit="return confirm('Are you sure you want to cancel this service?');">
                         @csrf
                         <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded">
-                            Cancel Service
+                            Cancel at End of Period
                         </button>
                     </form>
                 </div>

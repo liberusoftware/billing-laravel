@@ -18,7 +18,11 @@ class SoftaculousClient
 
     public function __construct()
     {
-        $this->client = new Client();
+        $this->client = new Client([
+            'connect_timeout' => 5,
+            'timeout' => 30,
+            'allow_redirects' => false,
+        ]);
         $this->apiUrl = config('services.softaculous.api_url');
         $this->apiToken = config('services.softaculous.api_token');
     }
@@ -84,13 +88,13 @@ class SoftaculousClient
 
                 return false;
             }
-        } catch (GuzzleException $e) {
+        } catch (GuzzleException|\JsonException $e) {
             Log::error(
                 'Softaculous API call error',
                 [
                     'endpoint' => $endpoint,
                     'params' => $params,
-                    'error' => $e->getMessage(),
+                    'error' => $e::class,
                 ]
             );
 

@@ -164,7 +164,7 @@ class Subscription extends Model
 
     public function renew(): bool
     {
-        if (! $this->auto_renew || $this->status === 'cancelled') {
+        if (! $this->auto_renew || $this->status === 'cancelled' || $this->scheduled_change !== null) {
             return false;
         }
 
@@ -174,7 +174,8 @@ class Subscription extends Model
             return false;
         }
 
-        $this->end_date = $cycle->advance($this->end_date, $this->custom_period_days);
+        $this->start_date = $this->end_date->copy();
+        $this->end_date = $cycle->advance($this->start_date, $this->custom_period_days);
         $this->last_billed_at = now();
         $this->status = 'active';
 
