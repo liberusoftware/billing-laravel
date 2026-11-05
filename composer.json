@@ -1504,7 +1504,7 @@
         "liberusoftware/sessions-devices-filament": "^1.1",
         "liberusoftware/settings": "^1.0",
         "liberusoftware/settings-filament": "^1.0",
-        "liberusoftware/tenancy": "^1.0",
+        "liberusoftware/tenancy": "^1.0.1",
         "liberusoftware/theme-base": "^2.0",
         "liberusoftware/theme-billing": "^1.0",
         "liberusoftware/theme-clear-signal": "^1.0",
